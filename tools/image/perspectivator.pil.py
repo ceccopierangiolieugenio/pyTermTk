@@ -32,7 +32,7 @@ import numpy as np
 # from wand.drawing import Drawing
 # from wand.color import Color
 
-from PIL import Image, ImageDraw, ImageFilter
+from PIL import Image, ImageDraw, ImageFilter, ImageChops, ImageOps
 
 
 
@@ -606,7 +606,7 @@ class Perspectivator(ttk.TTkWidget):
         # Create a new image with a transparent background
         outImage = Image.new("RGBA", (w, h), data.bgColor)
 
-        # step2, render the mirrored images
+        # step2, get all the layers and masks for alla the images
         for img in images:
             try:
                 image = Image.open(img.fileName).convert("RGBA")
@@ -616,6 +616,8 @@ class Perspectivator(ttk.TTkWidget):
 
             imageTop = image.copy()
             imageBottom = image.copy()
+            imageTopAlpha = imageTop.split()[-1]
+            imageBottomAlpha = imageBottom.split()[-1]
 
             imw, imh = image.size
 
@@ -627,7 +629,9 @@ class Perspectivator(ttk.TTkWidget):
                 draw.rectangle((0, i, imw, i), fill=alpha)
 
             # Apply the gradient mask to the image
-            imageBottom.putalpha(gradient)
+            resultAlpha = ImageChops.multiply(imageBottomAlpha, gradient)
+            # resultAlpha.show()
+            imageBottom.putalpha(resultAlpha)
 
             # Define the source and destination points
             src_points = [(imw, 0), (0, 0), (imw, imh), (0, imh)]
@@ -643,17 +647,15 @@ class Perspectivator(ttk.TTkWidget):
                 img.data['bottom']['p3'],
                 img.data['bottom']['p4'],
             ]
-            out = imageTop.transform(
-                    image.size, Image.Transform.PERSPECTIVE,
-                    find_coeffs(dst_top,src_points),
+            def _transform(_img:Image, _dst:List) -> Image:
+                return _img.transform(
+                    (w, h), Image.Transform.PERSPECTIVE,
+                    find_coeffs(_dst, src_points),
                     Image.Resampling.BICUBIC)
-            outImage.paste(out,box=None,mask=out)
-
-            out = imageBottom.transform(
-                    image.size, Image.Transform.PERSPECTIVE,
-                    find_coeffs(dst_bottom,src_points),
-                    Image.Resampling.BICUBIC).filter(ImageFilter.BLUR)
-            outImage.paste(out,box=None,mask=out)
+            img.data['imageTop'] = _transform(imageTop, dst_top)
+            img.data['imageBottom'] = _transform(imageBottom, dst_bottom)
+            img.data['imageTopAlpha'] = _transform(imageTopAlpha, dst_top)
+            img.data['imageBottomAlpha'] = _transform(imageBottomAlpha, dst_bottom)
 
             # return image
             # Apply blur to the alpha channel
@@ -663,7 +665,27 @@ class Perspectivator(ttk.TTkWidget):
             # image = image.filter(ImageFilter.GaussianBlur(radius=3))
 
             # Paste the processed image onto the output image
-            outImage.paste(out,box=None,mask=out)
+
+        # Apply the masks and Draw all the images
+        for img in images:
+            imageTop = img.data['imageTop']
+            imageBottom = img.data['imageBottom']
+            imageTopAlpha = imageTop.split()[-1]
+            imageBottomAlpha = imageBottom.split()[-1]
+            for maskImg in reversed(images):
+                if img==maskImg:
+                    break
+                maskTop = ImageOps.invert(maskImg.data['imageTopAlpha'])
+                maskBottom = ImageOps.invert(maskImg.data['imageBottomAlpha'])
+                imageTopAlpha = ImageChops.multiply(imageTopAlpha, maskTop)
+                imageBottomAlpha = ImageChops.multiply(imageBottomAlpha, maskBottom)
+
+            imageTop.putalpha(imageTopAlpha)
+            imageBottom.putalpha(imageBottomAlpha)
+            # imageBottom.show()
+
+            outImage.paste(imageBottom,box=None,mask=imageBottom)
+            outImage.paste(imageTop,box=None,mask=imageTop)
 
         return outImage
         # step3, render the top images
@@ -772,8 +794,8 @@ class _Preview(ttk.TTkWidget):
         for x in range(img.width):
             for y in range(img.height//2):
                 bg = 100 if (x//4+y//2)%2 else 150
-                p1 = img[x,y*2]
-                p2 = img[x,y*2+1]
+                p1 = img.data[x,y*2]
+                p2 = img.data[x,y*2+1]
                 def _c2hex(p) -> str:
                     a = p.alpha
                     r = int(bg*(1-a)+255*a*p.red)
