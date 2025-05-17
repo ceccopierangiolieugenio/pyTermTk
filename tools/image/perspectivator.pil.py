@@ -364,8 +364,8 @@ class Perspectivator(ttk.TTkWidget):
             img.data['imageBottomAlpha'] = _transform(imageBottomAlpha, dst_bottom).filter(ImageFilter.BoxBlur(4))
 
             def _customBlur(_img:Image, _alpha:Image) -> Image:
-                thresholds = [(0,50),(50,100), (100,150), (150,200), (200,255)]
-                blur_radius = [4, 4, 0, 0, 0]
+                thresholds = [(0,70), (70,150), (150,255)]
+                blur_radius = [7, 4, 0]
                 _out = Image.new("RGBA", _img.size, (0, 0, 0, 0))
                 # Create a new image to store the blurred result
                 for (_f,_t),_r in zip(thresholds,blur_radius):
