@@ -45,6 +45,8 @@ import TermTk as ttk
 class RenderData:
     cameraY: int
     cameraAngle: float
+    fogNear: float
+    fogFar: float
     bgColor: Tuple[int,int,int,int]
     resolution: Tuple[int,int]
 
@@ -315,17 +317,32 @@ class Perspectivator(ttk.TTkWidget):
 
             imw, imh = image.size
 
-            # Create a gradient mask
+            # Create a gradient mask for the mirrored image
             gradient = Image.new("L", (imw, imh), 0)
             draw = ImageDraw.Draw(gradient)
             for i in range(imh):
                 alpha = int((i / imh) * 204)  # alpha goes from 0 to 204
                 draw.rectangle((0, i, imw, i), fill=alpha)
-
-            # Apply the gradient mask to the image
+            # Apply the mirror mask to the image
             resultAlpha = ImageChops.multiply(imageBottomAlpha, gradient)
             # resultAlpha.show()
             imageBottom.putalpha(resultAlpha)
+
+            # Create a gradient mask for the fog
+            gradient = Image.new("L", (imw, imh), 0)
+            draw = ImageDraw.Draw(gradient)
+            for i in range(imw):
+                an = 255-data.fogNear
+                af = 255-data.fogFar
+                zl = img.data['zleft']
+                zr = img.data['zright']
+                zi = (i/imw)*(zr-zl)+zl
+                znorm = (zi-znear)/(zfar-znear)
+                alpha = znorm*(an-af)+af
+                draw.rectangle((i, 0, i, imh), fill=int(alpha))
+            # resultAlpha.show()
+            imageTop.putalpha(ImageChops.multiply(imageTopAlpha, gradient))
+            imageBottom.putalpha(ImageChops.multiply(imageBottomAlpha, gradient))
 
             # Define the source and destination points
             src_points = [(imw, 0), (0, 0), (imw, imh), (0, imh)]
@@ -484,6 +501,8 @@ class ControlPanel(ttk.TTkContainer):
         data = RenderData(
             cameraAngle=self._toolbox.getWidgetByName("SB_CamA").value(),
             cameraY=self._toolbox.getWidgetByName("SB_CamY").value(),
+            fogNear=self._toolbox.getWidgetByName("SB_Fog_Near").value(),
+            fogFar=self._toolbox.getWidgetByName("SB_Fog_Far").value(),
             bgColor=color,
             resolution=(800,600)
         )
@@ -491,6 +510,7 @@ class ControlPanel(ttk.TTkContainer):
 
     @ttk.pyTTkSlot()
     def _previewClicked(self):
+        return
         w,h = self.size()
         if self._toolbox.getWidgetByName("CB_Bg").isChecked():
             btnColor = self._toolbox.getWidgetByName("BG_Color").color()

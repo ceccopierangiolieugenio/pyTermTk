@@ -10,8 +10,8 @@
     2
    ],
    "Size": [
-    56,
-    9
+    55,
+    11
    ],
    "Min Width": 0,
    "Min Height": 0,
@@ -34,8 +34,8 @@
     "Geometry": [
      0,
      0,
-     56,
-     9
+     55,
+     11
     ]
    },
    "children": [
@@ -62,8 +62,8 @@
       "Color": "\u001b[0m",
       "Alignment": 1
      },
-     "row": 3,
-     "col": 1,
+     "row": 2,
+     "col": 0,
      "rowspan": 1,
      "colspan": 1
     },
@@ -90,8 +90,8 @@
       "Color": "\u001b[0m",
       "Alignment": 1
      },
-     "row": 4,
-     "col": 1,
+     "row": 3,
+     "col": 0,
      "rowspan": 1,
      "colspan": 1
     },
@@ -104,7 +104,7 @@
        6
       ],
       "Size": [
-       36,
+       35,
        1
       ],
       "Min Width": 4,
@@ -131,14 +131,14 @@
        "Geometry": [
         0,
         0,
-        34,
+        33,
         1
        ]
       },
       "children": []
      },
-     "row": 3,
-     "col": 2,
+     "row": 2,
+     "col": 1,
      "rowspan": 1,
      "colspan": 1
     },
@@ -151,7 +151,7 @@
        3
       ],
       "Size": [
-       56,
+       55,
        3
       ],
       "Min Width": 8,
@@ -166,8 +166,8 @@
       "Checkable": false,
       "Checked": false
      },
-     "row": 2,
-     "col": 1,
+     "row": 1,
+     "col": 0,
      "rowspan": 1,
      "colspan": 2
     },
@@ -180,7 +180,7 @@
        0
       ],
       "Size": [
-       56,
+       55,
        3
       ],
       "Min Width": 9,
@@ -195,8 +195,8 @@
       "Checkable": false,
       "Checked": false
      },
-     "row": 1,
-     "col": 1,
+     "row": 0,
+     "col": 0,
      "rowspan": 1,
      "colspan": 2
     },
@@ -209,7 +209,7 @@
        7
       ],
       "Size": [
-       36,
+       35,
        1
       ],
       "Min Width": 4,
@@ -236,14 +236,14 @@
        "Geometry": [
         0,
         0,
-        34,
+        33,
         1
        ]
       },
       "children": []
      },
-     "row": 4,
-     "col": 2,
+     "row": 3,
+     "col": 1,
      "rowspan": 1,
      "colspan": 1
     },
@@ -271,8 +271,8 @@
       "Checked": false,
       "Check State": 0
      },
-     "row": 5,
-     "col": 1,
+     "row": 4,
+     "col": 0,
      "rowspan": 1,
      "colspan": 1
     },
@@ -285,7 +285,7 @@
        8
       ],
       "Size": [
-       36,
+       35,
        1
       ],
       "Min Width": 2,
@@ -302,8 +302,158 @@
       "Color": "\u001b[38;2;0;0;0m",
       "Return Type": 0
      },
+     "row": 4,
+     "col": 1,
+     "rowspan": 1,
+     "colspan": 1
+    },
+    {
+     "class": "TTkLabel",
+     "params": {
+      "Name": "TTkLabel-2",
+      "Position": [
+       0,
+       9
+      ],
+      "Size": [
+       20,
+       1
+      ],
+      "Min Width": 10,
+      "Min Height": 1,
+      "Max Width": 65536,
+      "Max Height": 65536,
+      "Visible": true,
+      "Enabled": true,
+      "ToolTip": "",
+      "Text": "Fog (Near)",
+      "Color": "\u001b[0m",
+      "Alignment": 1
+     },
      "row": 5,
-     "col": 2,
+     "col": 0,
+     "rowspan": 1,
+     "colspan": 1
+    },
+    {
+     "class": "TTkLabel",
+     "params": {
+      "Name": "TTkLabel-3",
+      "Position": [
+       0,
+       10
+      ],
+      "Size": [
+       20,
+       1
+      ],
+      "Min Width": 9,
+      "Min Height": 1,
+      "Max Width": 65536,
+      "Max Height": 65536,
+      "Visible": true,
+      "Enabled": true,
+      "ToolTip": "",
+      "Text": "Fog (Far)",
+      "Color": "\u001b[0m",
+      "Alignment": 1
+     },
+     "row": 6,
+     "col": 0,
+     "rowspan": 1,
+     "colspan": 1
+    },
+    {
+     "class": "TTkSpinBox",
+     "params": {
+      "Name": "SB_Fog_Near",
+      "Position": [
+       20,
+       9
+      ],
+      "Size": [
+       35,
+       1
+      ],
+      "Min Width": 4,
+      "Min Height": 1,
+      "Max Width": 65536,
+      "Max Height": 65536,
+      "Visible": true,
+      "Enabled": true,
+      "ToolTip": "",
+      "Padding": [
+       0,
+       0,
+       0,
+       2
+      ],
+      "Layout": "TTkGridLayout",
+      "Value": 0,
+      "Minimum": 0,
+      "Maximum": 255
+     },
+     "layout": {
+      "class": "TTkGridLayout",
+      "params": {
+       "Geometry": [
+        0,
+        0,
+        33,
+        1
+       ]
+      },
+      "children": []
+     },
+     "row": 5,
+     "col": 1,
+     "rowspan": 1,
+     "colspan": 1
+    },
+    {
+     "class": "TTkSpinBox",
+     "params": {
+      "Name": "SB_Fog_Far",
+      "Position": [
+       20,
+       10
+      ],
+      "Size": [
+       35,
+       1
+      ],
+      "Min Width": 4,
+      "Min Height": 1,
+      "Max Width": 65536,
+      "Max Height": 65536,
+      "Visible": true,
+      "Enabled": true,
+      "ToolTip": "",
+      "Padding": [
+       0,
+       0,
+       0,
+       2
+      ],
+      "Layout": "TTkGridLayout",
+      "Value": 128,
+      "Minimum": 0,
+      "Maximum": 255
+     },
+     "layout": {
+      "class": "TTkGridLayout",
+      "params": {
+       "Geometry": [
+        0,
+        0,
+        33,
+        1
+       ]
+      },
+      "children": []
+     },
+     "row": 6,
+     "col": 1,
      "rowspan": 1,
      "colspan": 1
     }
