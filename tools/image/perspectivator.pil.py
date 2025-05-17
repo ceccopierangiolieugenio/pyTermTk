@@ -299,9 +299,6 @@ class Perspectivator(ttk.TTkWidget):
 
             }
 
-        # Create a new image with a transparent background
-        outImage = Image.new("RGBA", (w, h), data.bgColor)
-
         # step2, get all the layers and masks for alla the images
         for img in images:
             try:
@@ -324,9 +321,7 @@ class Perspectivator(ttk.TTkWidget):
                 alpha = int((i / imh) * 204)  # alpha goes from 0 to 204
                 draw.rectangle((0, i, imw, i), fill=alpha)
             # Apply the mirror mask to the image
-            resultAlpha = ImageChops.multiply(imageBottomAlpha, gradient)
-            # resultAlpha.show()
-            imageBottom.putalpha(resultAlpha)
+            imageBottomAlphaGradient = ImageChops.multiply(imageBottomAlpha, gradient)
 
             # Create a gradient mask for the fog
             gradient = Image.new("L", (imw, imh), 0)
@@ -342,7 +337,7 @@ class Perspectivator(ttk.TTkWidget):
                 draw.rectangle((i, 0, i, imh), fill=int(alpha))
             # resultAlpha.show()
             imageTop.putalpha(ImageChops.multiply(imageTopAlpha, gradient))
-            imageBottom.putalpha(ImageChops.multiply(imageBottomAlpha, gradient))
+            imageBottom.putalpha(ImageChops.multiply(imageBottomAlphaGradient, gradient))
 
             # Define the source and destination points
             src_points = [(imw, 0), (0, 0), (imw, imh), (0, imh)]
@@ -364,9 +359,32 @@ class Perspectivator(ttk.TTkWidget):
                     find_coeffs(_dst, src_points),
                     Image.Resampling.BICUBIC)
             img.data['imageTop'] = _transform(imageTop, dst_top)
-            img.data['imageBottom'] = _transform(imageBottom, dst_bottom)
+            img.data['imageBottom'] = _transform(imageBottom, dst_bottom).filter(ImageFilter.BoxBlur(4))
             img.data['imageTopAlpha'] = _transform(imageTopAlpha, dst_top)
-            img.data['imageBottomAlpha'] = _transform(imageBottomAlpha, dst_bottom)
+            img.data['imageBottomAlpha'] = _transform(imageBottomAlpha, dst_bottom).filter(ImageFilter.BoxBlur(4))
+
+            def _customBlur(_img:Image, _alpha:Image) -> Image:
+                thresholds = [(0,50),(50,100), (100,150), (150,200), (200,255)]
+                blur_radius = [4, 4, 0, 0, 0]
+                _out = Image.new("RGBA", _img.size, (0, 0, 0, 0))
+                # Create a new image to store the blurred result
+                for (_f,_t),_r in zip(thresholds,blur_radius):
+                    # Create a mask for the current threshold
+                    _mask = _alpha.point(lambda p: p if _f < p <= _t else 0)
+                    # Apply Gaussian blur to the image using the mask
+                    _blurred = _img.filter(ImageFilter.BoxBlur(radius=_r))
+                    _blurred.putalpha(_mask)
+                    # Composite the blurred image with the original image using the mask
+                    _out = Image.alpha_composite(_out,_blurred)
+                    #_alpha.show()
+                    #_mask.show()
+                    #_blurred.show()
+                    #_out.show()
+                    pass
+                return _out
+
+            img.data['imageBottom'] = _customBlur(
+                img.data['imageBottom'], img.data['imageBottom'].split()[-1])
 
             # return image
             # Apply blur to the alpha channel
@@ -376,6 +394,9 @@ class Perspectivator(ttk.TTkWidget):
             # image = image.filter(ImageFilter.GaussianBlur(radius=3))
 
             # Paste the processed image onto the output image
+
+        # Create a new image with a transparent background
+        outImage = Image.new("RGBA", (w, h), data.bgColor)
 
         # Apply the masks and Draw all the images
         for img in images:
@@ -389,14 +410,21 @@ class Perspectivator(ttk.TTkWidget):
                 maskTop = ImageOps.invert(maskImg.data['imageTopAlpha'])
                 maskBottom = ImageOps.invert(maskImg.data['imageBottomAlpha'])
                 imageTopAlpha = ImageChops.multiply(imageTopAlpha, maskTop)
+                imageBottomAlpha = ImageChops.multiply(imageBottomAlpha, maskTop)
                 imageBottomAlpha = ImageChops.multiply(imageBottomAlpha, maskBottom)
+
 
             imageTop.putalpha(imageTopAlpha)
             imageBottom.putalpha(imageBottomAlpha)
+
             # imageBottom.show()
 
-            outImage.paste(imageBottom,box=None,mask=imageBottom)
-            outImage.paste(imageTop,box=None,mask=imageTop)
+            # outImage.paste(imageBottom,box=None,mask=imageBottom)
+            # outImage.paste(imageTop,box=None,mask=imageTop)
+
+            outImage = Image.alpha_composite(outImage,imageBottom)
+            outImage = Image.alpha_composite(outImage,imageTop)
+            # imageBottom.show()
 
         return outImage
 
@@ -495,7 +523,7 @@ class ControlPanel(ttk.TTkContainer):
     def _renderClicked(self):
         if self._toolbox.getWidgetByName("CB_Bg").isChecked():
             btnColor = self._toolbox.getWidgetByName("BG_Color").color()
-            color = (*btnColor.fgToRGB(),1)
+            color = (*btnColor.fgToRGB(),255)
         else:
             color = (0,0,0,0)
         data = RenderData(
