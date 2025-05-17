@@ -1,0 +1,321 @@
+{
+ "type": "TTkUi/Document",
+ "version": "2.1.0",
+ "tui": {
+  "class": "TTkContainer",
+  "params": {
+   "Name": "MainWindow",
+   "Position": [
+    4,
+    2
+   ],
+   "Size": [
+    56,
+    9
+   ],
+   "Min Width": 0,
+   "Min Height": 0,
+   "Max Width": 65536,
+   "Max Height": 65536,
+   "Visible": true,
+   "Enabled": true,
+   "ToolTip": "",
+   "Padding": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "Layout": "TTkGridLayout"
+  },
+  "layout": {
+   "class": "TTkGridLayout",
+   "params": {
+    "Geometry": [
+     0,
+     0,
+     56,
+     9
+    ]
+   },
+   "children": [
+    {
+     "class": "TTkLabel",
+     "params": {
+      "Name": "TTkLabel",
+      "Position": [
+       0,
+       6
+      ],
+      "Size": [
+       20,
+       1
+      ],
+      "Min Width": 8,
+      "Min Height": 1,
+      "Max Width": 65536,
+      "Max Height": 1,
+      "Visible": true,
+      "Enabled": true,
+      "ToolTip": "",
+      "Text": "Camera Y",
+      "Color": "\u001b[0m",
+      "Alignment": 1
+     },
+     "row": 3,
+     "col": 1,
+     "rowspan": 1,
+     "colspan": 1
+    },
+    {
+     "class": "TTkLabel",
+     "params": {
+      "Name": "TTkLabel-1",
+      "Position": [
+       0,
+       7
+      ],
+      "Size": [
+       20,
+       1
+      ],
+      "Min Width": 14,
+      "Min Height": 1,
+      "Max Width": 20,
+      "Max Height": 1,
+      "Visible": true,
+      "Enabled": true,
+      "ToolTip": "",
+      "Text": "Camera V Angle",
+      "Color": "\u001b[0m",
+      "Alignment": 1
+     },
+     "row": 4,
+     "col": 1,
+     "rowspan": 1,
+     "colspan": 1
+    },
+    {
+     "class": "TTkSpinBox",
+     "params": {
+      "Name": "SB_CamY",
+      "Position": [
+       20,
+       6
+      ],
+      "Size": [
+       36,
+       1
+      ],
+      "Min Width": 4,
+      "Min Height": 1,
+      "Max Width": 65536,
+      "Max Height": 65536,
+      "Visible": true,
+      "Enabled": true,
+      "ToolTip": "",
+      "Padding": [
+       0,
+       0,
+       0,
+       2
+      ],
+      "Layout": "TTkGridLayout",
+      "Value": 5,
+      "Minimum": -100,
+      "Maximum": 100
+     },
+     "layout": {
+      "class": "TTkGridLayout",
+      "params": {
+       "Geometry": [
+        0,
+        0,
+        34,
+        1
+       ]
+      },
+      "children": []
+     },
+     "row": 3,
+     "col": 2,
+     "rowspan": 1,
+     "colspan": 1
+    },
+    {
+     "class": "TTkButton",
+     "params": {
+      "Name": "Btn_Render",
+      "Position": [
+       0,
+       3
+      ],
+      "Size": [
+       56,
+       3
+      ],
+      "Min Width": 8,
+      "Min Height": 3,
+      "Max Width": 65536,
+      "Max Height": 3,
+      "Visible": true,
+      "Enabled": true,
+      "ToolTip": "",
+      "Text": "Render",
+      "Border": true,
+      "Checkable": false,
+      "Checked": false
+     },
+     "row": 2,
+     "col": 1,
+     "rowspan": 1,
+     "colspan": 2
+    },
+    {
+     "class": "TTkButton",
+     "params": {
+      "Name": "Btn_Preview",
+      "Position": [
+       0,
+       0
+      ],
+      "Size": [
+       56,
+       3
+      ],
+      "Min Width": 9,
+      "Min Height": 3,
+      "Max Width": 65536,
+      "Max Height": 3,
+      "Visible": true,
+      "Enabled": true,
+      "ToolTip": "",
+      "Text": "Preview",
+      "Border": true,
+      "Checkable": false,
+      "Checked": false
+     },
+     "row": 1,
+     "col": 1,
+     "rowspan": 1,
+     "colspan": 2
+    },
+    {
+     "class": "TTkSpinBox",
+     "params": {
+      "Name": "SB_CamA",
+      "Position": [
+       20,
+       7
+      ],
+      "Size": [
+       36,
+       1
+      ],
+      "Min Width": 4,
+      "Min Height": 1,
+      "Max Width": 65536,
+      "Max Height": 65536,
+      "Visible": true,
+      "Enabled": true,
+      "ToolTip": "",
+      "Padding": [
+       0,
+       0,
+       0,
+       2
+      ],
+      "Layout": "TTkGridLayout",
+      "Value": 0,
+      "Minimum": -360,
+      "Maximum": 360
+     },
+     "layout": {
+      "class": "TTkGridLayout",
+      "params": {
+       "Geometry": [
+        0,
+        0,
+        34,
+        1
+       ]
+      },
+      "children": []
+     },
+     "row": 4,
+     "col": 2,
+     "rowspan": 1,
+     "colspan": 1
+    },
+    {
+     "class": "TTkCheckbox",
+     "params": {
+      "Name": "CB_Bg",
+      "Position": [
+       0,
+       8
+      ],
+      "Size": [
+       20,
+       1
+      ],
+      "Min Width": 13,
+      "Min Height": 1,
+      "Max Width": 65536,
+      "Max Height": 1,
+      "Visible": true,
+      "Enabled": true,
+      "ToolTip": "",
+      "Text": "Background",
+      "Tristate": false,
+      "Checked": false,
+      "Check State": 0
+     },
+     "row": 5,
+     "col": 1,
+     "rowspan": 1,
+     "colspan": 1
+    },
+    {
+     "class": "TTkColorButtonPicker",
+     "params": {
+      "Name": "BG_Color",
+      "Position": [
+       20,
+       8
+      ],
+      "Size": [
+       36,
+       1
+      ],
+      "Min Width": 2,
+      "Min Height": 1,
+      "Max Width": 65536,
+      "Max Height": 1,
+      "Visible": true,
+      "Enabled": false,
+      "ToolTip": "",
+      "Text": "",
+      "Border": false,
+      "Checkable": false,
+      "Checked": false,
+      "Color": "\u001b[38;2;0;0;0m",
+      "Return Type": 0
+     },
+     "row": 5,
+     "col": 2,
+     "rowspan": 1,
+     "colspan": 1
+    }
+   ]
+  }
+ },
+ "connections": [
+  {
+   "sender": "CB_Bg",
+   "receiver": "BG_Color",
+   "signal": "toggled(bool)",
+   "slot": "setEnabled(bool)"
+  }
+ ]
+}
