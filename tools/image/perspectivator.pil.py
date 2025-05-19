@@ -28,14 +28,7 @@ from typing import Optional,Tuple,List,Dict
 
 import numpy as np
 
-# from wand.image import Image
-# from wand.drawing import Drawing
-# from wand.color import Color
-
 from PIL import Image, ImageDraw, ImageFilter, ImageChops, ImageOps
-
-
-
 
 sys.path.append(os.path.join(sys.path[0],'../..'))
 
@@ -118,19 +111,21 @@ def project_point(camera_position, look_at, point_3d):
     return ndc_x, ndc_y
 
 class _Image():
-    __slots__ = ('x','y','size','tilt','fileName', 'box', 'data')
+    __slots__ = ('x','y','z','size','tilt','fileName', 'box', 'data')
     x:int
     y:int
+    z:int
     size:int
     tilt:float
     fileName:str
     data:Dict
     box:Tuple[int,int,int,int]
-    def __init__(self,x:int,y:int,size:int,tilt:float,fileName:str):
+    def __init__(self,x:int,y:int,z:int,size:int,tilt:float,fileName:str):
         if not os.path.isfile(fileName):
             raise ValueError(f"{fileName} is not a file")
         self.x = x
         self.y = y
+        self.z = z
         self.size = size
         self.tilt = tilt
         self.fileName = fileName
@@ -150,38 +145,54 @@ class _Image():
     def getBox(self) -> Tuple[int,int,int,int]:
         return self.box
 
+@dataclass
+class _Camera():
+    x:int
+    y:int
+    z:int
+
 class Perspectivator(ttk.TTkWidget):
-    __slots__ = ('_images','_currentImage','_highlightedImage')
+    __slots__ = ('_camera','_images','_currentImage','_highlightedImage','_selectedCamera')
     _highlightedImage:Optional[_Image]
     _currentImage:Optional[_Image]
     _images:List[_Image]
+    _camera:_Camera
+    _selectedCamera:bool
     def __init__(self, **kwargs):
         self._highlightedImage = None
         self._currentImage = None
         self._images = []
+        self._camera = _Camera(x=25,y=25,z=5)
         super().__init__(**kwargs)
         self.setFocusPolicy(ttk.TTkK.ClickFocus)
 
     def addImage(self, fileName:str):
         d=len(self._images)*2
-        image = _Image(x=25+d,y=5+d, size=5, tilt=0,fileName=fileName)
+        image = _Image(x=25+d,y=15+d, z=0, size=5, tilt=0,fileName=fileName)
+        self._camera.x += 1
+        self._camera.y += 1
         self._images.append(image)
         self.update()
 
     def mousePressEvent(self, evt):
         self._highlightedImage = None
         self._currentImage = None
-        for image in self._images:
-            ix,iy,iw,ih = image.getBox()
-            if ix <= evt.x < ix+iw and iy <= evt.y < iy+ih:
-                image.data = {
-                    'mx':image.x-evt.x,
-                    'my':image.y-evt.y}
-                self._currentImage = image
-                index = self._images.index(image)
-                self._images.pop(index)
-                self._images.append(image)
-                break
+        self._selectedCamera = False
+        cx,cy = self._camera.x,self._camera.y
+        if cx-1 <= evt.x <= cx+2 and cy-1 <= evt.y <= cy+1:
+            self._selectedCamera = True
+        else:
+            for image in self._images:
+                ix,iy,iw,ih = image.getBox()
+                if ix <= evt.x < ix+iw and iy <= evt.y < iy+ih:
+                    image.data = {
+                        'mx':image.x-evt.x,
+                        'my':image.y-evt.y}
+                    self._currentImage = image
+                    index = self._images.index(image)
+                    self._images.pop(index)
+                    self._images.append(image)
+                    break
         self.update()
         return True
 
@@ -198,11 +209,16 @@ class Perspectivator(ttk.TTkWidget):
     def mouseReleaseEvent(self, evt:ttk.TTkMouseEvent):
         self._highlightedImage = None
         self._currentImage = None
+        self._selectedCamera = False
         self.update()
         return True
 
     def mouseDragEvent(self, evt:ttk.TTkMouseEvent):
-        if not (image:=self._currentImage):
+        if evt.key == ttk.TTkK.LeftButton and self._selectedCamera:
+            self._camera.x = evt.x
+            self._camera.y = evt.y
+            self.update()
+        elif not (image:=self._currentImage):
             pass
         elif evt.key == ttk.TTkK.RightButton:
             x = evt.x-image.x
@@ -242,10 +258,12 @@ class Perspectivator(ttk.TTkWidget):
 
     def getImagePil(self, data:RenderData) -> Image:
         ww,wh = self.size()
-        observer = (ww/2 , -data.cameraY , wh-3 )  # Observer's position
+        cam_x,cam_y = self._camera.x,self._camera.y
+        observer = (cam_x , -data.cameraY , cam_y )  # Observer's position
+        # observer = (ww/2 , -data.cameraY , wh-3 )  # Observer's position
         dz = 10*math.cos(math.pi + math.pi * data.cameraAngle/360)
         dy = 10*math.sin(math.pi + math.pi * data.cameraAngle/360)
-        look_at  = (ww/2 , dy-data.cameraY , wh-3+dz)  # Observer is looking along the positive Z-axis
+        look_at  = (cam_x , dy-data.cameraY , cam_y+    dz)  # Observer is looking along the positive Z-axis
         screen_width, screen_height = data.resolution
         w,h = screen_width,screen_height
         prw,prh = screen_width/2, screen_height/2
@@ -430,11 +448,12 @@ class Perspectivator(ttk.TTkWidget):
 
     def paintEvent(self, canvas):
         w,h = self.size()
-        canvas.drawTTkString(pos=(w//2,h-3),text=ttk.TTkString("😎"))
+        cx,cy=self._camera.x,self._camera.y
+        canvas.drawTTkString(pos=(cx,cy),text=ttk.TTkString("😎"))
         # Draw Fov
-        for y in range(h-3):
-            canvas.drawChar(char='/', pos=(w//2+(h-3)-y,y))
-            canvas.drawChar(char='\\',pos=(w//2-(h-3)+y,y))
+        for y in range(cy):
+            canvas.drawChar(char='/', pos=(cx+cy-y+1,y))
+            canvas.drawChar(char='\\',pos=(cx-cy+y,y))
         for image in self._images:
             ix,iy,iw,ih = image.getBox()
             canvas.drawText(pos=(ix,iy-1),text=f"{image.tilt:.2f}", color=ttk.TTkColor.YELLOW)
@@ -467,43 +486,42 @@ class Perspectivator(ttk.TTkWidget):
 class _Preview(ttk.TTkWidget):
     __slots__ = ('_canvasImage')
     def __init__(self, **kwargs):
-        self._canvasImage = ttk.TTkCanvas()
+        self._canvasImage = ttk.TTkCanvas(width=20,height=3)
+        self._canvasImage.drawText(pos=(0,0),text="Preview...")
         super().__init__(**kwargs)
 
     def updateCanvas(self, img:Image):
-        w,h = img.width, img.height
+        w,h = img.size
+        pixels = img.load()
         self._canvasImage.resize(w,h//2)
         self._canvasImage.updateSize()
-        for x in range(img.width):
-            for y in range(img.height//2):
+        for x in range(w):
+            for y in range(h//2):
                 bg = 100 if (x//4+y//2)%2 else 150
-                p1 = img.data[x,y*2]
-                p2 = img.data[x,y*2+1]
+                p1 = pixels[x,y*2]
+                p2 = pixels[x,y*2+1]
                 def _c2hex(p) -> str:
-                    a = p.alpha
-                    r = int(bg*(1-a)+255*a*p.red)
-                    g = int(bg*(1-a)+255*a*p.green)
-                    b = int(bg*(1-a)+255*a*p.blue)
+                    a = p[3]/255
+                    r = int(bg*(1-a)+a*p[0])
+                    g = int(bg*(1-a)+a*p[1])
+                    b = int(bg*(1-a)+a*p[2])
                     return f"#{r<<16|g<<8|b:06x}"
                 c = ttk.TTkColor.fgbg(_c2hex(p2),_c2hex(p1))
                 self._canvasImage.drawChar(pos=(x,y), char='▄', color=c)
-        self._canvasImage.drawText(pos=(0,1), text="Eugenio")
-
         self.update()
 
     def paintEvent(self, canvas):
         w,h = self.size()
         canvas.paintCanvas(self._canvasImage, (0,0,w,h), (0,0,w,h), (0,0,w,h))
-        canvas.drawText(pos=(0,0), text="Eugenio")
 
-class ControlPanel(ttk.TTkContainer):
+class ControlPanel(ttk.TTkSplitter):
     __slots__ = (
         'previewPressed','renderPressed','_toolbox', '_previewImage')
     def __init__(self, **kwargs):
         self.previewPressed = ttk.pyTTkSignal(RenderData)
         self.renderPressed = ttk.pyTTkSignal(RenderData)
-        super().__init__(**kwargs|{'layout':ttk.TTkGridLayout()})
-        self._previewImage = _Preview(minHeight=20,maxHeight=20)
+        super().__init__(**kwargs|{"orientation":ttk.TTkK.VERTICAL})
+        self._previewImage = _Preview()
 
         self._toolbox = ttk.TTkUiLoader.loadFile(os.path.join(os.path.dirname(os.path.abspath(__file__)),"toolbox.tui.json"))
         self._toolbox.getWidgetByName("Btn_Render").clicked.connect(self._renderClicked)
@@ -512,9 +530,9 @@ class ControlPanel(ttk.TTkContainer):
         # self._toolbox.getWidgetByName("SB_CamA")
         # self._toolbox.getWidgetByName("CB_Bg")
         # self._toolbox.getWidgetByName("BG_Color")
-        self.layout().addWidget(self._previewImage,0,0)
-        self.layout().addWidget(self._toolbox,1,0)
-        self.layout().addItem(ttk.TTkLayout(),2,0)
+        self.addWidget(self._previewImage,size=5)
+        self.addWidget(self._toolbox)
+        self.addItem(ttk.TTkLayout())
 
     def drawPreview(self, img:Image):
         self._previewImage.updateCanvas(img)
@@ -538,18 +556,19 @@ class ControlPanel(ttk.TTkContainer):
 
     @ttk.pyTTkSlot()
     def _previewClicked(self):
-        return
-        w,h = self.size()
         if self._toolbox.getWidgetByName("CB_Bg").isChecked():
             btnColor = self._toolbox.getWidgetByName("BG_Color").color()
-            color = (*btnColor.fgToRGB(),1)
+            color = (*btnColor.fgToRGB(),255)
         else:
             color = (0,0,0,0)
+        w,h = self._previewImage.size()
         data = RenderData(
             cameraAngle=self._toolbox.getWidgetByName("SB_CamA").value(),
             cameraY=self._toolbox.getWidgetByName("SB_CamY").value(),
+            fogNear=self._toolbox.getWidgetByName("SB_Fog_Near").value(),
+            fogFar=self._toolbox.getWidgetByName("SB_Fog_Far").value(),
             bgColor=color,
-            resolution=(w,40)
+            resolution=(w,h*2)
         )
         self.previewPressed.emit(data)
 
