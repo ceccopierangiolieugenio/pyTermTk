@@ -110,32 +110,40 @@ def project_point(camera_position, look_at, point_3d):
 
     return ndc_x, ndc_y
 
-class _Image():
-    __slots__ = ('x','y','z','size','tilt','fileName', 'box', 'data')
+@dataclass
+class _Movable():
     x:int
     y:int
     z:int
+    data = {}
+
+    def _updateBox(self):
+        pass
+
+class _Image(_Movable):
+    __slots__ = ('size','tilt','fileName', 'box')
     size:int
     tilt:float
     fileName:str
-    data:Dict
+    image:Image
     box:Tuple[int,int,int,int]
-    def __init__(self,x:int,y:int,z:int,size:int,tilt:float,fileName:str):
+    def __init__(self,size:int,tilt:float,fileName:str, **kwargs):
+        super().__init__(**kwargs)
         if not os.path.isfile(fileName):
             raise ValueError(f"{fileName} is not a file")
-        self.x = x
-        self.y = y
-        self.z = z
+        try:
+            self.image = Image.open(fileName).convert("RGBA")
+        except FileNotFoundError:
+            raise ValueError(f"Failed to open {fileName}")
         self.size = size
         self.tilt = tilt
         self.fileName = fileName
-        self.data={}
         self._updateBox()
 
     def _updateBox(self):
-        size:float = float(self.size)
-        w:float = 1 + 2*size*abs(math.cos(self.tilt))
-        h:float = 1 +   size*abs(math.sin(self.tilt))
+        size = float(self.size)
+        w = 1 + 2*size*abs(math.cos(self.tilt))
+        h = 1 +   size*abs(math.sin(self.tilt))
         self.box = (
                 int(self.x-w/2),
                 int(self.y-h/2),
@@ -145,97 +153,87 @@ class _Image():
     def getBox(self) -> Tuple[int,int,int,int]:
         return self.box
 
+class _Camera(_Movable):
+    tilt:int = 0
+
 @dataclass
-class _Camera():
-    x:int
-    y:int
-    z:int
+class _State():
+    camera: _Camera
+    images: List[_Image]
+    currentMovable: Optional[_Movable] = None
+    highlightedMovable: Optional[_Movable] = None
 
 class Perspectivator(ttk.TTkWidget):
-    __slots__ = ('_camera','_images','_currentImage','_highlightedImage','_selectedCamera')
-    _highlightedImage:Optional[_Image]
-    _currentImage:Optional[_Image]
-    _images:List[_Image]
-    _camera:_Camera
-    _selectedCamera:bool
-    def __init__(self, **kwargs):
-        self._highlightedImage = None
-        self._currentImage = None
-        self._images = []
-        self._camera = _Camera(x=25,y=25,z=5)
+    __slots__ = ('_state')
+    _state:_State
+    def __init__(self, state:_State, **kwargs):
+        self._state = state
         super().__init__(**kwargs)
         self.setFocusPolicy(ttk.TTkK.ClickFocus)
 
-    def addImage(self, fileName:str):
-        d=len(self._images)*2
-        image = _Image(x=25+d,y=15+d, z=0, size=5, tilt=0,fileName=fileName)
-        self._camera.x += 1
-        self._camera.y += 1
-        self._images.append(image)
-        self.update()
-
     def mousePressEvent(self, evt):
-        self._highlightedImage = None
-        self._currentImage = None
-        self._selectedCamera = False
-        cx,cy = self._camera.x,self._camera.y
+        self._state.highlightedMovable = None
+        self._state.currentMovable = None
+        cx,cy = self._state.camera.x,self._state.camera.y
         if cx-1 <= evt.x <= cx+2 and cy-1 <= evt.y <= cy+1:
-            self._selectedCamera = True
+            self._state.currentMovable = self._state.camera
+            self._state.camera.data = {
+                'mx':self._state.camera.x-evt.x,
+                'my':self._state.camera.y-evt.y}
         else:
-            for image in self._images:
+            for image in self._state.images:
                 ix,iy,iw,ih = image.getBox()
                 if ix <= evt.x < ix+iw and iy <= evt.y < iy+ih:
                     image.data = {
                         'mx':image.x-evt.x,
                         'my':image.y-evt.y}
-                    self._currentImage = image
-                    index = self._images.index(image)
-                    self._images.pop(index)
-                    self._images.append(image)
+                    self._state.currentMovable = image
+                    index = self._state.images.index(image)
+                    self._state.images.pop(index)
+                    self._state.images.append(image)
                     break
         self.update()
         return True
 
     def mouseMoveEvent(self, evt:ttk.TTkMouseEvent):
-        self._highlightedImage = None
-        for image in self._images:
-            ix,iy,iw,ih = image.getBox()
-            if ix <= evt.x < ix+iw and iy <= evt.y < iy+ih:
-                self._highlightedImage = image
-                break
+        self._state.highlightedMovable = None
+        cx,cy = self._state.camera.x,self._state.camera.y
+        if cx-1 <= evt.x <= cx+2 and cy-1 <= evt.y <= cy+1:
+            self._state.highlightedMovable = self._state.camera
+        else:
+            for image in self._state.images:
+                ix,iy,iw,ih = image.getBox()
+                if ix <= evt.x < ix+iw and iy <= evt.y < iy+ih:
+                    self._state.highlightedMovable = image
+                    break
         self.update()
         return True
 
     def mouseReleaseEvent(self, evt:ttk.TTkMouseEvent):
-        self._highlightedImage = None
-        self._currentImage = None
-        self._selectedCamera = False
+        self._state.highlightedMovable = None
+        self._state.currentMovable = None
         self.update()
         return True
 
     def mouseDragEvent(self, evt:ttk.TTkMouseEvent):
-        if evt.key == ttk.TTkK.LeftButton and self._selectedCamera:
-            self._camera.x = evt.x
-            self._camera.y = evt.y
-            self.update()
-        elif not (image:=self._currentImage):
+        if not (movable:=self._state.currentMovable):
             pass
-        elif evt.key == ttk.TTkK.RightButton:
-            x = evt.x-image.x
-            y = evt.y-image.y
-            image.tilt = math.atan2(x,y*2)
-            image._updateBox()
+        elif evt.key == ttk.TTkK.RightButton and isinstance(movable,_Image):
+            x = evt.x-movable.x
+            y = evt.y-movable.y
+            movable.tilt = math.atan2(x,y*2)
+            movable._updateBox()
             self.update()
         elif evt.key == ttk.TTkK.LeftButton:
-            mx,my = image.data['mx'],image.data['my']
-            image.x = evt.x+mx
-            image.y = evt.y+my
-            image._updateBox()
+            mx,my = movable.data['mx'],movable.data['my']
+            movable.x = evt.x+mx
+            movable.y = evt.y+my
+            movable._updateBox()
             self.update()
         return True
 
     def wheelEvent(self, evt:ttk.TTkMouseEvent) -> bool:
-        if not (image:=self._highlightedImage):
+        if not (image:=self._state.highlightedMovable):
             pass
         elif evt.evt == ttk.TTkK.WHEEL_Up:
             image.size = min(image.size+1,50)
@@ -258,7 +256,7 @@ class Perspectivator(ttk.TTkWidget):
 
     def getImagePil(self, data:RenderData) -> Image:
         ww,wh = self.size()
-        cam_x,cam_y = self._camera.x,self._camera.y
+        cam_x,cam_y = self._state.camera.x,self._state.camera.y
         observer = (cam_x , -data.cameraY , cam_y )  # Observer's position
         # observer = (ww/2 , -data.cameraY , wh-3 )  # Observer's position
         dz = 10*math.cos(math.pi + math.pi * data.cameraAngle/360)
@@ -269,7 +267,7 @@ class Perspectivator(ttk.TTkWidget):
         prw,prh = screen_width/2, screen_height/2
 
         # step1, sort Images based on the distance
-        images = sorted(self._images,key=lambda img:img.getBox()[1])
+        images = sorted(self._state.images,key=lambda img:img.getBox()[1])
         znear,zfar = 0xFFFFFFFF,-0xFFFFFFFF
         for img in images:
             ix,iy,iw,ih = img.getBox()
@@ -319,11 +317,7 @@ class Perspectivator(ttk.TTkWidget):
 
         # step2, get all the layers and masks for alla the images
         for img in images:
-            try:
-                image = Image.open(img.fileName).convert("RGBA")
-            except FileNotFoundError:
-                print(f"Error: File not found: {img.fileName}")
-                continue
+            image = img.image
 
             imageTop = image.copy()
             imageBottom = image.copy()
@@ -448,19 +442,19 @@ class Perspectivator(ttk.TTkWidget):
 
     def paintEvent(self, canvas):
         w,h = self.size()
-        cx,cy=self._camera.x,self._camera.y
+        cx,cy=self._state.camera.x,self._state.camera.y
         canvas.drawTTkString(pos=(cx,cy),text=ttk.TTkString("😎"))
         # Draw Fov
         for y in range(cy):
             canvas.drawChar(char='/', pos=(cx+cy-y+1,y))
             canvas.drawChar(char='\\',pos=(cx-cy+y,y))
-        for image in self._images:
+        for image in self._state.images:
             ix,iy,iw,ih = image.getBox()
             canvas.drawText(pos=(ix,iy-1),text=f"{image.tilt:.2f}", color=ttk.TTkColor.YELLOW)
             canvas.drawText(pos=(ix+5,iy-1),text=f"{image.fileName}", color=ttk.TTkColor.BLUE)
-            if image == self._highlightedImage:
+            if image == self._state.highlightedMovable:
                 canvas.fill(pos=(ix,iy),size=(iw,ih),char='+',color=ttk.TTkColor.GREEN)
-            elif image == self._currentImage:
+            elif image == self._state.currentMovable:
                 canvas.fill(pos=(ix,iy),size=(iw,ih),char='+',color=ttk.TTkColor.YELLOW)
             else:
                 canvas.fill(pos=(ix,iy),size=(iw,ih),char='+')
@@ -585,15 +579,25 @@ def main():
             title="TTkode",
             mouseTrack=True)
 
-    perspectivator = Perspectivator()
+    _images = []
+    _camera = _Camera(x=25,y=25,z=5)
+    for fileName in args.filename:
+        d=len(_images)*2
+        image = _Image(x=25+d,y=15+d, z=0, size=5, tilt=0,fileName=fileName)
+        _camera.x += 1
+        _camera.y += 1
+        _images.append(image)
+
+    _state = _State(
+        camera=_camera,
+        images=_images)
+
+    perspectivator = Perspectivator(state=_state)
     controlPanel = ControlPanel()
 
     at = ttk.TTkAppTemplate()
     at.setWidget(widget=perspectivator,position=at.MAIN)
     at.setWidget(widget=controlPanel,position=at.RIGHT, size=30)
-
-    for file in args.filename:
-        perspectivator.addImage(file)
 
     root.layout().addWidget(at)
 
