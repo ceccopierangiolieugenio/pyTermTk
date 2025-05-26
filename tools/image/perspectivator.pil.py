@@ -655,6 +655,17 @@ class ControlPanel(ttk.TTkSplitter):
         self.addWidget(self._toolbox)
         self.addItem(self._movableLayout)
         state.currentMovableUpdated.connect(self._movableChanged)
+        pres:ttk.TTkComboBox = self._toolbox.getWidgetByName("CB_ResPresets")
+
+        @ttk.pyTTkSlot(str)
+        def _presetChanged(preset):
+            w,h = preset.split('x')
+            self._toolbox.getWidgetByName("SB_HRes").setValue(int(w))
+            self._toolbox.getWidgetByName("SB_VRes").setValue(int(h))
+
+        pres.addItems(['320x240','800x600','1024x768','1280x1024'])
+        pres.setCurrentIndex(1)
+        pres.currentTextChanged.connect(_presetChanged)
 
     @ttk.pyTTkSlot(_Movable)
     def _movableChanged(self, movable:_Movable):
@@ -679,7 +690,9 @@ class ControlPanel(ttk.TTkSplitter):
             fogNear=self._toolbox.getWidgetByName("SB_Fog_Near").value(),
             fogFar=self._toolbox.getWidgetByName("SB_Fog_Far").value(),
             bgColor=color,
-            resolution=(800,600),
+            resolution=(
+                    self._toolbox.getWidgetByName("SB_HRes").value(),
+                    self._toolbox.getWidgetByName("SB_VRes").value()),
             show = self._toolbox.getWidgetByName("CB_Show").isChecked()
         )
         self.renderPressed.emit(data)
