@@ -826,7 +826,7 @@ def main():
             _images.append(image)
         _state = _State(
             camera=_camera,
-            images=[])
+            images=_images)
 
     perspectivator = Perspectivator(state=_state)
     controlPanel = ControlPanel(state=_state)
