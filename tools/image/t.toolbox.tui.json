@@ -42,6 +42,35 @@
     {
      "class": "TTkButton",
      "params": {
+      "Name": "Btn_Preview",
+      "Position": [
+       0,
+       0
+      ],
+      "Size": [
+       35,
+       3
+      ],
+      "Min Width": 9,
+      "Min Height": 3,
+      "Max Width": 65536,
+      "Max Height": 3,
+      "Visible": true,
+      "Enabled": true,
+      "ToolTip": "",
+      "Text": "Preview",
+      "Border": true,
+      "Checkable": false,
+      "Checked": false
+     },
+     "row": 0,
+     "col": 1,
+     "rowspan": 1,
+     "colspan": 1
+    },
+    {
+     "class": "TTkButton",
+     "params": {
       "Name": "Btn_Render",
       "Position": [
        0,
@@ -66,36 +95,7 @@
      "row": 1,
      "col": 1,
      "rowspan": 1,
-     "colspan": 1
-    },
-    {
-     "class": "TTkButton",
-     "params": {
-      "Name": "Btn_Preview",
-      "Position": [
-       0,
-       0
-      ],
-      "Size": [
-       71,
-       3
-      ],
-      "Min Width": 9,
-      "Min Height": 3,
-      "Max Width": 65536,
-      "Max Height": 3,
-      "Visible": true,
-      "Enabled": true,
-      "ToolTip": "",
-      "Text": "Preview",
-      "Border": true,
-      "Checkable": false,
-      "Checked": false
-     },
-     "row": 0,
-     "col": 1,
-     "rowspan": 1,
-     "colspan": 1
+     "colspan": 2
     },
     {
      "class": "TTkLayout",
@@ -548,6 +548,35 @@
      "row": 2,
      "col": 1,
      "rowspan": 2,
+     "colspan": 2
+    },
+    {
+     "class": "TTkButton",
+     "params": {
+      "Name": "Btn_SaveCfg",
+      "Position": [
+       35,
+       0
+      ],
+      "Size": [
+       36,
+       3
+      ],
+      "Min Width": 12,
+      "Min Height": 3,
+      "Max Width": 65536,
+      "Max Height": 65536,
+      "Visible": true,
+      "Enabled": true,
+      "ToolTip": "",
+      "Text": "Save (Cfg)",
+      "Border": true,
+      "Checkable": false,
+      "Checked": false
+     },
+     "row": 0,
+     "col": 2,
+     "rowspan": 1,
      "colspan": 1
     }
    ]

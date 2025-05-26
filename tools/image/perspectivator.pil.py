@@ -23,6 +23,7 @@
 import sys,os
 import math
 import argparse
+import json
 from dataclasses import dataclass
 from typing import Optional,Tuple,List,Dict,Any
 
@@ -133,6 +134,18 @@ class _Movable():
         self.name = ttk.TTkLabel(text=ttk.TTkString(name),maxHeight=1)
         self.widget = ttk.TTkWidget()
 
+    def serialize(self) -> Dict:
+        return {
+            'x':self._x,
+            'y':self._y,
+            'z':self._z,
+            'name': self.name.text().toAscii()
+        }
+
+    @staticmethod
+    def deserialize(data:Dict) -> '_Movable':
+        return _Movable(**data)
+
     def x(self) -> int:
         return self._x
     def setX(self, value:int):
@@ -168,17 +181,20 @@ class _Image(_Movable):
     image:Image
     box:Tuple[int,int,int,int]
     def __init__(self,size:int,tilt:float,fileName:str, **kwargs):
-        super().__init__(**kwargs)
-        self.widget = ttk.TTkUiLoader.loadFile(os.path.join(os.path.dirname(os.path.abspath(__file__)),"t.image.tui.json"))
-        if not os.path.isfile(fileName):
-            raise ValueError(f"{fileName} is not a file")
-        try:
-            self.image = Image.open(fileName).convert("RGBA")
-        except FileNotFoundError:
-            raise ValueError(f"Failed to open {fileName}")
         self._size = size
         self._tilt = tilt
         self.fileName = fileName
+        super().__init__(**kwargs)
+        self._loadStuff()
+
+    def _loadStuff(self):
+        self.widget = ttk.TTkUiLoader.loadFile(os.path.join(os.path.dirname(os.path.abspath(__file__)),"t.image.tui.json"))
+        if not os.path.isfile(self.fileName):
+            raise ValueError(f"{self.fileName} is not a file")
+        try:
+            self.image = Image.open(self.fileName).convert("RGBA")
+        except FileNotFoundError:
+            raise ValueError(f"Failed to open {self.fileName}")
         self._updateBox()
         self.widget.getWidgetByName("SB_X").valueChanged.connect(self.setX)
         self.widget.getWidgetByName("SB_Y").valueChanged.connect(self.setY)
@@ -187,6 +203,18 @@ class _Image(_Movable):
         self.widget.getWidgetByName("SB_Size").valueChanged.connect(self.setSize)
         self.updated.connect(self._updated)
         self._updated()
+
+    def serialize(self) -> Dict:
+        ret = super().serialize()
+        return ret | {
+            'size': self._size,
+            'tilt': self._tilt,
+            'fileName': self.fileName
+        }
+
+    @staticmethod
+    def deserialize(data:Dict) -> '_Image':
+        return _Image(**data)
 
     @ttk.pyTTkSlot()
     def _updated(self):
@@ -227,15 +255,28 @@ class _Camera(_Movable):
     __slots__= ('_tilt')
     _tilt:float
     def __init__(self, tilt:float=0, **kwargs):
-        super().__init__(**kwargs)
-        self.widget = ttk.TTkUiLoader.loadFile(os.path.join(os.path.dirname(os.path.abspath(__file__)),"t.camera.tui.json"))
         self._tilt = tilt
+        super().__init__(**kwargs)
+        self._loadStuff()
+
+    def _loadStuff(self):
+        self.widget = ttk.TTkUiLoader.loadFile(os.path.join(os.path.dirname(os.path.abspath(__file__)),"t.camera.tui.json"))
         self.widget.getWidgetByName("SB_X").valueChanged.connect(self.setX)
         self.widget.getWidgetByName("SB_Y").valueChanged.connect(self.setY)
         self.widget.getWidgetByName("SB_Z").valueChanged.connect(self.setZ)
         self.widget.getWidgetByName("SB_Tilt").valueChanged.connect(self.setTilt)
         self.updated.connect(self._updated)
         self._updated()
+
+    def serialize(self) -> Dict:
+        ret = super().serialize()
+        return ret | {
+            'tilt': self._tilt,
+        }
+
+    @staticmethod
+    def deserialize(data:Dict) -> '_Camera':
+        return _Camera(**data)
 
     @ttk.pyTTkSlot()
     def _updated(self):
@@ -281,6 +322,26 @@ class _State():
             self._currentMovable = value
         if value:
             self.currentMovableUpdated.emit(value)
+
+    @ttk.pyTTkSlot(str)
+    def save(self, fileName):
+        data = {
+            'camera': self.camera.serialize(),
+            'images': [img.serialize() for img in self.images]
+        }
+        with open(fileName, "w") as f:
+            json.dump(data, f, indent=4)
+
+    @staticmethod
+    def load(fileName) -> '_State':
+        with open(fileName, "r") as f:
+            data = json.load(f)
+            state = _State(
+                camera=_Camera.deserialize(data['camera']),
+                images=[])
+            for imgData in data['images']:
+                state.images.append(_Image.deserialize(imgData))
+            return state
 
 class Perspectivator(ttk.TTkWidget):
     __slots__ = ('_state')
@@ -647,6 +708,7 @@ class ControlPanel(ttk.TTkSplitter):
         self._toolbox = ttk.TTkUiLoader.loadFile(os.path.join(os.path.dirname(os.path.abspath(__file__)),"t.toolbox.tui.json"))
         self._toolbox.getWidgetByName("Btn_Render").clicked.connect(self._renderClicked)
         self._toolbox.getWidgetByName("Btn_Preview").clicked.connect(self._previewClicked)
+        self._toolbox.getWidgetByName("Btn_SaveCfg").clicked.connect(self._saveCfg)
         # self._toolbox.getWidgetByName("SB_CamY")
         # self._toolbox.getWidgetByName("SB_CamA")
         # self._toolbox.getWidgetByName("CB_Bg")
@@ -663,7 +725,16 @@ class ControlPanel(ttk.TTkSplitter):
             self._toolbox.getWidgetByName("SB_HRes").setValue(int(w))
             self._toolbox.getWidgetByName("SB_VRes").setValue(int(h))
 
-        pres.addItems(['320x240','800x600','1024x768','1280x1024'])
+        pres.addItems([
+            '320x200', '320x240', '400x300', '512x384',
+            '640x400', '640x480', '800x600', '1024x768',
+            '1152x864', '1280x720', '1280x800', '1280x960',
+            '1280x1024', '1360x768', '1366x768', '1400x1050',
+            '1440x900', '1600x900', '1600x1200', '1680x1050',
+            '1920x1080', '1920x1200', '2048x1152', '2048x1536',
+            '2560x1080', '2560x1440', '2560x1600', '2880x1800',
+            '3200x1800', '3440x1440', '3840x2160', '4096x2160',
+            '5120x2880', '7680x4320'])
         pres.setCurrentIndex(1)
         pres.currentTextChanged.connect(_presetChanged)
 
@@ -677,6 +748,19 @@ class ControlPanel(ttk.TTkSplitter):
 
     def drawPreview(self, img:Image):
         self._previewImage.updateCanvas(img)
+
+    @ttk.pyTTkSlot()
+    def _saveCfg(self):
+        filePath = os.path.join(os.path.abspath('.'),'perspectivator.cfg.json')
+        filePicker = ttk.TTkFileDialogPicker(
+                pos = (3,3), size=(80,30),
+                acceptMode=ttk.TTkK.AcceptMode.AcceptSave,
+                caption="Save As...",
+                fileMode=ttk.TTkK.FileMode.AnyFile,
+                path=filePath,
+                filter="TTk Tui Files (*.cfg.json);;Json Files (*.json);;All Files (*)")
+        filePicker.pathPicked.connect(self._state.save)
+        ttk.TTkHelper.overlay(None, filePicker, 5, 5, True)
 
     @ttk.pyTTkSlot()
     def _renderClicked(self):
@@ -717,8 +801,8 @@ class ControlPanel(ttk.TTkSplitter):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('filename', type=str, nargs='*',
-                    help='the filename/s')
+    parser.add_argument('filename', type=str, nargs='+',
+                    help='the images to compose or the json config file')
     args = parser.parse_args()
 
     ttk.TTkTheme.loadTheme(ttk.TTkTheme.NERD)
@@ -728,18 +812,21 @@ def main():
             title="TTkode",
             mouseTrack=True)
 
-    _images = []
-    _camera = _Camera(x=25,y=25,z=5, name="Camera")
-    for fileName in args.filename:
-        d=len(_images)*2
-        image = _Image(x=25+d,y=15+d, z=0, size=5, tilt=0,fileName=fileName, name=fileName)
-        _camera.setX(_camera.x()+1)
-        _camera.setY(_camera.y()+1)
-        _images.append(image)
 
-    _state = _State(
-        camera=_camera,
-        images=_images)
+    if len(args.filename) == 1 and  args.filename[0].endswith('.json'):
+        _state = _State.load(args.filename[0])
+    else:
+        _images = []
+        _camera = _Camera(x=25,y=25,z=5, name="Camera")
+        for fileName in args.filename:
+            d=len(_images)*2
+            image = _Image(x=25+d,y=15+d, z=0, size=5, tilt=0,fileName=fileName, name=fileName)
+            _camera.setX(_camera.x()+1)
+            _camera.setY(_camera.y()+1)
+            _images.append(image)
+        _state = _State(
+            camera=_camera,
+            images=[])
 
     perspectivator = Perspectivator(state=_state)
     controlPanel = ControlPanel(state=_state)
