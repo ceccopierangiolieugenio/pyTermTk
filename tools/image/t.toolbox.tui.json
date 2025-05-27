@@ -7,16 +7,16 @@
    "Name": "MainWindow",
    "Position": [
     5,
-    3
+    4
    ],
    "Size": [
-    71,
-    12
+    70,
+    13
    ],
    "Min Width": 0,
-   "Min Height": 12,
+   "Min Height": 13,
    "Max Width": 65536,
-   "Max Height": 12,
+   "Max Height": 13,
    "Visible": true,
    "Enabled": true,
    "ToolTip": "",
@@ -34,8 +34,8 @@
     "Geometry": [
      0,
      0,
-     71,
-     12
+     70,
+     13
     ]
    },
    "children": [
@@ -60,11 +60,11 @@
       "ToolTip": "",
       "Text": "Preview",
       "Border": true,
-      "Checkable": false,
+      "Checkable": true,
       "Checked": false
      },
      "row": 0,
-     "col": 1,
+     "col": 0,
      "rowspan": 1,
      "colspan": 1
     },
@@ -77,7 +77,7 @@
        3
       ],
       "Size": [
-       71,
+       70,
        3
       ],
       "Min Width": 8,
@@ -93,7 +93,7 @@
       "Checked": false
      },
      "row": 1,
-     "col": 1,
+     "col": 0,
      "rowspan": 1,
      "colspan": 2
     },
@@ -103,8 +103,8 @@
       "Geometry": [
        0,
        6,
-       71,
-       6
+       70,
+       7
       ]
      },
      "children": [
@@ -315,7 +315,7 @@
         "Name": "CB_ResPresets",
         "Position": [
          0,
-         4
+         5
         ],
         "Size": [
          20,
@@ -456,7 +456,7 @@
         "Name": "SB_HRes",
         "Position": [
          1,
-         5
+         6
         ],
         "Size": [
          9,
@@ -503,7 +503,7 @@
         "Name": "SB_VRes",
         "Position": [
          11,
-         5
+         6
         ],
         "Size": [
          9,
@@ -543,10 +543,85 @@
        "col": 0,
        "rowspan": 1,
        "colspan": 1
+      },
+      {
+       "class": "TTkLabel",
+       "params": {
+        "Name": "TTkLabel-1",
+        "Position": [
+         0,
+         4
+        ],
+        "Size": [
+         11,
+         1
+        ],
+        "Min Width": 8,
+        "Min Height": 1,
+        "Max Width": 65536,
+        "Max Height": 65536,
+        "Visible": true,
+        "Enabled": true,
+        "ToolTip": "",
+        "Text": "Offset-Y",
+        "Color": "\u001b[0m",
+        "Alignment": 1
+       },
+       "row": 0,
+       "col": 0,
+       "rowspan": 1,
+       "colspan": 1
+      },
+      {
+       "class": "TTkSpinBox",
+       "params": {
+        "Name": "SB_OffY",
+        "Position": [
+         11,
+         4
+        ],
+        "Size": [
+         14,
+         1
+        ],
+        "Min Width": 4,
+        "Min Height": 1,
+        "Max Width": 65536,
+        "Max Height": 65536,
+        "Visible": true,
+        "Enabled": true,
+        "ToolTip": "",
+        "Padding": [
+         0,
+         0,
+         0,
+         2
+        ],
+        "Layout": "TTkGridLayout",
+        "Value": 0,
+        "Minimum": -1000,
+        "Maximum": 1000
+       },
+       "layout": {
+        "class": "TTkGridLayout",
+        "params": {
+         "Geometry": [
+          0,
+          0,
+          12,
+          1
+         ]
+        },
+        "children": []
+       },
+       "row": 0,
+       "col": 0,
+       "rowspan": 1,
+       "colspan": 1
       }
      ],
      "row": 2,
-     "col": 1,
+     "col": 0,
      "rowspan": 2,
      "colspan": 2
     },
@@ -559,7 +634,7 @@
        0
       ],
       "Size": [
-       36,
+       35,
        3
       ],
       "Min Width": 12,
@@ -575,7 +650,7 @@
       "Checked": false
      },
      "row": 0,
-     "col": 2,
+     "col": 1,
      "rowspan": 1,
      "colspan": 1
     }

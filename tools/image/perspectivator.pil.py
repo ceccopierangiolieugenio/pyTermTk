@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # MIT License
 #
 # Copyright (c) 2025 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
@@ -112,6 +113,93 @@ def project_point(camera_position, look_at, point_3d):
     ndc_y = clip_space_point[1] / clip_space_point[3]
 
     return ndc_x, ndc_y
+
+class _Toolbox():
+    __slots__ = ('widget', 'updated')
+    updated:ttk.pyTTkSignal
+
+    def __init__(self):
+        self.updated = ttk.pyTTkSignal()
+        self.widget = ttk.TTkUiLoader.loadFile(os.path.join(os.path.dirname(os.path.abspath(__file__)),"t.toolbox.tui.json"))
+
+        @ttk.pyTTkSlot(str)
+        def _presetChanged(preset):
+            w,h = preset.split('x')
+            self.widget.getWidgetByName("SB_HRes").setValue(int(w))
+            self.widget.getWidgetByName("SB_VRes").setValue(int(h))
+
+        pres = self.widget.getWidgetByName("CB_ResPresets")
+        pres.addItems([
+            '320x200', '320x240', '400x300', '512x384',
+            '640x400', '640x480', '800x600', '1024x768',
+            '1152x864', '1280x720', '1280x800', '1280x960',
+            '1280x1024', '1360x768', '1366x768', '1400x1050',
+            '1440x900', '1600x900', '1600x1200', '1680x1050',
+            '1920x1080', '1920x1200', '2048x1152', '2048x1536',
+            '2560x1080', '2560x1440', '2560x1600', '2880x1800',
+            '3200x1800', '3440x1440', '3840x2160', '4096x2160',
+            '5120x2880', '7680x4320'])
+        pres.setCurrentIndex(1)
+        pres.currentTextChanged.connect(_presetChanged)
+
+        self.widget.getWidgetByName("SB_HRes").valueChanged.connect(self._triggerUpdated)
+        self.widget.getWidgetByName("SB_VRes").valueChanged.connect(self._triggerUpdated)
+        self.widget.getWidgetByName("CB_Bg").stateChanged.connect(self._triggerUpdated)
+        self.widget.getWidgetByName("BG_Color").colorSelected.connect(self._triggerUpdated)
+        self.widget.getWidgetByName("SB_Fog_Near").valueChanged.connect(self._triggerUpdated)
+        self.widget.getWidgetByName("SB_Fog_Far").valueChanged.connect(self._triggerUpdated)
+        self.widget.getWidgetByName("SB_OffY").valueChanged.connect(self._triggerUpdated)
+
+    @ttk.pyTTkSlot()
+    def _triggerUpdated(self):
+        self.updated.emit()
+
+    def bg(self) -> Tuple[int,int,int,int]:
+        if self.widget.getWidgetByName("CB_Bg").isChecked():
+            btnColor = self.widget.getWidgetByName("BG_Color").color()
+            return (*btnColor.fgToRGB(),255)
+        else:
+            return (0,0,0,0)
+
+    def fog(self) -> tuple[int,int]:
+        return (
+            self.widget.getWidgetByName("SB_Fog_Near").value() ,
+            self.widget.getWidgetByName("SB_Fog_Far").value()  )
+
+    def resolution(self) -> Tuple[int,int]:
+        return(
+            self.widget.getWidgetByName("SB_HRes").value(),
+            self.widget.getWidgetByName("SB_VRes").value())
+
+    def offset_y(self) -> int:
+        return self.widget.getWidgetByName("SB_OffY").value()
+
+    def serialize(self) -> Dict:
+        return {
+            'bg':self.bg(),
+            'fog':self.fog(),
+            'resolution':self.resolution(),
+            'offset_y': self.offset_y()
+        }
+
+    @staticmethod
+    def deserialize(data:Dict) -> '_Toolbox':
+        ret = _Toolbox()
+        ret.widget.getWidgetByName("SB_HRes").setValue(data['resolution'][0])
+        ret.widget.getWidgetByName("SB_VRes").setValue(data['resolution'][1])
+        if data['bg']==(0,0,0,0):
+            ret.widget.getWidgetByName("CB_Bg").setChecked(False)
+        else:
+            ret.widget.getWidgetByName("CB_Bg").setChecked(True)
+            r = data['bg'][0]
+            g = data['bg'][1]
+            b = data['bg'][2]
+            color = ttk.TTkColor.fg(f"#{r<<16|g<<8|b:06x}")
+            ret.widget.getWidgetByName("BG_Color").setColor(color)
+        ret.widget.getWidgetByName("SB_Fog_Near").setValue(data['fog'][0])
+        ret.widget.getWidgetByName("SB_Fog_Far").setValue(data['fog'][1])
+        ret.widget.getWidgetByName("SB_OffY").setValue(data['offset_y'])
+        return ret
 
 class _Movable():
     __slots__ = ('_x','_y','_z','data', 'selected', 'name','widget', 'updated')
@@ -293,7 +381,7 @@ class _Camera(_Movable):
 
 class _State():
     __slots__ = (
-        'camera','images',
+        'camera','images', 'toolbox',
         '_currentMovable','highlightedMovable',
         'currentMovableUpdated','updated')
     camera: _Camera
@@ -302,7 +390,11 @@ class _State():
     highlightedMovable: Optional[_Movable]
     currentMovableUpdated: ttk.pyTTkSignal
     updated: ttk.pyTTkSignal
-    def __init__(self, camera: _Camera, images: List[_Image]):
+    def __init__(self, camera: _Camera, images: List[_Image], toolbox: Optional[_Toolbox]=None):
+        if not toolbox:
+            self.toolbox = _Toolbox()
+        else:
+            self.toolbox = toolbox
         self.currentMovableUpdated = ttk.pyTTkSignal(_Movable)
         self.updated = ttk.pyTTkSignal()
         self.camera = camera
@@ -327,7 +419,8 @@ class _State():
     def save(self, fileName):
         data = {
             'camera': self.camera.serialize(),
-            'images': [img.serialize() for img in self.images]
+            'images': [img.serialize() for img in self.images],
+            'toolbox': self.toolbox.serialize()
         }
         with open(fileName, "w") as f:
             json.dump(data, f, indent=4)
@@ -336,7 +429,9 @@ class _State():
     def load(fileName) -> '_State':
         with open(fileName, "r") as f:
             data = json.load(f)
+            toolbox = _Toolbox.deserialize(data['toolbox'])
             state = _State(
+                toolbox=toolbox,
                 camera=_Camera.deserialize(data['camera']),
                 images=[])
             for imgData in data['images']:
@@ -547,33 +642,34 @@ class Perspectivator(ttk.TTkWidget):
                     (w, h), Image.Transform.PERSPECTIVE,
                     find_coeffs(_dst, src_points),
                     Image.Resampling.BICUBIC)
+            blurRadius = ((w*h)*4/(800*600))
             img.data['imageTop'] = _transform(imageTop, dst_top)
-            img.data['imageBottom'] = _transform(imageBottom, dst_bottom).filter(ImageFilter.BoxBlur(4))
+            img.data['imageBottom'] = _transform(imageBottom, dst_bottom).filter(ImageFilter.BoxBlur(blurRadius))
             img.data['imageTopAlpha'] = _transform(imageTopAlpha, dst_top)
-            img.data['imageBottomAlpha'] = _transform(imageBottomAlpha, dst_bottom).filter(ImageFilter.BoxBlur(4))
+            img.data['imageBottomAlpha'] = _transform(imageBottomAlpha, dst_bottom).filter(ImageFilter.BoxBlur(blurRadius))
 
-            def _customBlur(_img:Image, _alpha:Image) -> Image:
-                thresholds = [(0,70), (70,150), (150,255)]
-                blur_radius = [7, 4, 0]
-                _out = Image.new("RGBA", _img.size, (0, 0, 0, 0))
-                # Create a new image to store the blurred result
-                for (_f,_t),_r in zip(thresholds,blur_radius):
-                    # Create a mask for the current threshold
-                    _mask = _alpha.point(lambda p: p if _f < p <= _t else 0)
-                    # Apply Gaussian blur to the image using the mask
-                    _blurred = _img.filter(ImageFilter.BoxBlur(radius=_r))
-                    _blurred.putalpha(_mask)
-                    # Composite the blurred image with the original image using the mask
-                    _out = Image.alpha_composite(_out,_blurred)
-                    #_alpha.show()
-                    #_mask.show()
-                    #_blurred.show()
-                    #_out.show()
-                    pass
-                return _out
+            # def _customBlur(_img:Image, _alpha:Image) -> Image:
+            #     thresholds = [(0,70), (70,150), (150,255)]
+            #     blur_radius = [7, 4, 0]
+            #     _out = Image.new("RGBA", _img.size, (0, 0, 0, 0))
+            #     # Create a new image to store the blurred result
+            #     for (_f,_t),_r in zip(thresholds,blur_radius):
+            #         # Create a mask for the current threshold
+            #         _mask = _alpha.point(lambda p: p if _f < p <= _t else 0)
+            #         # Apply Gaussian blur to the image using the mask
+            #         _blurred = _img.filter(ImageFilter.BoxBlur(radius=_r))
+            #         _blurred.putalpha(_mask)
+            #         # Composite the blurred image with the original image using the mask
+            #         _out = Image.alpha_composite(_out,_blurred)
+            #         #_alpha.show()
+            #         #_mask.show()
+            #         #_blurred.show()
+            #         #_out.show()
+            #         pass
+            #     return _out
 
-            img.data['imageBottom'] = _customBlur(
-                img.data['imageBottom'], img.data['imageBottom'].split()[-1])
+            # img.data['imageBottom'] = _customBlur(
+            #     img.data['imageBottom'], img.data['imageBottom'].split()[-1])
 
             # return image
             # Apply blur to the alpha channel
@@ -705,38 +801,13 @@ class ControlPanel(ttk.TTkSplitter):
         super().__init__(**kwargs|{"orientation":ttk.TTkK.VERTICAL})
         self._previewImage = _Preview()
 
-        self._toolbox = ttk.TTkUiLoader.loadFile(os.path.join(os.path.dirname(os.path.abspath(__file__)),"t.toolbox.tui.json"))
-        self._toolbox.getWidgetByName("Btn_Render").clicked.connect(self._renderClicked)
-        self._toolbox.getWidgetByName("Btn_Preview").clicked.connect(self._previewClicked)
-        self._toolbox.getWidgetByName("Btn_SaveCfg").clicked.connect(self._saveCfg)
-        # self._toolbox.getWidgetByName("SB_CamY")
-        # self._toolbox.getWidgetByName("SB_CamA")
-        # self._toolbox.getWidgetByName("CB_Bg")
-        # self._toolbox.getWidgetByName("BG_Color")
+        self._state.toolbox.widget.getWidgetByName("Btn_Render").clicked.connect(self._renderClicked)
+        self._state.toolbox.widget.getWidgetByName("Btn_Preview").clicked.connect(self._previewClicked)
+        self._state.toolbox.widget.getWidgetByName("Btn_SaveCfg").clicked.connect(self._saveCfg)
         self.addWidget(self._previewImage,size=5)
-        self.addWidget(self._toolbox)
+        self.addWidget(self._state.toolbox.widget)
         self.addItem(self._movableLayout)
         state.currentMovableUpdated.connect(self._movableChanged)
-        pres:ttk.TTkComboBox = self._toolbox.getWidgetByName("CB_ResPresets")
-
-        @ttk.pyTTkSlot(str)
-        def _presetChanged(preset):
-            w,h = preset.split('x')
-            self._toolbox.getWidgetByName("SB_HRes").setValue(int(w))
-            self._toolbox.getWidgetByName("SB_VRes").setValue(int(h))
-
-        pres.addItems([
-            '320x200', '320x240', '400x300', '512x384',
-            '640x400', '640x480', '800x600', '1024x768',
-            '1152x864', '1280x720', '1280x800', '1280x960',
-            '1280x1024', '1360x768', '1366x768', '1400x1050',
-            '1440x900', '1600x900', '1600x1200', '1680x1050',
-            '1920x1080', '1920x1200', '2048x1152', '2048x1536',
-            '2560x1080', '2560x1440', '2560x1600', '2880x1800',
-            '3200x1800', '3440x1440', '3840x2160', '4096x2160',
-            '5120x2880', '7680x4320'])
-        pres.setCurrentIndex(1)
-        pres.currentTextChanged.connect(_presetChanged)
 
     @ttk.pyTTkSlot(_Movable)
     def _movableChanged(self, movable:_Movable):
@@ -764,38 +835,28 @@ class ControlPanel(ttk.TTkSplitter):
 
     @ttk.pyTTkSlot()
     def _renderClicked(self):
-        if self._toolbox.getWidgetByName("CB_Bg").isChecked():
-            btnColor = self._toolbox.getWidgetByName("BG_Color").color()
-            color = (*btnColor.fgToRGB(),255)
-        else:
-            color = (0,0,0,0)
+        fog = self._state.toolbox.fog()
         data = RenderData(
-            outFile=self._toolbox.getWidgetByName("LE_OutFile").text().toAscii(),
-            fogNear=self._toolbox.getWidgetByName("SB_Fog_Near").value(),
-            fogFar=self._toolbox.getWidgetByName("SB_Fog_Far").value(),
-            bgColor=color,
-            resolution=(
-                    self._toolbox.getWidgetByName("SB_HRes").value(),
-                    self._toolbox.getWidgetByName("SB_VRes").value()),
-            show = self._toolbox.getWidgetByName("CB_Show").isChecked()
+            outFile=self._state.toolbox.widget.getWidgetByName("LE_OutFile").text().toAscii(),
+            fogNear=fog[0],
+            fogFar=fog[1],
+            bgColor=self._state.toolbox.bg(),
+            resolution=self._state.toolbox.resolution(),
+            show = self._state.toolbox.widget.getWidgetByName("CB_Show").isChecked()
         )
         self.renderPressed.emit(data)
 
     @ttk.pyTTkSlot()
     def _previewClicked(self):
-        if self._toolbox.getWidgetByName("CB_Bg").isChecked():
-            btnColor = self._toolbox.getWidgetByName("BG_Color").color()
-            color = (*btnColor.fgToRGB(),255)
-        else:
-            color = (0,0,0,0)
         w,h = self._previewImage.size()
+        fog = self._state.toolbox.fog()
         data = RenderData(
-            outFile=self._toolbox.getWidgetByName("LE_OutFile").text().toAscii(),
-            fogNear=self._toolbox.getWidgetByName("SB_Fog_Near").value(),
-            fogFar=self._toolbox.getWidgetByName("SB_Fog_Far").value(),
-            bgColor=color,
+            outFile=self._state.toolbox.widget.getWidgetByName("LE_OutFile").text().toAscii(),
+            fogNear=fog[0],
+            fogFar=fog[1],
+            bgColor=self._state.toolbox.bg(),
             resolution=(w,h*2),
-            show = self._toolbox.getWidgetByName("CB_Show").isChecked()
+            show = self._state.toolbox.widget.getWidgetByName("CB_Show").isChecked()
         )
         self.previewPressed.emit(data)
 
