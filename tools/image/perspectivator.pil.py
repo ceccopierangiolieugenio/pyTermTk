@@ -551,7 +551,7 @@ class Perspectivator(ttk.TTkWidget):
         images = sorted(self._state.images,key=lambda img:img.getBox()[1])
         znear,zfar = 0xFFFFFFFF,-0xFFFFFFFF
         for img in images:
-            offY = data.offY*w*h/(800*600)
+            offY = data.offY*h/600
             ix,iy,iw,ih = img.getBox()
             iz = img.z()
             ih-=1
