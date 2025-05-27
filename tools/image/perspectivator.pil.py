@@ -25,6 +25,7 @@ import sys,os
 import math
 import argparse
 import json
+
 from dataclasses import dataclass
 from typing import Optional,Tuple,List,Dict,Any
 
@@ -43,8 +44,14 @@ class RenderData:
     bgColor: Tuple[int,int,int,int]
     resolution: Tuple[int,int]
     outFile: str
+    offY: int
     show: bool = False
 
+class _ThreadingData:
+    __slots__ = ('timer')
+    timer: ttk.TTkTimer
+    def __init__(self):
+        self.timer = ttk.TTkTimer()
 
 def find_coeffs(pa, pb):
     matrix = []
@@ -139,7 +146,7 @@ class _Toolbox():
             '2560x1080', '2560x1440', '2560x1600', '2880x1800',
             '3200x1800', '3440x1440', '3840x2160', '4096x2160',
             '5120x2880', '7680x4320'])
-        pres.setCurrentIndex(1)
+        pres.setCurrentIndex(6)
         pres.currentTextChanged.connect(_presetChanged)
 
         self.widget.getWidgetByName("SB_HRes").valueChanged.connect(self._triggerUpdated)
@@ -402,6 +409,7 @@ class _State():
         self._currentMovable = None
         self.highlightedMovable = None
         self.camera.updated.connect(self.updated.emit)
+        self.toolbox.updated.connect(self.updated.emit)
         for img in images:
             img.updated.connect(self.updated.emit)
 
@@ -430,12 +438,14 @@ class _State():
         with open(fileName, "r") as f:
             data = json.load(f)
             toolbox = _Toolbox.deserialize(data['toolbox'])
+            images = []
+            for imgData in data['images']:
+                images.append(_Image.deserialize(imgData))
             state = _State(
                 toolbox=toolbox,
                 camera=_Camera.deserialize(data['camera']),
-                images=[])
-            for imgData in data['images']:
-                state.images.append(_Image.deserialize(imgData))
+                images=images)
+
             return state
 
 class Perspectivator(ttk.TTkWidget):
@@ -453,14 +463,14 @@ class Perspectivator(ttk.TTkWidget):
         cx,cy = self._state.camera.x(),self._state.camera.y()
         if cx-1 <= evt.x <= cx+2 and cy-1 <= evt.y <= cy+1:
             self._state.currentMovable = self._state.camera
-            self._state.camera.data = {
+            self._state.camera.data |= {
                 'mx':self._state.camera.x()-evt.x,
                 'my':self._state.camera.y()-evt.y}
         else:
             for image in self._state.images:
                 ix,iy,iw,ih = image.getBox()
                 if ix <= evt.x < ix+iw and iy <= evt.y < iy+ih:
-                    image.data = {
+                    image.data |= {
                         'mx':image.x()-evt.x,
                         'my':image.y()-evt.y}
                     self._state.currentMovable = image
@@ -541,6 +551,7 @@ class Perspectivator(ttk.TTkWidget):
         images = sorted(self._state.images,key=lambda img:img.getBox()[1])
         znear,zfar = 0xFFFFFFFF,-0xFFFFFFFF
         for img in images:
+            offY = data.offY*w*h/(800*600)
             ix,iy,iw,ih = img.getBox()
             iz = img.z()
             ih-=1
@@ -569,20 +580,20 @@ class Perspectivator(ttk.TTkWidget):
                 ip6x,ip6y =  project_point(observer,look_at,(ix    , -iz-isz , iy+ih ))
                 ip7x,ip7y =  project_point(observer,look_at,(ix+iw , -iz     , iy    ))
                 ip8x,ip8y =  project_point(observer,look_at,(ix    , -iz     , iy+ih ))
-            img.data = {
+            img.data |= {
                 'zleft':zleft,
                 'zright':zright,
                 'top' : {
-                    'p1':(int((ip1x+1)*prw) , int((ip1y+1)*prh)),
-                    'p2':(int((ip2x+1)*prw) , int((ip2y+1)*prh)),
-                    'p3':(int((ip3x+1)*prw) , int((ip3y+1)*prh)),
-                    'p4':(int((ip4x+1)*prw) , int((ip4y+1)*prh)),
+                    'p1':(int((ip1x+1)*prw) , int(offY+(ip1y+1)*prh)),
+                    'p2':(int((ip2x+1)*prw) , int(offY+(ip2y+1)*prh)),
+                    'p3':(int((ip3x+1)*prw) , int(offY+(ip3y+1)*prh)),
+                    'p4':(int((ip4x+1)*prw) , int(offY+(ip4y+1)*prh)),
                 },
                 'bottom' : {
-                    'p1':(int((ip5x+1)*prw) , int((ip5y+1)*prh)),
-                    'p2':(int((ip6x+1)*prw) , int((ip6y+1)*prh)),
-                    'p3':(int((ip7x+1)*prw) , int((ip7y+1)*prh)),
-                    'p4':(int((ip8x+1)*prw) , int((ip8y+1)*prh)),
+                    'p1':(int((ip5x+1)*prw) , int(offY+(ip5y+1)*prh)),
+                    'p2':(int((ip6x+1)*prw) , int(offY+(ip6y+1)*prh)),
+                    'p3':(int((ip7x+1)*prw) , int(offY+(ip7y+1)*prh)),
+                    'p4':(int((ip8x+1)*prw) , int(offY+(ip8y+1)*prh)),
                 }
 
             }
@@ -791,8 +802,9 @@ class _Preview(ttk.TTkWidget):
 
 class ControlPanel(ttk.TTkSplitter):
     __slots__ = (
-        'previewPressed','renderPressed','_toolbox', '_previewImage', '_state', '_movableLayout')
+        'previewPressed','renderPressed','_toolbox', '_previewImage', '_state', '_movableLayout','_threadData')
     def __init__(self, state:_State, **kwargs):
+        self._threadData:_ThreadingData = _ThreadingData()
         self.previewPressed = ttk.pyTTkSignal(RenderData)
         self.renderPressed = ttk.pyTTkSignal(RenderData)
         self._movableLayout = ttk.TTkGridLayout()
@@ -802,12 +814,14 @@ class ControlPanel(ttk.TTkSplitter):
         self._previewImage = _Preview()
 
         self._state.toolbox.widget.getWidgetByName("Btn_Render").clicked.connect(self._renderClicked)
-        self._state.toolbox.widget.getWidgetByName("Btn_Preview").clicked.connect(self._previewClicked)
+        self._state.toolbox.widget.getWidgetByName("Btn_Preview").clicked.connect(self._previewChanged)
         self._state.toolbox.widget.getWidgetByName("Btn_SaveCfg").clicked.connect(self._saveCfg)
+        self._state.updated.connect(self._previewChanged)
         self.addWidget(self._previewImage,size=5)
         self.addWidget(self._state.toolbox.widget)
         self.addItem(self._movableLayout)
         state.currentMovableUpdated.connect(self._movableChanged)
+        self._threadData.timer.timeout.connect(self._previewThread)
 
     @ttk.pyTTkSlot(_Movable)
     def _movableChanged(self, movable:_Movable):
@@ -842,12 +856,18 @@ class ControlPanel(ttk.TTkSplitter):
             fogFar=fog[1],
             bgColor=self._state.toolbox.bg(),
             resolution=self._state.toolbox.resolution(),
+            offY=self._state.toolbox.offset_y(),
             show = self._state.toolbox.widget.getWidgetByName("CB_Show").isChecked()
         )
         self.renderPressed.emit(data)
 
     @ttk.pyTTkSlot()
-    def _previewClicked(self):
+    def _previewChanged(self):
+        if not self._state.toolbox.widget.getWidgetByName("Btn_Preview").isChecked():
+            return
+        self._threadData.timer.start()
+
+    def _previewThread(self):
         w,h = self._previewImage.size()
         fog = self._state.toolbox.fog()
         data = RenderData(
@@ -856,6 +876,7 @@ class ControlPanel(ttk.TTkSplitter):
             fogFar=fog[1],
             bgColor=self._state.toolbox.bg(),
             resolution=(w,h*2),
+            offY=self._state.toolbox.offset_y(),
             show = self._state.toolbox.widget.getWidgetByName("CB_Show").isChecked()
         )
         self.previewPressed.emit(data)
