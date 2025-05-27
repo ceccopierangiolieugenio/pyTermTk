@@ -12,7 +12,7 @@
 [![pypi_version](https://img.shields.io/pypi/v/pyTermTk?label=pypi)](https://pypi.org/project/pyTermTk)
 [![Usage](https://img.shields.io/badge/Usage-Terminal%20User%20Interface-yellow)](https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/)
 
-![screenshot](https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/images/pyTermTk.HERO.800.png)
+![hero](https://github.com/user-attachments/assets/ba5bcc10-57f1-4b47-856a-b4d8e3e050f6)
 
 [![pypi_version](https://img.shields.io/badge/Twitter-pyTermTk-blue?logo=x&logoColor=blue)](https://twitter.com/hashtag/pyTermTk?src=hashtag_click&f=live)
 [![Static Badge](https://img.shields.io/badge/BlyeSky-pyTermTk-blue?logo=bluesky&logoColor=blue)](https://bsky.app/profile/piercecco.bsky.social)
