@@ -130,7 +130,11 @@ class TTkSpinBox(TTkContainer):
     def wheelEvent(self, evt:TTkMouseEvent) -> bool:
         if evt.evt == TTkK.WHEEL_Up:
             self.setValue(self._value+1)
-        else:
+        elif evt.evt == TTkK.WHEEL_Down:
+            self.setValue(self._value-1)
+        elif evt.evt == TTkK.WHEEL_Right:
+            self.setValue(self._value+1)
+        elif evt.evt == TTkK.WHEEL_Left:
             self.setValue(self._value-1)
         return True
 
