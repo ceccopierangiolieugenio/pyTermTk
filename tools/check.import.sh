@@ -42,6 +42,7 @@ __check(){
             -e "propertyanimation.py:import time, math" \
             -e "savetools.py:import importlib.util" \
             -e "savetools.py:import json" |
+            -e "TTkCore/color.py:from __future__ import annotations" |
         grep -v \
             -e "TTkTerm/input_mono.py:from time import time" \
             -e "TTkTerm/input_mono.py:import platform" \
