@@ -29,7 +29,7 @@
             "console": "integratedTerminal",
             "justMyCode": true,
             "args": [
-                "img1.png", "img2.png", "euDock-gold.png", "img4.png", "img5.png", "pyTermTk.Hero.01.800.png"
+                "tools/webExporter/js/ttkproxy.js"
             ]
         },
         {
