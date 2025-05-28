@@ -935,7 +935,7 @@ def main():
 
     root = ttk.TTk(
             layout=ttk.TTkGridLayout(),
-            title="TTkode",
+            title="Perspectivator",
             mouseTrack=True)
 
 
