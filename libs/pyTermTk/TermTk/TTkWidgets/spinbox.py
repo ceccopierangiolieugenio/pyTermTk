@@ -168,7 +168,7 @@ class TTkSpinBox(TTkContainer):
         d = evt.y-evt.x
         if self._draggable:
             self.setValue(self._valueDelta + self._mouseDelta - d)
-            return True
+        return True
 
     def setEnabled(self, enabled=True):
         self._lineEdit.setEnabled(enabled)
