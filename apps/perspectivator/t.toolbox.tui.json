@@ -11,12 +11,12 @@
    ],
    "Size": [
     70,
-    13
+    16
    ],
    "Min Width": 0,
-   "Min Height": 13,
+   "Min Height": 16,
    "Max Width": 65536,
-   "Max Height": 13,
+   "Max Height": 16,
    "Visible": true,
    "Enabled": true,
    "ToolTip": "",
@@ -35,7 +35,7 @@
      0,
      0,
      70,
-     13
+     16
     ]
    },
    "children": [
@@ -98,13 +98,42 @@
      "colspan": 2
     },
     {
+     "class": "TTkButton",
+     "params": {
+      "Name": "Btn_SaveCfg",
+      "Position": [
+       35,
+       0
+      ],
+      "Size": [
+       35,
+       3
+      ],
+      "Min Width": 12,
+      "Min Height": 3,
+      "Max Width": 65536,
+      "Max Height": 65536,
+      "Visible": true,
+      "Enabled": true,
+      "ToolTip": "",
+      "Text": "Save (Cfg)",
+      "Border": true,
+      "Checkable": false,
+      "Checked": false
+     },
+     "row": 0,
+     "col": 1,
+     "rowspan": 1,
+     "colspan": 1
+    },
+    {
      "class": "TTkLayout",
      "params": {
       "Geometry": [
        0,
        6,
        70,
-       7
+       10
       ]
      },
      "children": [
@@ -459,7 +488,7 @@
          6
         ],
         "Size": [
-         9,
+         8,
          1
         ],
         "Min Width": 4,
@@ -486,7 +515,7 @@
          "Geometry": [
           0,
           0,
-          7,
+          6,
           1
          ]
         },
@@ -502,11 +531,11 @@
        "params": {
         "Name": "SB_VRes",
         "Position": [
-         11,
+         10,
          6
         ],
         "Size": [
-         9,
+         8,
          1
         ],
         "Min Width": 4,
@@ -533,7 +562,7 @@
          "Geometry": [
           0,
           0,
-          7,
+          6,
           1
          ]
         },
@@ -618,41 +647,265 @@
        "col": 0,
        "rowspan": 1,
        "colspan": 1
+      },
+      {
+       "class": "TTkLabel",
+       "params": {
+        "Name": "TTkLabel-4",
+        "Position": [
+         19,
+         6
+        ],
+        "Size": [
+         3,
+         1
+        ],
+        "Min Width": 3,
+        "Min Height": 1,
+        "Max Width": 65536,
+        "Max Height": 65536,
+        "Visible": true,
+        "Enabled": true,
+        "ToolTip": "",
+        "Text": "AA:",
+        "Color": "\u001b[0m",
+        "Alignment": 1
+       },
+       "row": 0,
+       "col": 0,
+       "rowspan": 1,
+       "colspan": 1
+      },
+      {
+       "class": "TTkComboBox",
+       "params": {
+        "Name": "CB_AA",
+        "Position": [
+         23,
+         6
+        ],
+        "Size": [
+         6,
+         1
+        ],
+        "Min Width": 5,
+        "Min Height": 1,
+        "Max Width": 65536,
+        "Max Height": 1,
+        "Visible": true,
+        "Enabled": true,
+        "ToolTip": "",
+        "Padding": [
+         0,
+         0,
+         0,
+         0
+        ],
+        "Layout": "TTkLayout",
+        "Editable": false,
+        "Text Align.": 4,
+        "Insert Policy": 3
+       },
+       "layout": {
+        "class": "TTkLayout",
+        "params": {
+         "Geometry": [
+          0,
+          0,
+          6,
+          1
+         ]
+        },
+        "children": []
+       },
+       "row": 0,
+       "col": 0,
+       "rowspan": 1,
+       "colspan": 1
+      },
+      {
+       "class": "TTkLabel",
+       "params": {
+        "Name": "TTkLabel-5",
+        "Position": [
+         2,
+         7
+        ],
+        "Size": [
+         14,
+         1
+        ],
+        "Min Width": 14,
+        "Min Height": 1,
+        "Max Width": 65536,
+        "Max Height": 65536,
+        "Visible": true,
+        "Enabled": true,
+        "ToolTip": "",
+        "Text": "Mirror Fading:",
+        "Color": "\u001b[0m",
+        "Alignment": 1
+       },
+       "row": 0,
+       "col": 0,
+       "rowspan": 1,
+       "colspan": 1
+      },
+      {
+       "class": "TTkLabel",
+       "params": {
+        "Name": "TTkLabel-6",
+        "Position": [
+         0,
+         8
+        ],
+        "Size": [
+         6,
+         1
+        ],
+        "Min Width": 6,
+        "Min Height": 1,
+        "Max Width": 65536,
+        "Max Height": 65536,
+        "Visible": true,
+        "Enabled": true,
+        "ToolTip": "",
+        "Text": "From-Y",
+        "Color": "\u001b[0m",
+        "Alignment": 1
+       },
+       "row": 0,
+       "col": 0,
+       "rowspan": 1,
+       "colspan": 1
+      },
+      {
+       "class": "TTkLabel",
+       "params": {
+        "Name": "TTkLabel-7",
+        "Position": [
+         0,
+         9
+        ],
+        "Size": [
+         4,
+         1
+        ],
+        "Min Width": 4,
+        "Min Height": 1,
+        "Max Width": 65536,
+        "Max Height": 65536,
+        "Visible": true,
+        "Enabled": true,
+        "ToolTip": "",
+        "Text": "To-Y",
+        "Color": "\u001b[0m",
+        "Alignment": 1
+       },
+       "row": 0,
+       "col": 0,
+       "rowspan": 1,
+       "colspan": 1
+      },
+      {
+       "class": "TTkSpinBox",
+       "params": {
+        "Name": "SB_FadingTo",
+        "Position": [
+         9,
+         9
+        ],
+        "Size": [
+         10,
+         1
+        ],
+        "Min Width": 4,
+        "Min Height": 1,
+        "Max Width": 65536,
+        "Max Height": 65536,
+        "Visible": true,
+        "Enabled": true,
+        "ToolTip": "",
+        "Padding": [
+         0,
+         0,
+         0,
+         2
+        ],
+        "Layout": "TTkGridLayout",
+        "Value": 10,
+        "Minimum": -1000,
+        "Maximum": 1000
+       },
+       "layout": {
+        "class": "TTkGridLayout",
+        "params": {
+         "Geometry": [
+          0,
+          0,
+          8,
+          1
+         ]
+        },
+        "children": []
+       },
+       "row": 0,
+       "col": 0,
+       "rowspan": 1,
+       "colspan": 1
+      },
+      {
+       "class": "TTkSpinBox",
+       "params": {
+        "Name": "SB_FadingFrom",
+        "Position": [
+         9,
+         8
+        ],
+        "Size": [
+         10,
+         1
+        ],
+        "Min Width": 4,
+        "Min Height": 1,
+        "Max Width": 65536,
+        "Max Height": 65536,
+        "Visible": true,
+        "Enabled": true,
+        "ToolTip": "",
+        "Padding": [
+         0,
+         0,
+         0,
+         2
+        ],
+        "Layout": "TTkGridLayout",
+        "Value": -3,
+        "Minimum": -1000,
+        "Maximum": 10000
+       },
+       "layout": {
+        "class": "TTkGridLayout",
+        "params": {
+         "Geometry": [
+          0,
+          0,
+          8,
+          1
+         ]
+        },
+        "children": []
+       },
+       "row": 0,
+       "col": 0,
+       "rowspan": 1,
+       "colspan": 1
       }
      ],
      "row": 2,
      "col": 0,
-     "rowspan": 2,
+     "rowspan": 3,
      "colspan": 2
-    },
-    {
-     "class": "TTkButton",
-     "params": {
-      "Name": "Btn_SaveCfg",
-      "Position": [
-       35,
-       0
-      ],
-      "Size": [
-       35,
-       3
-      ],
-      "Min Width": 12,
-      "Min Height": 3,
-      "Max Width": 65536,
-      "Max Height": 65536,
-      "Visible": true,
-      "Enabled": true,
-      "ToolTip": "",
-      "Text": "Save (Cfg)",
-      "Border": true,
-      "Checkable": false,
-      "Checked": false
-     },
-     "row": 0,
-     "col": 1,
-     "rowspan": 1,
-     "colspan": 1
     }
    ]
   }

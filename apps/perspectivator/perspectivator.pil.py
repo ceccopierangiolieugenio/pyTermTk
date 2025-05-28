@@ -39,13 +39,14 @@ import TermTk as ttk
 
 @dataclass
 class RenderData:
-    fogNear: float
-    fogFar: float
-    bgColor: Tuple[int,int,int,int]
+    # fogNear: float
+    # fogFar: float
+    # bgColor: Tuple[int,int,int,int]
     resolution: Tuple[int,int]
-    outFile: str
-    offY: int
-    show: bool = False
+    # outFile: str
+    # offY: int
+    # show: bool = False
+    # mirror: Tuple[int,int]
 
 class _ThreadingData:
     __slots__ = ('timer')
@@ -160,10 +161,17 @@ class _Toolbox():
         self.widget.getWidgetByName("SB_Fog_Near").valueChanged.connect(self._triggerUpdated)
         self.widget.getWidgetByName("SB_Fog_Far").valueChanged.connect(self._triggerUpdated)
         self.widget.getWidgetByName("SB_OffY").valueChanged.connect(self._triggerUpdated)
+        self.widget.getWidgetByName("SB_FadingFrom").valueChanged.connect(self._triggerUpdated)
+        self.widget.getWidgetByName("SB_FadingTo").valueChanged.connect(self._triggerUpdated)
 
     @ttk.pyTTkSlot()
     def _triggerUpdated(self):
         self.updated.emit()
+
+    def mirror(self) -> Tuple[float,float]:
+        return (
+            self.widget.getWidgetByName("SB_FadingFrom").value() ,
+            self.widget.getWidgetByName("SB_FadingTo").value()  )
 
     def bg(self) -> Tuple[int,int,int,int]:
         if self.widget.getWidgetByName("CB_Bg").isChecked():
@@ -172,7 +180,7 @@ class _Toolbox():
         else:
             return (0,0,0,0)
 
-    def fog(self) -> tuple[int,int]:
+    def fog(self) -> tuple[float,float]:
         return (
             self.widget.getWidgetByName("SB_Fog_Near").value() ,
             self.widget.getWidgetByName("SB_Fog_Far").value()  )
@@ -182,7 +190,7 @@ class _Toolbox():
             self.widget.getWidgetByName("SB_HRes").value(),
             self.widget.getWidgetByName("SB_VRes").value())
 
-    def offset_y(self) -> int:
+    def offset_y(self) -> float:
         return self.widget.getWidgetByName("SB_OffY").value()
 
     def serialize(self) -> Dict:
@@ -190,7 +198,8 @@ class _Toolbox():
             'bg':self.bg(),
             'fog':self.fog(),
             'resolution':self.resolution(),
-            'offset_y': self.offset_y()
+            'offset_y': self.offset_y(),
+            'mirror': self.mirror(),
         }
 
     @staticmethod
@@ -198,7 +207,7 @@ class _Toolbox():
         ret = _Toolbox()
         ret.widget.getWidgetByName("SB_HRes").setValue(data['resolution'][0])
         ret.widget.getWidgetByName("SB_VRes").setValue(data['resolution'][1])
-        if data['bg']==(0,0,0,0):
+        if data['bg']==[0,0,0,0]:
             ret.widget.getWidgetByName("CB_Bg").setChecked(False)
         else:
             ret.widget.getWidgetByName("CB_Bg").setChecked(True)
@@ -210,6 +219,9 @@ class _Toolbox():
         ret.widget.getWidgetByName("SB_Fog_Near").setValue(data['fog'][0])
         ret.widget.getWidgetByName("SB_Fog_Far").setValue(data['fog'][1])
         ret.widget.getWidgetByName("SB_OffY").setValue(data['offset_y'])
+        ret.widget.getWidgetByName("SB_OffY").setValue(data['offset_y'])
+        ret.widget.getWidgetByName("SB_FadingFrom").setValue(data['mirror'][0])
+        ret.widget.getWidgetByName("SB_FadingTo").setValue(data['mirror'][1])
         return ret
 
 class _Movable():
@@ -537,6 +549,16 @@ class Perspectivator(ttk.TTkWidget):
         return self.getImagePil(data)
 
     def getImagePil(self, data:RenderData) -> Image:
+        screen_width, screen_height = data.resolution
+        w,h = screen_width,screen_height
+
+        fog = self._state.toolbox.fog()
+        fogNear=fog[0]
+        fogFar=fog[1]
+        bgColor=self._state.toolbox.bg()
+        offY=self._state.toolbox.offset_y()*h/600
+        mirror = self._state.toolbox.mirror()
+
         ww,wh = self.size()
         cam_x = self._state.camera.x()
         cam_y = self._state.camera.y()
@@ -547,15 +569,13 @@ class Perspectivator(ttk.TTkWidget):
         dz = 10*math.cos(math.pi * cam_tilt/360)
         dy = 10*math.sin(math.pi * cam_tilt/360)
         look_at  = (cam_x , cam_z-dy, cam_y+dz)  # Observer is looking along the positive Z-axis
-        screen_width, screen_height = data.resolution
-        w,h = screen_width,screen_height
+
         prw,prh = screen_width/2, screen_height/2
 
         # step1, sort Images based on the distance
         images = sorted(self._state.images,key=lambda img:img.getBox()[1])
         znear,zfar = 0xFFFFFFFF,-0xFFFFFFFF
         for img in images:
-            offY = data.offY*h/600
             ix,iy,iw,ih = img.getBox()
             iz = img.z()
             ih-=1
@@ -616,8 +636,20 @@ class Perspectivator(ttk.TTkWidget):
             # Create a gradient mask for the mirrored image
             gradient = Image.new("L", (imw, imh), 0)
             draw = ImageDraw.Draw(gradient)
+            # Fading Math:
+            # ----|--f--y___h-----t---
+            # av = 1-(y-f)/(t-f)
+            # bv = 1-(y+h-f)/(t-f)
+            _f,_t = mirror
+            if _f == _t:
+                _f-=0.01
+            _y = img.z()
+            _h = img.size()*imh/imw
+            _av = 1-(-_y-_f)/(_t-_f)
+            _bv = 1-(-_y-_h-_f)/(_t-_f)
             for i in range(imh):
-                alpha = int((i / imh) * 204)  # alpha goes from 0 to 204
+                _p = (i/imh)
+                alpha = int(min(1,max(0,((_p)*_av+(1-_p)*_bv)))*255)  # alpha goes from 0 to 204
                 draw.rectangle((0, i, imw, i), fill=alpha)
             # Apply the mirror mask to the image
             imageBottomAlphaGradient = ImageChops.multiply(imageBottomAlpha, gradient)
@@ -626,8 +658,8 @@ class Perspectivator(ttk.TTkWidget):
             gradient = Image.new("L", (imw, imh), 0)
             draw = ImageDraw.Draw(gradient)
             for i in range(imw):
-                an = 255-data.fogNear
-                af = 255-data.fogFar
+                an = 255-fogNear
+                af = 255-fogFar
                 zl = img.data['zleft']
                 zr = img.data['zright']
                 zi = (i/imw)*(zr-zl)+zl
@@ -657,11 +689,11 @@ class Perspectivator(ttk.TTkWidget):
                     (w, h), Image.Transform.PERSPECTIVE,
                     find_coeffs(_dst, src_points),
                     Image.Resampling.BICUBIC)
-            blurRadius = (max(w,h)*4/(800))
+            blurRadius = (math.sqrt(w*h)*4/math.sqrt(800*600))
             img.data['imageTop'] = _transform(imageTop, dst_top)
-            # img.data['imageBottom'] = _transform(imageBottom, dst_bottom).filter(ImageFilter.BoxBlur(blurRadius))
+            img.data['imageBottom'] = _transform(imageBottom, dst_bottom).filter(ImageFilter.BoxBlur(blurRadius))
             img.data['imageTopAlpha'] = _transform(imageTopAlpha, dst_top)
-            # img.data['imageBottomAlpha'] = _transform(imageBottomAlpha, dst_bottom).filter(ImageFilter.BoxBlur(blurRadius))
+            img.data['imageBottomAlpha'] = _transform(imageBottomAlpha, dst_bottom).filter(ImageFilter.BoxBlur(blurRadius))
 
             # def _customBlur(_img:Image, _alpha:Image) -> Image:
             #     thresholds = [(0,70), (70,150), (150,255)]
@@ -696,7 +728,7 @@ class Perspectivator(ttk.TTkWidget):
             # Paste the processed image onto the output image
 
         # Create a new image with a transparent background
-        outImage = Image.new("RGBA", (w, h), data.bgColor)
+        outImage = Image.new("RGBA", (w, h), bgColor)
 
         # Apply the masks and Draw all the images
         for img in images:
@@ -853,21 +885,22 @@ class ControlPanel(ttk.TTkSplitter):
 
     @ttk.pyTTkSlot()
     def _renderClicked(self):
-        fog = self._state.toolbox.fog()
         w,h = self._state.toolbox.resolution()
+        # fog = self._state.toolbox.fog()
         mult = {
             '0X':1,'2X':2,'3X':3,'4X':4}.get(
                self._state.toolbox.widget.getWidgetByName("CB_AA").currentText(),1)
         waa = w*mult
         haa = h*mult
         data = RenderData(
-            outFile=self._state.toolbox.widget.getWidgetByName("LE_OutFile").text().toAscii(),
-            fogNear=fog[0],
-            fogFar=fog[1],
-            bgColor=self._state.toolbox.bg(),
+            # outFile=self._state.toolbox.widget.getWidgetByName("LE_OutFile").text().toAscii(),
+            # fogNear=fog[0],
+            # fogFar=fog[1],
+            # bgColor=self._state.toolbox.bg(),
             resolution=(waa,haa),
-            offY=self._state.toolbox.offset_y(),
-            show = self._state.toolbox.widget.getWidgetByName("CB_Show").isChecked()
+            # offY=self._state.toolbox.offset_y(),
+            # show = self._state.toolbox.widget.getWidgetByName("CB_Show").isChecked(),
+            # mirror = self._state.toolbox.mirror()
         )
         self.renderPressed.emit(data)
 
@@ -879,15 +912,16 @@ class ControlPanel(ttk.TTkSplitter):
 
     def _previewThread(self):
         w,h = self._previewImage.size()
-        fog = self._state.toolbox.fog()
+        # fog = self._state.toolbox.fog()
         data = RenderData(
-            outFile=self._state.toolbox.widget.getWidgetByName("LE_OutFile").text().toAscii(),
-            fogNear=fog[0],
-            fogFar=fog[1],
-            bgColor=self._state.toolbox.bg(),
+            # outFile=self._state.toolbox.widget.getWidgetByName("LE_OutFile").text().toAscii(),
+            # fogNear=fog[0],
+            # fogFar=fog[1],
+            # bgColor=self._state.toolbox.bg(),
             resolution=(w,h*2),
-            offY=self._state.toolbox.offset_y(),
-            show = self._state.toolbox.widget.getWidgetByName("CB_Show").isChecked()
+            # offY=self._state.toolbox.offset_y(),
+            # show = self._state.toolbox.widget.getWidgetByName("CB_Show").isChecked(),
+            # mirror = self._state.toolbox.mirror()
         )
         self.previewPressed.emit(data)
 
@@ -930,11 +964,21 @@ def main():
     root.layout().addWidget(at)
 
     def _render(data:RenderData):
+        outw,outh = _state.toolbox.resolution()
+        ar = outw/outh
+
         outImage = perspectivator.getImage(data)
         # outImage.save(filename='outImage.png')
-        outImage = outImage.resize(_state.toolbox.resolution(), Image.LANCZOS)
-        outImage.save(data.outFile)
-        if data.show:
+
+        bbox = outImage.getbbox()
+        if bbox:
+            outImage = outImage.crop(bbox)
+
+        cropw,croph = outImage.size
+
+        outImage = outImage.resize((outw,int(outh/ar)), Image.LANCZOS)
+        outImage.save(_state.toolbox.widget.getWidgetByName("LE_OutFile").text().toAscii())
+        if _state.toolbox.widget.getWidgetByName("CB_Show").isChecked():
             outImage.show()
 
     def _preview(data):

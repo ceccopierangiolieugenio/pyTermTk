@@ -271,8 +271,8 @@
        2
       ],
       "Layout": "TTkGridLayout",
-      "Value": 1,
-      "Minimum": 0,
+      "Value": 1000,
+      "Minimum": -1000,
       "Maximum": 1000
      },
      "layout": {
