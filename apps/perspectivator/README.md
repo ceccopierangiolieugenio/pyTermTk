@@ -32,6 +32,14 @@ git clone https://github.com/ceccopierangiolieugenio/pyTermTk.git
 # Install the required packages
 pip install numpy pillow
 # Run Perspectivator
-python apps/perspectivator/perspectivator.py <List of Images (any format) or a configuration file (.json)>
+python3 apps/perspectivator/perspectivator.py -h
+#  usage: perspectivator.py [-h] filename [filename ...]
+#
+#  positional arguments:
+#    filename    the images to compose or the json config file
+#
+#  options:
+#    -h, --help  show this help message and exit
+
 # Enjoy!!!
 ```
