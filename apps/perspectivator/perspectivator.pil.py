@@ -964,9 +964,6 @@ def main():
     root.layout().addWidget(at)
 
     def _render(data:RenderData):
-        outw,outh = _state.toolbox.resolution()
-        ar = outw/outh
-
         outImage = perspectivator.getImage(data)
         # outImage.save(filename='outImage.png')
 
@@ -974,9 +971,10 @@ def main():
         if bbox:
             outImage = outImage.crop(bbox)
 
+        outw,outh = _state.toolbox.resolution()
         cropw,croph = outImage.size
 
-        outImage = outImage.resize((outw,int(outh/ar)), Image.LANCZOS)
+        outImage = outImage.resize((outw,outh*croph//cropw), Image.LANCZOS)
         outImage.save(_state.toolbox.widget.getWidgetByName("LE_OutFile").text().toAscii())
         if _state.toolbox.widget.getWidgetByName("CB_Show").isChecked():
             outImage.show()
