@@ -96,27 +96,47 @@ _translate_key_list = {
         "\033[Z"    : ( TTkK.Key_Tab       , TTkK.ShiftModifier ) ,
         "\n"        : ( TTkK.Key_Enter     , TTkK.NoModifier ) ,
         "\r"        : ( TTkK.Key_Enter     , TTkK.NoModifier ) ,
+
         "\033[A"    : ( TTkK.Key_Up        , TTkK.NoModifier ) ,
         "\033[B"    : ( TTkK.Key_Down      , TTkK.NoModifier ) ,
         "\033[C"    : ( TTkK.Key_Right     , TTkK.NoModifier ) ,
         "\033[D"    : ( TTkK.Key_Left      , TTkK.NoModifier ) ,
 
+        # macOS after Command is pressed
+        "\033OA"    : ( TTkK.Key_Up        , TTkK.NoModifier ) ,
+        "\033OB"    : ( TTkK.Key_Down      , TTkK.NoModifier ) ,
+        "\033OC"    : ( TTkK.Key_Right     , TTkK.NoModifier ) ,
+        "\033OD"    : ( TTkK.Key_Left      , TTkK.NoModifier ) ,
+
         "\033[1;2A" : ( TTkK.Key_Up        , TTkK.ShiftModifier ) ,
         "\033[1;2B" : ( TTkK.Key_Down      , TTkK.ShiftModifier ) ,
         "\033[1;2C" : ( TTkK.Key_Right     , TTkK.ShiftModifier ) ,
         "\033[1;2D" : ( TTkK.Key_Left      , TTkK.ShiftModifier ) ,
+
         "\033[1;3A" : ( TTkK.Key_Up        , TTkK.AltModifier ) ,
         "\033[1;3B" : ( TTkK.Key_Down      , TTkK.AltModifier ) ,
         "\033[1;3C" : ( TTkK.Key_Right     , TTkK.AltModifier ) ,
         "\033[1;3D" : ( TTkK.Key_Left      , TTkK.AltModifier ) ,
+
         "\033[1;4A" : ( TTkK.Key_Up        , TTkK.AltModifier | TTkK.ShiftModifier ) ,
         "\033[1;4B" : ( TTkK.Key_Down      , TTkK.AltModifier | TTkK.ShiftModifier ) ,
         "\033[1;4C" : ( TTkK.Key_Right     , TTkK.AltModifier | TTkK.ShiftModifier ) ,
         "\033[1;4D" : ( TTkK.Key_Left      , TTkK.AltModifier | TTkK.ShiftModifier ) ,
+
         "\033[1;5A" : ( TTkK.Key_Up        , TTkK.ControlModifier ) ,
         "\033[1;5B" : ( TTkK.Key_Down      , TTkK.ControlModifier ) ,
         "\033[1;5C" : ( TTkK.Key_Right     , TTkK.ControlModifier ) ,
         "\033[1;5D" : ( TTkK.Key_Left      , TTkK.ControlModifier ) ,
+
+        "\033[1;6A" : ( TTkK.Key_Up        , TTkK.ControlModifier | TTkK.ShiftModifier ) ,
+        "\033[1;6B" : ( TTkK.Key_Down      , TTkK.ControlModifier | TTkK.ShiftModifier ) ,
+        "\033[1;6C" : ( TTkK.Key_Right     , TTkK.ControlModifier | TTkK.ShiftModifier ) ,
+        "\033[1;6D" : ( TTkK.Key_Left      , TTkK.ControlModifier | TTkK.ShiftModifier ) ,
+
+        "\033[1;8A" : ( TTkK.Key_Up        , TTkK.ControlModifier | TTkK.AltModifier | TTkK.ShiftModifier ) ,
+        "\033[1;8B" : ( TTkK.Key_Down      , TTkK.ControlModifier | TTkK.AltModifier | TTkK.ShiftModifier ) ,
+        "\033[1;8C" : ( TTkK.Key_Right     , TTkK.ControlModifier | TTkK.AltModifier | TTkK.ShiftModifier ) ,
+        "\033[1;8D" : ( TTkK.Key_Left      , TTkK.ControlModifier | TTkK.AltModifier | TTkK.ShiftModifier ) ,
 
         "\033[5~"   : ( TTkK.Key_PageUp    , TTkK.NoModifier ) ,
         "\033[6~"   : ( TTkK.Key_PageDown  , TTkK.NoModifier ) ,
@@ -128,6 +148,8 @@ _translate_key_list = {
         "\033[6;4~" : ( TTkK.Key_PageDown  , TTkK.AltModifier | TTkK.ShiftModifier ) ,
         "\033[5;5~" : ( TTkK.Key_PageUp    , TTkK.ControlModifier ) ,
         "\033[6;5~" : ( TTkK.Key_PageDown  , TTkK.ControlModifier ) ,
+        "\033[5;6~" : ( TTkK.Key_PageUp    , TTkK.ControlModifier | TTkK.ShiftModifier ) ,
+        "\033[6;6~" : ( TTkK.Key_PageDown  , TTkK.ControlModifier | TTkK.ShiftModifier ) ,
         "\033[5;7~" : ( TTkK.Key_PageUp    , TTkK.AltModifier | TTkK.ControlModifier ) ,
         "\033[6;7~" : ( TTkK.Key_PageDown  , TTkK.AltModifier | TTkK.ControlModifier ) ,
 
@@ -139,6 +161,9 @@ _translate_key_list = {
         "\033[1~"   : ( TTkK.Key_Home      , TTkK.NoModifier ) ,
         "\033[2~"   : ( TTkK.Key_Insert    , TTkK.NoModifier ) ,
         "\033[3~"   : ( TTkK.Key_Delete    , TTkK.NoModifier ) ,
+    # macOS - Ghostty
+        "\033OF"    : ( TTkK.Key_End       , TTkK.NoModifier ) ,
+        "\033OH"    : ( TTkK.Key_Home      , TTkK.NoModifier ) ,
 
         "\033[1;2F" : ( TTkK.Key_End       , TTkK.ShiftModifier ) ,
         "\033[1;2H" : ( TTkK.Key_Home      , TTkK.ShiftModifier ) ,
