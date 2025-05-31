@@ -1,4 +1,3 @@
-
 # MIT License
 #
 # Copyright (c) 2021 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
@@ -21,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from .cfg import *
-from .state import TTKodeState
-# from .glbl import *
-from .ttkode import TTKode, TTKodeWidget
+__all__ = ['TTKodeState']
+
+class TTKodeState():
+    pass

@@ -33,7 +33,6 @@ from TermTk import TTkLog
 
 from ttkode import TTkodeHelper
 from ttkode import ttkodeProxy
-from ttkode.app.ttkode import TTKode
 from ttkode.app.cfg import TTKodeCfg
 
 
@@ -62,10 +61,7 @@ def main():
 
     TTkodeHelper._loadPlugins()
 
-    ttkode = TTKode()
-    ttkodeProxy.setTTKode(ttkode)
-
-    root = TTk( layout=ttkode,
+    root = TTk( layout=ttkodeProxy.ttkode(),
                 title="TTkode",
                 mouseTrack=True,
                 sigmask=(
