@@ -83,9 +83,14 @@ class _TextDocument(ttk.TextDocumentHighlight):
             self.fileChangedStatus.emit(self._changedStatus, self)
 
     def save(self) -> None:
-        self._changedStatus = False
-        self._savedSnapshot = self.snapshootId()
-        self.fileChangedStatus.emit(self._changedStatus, self)
+        try:
+            with open(self._filePath, 'w') as f:
+                f.write(self.toPlainText())
+            self._changedStatus = False
+            self._savedSnapshot = self.snapshootId()
+            self.fileChangedStatus.emit(self._changedStatus, self)
+        except Exception as e:
+            ttk.TTkLog.error(f"Error saving file: {e}")
 
     def saveToFile(self, fileName:str) -> None:
         self._filePath = fileName
