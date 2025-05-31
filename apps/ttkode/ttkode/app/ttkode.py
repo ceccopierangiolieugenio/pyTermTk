@@ -30,6 +30,7 @@ from TermTk.TTkWidgets.tabwidget import _TTkNewTabWidgetDragData
 
 from .about import About
 from .activitybar import TTKodeActivityBar
+
 class TTKodeWidget():
     def closeRequested(self, tab:ttk.TTkTabWidget, num:int):
         raise NotImplementedError()
@@ -115,6 +116,7 @@ class _TextEdit(ttk.TTkTextEdit, TTKodeWidget):
             # Your saves will be lost if you don't save them.
             # Save, Don't Save, Cancel
             messageBox = ttk.TTkMessageBox(
+                title="🚨 Close? 🚨",
                 text=ttk.TTkString(f"Do you want to save the change\nyou made to {os.path.basename(doc._filePath)}?\n\nYour saves will be lost\nif you don't save them."),
                 icon=ttk.TTkMessageBox.Icon.Warning,
                 standardButtons=
@@ -179,14 +181,14 @@ class TTKode(ttk.TTkGridLayout):
         fileMenu.addMenu("&Save").menuButtonClicked.connect(self.saveLastDoc)
         fileMenu.addMenu("Save &As...").menuButtonClicked.connect(self.saveLastDocAs)
         fileMenu.addMenu("Close") # .menuButtonClicked.connect(self._closeFile)
-        fileMenu.addMenu("Exit").menuButtonClicked.connect(lambda _:ttk.TTkHelper.quit())
+        fileMenu.addMenu("Exit").menuButtonClicked.connect(self._quit)
 
         def _showAbout(btn):
             ttk.TTkHelper.overlay(None, About(), 30,10)
         def _showAboutTTk(btn):
             ttk.TTkHelper.overlay(None, ttk.TTkAbout(), 30,10)
 
-        appMenuBar.addMenu("&Quit", alignment=ttk.TTkK.RIGHT_ALIGN).menuButtonClicked.connect(ttk.TTkHelper.quit)
+        appMenuBar.addMenu("&Quit", alignment=ttk.TTkK.RIGHT_ALIGN).menuButtonClicked.connect(self._quit)
         helpMenu = appMenuBar.addMenu("&Help", alignment=ttk.TTkK.RIGHT_ALIGN)
         helpMenu.addMenu("About ...").menuButtonClicked.connect(_showAbout)
         helpMenu.addMenu("About ttk").menuButtonClicked.connect(_showAboutTTk)
@@ -226,6 +228,30 @@ class TTKode(ttk.TTkGridLayout):
     @ttk.pyTTkSlot(_TextDocument)
     def _handleDocFocussed(self, doc:_TextDocument):
         self._lastDoc = doc
+
+    @ttk.pyTTkSlot()
+    def _quit(self):
+        from ttkode import ttkodeProxy
+        docs = set(os.path.basename(wid.document()._filePath) for wid in ttkodeProxy.iterWidgets(_TextEdit) if wid.document().isChanged())
+        if docs:
+            messageBox = ttk.TTkMessageBox(
+                title="🚨 Quit? 🚨",
+                text=ttk.TTkString("Do you want to quit?\nThere are still unsaved documents,\nif you quit those changes will be lost" + ''.join([f"\n - {_d}" for _d in docs])),
+                icon=ttk.TTkMessageBox.Icon.Warning,
+                standardButtons=
+                    ttk.TTkMessageBox.StandardButton.Ok|
+                    ttk.TTkMessageBox.StandardButton.Cancel)
+            @ttk.pyTTkSlot(ttk.TTkMessageBox.StandardButton)
+            def _cb(btn):
+                if btn == ttk.TTkMessageBox.StandardButton.Ok:
+                    ttk.TTkHelper.quit()
+                elif btn == ttk.TTkMessageBox.StandardButton.Cancel:
+                    return
+                messageBox.buttonSelected.clear()
+            messageBox.buttonSelected.connect(_cb)
+            ttk.TTkHelper.overlay(None, messageBox, 5, 5, True)
+        else:
+            ttk.TTkHelper.quit()
 
     @ttk.pyTTkSlot()
     def saveLastDoc(self):
