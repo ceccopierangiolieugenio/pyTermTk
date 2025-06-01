@@ -22,7 +22,7 @@
 
 __all__ = ['TTkTextDocument']
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional, Union
 from threading import Lock
 
 from TermTk.TTkCore.log import TTkLog
@@ -237,7 +237,7 @@ class TTkTextDocument():
     def characterCount(self):
         return sum([len[x] for x in self._dataLines])+self.lineCount()
 
-    def setText(self, text):
+    def setText(self, text:Union[str,TTkString]):
         remLines = len(self._dataLines)
         if not isinstance(text, str) and not isinstance(text,TTkString):
             text=str(text)
