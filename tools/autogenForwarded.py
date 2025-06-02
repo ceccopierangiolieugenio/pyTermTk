@@ -71,7 +71,17 @@ def write_lines_to_file(lines: List[str], output_path: str) -> bool:
 
 from typing import List, Optional
 
-def extract_and_process_lines(lines: List[str]) -> Tuple[Dict,List[str]]:
+def _index_of(_m:str) -> int:
+    for i,l in enumerate(lines):
+        if _m in l:
+            return i
+    return -1
+
+marker_params = "#--FORWARD-AUTOGEN-PARAMS--#"
+marker_start = "#--FORWARD-AUTOGEN-START--#"
+marker_end = "#--FORWARD-AUTOGEN-END--#"
+
+def extract_and_process_lines(lines: List[str]) -> Dict:
     """
     Extracts lines between '#--START-FORWARD-AUTOGEN--#' and '#--END--#' delimiters,
     uncomments them, and removes the slice after the '#' character.
@@ -79,35 +89,25 @@ def extract_and_process_lines(lines: List[str]) -> Tuple[Dict,List[str]]:
     Args:
         lines (List[str]): A list of strings representing the lines of a file.
     """
-    start_delimiter = "#--START-FORWARD-AUTOGEN--#"
-    end_delimiter = "#--END--#"
-    filtered_lines: List[str] = []
+
+    index_params = _index_of(marker_params)
+    index_start = _index_of(marker_start)
+    index_end = _index_of(marker_end)
+
+    param_lines: List[str] = lines[index_params+1:index_start]
     extracted_lines: List[str] = []
-    extracting = False
+    lines[index_start+1:index_end] = []
 
     content_re = re.compile(r'^ *#([^#]*)(?:#.*)?$')
-    for line in lines:
-        if start_delimiter in line:
-            filtered_lines.append(line)
-            extracting = True
-            continue
-        if end_delimiter in line:
-            filtered_lines.append(line)
-            extracting = False
-            break
-
-        if not extracting:
-            filtered_lines.append(line)
-        elif _m:=content_re.match(line):
-            filtered_lines.append(line)
-            # Uncomment the line by removing the leading '#' and space (if present)
+    for line in param_lines:
+        if _m:=content_re.match(line):
             uncommented_line = _m.group(1)
             extracted_lines.append(uncommented_line)
 
     if not extracted_lines:
-        return {},[]
+        return {}
 
-    return json.loads(''.join(extracted_lines)), filtered_lines
+    return json.loads(''.join(extracted_lines))
 
 def autogen_methods(data: Dict[str, Any]) -> List[str]:
     """
@@ -184,19 +184,20 @@ if __name__ == "__main__":
     lines = read_file_to_lines(args.input_path)
 
     if lines:
-        autogen_data, filtered_source = extract_and_process_lines(lines)
+        autogen_data = extract_and_process_lines(lines)
         print(autogen_data)
 
         if autogen_data:
             autogenenerated = autogen_methods(autogen_data)
             # print('\n'.join(autogenenerated))
-            end_delimiter = "    #--END--#"
-            if not (index := filtered_source.index(end_delimiter)):
+
+            if -1 == (index_end:=_index_of(marker_end)):
                 raise ValueError("End Delimiter not found in the filtered lines")
-            filtered_source[index:index] = autogenenerated
-            print(''.join(filtered_source))
+
+            lines[index_end:index_end] = autogenenerated
+            print(''.join(lines))
             if args.output_path:
-                if not write_lines_to_file(filtered_source, args.output_path):
+                if not write_lines_to_file(lines, args.output_path):
                     print("Error: Failed to write to output file.")
         # else:
         #     for line in lines:

@@ -1024,7 +1024,7 @@ class TTkTextEdit(TTkAbstractScrollArea):
         self._textEditView.setDocument(document)
         self._lineNumberView.setTextWrap(self._textEditView._textWrap)
 
-    #--START-FORWARD-AUTOGEN--#
+    #--FORWARD-AUTOGEN-PARAMS--#
     # {
     #  "class": "TTkTextEditView" ,
     #  "instance": "self._textEditView",
@@ -1045,76 +1045,5 @@ class TTkTextEdit(TTkAbstractScrollArea):
     #         "toAnsi", "toRawText", "toPlainText" # , "toHtml", "toMarkdown",
     #         ]
     # }
-    @pyTTkSlot()
-    def clear(self) -> None:
-        return self._textEditView.clear()
-    @pyTTkSlot(str)
-    def setText(self, text:Union[str,TTkString]) -> None:
-        return self._textEditView.setText(text=text)
-    @pyTTkSlot(str)
-    def append(self, text) -> None:
-        return self._textEditView.append(text=text)
-    def isReadOnly(self) -> bool:
-        return self._textEditView.isReadOnly()
-    def setReadOnly(self, ro:bool) -> None:
-        return self._textEditView.setReadOnly(ro=ro)
-    def document(self) -> TTkTextDocument:
-        return self._textEditView.document()
-    def wrapWidth(self, *args, **kwargs) -> None:
-        return self._textEditView.wrapWidth(*args, **kwargs)
-    def setWrapWidth(self, *args, **kwargs) -> None:
-        return self._textEditView.setWrapWidth(*args, **kwargs)
-    def multiLine(self) -> bool:
-        return self._textEditView.multiLine()
-    def lineWrapMode(self) -> TTkK.LineWrapMode:
-        return self._textEditView.lineWrapMode()
-    def setLineWrapMode(self, mode:TTkK.LineWrapMode):
-        return self._textEditView.setLineWrapMode(mode=mode)
-    def wordWrapMode(self, *args, **kwargs) -> None:
-        return self._textEditView.wordWrapMode(*args, **kwargs)
-    def setWordWrapMode(self, *args, **kwargs) -> None:
-        return self._textEditView.setWordWrapMode(*args, **kwargs)
-    def textCursor(self) -> TTkTextCursor:
-        return self._textEditView.textCursor()
-    @pyTTkSlot()
-    def setFocus(self) -> None:
-        return self._textEditView.setFocus()
-    @pyTTkSlot(TTkColor)
-    def setColor(self, color:TTkColor) -> None:
-        return self._textEditView.setColor(color=color)
-    def extraSelections(self) -> list[ExtraSelection]:
-        return self._textEditView.extraSelections()
-    def setExtraSelections(self, extraSelections:list[ExtraSelection]) -> None:
-        return self._textEditView.setExtraSelections(extraSelections=extraSelections)
-    @pyTTkSlot()
-    def cut(self) -> None:
-        return self._textEditView.cut()
-    @pyTTkSlot()
-    def copy(self) -> None:
-        return self._textEditView.copy()
-    @pyTTkSlot()
-    def paste(self) -> None:
-        return self._textEditView.paste()
-    @pyTTkSlot()
-    def undo(self) -> None:
-        return self._textEditView.undo()
-    @pyTTkSlot()
-    def redo(self) -> None:
-        return self._textEditView.redo()
-    def isUndoAvailable(self) -> bool:
-        return self._textEditView.isUndoAvailable()
-    def isRedoAvailable(self) -> bool:
-        return self._textEditView.isRedoAvailable()
-    @pyTTkSlot(TTkString)
-    def find(self, exp):
-        return self._textEditView.find(exp=exp)
-    @pyTTkSlot()
-    def ensureCursorVisible(self):
-        return self._textEditView.ensureCursorVisible()
-    def toAnsi(self) -> str:
-        return self._textEditView.toAnsi()
-    def toRawText(self) -> TTkString:
-        return self._textEditView.toRawText()
-    def toPlainText(self) ->str:
-        return self._textEditView.toPlainText()
-    #--END--#
+    #--FORWARD-AUTOGEN-START--#
+    #--FORWARD-AUTOGEN-END--#
