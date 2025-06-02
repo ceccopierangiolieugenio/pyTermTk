@@ -71,11 +71,11 @@ def write_lines_to_file(lines: List[str], output_path: str) -> bool:
 
 from typing import List, Optional
 
-def _index_of(_m:str) -> int:
+def _index_of(_m:str, lines:List[str]) -> int:
     for i,l in enumerate(lines):
         if _m in l:
             return i
-    return -1
+    raise ValueError(f"End Delimiter '{_m}' not found in the filtered lines")
 
 marker_params = "#--FORWARD-AUTOGEN-PARAMS--#"
 marker_start = "#--FORWARD-AUTOGEN-START--#"
@@ -90,9 +90,9 @@ def extract_and_process_lines(lines: List[str]) -> Dict:
         lines (List[str]): A list of strings representing the lines of a file.
     """
 
-    index_params = _index_of(marker_params)
-    index_start = _index_of(marker_start)
-    index_end = _index_of(marker_end)
+    index_params = _index_of(marker_params,lines)
+    index_start = _index_of(marker_start,lines)
+    index_end = _index_of(marker_end,lines)
 
     param_lines: List[str] = lines[index_params+1:index_start]
     extracted_lines: List[str] = []
@@ -142,17 +142,23 @@ def autogen_methods(data: Dict[str, Any]) -> List[str]:
             # Get the method from the class
             method = getattr(cls, method_name)
             sig = inspect.signature(method)
+            doc = inspect.getdoc(method)
             return_type = sig.return_annotation
             params = ', '.join([f"{_p}={_p}" for _p in sig.parameters.keys() if _p != 'self'])
 
             source = inspect.getsource(method)
             # Extract the first line, which should be the method definition
             lines = source.splitlines()
-            for i,line in enumerate(lines):
-                if line.startswith('    def '):
-                    lines = lines[:i]
-                    lines.append(line)
-                    break
+            index_func = _index_of('    def ',lines)
+            lines = lines[:index_func+1]
+            doc_indent = "        "
+            lines.extend([
+                doc_indent + f"'''",
+                doc_indent + f".. seealso:: this method is forwarded to :py:meth:`{data['class']}.{method_name}`\n",
+            ])
+            if doc:
+                lines.extend([doc_indent + _l for _l in doc.split('\n')])
+            lines.append(doc_indent + "'''")
             # Format the signature string
             signatures.extend([
                 *[f"{_l}\n" for _l in lines],
@@ -191,14 +197,12 @@ if __name__ == "__main__":
             autogenenerated = autogen_methods(autogen_data)
             # print('\n'.join(autogenenerated))
 
-            if -1 == (index_end:=_index_of(marker_end)):
-                raise ValueError("End Delimiter not found in the filtered lines")
+            index_start = _index_of(marker_start,lines)
+            index_end = _index_of(marker_end,lines)
 
-            lines[index_end:index_end] = autogenenerated
-            print(''.join(lines))
+            lines[index_start+1:index_end] = autogenenerated
             if args.output_path:
                 if not write_lines_to_file(lines, args.output_path):
                     print("Error: Failed to write to output file.")
-        # else:
-        #     for line in lines:
-        #         print(line, end='')  # Print each line without extra newlines
+            else:
+                print(''.join(lines))
