@@ -294,8 +294,20 @@ def setup(app: Sphinx) -> ExtensionMetadata:
     # raise Exception
 
     def generate_autosummary_content_hack(
-        name, obj, parent, template, template_name, imported_members,
-        app, recursive, context, modname, qualname,
+        name: str,
+        obj: Any,
+        parent: Any,
+        template: Any,
+        template_name: str,
+        imported_members: bool,
+        recursive: bool,
+        context: dict[str, Any],
+        modname: str | None = None,
+        qualname: str | None = None,
+        *,
+        config: Any,
+        events: Any,
+        registry: Any,
         generate_autosummary_content_old = seautogenerate.generate_autosummary_content
     ) -> str:
         print(f"-----------------> OVERRIDEEEEE!!! {type(context)}")
@@ -395,7 +407,8 @@ def setup(app: Sphinx) -> ExtensionMetadata:
 
         return generate_autosummary_content_old(
             name, obj, parent, template, template_name, imported_members,
-            app, recursive, context, modname, qualname)
+            recursive, context, modname, qualname,
+            config=config, events=events, registry=registry)
 
     # def get_import_prefixes_from_env_hack(env, get_import_prefixes_from_env_old=seauto.get_import_prefixes_from_env) -> list[str | None]:
     #     pyClass = env.ref_context.get('py:class')
