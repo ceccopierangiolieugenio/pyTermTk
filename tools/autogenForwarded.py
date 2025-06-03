@@ -27,7 +27,7 @@ import argparse
 import inspect
 from typing import List, Optional, Dict, Tuple, Any
 
-def read_file_to_lines(file_path: str) -> Optional[List[str]]:
+def read_file_to_lines(file_path: str) -> List[str]:
     """
     Reads a file and returns a list of strings, one for each line.
 
@@ -38,16 +38,10 @@ def read_file_to_lines(file_path: str) -> Optional[List[str]]:
         list: A list of strings, where each string is a line from the file.
               Returns None if the file cannot be opened.
     """
-    try:
-        with open(file_path, 'r') as f:
-            lines: List[str] = f.readlines()
+    with open(file_path, 'r') as f:
+        lines: List[str] = f.readlines()
         return lines
-    except FileNotFoundError:
-        print(f"Error: File not found at path: {file_path}")
-        return None
-    except Exception as e:
-        print(f"Error: An error occurred while reading the file: {e}")
-        return None
+    raise Exception()
 
 def write_lines_to_file(lines: List[str], output_path: str) -> bool:
     """
@@ -166,7 +160,8 @@ def extract_and_process_lines(lines: List[str]) -> Dict:
 
     return json.loads(''.join(extracted_lines))
 
-def autogen_methods(data: Dict[str, Any]) -> List[str]:
+from TermTk.TTkAbstract.abstractscrollarea import _ForwardData
+def autogen_methods(data: _ForwardData) -> List[str]:
     """
     Generates a list of method signatures and return types for a given class.
 
@@ -179,25 +174,13 @@ def autogen_methods(data: Dict[str, Any]) -> List[str]:
     """
     import TermTk as ttk
 
-    class_name = data.get('class')
-    methods = data.get('methods', [])
+    class_name = data.forwardClass.__name__
     signatures: List[str] = []
 
-    if not class_name or not methods:
-        print("Error: 'class' or 'methods' key missing or empty in JSON data.")
-        return []
-
-    try:
-        # Get the class from the ttk module
-        cls = getattr(ttk, class_name)
-    except AttributeError:
-        print(f"Error: Class '{class_name}' not found in TermTk module.")
-        return []
-
-    for method_name in methods:
+    for method_name in data.methods:
         try:
             # Get the method from the class
-            method = getattr(cls, method_name)
+            method = getattr(data.forwardClass, method_name)
             sig = inspect.signature(method)
             doc = inspect.getdoc(method)
             return_type = sig.return_annotation
@@ -211,7 +194,7 @@ def autogen_methods(data: Dict[str, Any]) -> List[str]:
             doc_indent = "        "
             lines.extend([
                 doc_indent + f"'''",
-                doc_indent + f".. seealso:: this method is forwarded to :py:meth:`{data['class']}.{method_name}`\n",
+                doc_indent + f".. seealso:: this method is forwarded to :py:meth:`{class_name}.{method_name}`\n",
             ])
             if doc:
                 lines.extend([doc_indent + _l for _l in doc.split('\n')])
@@ -222,13 +205,13 @@ def autogen_methods(data: Dict[str, Any]) -> List[str]:
                 # f"    def {method_name}{sig}:",
                 ])
             if '=kwargs' in params and '=args' in params:
-                signatures.append(f"        return {data['instance']}.{method_name}(*args, **kwargs)\n")
+                signatures.append(f"        return {data.instance}.{method_name}(*args, **kwargs)\n")
             elif '=kwargs' in params:
-                signatures.append(f"        return {data['instance']}.{method_name}(**kwargs)\n")
+                signatures.append(f"        return {data.instance}.{method_name}(**kwargs)\n")
             elif '=args' in params:
-                signatures.append(f"        return {data['instance']}.{method_name}(*args)\n")
+                signatures.append(f"        return {data.instance}.{method_name}(*args)\n")
             else:
-                signatures.append(f"        return {data['instance']}.{method_name}({params})\n")
+                signatures.append(f"        return {data.instance}.{method_name}({params})\n")
 
         except AttributeError:
             print(f"Error: Method '{method_name}' not found in class '{class_name}'.")
@@ -279,31 +262,54 @@ def autogen_signals(data: Dict[str, Any]) -> List[str]:
 
     return signatures
 
+def get_classes_with_source_from_module(module) -> List[Dict[str, Any]]:
+    classes_with_source: List[Dict[str, Any]] = []
+
+    for name, obj in inspect.getmembers(module):
+        if inspect.isclass(obj) and hasattr(obj,'_ttk_forward'):
+            try:
+                source = inspect.getsource(obj)
+                filename = inspect.getfile(obj)
+                classes_with_source.append({
+                    'class': obj,
+                    'name': name,
+                    'forward': obj._ttk_forward,
+                    'module': module.__name__,
+                    'filename': filename,
+                    'source': source
+                })
+            except OSError as e:
+                print(f"Could not get source for class {name}: {e}")
+            except Exception as e:
+                print(f"Unexpected error getting source for class {name}: {e}")
+
+    return classes_with_source
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Read a file and write its lines to another file.")
-    parser.add_argument("input_path", type=str, help="The path to the input file to read.")
-    parser.add_argument("output_path", type=str, nargs='?', default=None, help="The path to the output file to write. If not specified, prints to stdout.")
-
+    parser.add_argument('--apply', action='store_true', help='Apply the changes')
     args = parser.parse_args()
 
-    lines = read_file_to_lines(args.input_path)
-
-    if lines:
-        autogen_data = extract_and_process_lines(lines)
-        print(autogen_data)
-
-        if autogen_data:
-            autogenenerated = autogen_methods(autogen_data)
-            # print('\n'.join(autogenenerated))
-            # autogen_signals(autogen_data)
-
-            index_start = _index_of(marker_start,lines)
-            index_end = _index_of(marker_end,lines)
-
-            lines[index_start+1:index_end] = autogenenerated
-            if args.output_path:
-                if not write_lines_to_file(lines, args.output_path):
-                    print("Error: Failed to write to output file.")
+    import TermTk as ttk
+    classes = get_classes_with_source_from_module(ttk)
+    args = parser.parse_args()
+    if classes:
+        for class_data in classes:
+            print(f"Class Name: {class_data['name']}")
+            print(f"  Class: {class_data['class']}")
+            print(f"  Forward: {class_data['forward']}")
+            print(f"  Module: {class_data['module']}")
+            print(f"  Filename: {class_data['filename']}")
+            # print(f"  Source:\n{class_data['source']}")
+            autogenenerated = autogen_methods(class_data['forward'])
+            if args.apply:
+                lines = read_file_to_lines(class_data['filename'])
+                index_start = _index_of(marker_start,lines)
+                index_end = _index_of(marker_end,lines)
+                lines[index_start+1:index_end] = autogenenerated
+                write_lines_to_file(lines,class_data['filename'])
             else:
-                print(''.join(lines))
+                print(''.join(autogenenerated))
+    else:
+        print("No classes found in the module.")

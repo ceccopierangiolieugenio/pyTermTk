@@ -22,6 +22,9 @@
 
 __all__ = ['TTkAbstractScrollArea']
 
+from dataclasses import dataclass
+from typing import List,Any,Type
+
 from TermTk.TTkCore.constant import TTkK
 # from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.signal import pyTTkSlot
@@ -30,6 +33,13 @@ from TermTk.TTkWidgets.container import TTkContainer
 from TermTk.TTkWidgets.scrollbar import TTkScrollBar
 from TermTk.TTkLayouts.gridlayout import TTkGridLayout
 from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollViewInterface
+
+@dataclass
+class _ForwardData():
+    forwardClass: Type
+    instance: str
+    signals: List[str]
+    methods: List[str]
 
 class TTkAbstractScrollArea(TTkContainer):
     __slots__ = (

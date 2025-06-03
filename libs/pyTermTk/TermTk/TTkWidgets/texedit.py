@@ -22,7 +22,7 @@
 
 __all__ = ['TTkTextEditView', 'TTkTextEdit', 'TTkTextEditRuler']
 
-from typing import Optional,Union
+from typing import Optional,Union,Dict,Any
 
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.cfg import TTkCfg
@@ -41,7 +41,7 @@ from TermTk.TTkGui.textdocument import TTkTextDocument
 
 from TermTk.TTkWidgets.widget import TTkWidget
 
-from TermTk.TTkAbstract.abstractscrollarea import TTkAbstractScrollArea
+from TermTk.TTkAbstract.abstractscrollarea import TTkAbstractScrollArea, _ForwardData
 from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollView, TTkAbstractScrollViewGridLayout
 
 class TTkTextEditRuler(TTkAbstractScrollView):
@@ -927,29 +927,34 @@ class TTkTextEdit(TTkAbstractScrollArea):
 
     ExtraSelection = TTkTextEditView.ExtraSelection
 
-    __slots__ = (
-        ['_textEditView',
-         '_lineNumberView', '_lineNumber'] +
-        (_forwardedSignals:=[ # Forwarded Signals From TTkTexteditView
-            # Signals
+    _ttk_forward:_ForwardData = _ForwardData(
+        forwardClass=TTkTextEditView ,
+        instance="self._textEditView",
+        signals=[ # Forwarded Signals From TTkTexteditView
             'focusChanged', 'currentColorChanged', 'cursorPositionChanged',
             'undoAvailable', 'redoAvailable',
-            'textChanged']) +
-        (_forwardedMethods:=[ # Forwarded Methods From TTkTexteditView
-        #     # Forwarded Methods
-        #     'clear', 'setText', 'append', 'isReadOnly', 'setReadOnly', 'document',
-        #     'wrapWidth', 'setWrapWidth',
-        #     'multiLine',
-        #     'lineWrapMode', 'setLineWrapMode',
-        #     'wordWrapMode', 'setWordWrapMode',
-        #     'textCursor', 'setFocus', 'setColor',
-        #     'extraSelections', 'setExtraSelections',
-        #     'cut', 'copy', 'paste',
-        #     'undo', 'redo', 'isUndoAvailable', 'isRedoAvailable',
-        #     'find', 'ensureCursorVisible',
-        #     # Export Methods,
-        #     'toAnsi', 'toRawText', 'toPlainText', # 'toHtml', 'toMarkdown',
-            ])
+            'textChanged'],
+        methods=[
+            # Forwarded Methods From TTkTexteditView
+            "clear", "setText", "append", "isReadOnly", "setReadOnly", "document",
+            "wrapWidth", "setWrapWidth",
+            "multiLine",
+            "lineWrapMode", "setLineWrapMode",
+            "wordWrapMode", "setWordWrapMode",
+            "textCursor", "setFocus", "setColor",
+            "extraSelections", "setExtraSelections",
+            "cut", "copy", "paste",
+            "undo", "redo", "isUndoAvailable", "isRedoAvailable",
+            "find", "ensureCursorVisible",
+            # Export Methods,
+            "toAnsi", "toRawText", "toPlainText" # , "toHtml", "toMarkdown",
+            ]
+        )
+
+    __slots__ = (
+        '_textEditView',
+        '_lineNumberView', '_lineNumber',
+        *_ttk_forward.signals
         )
     _forwardWidget = TTkTextEditView
 
@@ -989,7 +994,7 @@ class TTkTextEdit(TTkAbstractScrollArea):
         textEditLayout.addWidget(self._lineNumberView,0,0)
         self.setViewport(textEditLayout)
 
-        for _attr in self._forwardedSignals+self._forwardedMethods:
+        for _attr in self._ttk_forward.signals:
             setattr(self,_attr,getattr(self._textEditView,_attr))
 
     def ruler(self) -> TTkTextEditRuler:
@@ -1024,26 +1029,214 @@ class TTkTextEdit(TTkAbstractScrollArea):
         self._textEditView.setDocument(document)
         self._lineNumberView.setTextWrap(self._textEditView._textWrap)
 
-    #--FORWARD-AUTOGEN-PARAMS--#
-    # {
-    #  "class": "TTkTextEditView" ,
-    #  "instance": "self._textEditView",
-    #  "methods": [
-    #         # Forwarded Methods From TTkTexteditView
-    #         # Forwarded Methods
-    #         "clear", "setText", "append", "isReadOnly", "setReadOnly", "document",
-    #         "wrapWidth", "setWrapWidth",
-    #         "multiLine",
-    #         "lineWrapMode", "setLineWrapMode",
-    #         "wordWrapMode", "setWordWrapMode",
-    #         "textCursor", "setFocus", "setColor",
-    #         "extraSelections", "setExtraSelections",
-    #         "cut", "copy", "paste",
-    #         "undo", "redo", "isUndoAvailable", "isRedoAvailable",
-    #         "find", "ensureCursorVisible",
-    #         # Export Methods,
-    #         "toAnsi", "toRawText", "toPlainText" # , "toHtml", "toMarkdown",
-    #         ]
-    # }
     #--FORWARD-AUTOGEN-START--#
+    @pyTTkSlot()
+    def clear(self) -> None:
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.clear`
+
+        '''
+        return self._textEditView.clear()
+    @pyTTkSlot(str)
+    def setText(self, text:Union[str,TTkString]) -> None:
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.setText`
+
+        '''
+        return self._textEditView.setText(text=text)
+    @pyTTkSlot(str)
+    def append(self, text) -> None:
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.append`
+
+        '''
+        return self._textEditView.append(text=text)
+    def isReadOnly(self) -> bool:
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.isReadOnly`
+
+        '''
+        return self._textEditView.isReadOnly()
+    def setReadOnly(self, ro:bool) -> None:
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.setReadOnly`
+
+        '''
+        return self._textEditView.setReadOnly(ro=ro)
+    def document(self) -> TTkTextDocument:
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.document`
+
+        document
+        '''
+        return self._textEditView.document()
+    def wrapWidth(self, *args, **kwargs) -> None:
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.wrapWidth`
+
+        '''
+        return self._textEditView.wrapWidth(*args, **kwargs)
+    def setWrapWidth(self, *args, **kwargs) -> None:
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.setWrapWidth`
+
+        '''
+        return self._textEditView.setWrapWidth(*args, **kwargs)
+    def multiLine(self) -> bool:
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.multiLine`
+
+        multiline
+        '''
+        return self._textEditView.multiLine()
+    def lineWrapMode(self) -> TTkK.LineWrapMode:
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.lineWrapMode`
+
+        '''
+        return self._textEditView.lineWrapMode()
+    def setLineWrapMode(self, mode:TTkK.LineWrapMode):
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.setLineWrapMode`
+
+        '''
+        return self._textEditView.setLineWrapMode(mode=mode)
+    def wordWrapMode(self, *args, **kwargs) -> None:
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.wordWrapMode`
+
+        '''
+        return self._textEditView.wordWrapMode(*args, **kwargs)
+    def setWordWrapMode(self, *args, **kwargs) -> None:
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.setWordWrapMode`
+
+        '''
+        return self._textEditView.setWordWrapMode(*args, **kwargs)
+    def textCursor(self) -> TTkTextCursor:
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.textCursor`
+
+        '''
+        return self._textEditView.textCursor()
+    @pyTTkSlot()
+    def setFocus(self) -> None:
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.setFocus`
+
+        Focus the widget
+        '''
+        return self._textEditView.setFocus()
+    @pyTTkSlot(TTkColor)
+    def setColor(self, color:TTkColor) -> None:
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.setColor`
+
+        '''
+        return self._textEditView.setColor(color=color)
+    def extraSelections(self) -> list[ExtraSelection]:
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.extraSelections`
+
+        Returns previously set extra selections.
+        
+        :rtype: list[:py:class:`ExtraSelection`]
+        '''
+        return self._textEditView.extraSelections()
+    def setExtraSelections(self, extraSelections:list[ExtraSelection]) -> None:
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.setExtraSelections`
+
+        This function allows temporarily marking certain regions in the document with a given color,
+        specified as selections. This can be useful for example in a programming editor to mark a
+        whole line of text with a given background color to indicate the existence of a breakpoint.
+        
+        :param extraSelections: the list of extra selections.
+        :type extraSelections: list[:py:class:`ExtraSelection`]
+        '''
+        return self._textEditView.setExtraSelections(extraSelections=extraSelections)
+    @pyTTkSlot()
+    def cut(self) -> None:
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.cut`
+
+        '''
+        return self._textEditView.cut()
+    @pyTTkSlot()
+    def copy(self) -> None:
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.copy`
+
+        '''
+        return self._textEditView.copy()
+    @pyTTkSlot()
+    def paste(self) -> None:
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.paste`
+
+        '''
+        return self._textEditView.paste()
+    @pyTTkSlot()
+    def undo(self) -> None:
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.undo`
+
+        '''
+        return self._textEditView.undo()
+    @pyTTkSlot()
+    def redo(self) -> None:
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.redo`
+
+        '''
+        return self._textEditView.redo()
+    def isUndoAvailable(self) -> bool:
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.isUndoAvailable`
+
+        isUndoAvailable
+        '''
+        return self._textEditView.isUndoAvailable()
+    def isRedoAvailable(self) -> bool:
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.isRedoAvailable`
+
+        isRedoAvailable
+        '''
+        return self._textEditView.isRedoAvailable()
+    @pyTTkSlot(TTkString)
+    def find(self, exp):
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.find`
+
+        '''
+        return self._textEditView.find(exp=exp)
+    @pyTTkSlot()
+    def ensureCursorVisible(self):
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.ensureCursorVisible`
+
+        '''
+        return self._textEditView.ensureCursorVisible()
+    def toAnsi(self) -> str:
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.toAnsi`
+
+        toAnsi
+        '''
+        return self._textEditView.toAnsi()
+    def toRawText(self) -> TTkString:
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.toRawText`
+
+        toRawText
+        '''
+        return self._textEditView.toRawText()
+    def toPlainText(self) ->str:
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.toPlainText`
+
+        toPlainText
+        '''
+        return self._textEditView.toPlainText()
     #--FORWARD-AUTOGEN-END--#
