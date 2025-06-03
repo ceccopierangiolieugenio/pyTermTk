@@ -25,6 +25,10 @@ jobs:
           GHE: ${{ toJson(github.event) }}
           GHEH: ${{ toJson(github.event.head_commit) }}
           GHEHM: ${{ toJson(github.event.head_commit.modified) }}
-      # - uses: actions/checkout@v4
-      #   with:
-      #     ref: ${{ github.sha }}
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+      - run: |
+          echo Scratchpad
+          tools/autogenForwarded.py --apply
+          git diff
