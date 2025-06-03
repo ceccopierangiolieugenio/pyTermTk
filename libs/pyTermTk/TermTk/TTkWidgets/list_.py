@@ -91,7 +91,7 @@ class TTkList(TTkAbstractScrollArea):
         '''
         .. seealso:: this method is forwarded to :py:meth:`TTkListWidget.setDragDropMode`
 
-        setDragDropMode - Test
+        setDragDropMode
         '''
         return self._listView.setDragDropMode(dndMode=dndMode)
     def addItem(self, item, data=None):

@@ -31,7 +31,6 @@ jobs:
       - run: |
           echo Scratchpad
           PYTHONPATH=libs/pyTermTk tools/autogenForwarded.py --apply
-          git diff
           if [[ $(git status --porcelain) ]] ; then
             git diff
             echo "❌ PR failed due to missing release files:"

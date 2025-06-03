@@ -11,6 +11,24 @@ on:
     branches: [ main ]
 
 jobs:
+  test-autogen:
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+      - run: |
+          PYTHONPATH=libs/pyTermTk tools/autogenForwarded.py --apply
+          if [[ $(git status --porcelain) ]] ; then
+            git diff
+            echo "❌ PR failed due to missing release files:"
+            echo "   - run: PYTHONPATH=libs/pyTermTk tools/autogenForwarded.py --apply"
+            echo "     and push the generated files"
+            exit 1
+          else
+            echo "✅   - Release Clean"
+          fi
+
   build:
     # runs-on: ubuntu-latest
     runs-on: self-hosted
