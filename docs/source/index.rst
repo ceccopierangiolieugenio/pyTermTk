@@ -10,7 +10,7 @@
 Welcome to pyTermTk_'s documentation!
 =====================================
 
-.. image:: https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/images/pyTermTk.HERO.800.png
+.. image:: https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/images/pyTermTk.HERO.1000.png
 
 Intro
 -----
