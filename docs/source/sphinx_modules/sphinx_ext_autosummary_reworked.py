@@ -164,16 +164,16 @@ def setup(app: Sphinx) -> ExtensionMetadata:
 
     def _getSignalsForwarded(_obj):
         ret = {}
-        if hasattr(_obj,'_forwardedSignals'):
-            ret['baseClass'] = _obj._forwardWidget.__name__
-            ret['signals'] = sorted(_obj._forwardedSignals)
+        if hasattr(_obj,'_ttk_forward'):
+            ret['baseClass'] = _obj._ttk_forward.forwardClass.__name__
+            ret['signals'] = sorted(_obj._ttk_forward.signals)
         return ret
 
     def _getMethodsForwarded(_obj):
         ret = {}
-        if hasattr(_obj,'_forwardedMethods'):
-            ret['baseClass'] = _obj._forwardWidget.__name__
-            ret['methods'] = sorted(_obj._forwardedMethods)
+        if hasattr(_obj,'_ttk_forward'):
+            ret['baseClass'] = _obj._ttk_forward.forwardClass.__name__
+            ret['methods'] = sorted(_obj._ttk_forward.methods)
         return ret
 
     def _parseModules(_mod):
@@ -278,10 +278,10 @@ def setup(app: Sphinx) -> ExtensionMetadata:
             print(ttk.TTkString(f"[{_name}] Params in the class docstring", ttk.TTkColor.BG_RED + ttk.TTkColor.FG_YELLOW).toAnsi())
         if hasattr(_obj,'__init__'):
             _obj.__doc__ = _mergeDoc(_obj.__doc__, _obj.__init__.__doc__)
-        if hasattr(_obj,'_forwardWidget') and hasattr(_obj._forwardWidget,'__init__'):
+        if hasattr(_obj,'_ttk_forward') and hasattr(_obj._ttk_forward.forwardClass,'__init__'):
             _obj.__doc__ = _mergeDoc(_obj.__doc__,
-                                     _obj._forwardWidget.__init__.__doc__,
-                                     f"\n:py:class:`{_obj._forwardWidget.__name__}`'s forwarded init params:\n")
+                                     _obj._ttk_forward.forwardClass.__init__.__doc__,
+                                     f"\n:py:class:`{_obj._ttk_forward.forwardClass.__name__}`'s forwarded init params:\n")
         for _iname in ttkInherited[_name]:
             if _iname not in ttkClasses:
                 continue
