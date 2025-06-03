@@ -23,8 +23,8 @@
 __all__ = ['TTkList']
 
 from TermTk.TTkCore.constant import TTkK
-from TermTk.TTkWidgets.listwidget import TTkListWidget
-from TermTk.TTkAbstract.abstractscrollarea import TTkAbstractScrollArea
+from TermTk.TTkWidgets.listwidget import TTkListWidget, TTkAbstractListItem
+from TermTk.TTkAbstract.abstractscrollarea import TTkAbstractScrollArea, _ForwardData
 
 class TTkList(TTkAbstractScrollArea):
     __doc__ = '''
@@ -32,11 +32,12 @@ class TTkList(TTkAbstractScrollArea):
 
     ''' + TTkListWidget.__doc__
 
-    __slots__ = tuple(
-        ['_listView'] +
-        (_forwardedSignals:=[ # Forwarded Signals From TTkTable
-            'itemClicked', 'textClicked', 'searchModified']) +
-        (_forwardedMethods:=[ # Forwarded Methods From TTkTable
+    _ttk_forward = _ForwardData(
+        forwardClass=TTkListWidget ,
+        instance="self._listView",
+        signals=[ # Forwarded Signals From TTkTable
+            'itemClicked', 'textClicked', 'searchModified'],
+        methods=[
             'items',
             'dragDropMode', 'setDragDropMode',
             'addItem', 'addItemAt', 'addItems', 'addItemsAt',
@@ -44,9 +45,11 @@ class TTkList(TTkAbstractScrollArea):
             'removeAt', 'removeItem', 'removeItems',
             'selectionMode', 'setSelectionMode', 'selectedItems', 'selectedLabels',
             'search', 'setSearch', 'searchVisibility', 'setSearchVisibility',
-            'setCurrentRow', 'setCurrentItem'])
-        )
-    _forwardWidget = TTkListWidget
+            'setCurrentRow', 'setCurrentItem'
+            ]
+    )
+
+    __slots__ = ('_listView', *_ttk_forward.signals)
 
     def __init__(self, *,
                  listWidget:TTkListWidget=None,
@@ -66,6 +69,169 @@ class TTkList(TTkAbstractScrollArea):
         super().__init__(**kwargs)
         self.setViewport(self._listView)
 
-        for _attr in self._forwardedSignals+self._forwardedMethods:
+        for _attr in self._ttk_forward.signals:
             setattr(self,_attr,getattr(self._listView,_attr))
 
+    #--FORWARD-AUTOGEN-START--#
+    def items(self) -> list[TTkAbstractListItem]:
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkListWidget.items`
+
+        items
+        '''
+        return self._listView.items()
+    def dragDropMode(self):
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkListWidget.dragDropMode`
+
+        dragDropMode
+        '''
+        return self._listView.dragDropMode()
+    def setDragDropMode(self, dndMode):
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkListWidget.setDragDropMode`
+
+        setDragDropMode
+        '''
+        return self._listView.setDragDropMode(dndMode=dndMode)
+    def addItem(self, item, data=None):
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkListWidget.addItem`
+
+        addItem
+        '''
+        return self._listView.addItem(item=item, data=data)
+    def addItemAt(self, item, pos, data=None):
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkListWidget.addItemAt`
+
+        addItemAt
+        '''
+        return self._listView.addItemAt(item=item, pos=pos, data=data)
+    def addItems(self, items):
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkListWidget.addItems`
+
+        addItems
+        '''
+        return self._listView.addItems(items=items)
+    def addItemsAt(self, items, pos):
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkListWidget.addItemsAt`
+
+        addItemsAt
+        '''
+        return self._listView.addItemsAt(items=items, pos=pos)
+    def indexOf(self, item):
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkListWidget.indexOf`
+
+        indexOf
+        '''
+        return self._listView.indexOf(item=item)
+    def itemAt(self, pos):
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkListWidget.itemAt`
+
+        itemAt
+        '''
+        return self._listView.itemAt(pos=pos)
+    def moveItem(self, fr, to):
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkListWidget.moveItem`
+
+        moveItem
+        '''
+        return self._listView.moveItem(fr=fr, to=to)
+    def removeAt(self, pos):
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkListWidget.removeAt`
+
+        removeAt
+        '''
+        return self._listView.removeAt(pos=pos)
+    def removeItem(self, item):
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkListWidget.removeItem`
+
+        removeItem
+        '''
+        return self._listView.removeItem(item=item)
+    def removeItems(self, items):
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkListWidget.removeItems`
+
+        removeItems
+        '''
+        return self._listView.removeItems(items=items)
+    def selectionMode(self):
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkListWidget.selectionMode`
+
+        selectionMode
+        '''
+        return self._listView.selectionMode()
+    def setSelectionMode(self, mode):
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkListWidget.setSelectionMode`
+
+        setSelectionMode
+        '''
+        return self._listView.setSelectionMode(mode=mode)
+    def selectedItems(self):
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkListWidget.selectedItems`
+
+        selectedItems
+        '''
+        return self._listView.selectedItems()
+    def selectedLabels(self):
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkListWidget.selectedLabels`
+
+        selectedLabels
+        '''
+        return self._listView.selectedLabels()
+    def search(self) -> str:
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkListWidget.search`
+
+        search
+        '''
+        return self._listView.search()
+    def setSearch(self, search:str) -> None:
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkListWidget.setSearch`
+
+        setSearch
+        '''
+        return self._listView.setSearch(search=search)
+    def searchVisibility(self) -> bool:
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkListWidget.searchVisibility`
+
+        searchVisibility
+        '''
+        return self._listView.searchVisibility()
+    def setSearchVisibility(self, visibility:bool) -> None:
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkListWidget.setSearchVisibility`
+
+        setSearchVisibility
+        '''
+        return self._listView.setSearchVisibility(visibility=visibility)
+    def setCurrentRow(self, row):
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkListWidget.setCurrentRow`
+
+        setCurrentRow
+        '''
+        return self._listView.setCurrentRow(row=row)
+    def setCurrentItem(self, item):
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkListWidget.setCurrentItem`
+
+        setCurrentItem
+        '''
+        return self._listView.setCurrentItem(item=item)
+    #--FORWARD-AUTOGEN-END--#
