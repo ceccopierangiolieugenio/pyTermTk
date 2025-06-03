@@ -956,7 +956,6 @@ class TTkTextEdit(TTkAbstractScrollArea):
         '_lineNumberView', '_lineNumber',
         *_ttk_forward.signals
         )
-    _forwardWidget = TTkTextEditView
 
     def __init__(self, *,
                  # TTkWidget init

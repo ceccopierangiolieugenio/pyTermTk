@@ -24,7 +24,7 @@ __all__ = ['TTkTerminal']
 
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
-from TermTk.TTkAbstract.abstractscrollarea import TTkAbstractScrollArea
+from TermTk.TTkAbstract.abstractscrollarea import TTkAbstractScrollArea, _ForwardData
 from TermTk.TTkWidgets.TTkTerminal.terminalview import TTkTerminalView
 
 class TTkTerminal(TTkAbstractScrollArea):
@@ -33,15 +33,17 @@ class TTkTerminal(TTkAbstractScrollArea):
 
     ''' + TTkTerminalView.__doc__
 
-    __slots__ = tuple(
-        ['_terminalView'] +
-        (_forwardedSignals:=[# Forwarded Signals From TTkTreeWidget
+    _ttk_forward = _ForwardData(
+        forwardClass=TTkTerminalView ,
+        instance="self._terminalView",
+        signals=[# Forwarded Signals From TTkTreeWidget
             'bell', 'titleChanged', 'terminalClosed', 'textSelected',
-            'termData', 'termResized']) +
-        (_forwardedMethods:=[# Forwarded Methods From TTkTreeWidget
-            'termWrite', 'termSize'])
-        )
-    _forwardWidget = TTkTerminalView
+            'termData', 'termResized'],
+        methods=[# Forwarded Methods From TTkTreeWidget
+            'termWrite', 'termSize']
+    )
+
+    __slots__ = ('_terminalView', *_ttk_forward.signals)
 
     def __init__(self, **kwargs) -> None:
         super().__init__(**kwargs)
@@ -51,7 +53,7 @@ class TTkTerminal(TTkAbstractScrollArea):
         self.setFocusPolicy(TTkK.ClickFocus)
         self.setViewport(self._terminalView)
 
-        for _attr in self._forwardedSignals+self._forwardedMethods:
+        for _attr in self._ttk_forward.signals:
             setattr(self,_attr,getattr(self._terminalView,_attr))
 
         self.terminalClosed = pyTTkSignal(TTkTerminal)
@@ -61,3 +63,25 @@ class TTkTerminal(TTkAbstractScrollArea):
         self._terminalView.close()
         return super().close()
 
+    #--FORWARD-AUTOGEN-START--#
+    def termWrite(self, data:str) -> None:
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkTerminalView.termWrite`
+
+        Write data to the terminal.
+        
+        :params data: the data to write
+        :type data: str
+        '''
+        return self._terminalView.termWrite(data=data)
+    def termSize(self) -> tuple[int,int]:
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkTerminalView.termSize`
+
+        This property holds the size of the terminal
+        
+        :return: a tuple of 2 integers (width, height)
+        :rtype: tuple
+        '''
+        return self._terminalView.termSize()
+    #--FORWARD-AUTOGEN-END--#
