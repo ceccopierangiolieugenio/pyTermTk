@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.4.0-a.2](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/ttkode-v0.3.2-a.2...ttkode-v0.4.0-a.2) (2025-06-03)
+
+
+### ⚠ BREAKING CHANGES
+
+* **TabWidget:** tab request close  event need to be handled inside the app
+
+### Features
+
+* add save feature ([#407](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/407)) ([26ff9b2](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/26ff9b2f0a81bddadeb6849d5d560ae67406f973))
+
+
+### Refactors
+
+* **TabWidget:** tab request close  event need to be handled inside the app ([9420adf](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/9420adf68e2184482cd71266f280c560ea911f45))
+
 ## [0.3.2-a.2](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/ttkode-v0.3.1-a.2...ttkode-v0.3.2-a.2) (2025-05-01)
 
 
