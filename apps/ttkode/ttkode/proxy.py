@@ -26,7 +26,7 @@ from typing import Optional, Callable, Any
 
 import TermTk as ttk
 
-from ttkode.app.ttkode import TTKode
+from ttkode.app.ttkode import TTKode, TTKodeWidget
 
 class TTKodeViewerProxy():
     __slots__ = ('_fileName')
@@ -41,26 +41,30 @@ class TTKodeProxy():
                  '_ttkode',
                  # Signals
                  )
-    _ttkode:Optional[TTKode]
-    _openFileCb:Optional[Callable[[Any, int, int], Any]]
-    def __init__(self) -> None:
-        self._openFileCb = None
-        self._ttkode = None
-
-    def setTTKode(self, ttkode:TTKode) -> None:
+    _ttkode:TTKode
+    _openFileCb:Callable[[Any, int, int], Any]
+    def __init__(self, ttkode:TTKode) -> None:
         self._ttkode = ttkode
         self._openFileCb = ttkode._openFile
 
     def ttkode(self) -> TTKode:
-        if not self._ttkode:
-            raise Exception("TTkode uninitialized")
         return self._ttkode
+
+    def iterWidgets(self, widType=TTKodeWidget):
+        for kt, index in self._ttkode._kodeTab.iterItems():
+            if issubclass(type(wid:=kt.widget(index)), widType):
+                yield wid
+
+    @ttk.pyTTkSlot(TTKodeWidget)
+    def closeTab(self, widget:TTKodeWidget) -> None:
+        for kt, index in self._ttkode._kodeTab.iterItems():
+            if kt.widget(index)==widget:
+                kt.removeTab(index)
 
     def setOpenFile(self, cb):
         self._openFileCb = cb
 
     def openFile(self, fileName:str, line:int=0, pos:int=0):
-        if self._ttkode and self._openFileCb:
-            return self._openFileCb(fileName, line, pos)
+        return self._openFileCb(fileName, line, pos)
 
-ttkodeProxy:TTKodeProxy = TTKodeProxy()
+ttkodeProxy:TTKodeProxy = TTKodeProxy(ttkode=TTKode())
