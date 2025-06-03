@@ -1,5 +1,33 @@
 # Changelog
 
+## [0.43.0-a.0](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/pyTermTk-v0.42.1-a.0...pyTermTk-v0.43.0-a.0) (2025-06-03)
+
+
+### ⚠ BREAKING CHANGES
+
+* **kodeTab:** reworked iterWidget in iterItems
+* **TabWidget:** tab request close  event need to be handled inside the app
+
+### Fixes
+
+* **spinbox:** better check for float, empty strings and negative numbers ([4909bf6](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/4909bf6756000f9450249b28f8c8379a2160415c))
+
+
+### Chores
+
+* autogen code for scrollarea classes ([#406](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/406)) ([fef1b0e](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/fef1b0ea5bd6ddc8f3e8f93a23ea156071e77493))
+* **Input:** add support for ctrl and other key comination ([#404](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/404)) ([5c2bb92](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/5c2bb9202cd819aa573e9f0d9ea966a4d0e5c485))
+* **kodeTab:** reworked iterWidget in iterItems ([47f73fc](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/47f73fc03a5a049ac3e6073dcadc09018b509328))
+* **spinbox:** fix return type ([ddc53a0](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/ddc53a07653a6f3aa958509d7d400cc6c6264d91))
+* **spinbox:** handle left/right wheel  event ([ce961a6](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/ce961a657573ee520b73fca7d4ae721a8837a1d0))
+* **ttk:** workaround timer disconnect in case of error ([d70b2c1](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/d70b2c1c3cf25f7ffb479bc2850b3c9a3ca0fe0c))
+
+
+### Refactors
+
+* **TabWidget:** tab request close  event need to be handled inside the app ([9420adf](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/9420adf68e2184482cd71266f280c560ea911f45))
+* **TTkColor:** improved typings ([711d611](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/711d611a73be0d0a6fce37e4624b5ae30847dd9c))
+
 ## [0.42.1-a.0](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/pyTermTk-v0.42.0-a.0...pyTermTk-v0.42.1-a.0) (2025-05-01)
 
 
