@@ -19,7 +19,6 @@
 [![Static Badge](https://img.shields.io/badge/Discord-pyTermTk-8A2BE2?logo=discord&logoColor=blue)](https://discord.gg/7E5DZdbw)
 
 
-
 ## [pyTermTk](https://github.com/ceccopierangiolieugenio/pyTermTk)
 
 (**py**thon **Term**inal **T**ool**k**it) is a Text-based user interface library ([TUI](https://en.wikipedia.org/wiki/Text-based_user_interface))
