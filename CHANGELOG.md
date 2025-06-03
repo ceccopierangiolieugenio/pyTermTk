@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.43.1-a.0](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/pyTermTk-v0.43.0-a.0...pyTermTk-v0.43.1-a.0) (2025-06-03)
+
+
+### Chores
+
+* update hero image ([ae3a37f](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/ae3a37ffab812fb2c174065997e64b8c565e76d3))
+
 ## [0.43.0-a.0](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/pyTermTk-v0.42.1-a.0...pyTermTk-v0.43.0-a.0) (2025-06-03)
 
 
