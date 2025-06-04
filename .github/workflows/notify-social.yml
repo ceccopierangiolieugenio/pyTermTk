@@ -7,6 +7,10 @@ on:
         description: The changed app
         type: string
         default: pyTermTk
+      version:
+        description: The app version
+        type: string
+        default: v0.0.0
       message:
         description: The release message
         type: string
@@ -17,6 +21,10 @@ on:
         description: The changed app
         type: string
         default: pyTermTk
+      version:
+        description: The app version
+        type: string
+        default: v0.0.0
       message:
         description: The release message
         type: string
@@ -40,6 +48,7 @@ jobs:
         env:
           MESSAGE: ${{ inputs.message }}
         run: |
-          python tools/social/notify_discord.py ${{ inputs.app }}
+          python tools/social/notify_discord.py ${{ inputs.app }} ${{ inputs.version }}
+
 
 
