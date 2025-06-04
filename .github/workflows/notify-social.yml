@@ -1,4 +1,4 @@
-name: _Scratchpad
+name: Release Sandbox
 
 on:
   workflow_dispatch:
