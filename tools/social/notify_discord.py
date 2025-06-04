@@ -22,8 +22,10 @@
 # SOFTWARE.
 
 import os
+import re
 import asyncio
 import argparse
+from typing import Dict,List,Any
 
 import discord
 
@@ -33,17 +35,34 @@ def _get_env_var(name:str) -> str:
         raise EnvironmentError(f"{name} environment variable is not available")
     return value
 
-async def send_discord_message(channel_id: int):
+async def send_discord_message(app:str, version: str, data:Dict[str,Any]):
     token = _get_env_var("DISCORD_TOKEN")
     message = _get_env_var("MESSAGE")
 
     intents = discord.Intents.default()
     client = discord.Client(intents=intents)
 
+    embed = discord.Embed(
+        title=f"{app} Released!!!",
+        url=data['url'],
+        # description="Here's a new feature we added.",
+        color=0x00ff00,
+    )
+    embed.add_field(name="Version", value=version, inline=True)
+    # embed.add_field(name="What's New:", value=message, inline=False)
+
+    # embed.set_image(url="https://example.com/image.png")
+    # embed.add_field(name="Feature", value="Auto-messaging", inline=False)
+    embed.set_footer(text="Bot by Pier...")
+    message = re.sub(r'\((https?://[^\)]+)\)', r'(<\1>)', message).replace('\\n','\n')[:2000]
+    # print(message)
+    # exit(1)
+
     @client.event
     async def on_ready():
         print(f'Logged in as {client.user}')
-        channel = client.get_channel(channel_id)
+        channel = client.get_channel(data['channel_id'])
+        await channel.send(embed=embed)
         await channel.send(message)
         await client.close()  # Optional: close after sending
 
@@ -52,15 +71,24 @@ async def send_discord_message(channel_id: int):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Send a Discord notification.")
     parser.add_argument("app", type=str, help="The application name.")
+    parser.add_argument("version", type=str, help="The application version.")
     args = parser.parse_args()
 
-    channel_id:int = {
-        'pytermtk' : 1379381341145268305,
-        'ttkode' : 1379381474783924295,
-        'dumbpainttool' : 1379381571412430931,
-        'tlogg' : 1379381593378000916,
-    }.get(args.app.lower(),0)
-    if not channel_id:
+    data:Dict[str,Any] = {
+        'pytermtk' :
+            { 'channel_id': 1379381341145268305,
+              'url' : 'https://github.com/ceccopierangiolieugenio/pyTermTk' },
+        'ttkode' :
+            { 'channel_id': 1379381474783924295,
+              'url' : 'https://github.com/ceccopierangiolieugenio/pyTermTk/tree/main/apps/ttkode' },
+        'dumbpainttool' :
+            { 'channel_id': 1379381571412430931,
+              'url' : 'https://github.com/ceccopierangiolieugenio/pyTermTk/tree/main/apps/dumbPaintTool' },
+        'tlogg' :
+            { 'channel_id': 1379381593378000916,
+              'url' : 'https://github.com/ceccopierangiolieugenio/pyTermTk/tree/main/apps/tlogg' },
+    }.get(args.app.lower(),{})
+    if not data:
         raise ValueError(f"app: {args.app} is not recognised")
 
-    asyncio.run(send_discord_message(channel_id))
+    asyncio.run(send_discord_message(args.app, args.version, data))
