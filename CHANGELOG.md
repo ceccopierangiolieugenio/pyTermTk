@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.43.2-a.0](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/pyTermTk-v0.43.1-a.0...pyTermTk-v0.43.2-a.0) (2025-06-04)
+
+
+### Chores
+
+* autogen signals and rewrite forwarded as properties ([#410](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/410)) ([7597980](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/759798025624a692af24170475d1f3f253d31689))
+
 ## [0.43.1-a.0](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/pyTermTk-v0.43.0-a.0...pyTermTk-v0.43.1-a.0) (2025-06-03)
 
 
