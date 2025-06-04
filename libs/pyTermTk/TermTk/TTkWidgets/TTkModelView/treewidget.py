@@ -81,61 +81,73 @@ class TTkTreeWidget(TTkAbstractScrollView):
     The isSortingEnabled() function indicates whether sorting is enabled.
     '''
 
-    itemActivated:pyTTkSignal
-    '''
-    This signal is emitted when the user activates an item by double-clicking
-    or pressing a special key (e.g., Enter).
+    @property
+    def itemActivated(self) -> pyTTkSignal:
+        '''
+        This signal is emitted when the user activates an item by double-clicking
+        or pressing a special key (e.g., Enter).
 
-    :param item: the item that was clicked.
-    :type item: :py:class:`TTkTreeWidgetItem`
-    :param col: the item's column that was clicked.
-    :type col: int
-    '''
-    itemChanged:pyTTkSignal
-    '''
-    This signal is emitted when the contents of the column in the specified item changes.
+        :param item: the item that was clicked.
+        :type item: :py:class:`TTkTreeWidgetItem`
+        :param col: the item's column that was clicked.
+        :type col: int
+        '''
+        return self._itemActivated
+    @property
+    def itemChanged(self) -> pyTTkSignal:
+        '''
+        This signal is emitted when the contents of the column in the specified item changes.
 
-    :param item: the item reported by this signal
-    :type item: :py:class:`TTkTreeWidgetItem`
-    :param col: the item's column
-    :type col: int
-    '''
-    itemClicked:pyTTkSignal
-    '''
-    This signal is emitted when the user clicks inside the widget.
+        :param item: the item reported by this signal
+        :type item: :py:class:`TTkTreeWidgetItem`
+        :param col: the item's column
+        :type col: int
+        '''
+        return self._itemChanged
+    @property
+    def itemClicked(self) -> pyTTkSignal:
+        '''
+        This signal is emitted when the user clicks inside the widget.
 
-    If no item was clicked, no signal will be emitted.
+        If no item was clicked, no signal will be emitted.
 
-    :param item: the item that was clicked.
-    :type item: :py:class:`TTkTreeWidgetItem`
-    :param col: the item's column that was clicked.
-    :type col: int
-    '''
-    itemDoubleClicked:pyTTkSignal
-    '''
-    This signal is emitted when the user double clicks inside the widget.
+        :param item: the item that was clicked.
+        :type item: :py:class:`TTkTreeWidgetItem`
+        :param col: the item's column that was clicked.
+        :type col: int
+        '''
+        return self._itemClicked
+    @property
+    def itemDoubleClicked(self) -> pyTTkSignal:
+        '''
+        This signal is emitted when the user double clicks inside the widget.
 
-    If no item was double clicked, no signal will be emitted.
+        If no item was double clicked, no signal will be emitted.
 
-    :param item: the item that was clicked.
-    :type item: :py:class:`TTkTreeWidgetItem`
-    :param col: the item's column that was clicked.
-    :type col: int
-    '''
-    itemExpanded:pyTTkSignal
-    '''
-    This signal is emitted when the specified item is expanded so that all of its children are displayed.
+        :param item: the item that was clicked.
+        :type item: :py:class:`TTkTreeWidgetItem`
+        :param col: the item's column that was clicked.
+        :type col: int
+        '''
+        return self._itemDoubleClicked
+    @property
+    def itemExpanded(self) -> pyTTkSignal:
+        '''
+        This signal is emitted when the specified item is expanded so that all of its children are displayed.
 
-    :param item: the item reported by this signal
-    :type item: :py:class:`TTkTreeWidgetItem`
-    '''
-    itemCollapsed:pyTTkSignal
-    '''
-    This signal is emitted when the specified item is collapsed so that none of its children are displayed.
+        :param item: the item reported by this signal
+        :type item: :py:class:`TTkTreeWidgetItem`
+        '''
+        return self._itemExpanded
+    @property
+    def itemCollapsed(self) -> pyTTkSignal:
+        '''
+        This signal is emitted when the specified item is collapsed so that none of its children are displayed.
 
-    :param item: the item reported by this signal
-    :type item: :py:class:`TTkTreeWidgetItem`
-    '''
+        :param item: the item reported by this signal
+        :type item: :py:class:`TTkTreeWidgetItem`
+        '''
+        return self._itemCollapsed
 
     classStyle = {
                 'default':     {
@@ -158,7 +170,7 @@ class TTkTreeWidget(TTkAbstractScrollView):
                   '_sortColumn', '_sortOrder', '_sortingEnabled',
                   '_dndMode',
                   # Signals
-                  'itemChanged', 'itemClicked', 'itemDoubleClicked', 'itemExpanded', 'itemCollapsed', 'itemActivated'
+                  '_itemChanged', '_itemClicked', '_itemDoubleClicked', '_itemExpanded', '_itemCollapsed', '_itemActivated'
                   )
     @dataclass(frozen=True)
     class _Cache:
@@ -187,12 +199,12 @@ class TTkTreeWidget(TTkAbstractScrollView):
         :type dragDropMode: :py:class:`TTkK.DragDropMode`, optional
         '''
         # Signals
-        self.itemActivated     = pyTTkSignal(TTkTreeWidgetItem, int)
-        self.itemChanged       = pyTTkSignal(TTkTreeWidgetItem, int)
-        self.itemClicked       = pyTTkSignal(TTkTreeWidgetItem, int)
-        self.itemDoubleClicked = pyTTkSignal(TTkTreeWidgetItem, int)
-        self.itemExpanded      = pyTTkSignal(TTkTreeWidgetItem)
-        self.itemCollapsed     = pyTTkSignal(TTkTreeWidgetItem)
+        self._itemActivated     = pyTTkSignal(TTkTreeWidgetItem, int)
+        self._itemChanged       = pyTTkSignal(TTkTreeWidgetItem, int)
+        self._itemClicked       = pyTTkSignal(TTkTreeWidgetItem, int)
+        self._itemDoubleClicked = pyTTkSignal(TTkTreeWidgetItem, int)
+        self._itemExpanded      = pyTTkSignal(TTkTreeWidgetItem)
+        self._itemCollapsed     = pyTTkSignal(TTkTreeWidgetItem)
 
         self._dndMode = dragDropMode
         self._selected = None

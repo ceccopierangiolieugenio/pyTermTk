@@ -22,6 +22,8 @@
 
 __all__ = ['TTkTable']
 
+from typing import Optional
+
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
 from TermTk.TTkWidgets.TTkModelView.tablewidget import TTkTableWidget, TTkHeaderView
@@ -60,11 +62,11 @@ class TTkTable(TTkAbstractScrollArea):
             'setRowHeight', 'resizeRowToContents', 'resizeRowsToContents']
     )
 
-    __slots__ = ('_tableView', *_ttk_forward.signals)
+    __slots__ = ('_tableView')
 
     def __init__(self, *,
-                 tableWidget:TTkTableWidget=None,
-                 tableModel:TTkAbstractTableModel=None,
+                 tableWidget:Optional[TTkTableWidget]=None,
+                 tableModel:Optional[TTkAbstractTableModel]=None,
                  vSeparator:bool=True,
                  hSeparator:bool=True,
                  vHeader:bool=True,
@@ -76,7 +78,6 @@ class TTkTable(TTkAbstractScrollArea):
         :param tableWidget: a custom Table Widget to be used instead of the default one.
         :type tableWidget: :py:class:`TTkTableWidget`, optional
         '''
-        self._tableView = None
         self._tableView:TTkTableWidget = tableWidget if tableWidget else TTkTableWidget(
                                                                                 tableModel=tableModel,
                                                                                 vSeparator=vSeparator,
@@ -89,9 +90,6 @@ class TTkTable(TTkAbstractScrollArea):
         super().__init__(**kwargs)
         self.setViewport(self._tableView)
         # self.setFocusPolicy(TTkK.ClickFocus)
-
-        for _attr in self._ttk_forward.signals:
-            setattr(self,_attr,getattr(self._tableView,_attr))
 
     def style(self):
         if self._tableView:
@@ -109,6 +107,80 @@ class TTkTable(TTkAbstractScrollArea):
         return super().mergeStyle(style)
 
     #--FORWARD-AUTOGEN-START--#
+    @property
+    def cellChanged(self) -> pyTTkSignal:
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkTableWidget.cellChanged`
+
+        This signal is emitted whenever the data of the item in the cell specified by row and column has changed.
+        
+        :param row: the row
+        :type row: int
+        :param col: the column
+        :type col: int
+        '''
+        return self._tableView.cellChanged
+    @property
+    def cellClicked(self) -> pyTTkSignal:
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkTableWidget.cellClicked`
+
+        This signal is emitted whenever a cell in the table is clicked.
+        The row and column specified is the cell that was clicked.
+        
+        :param row: the row
+        :type row: int
+        :param col: the column
+        :type col: int
+        '''
+        return self._tableView.cellClicked
+    @property
+    def cellDoubleClicked(self) -> pyTTkSignal:
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkTableWidget.cellDoubleClicked`
+
+        This signal is emitted whenever a cell in the table is double clicked.
+        The row and column specified is the cell that was double clicked.
+        
+        :param row: the row
+        :type row: int
+        :param col: the column
+        :type col: int
+        '''
+        return self._tableView.cellDoubleClicked
+    @property
+    def cellEntered(self) -> pyTTkSignal:
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkTableWidget.cellEntered`
+
+        This signal is emitted when the mouse cursor enters a cell.
+        The cell is specified by row and column.
+        
+        :param row: the row
+        :type row: int
+        :param col: the column
+        :type col: int
+        '''
+        return self._tableView.cellEntered
+    @property
+    def currentCellChanged(self) -> pyTTkSignal:
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkTableWidget.currentCellChanged`
+
+        This signal is emitted whenever the current cell changes.
+        The cell specified by **prevRow** and **prevCol** is the cell that previously had the focus,
+        the cell specified by **currRow** and **currCol** is the new current cell.
+        
+        :param currRow: the current row
+        :type currRow: int
+        :param currColumn: the current column
+        :type currColumn: int
+        :param prevRow: the previous row
+        :type prevRow: int
+        :param prevCol: the previous column
+        :type prevCol: int
+        '''
+        return self._tableView.currentCellChanged
     @pyTTkSlot()
     def undo(self) -> None:
         '''

@@ -22,6 +22,7 @@
 
 __all__ = ['TTkList']
 
+from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkWidgets.listwidget import TTkListWidget, TTkAbstractListItem
 from TermTk.TTkAbstract.abstractscrollarea import TTkAbstractScrollArea, _ForwardData
@@ -49,7 +50,7 @@ class TTkList(TTkAbstractScrollArea):
             ]
     )
 
-    __slots__ = ('_listView', *_ttk_forward.signals)
+    __slots__ = ('_listView')
 
     def __init__(self, *,
                  listWidget:TTkListWidget=None,
@@ -69,10 +70,40 @@ class TTkList(TTkAbstractScrollArea):
         super().__init__(**kwargs)
         self.setViewport(self._listView)
 
-        for _attr in self._ttk_forward.signals:
-            setattr(self,_attr,getattr(self._listView,_attr))
-
     #--FORWARD-AUTOGEN-START--#
+    @property
+    def itemClicked(self) -> pyTTkSignal:
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkListWidget.itemClicked`
+
+        This signal is emitted whenever an item is clicked.
+        
+        :param item: the item selected
+        :type item: :py:class:`TTkAbstractListItem`
+        '''
+        return self._listView.itemClicked
+    @property
+    def textClicked(self) -> pyTTkSignal:
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkListWidget.textClicked`
+
+        This signal is emitted whenever an item is clicked.
+        
+        :param text: the text of the item selected
+        :type text: str
+        '''
+        return self._listView.textClicked
+    @property
+    def searchModified(self) -> pyTTkSignal:
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkListWidget.searchModified`
+
+        This signal is emitted whenever the search text is modified.
+        
+        :param text: the search text
+        :type text: str
+        '''
+        return self._listView.searchModified
     def items(self) -> list[TTkAbstractListItem]:
         '''
         .. seealso:: this method is forwarded to :py:meth:`TTkListWidget.items`

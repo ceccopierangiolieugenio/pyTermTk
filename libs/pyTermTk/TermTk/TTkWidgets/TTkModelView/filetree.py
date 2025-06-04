@@ -48,7 +48,7 @@ class TTkFileTree(TTkTree):
             'setFilter']
     )
 
-    __slots__ = ('_fileTreeWidget', *_ttk_forward.signals)
+    __slots__ = ('_fileTreeWidget')
 
     def __init__(self, **kwargs) -> None:
         wkwargs = kwargs.copy()
@@ -58,10 +58,152 @@ class TTkFileTree(TTkTree):
 
         super().__init__(**kwargs, treeWidget=self._fileTreeWidget)
 
-        for _attr in self._ttk_forward.signals:
-            setattr(self,_attr,getattr(self._fileTreeWidget,_attr))
-
     #--FORWARD-AUTOGEN-START--#
+    @property
+    def itemActivated(self) -> pyTTkSignal:
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkFileTreeWidget.itemActivated`
+
+        This signal is emitted when the user activates an item by double-clicking
+        or pressing a special key (e.g., Enter).
+        
+        :param item: the item that was clicked.
+        :type item: :py:class:`TTkTreeWidgetItem`
+        :param col: the item's column that was clicked.
+        :type col: int
+        '''
+        return self._fileTreeWidget.itemActivated
+    @property
+    def itemChanged(self) -> pyTTkSignal:
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkFileTreeWidget.itemChanged`
+
+        This signal is emitted when the contents of the column in the specified item changes.
+        
+        :param item: the item reported by this signal
+        :type item: :py:class:`TTkTreeWidgetItem`
+        :param col: the item's column
+        :type col: int
+        '''
+        return self._fileTreeWidget.itemChanged
+    @property
+    def itemClicked(self) -> pyTTkSignal:
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkFileTreeWidget.itemClicked`
+
+        This signal is emitted when the user clicks inside the widget.
+        
+        If no item was clicked, no signal will be emitted.
+        
+        :param item: the item that was clicked.
+        :type item: :py:class:`TTkTreeWidgetItem`
+        :param col: the item's column that was clicked.
+        :type col: int
+        '''
+        return self._fileTreeWidget.itemClicked
+    @property
+    def itemExpanded(self) -> pyTTkSignal:
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkFileTreeWidget.itemExpanded`
+
+        This signal is emitted when the specified item is expanded so that all of its children are displayed.
+        
+        :param item: the item reported by this signal
+        :type item: :py:class:`TTkTreeWidgetItem`
+        '''
+        return self._fileTreeWidget.itemExpanded
+    @property
+    def itemCollapsed(self) -> pyTTkSignal:
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkFileTreeWidget.itemCollapsed`
+
+        This signal is emitted when the specified item is collapsed so that none of its children are displayed.
+        
+        :param item: the item reported by this signal
+        :type item: :py:class:`TTkTreeWidgetItem`
+        '''
+        return self._fileTreeWidget.itemCollapsed
+    @property
+    def itemDoubleClicked(self) -> pyTTkSignal:
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkFileTreeWidget.itemDoubleClicked`
+
+        This signal is emitted when the user double clicks inside the widget.
+        
+        If no item was double clicked, no signal will be emitted.
+        
+        :param item: the item that was clicked.
+        :type item: :py:class:`TTkTreeWidgetItem`
+        :param col: the item's column that was clicked.
+        :type col: int
+        '''
+        return self._fileTreeWidget.itemDoubleClicked
+    @property
+    def fileClicked(self) -> pyTTkSignal:
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkFileTreeWidget.fileClicked`
+
+        This signal is emitted when a file is clicked
+        
+        :param file:
+        :type  file: :py:class:`TTkFileTreeWidgetItem`
+        '''
+        return self._fileTreeWidget.fileClicked
+    @property
+    def folderClicked(self) -> pyTTkSignal:
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkFileTreeWidget.folderClicked`
+
+        This signal is emitted when a folder is clicked
+        
+        :param folder:
+        :type  folder: :py:class:`TTkFileTreeWidgetItem`
+        '''
+        return self._fileTreeWidget.folderClicked
+    @property
+    def fileDoubleClicked(self) -> pyTTkSignal:
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkFileTreeWidget.fileDoubleClicked`
+
+        This signal is emitted when a file is doubleclicked
+        
+        :param file:
+        :type  file: :py:class:`TTkFileTreeWidgetItem`
+        '''
+        return self._fileTreeWidget.fileDoubleClicked
+    @property
+    def folderDoubleClicked(self) -> pyTTkSignal:
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkFileTreeWidget.folderDoubleClicked`
+
+        This signal is emitted when a folder is doubleclicked
+        
+        :param folder:
+        :type  folder: :py:class:`TTkFileTreeWidgetItem`
+        '''
+        return self._fileTreeWidget.folderDoubleClicked
+    @property
+    def fileActivated(self) -> pyTTkSignal:
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkFileTreeWidget.fileActivated`
+
+        This signal is emitted when a file is activated
+        
+        :param file:
+        :type  file: :py:class:`TTkFileTreeWidgetItem`
+        '''
+        return self._fileTreeWidget.fileActivated
+    @property
+    def folderActivated(self) -> pyTTkSignal:
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkFileTreeWidget.folderActivated`
+
+        This signal is emitted when a fiilder is activated
+        
+        :param folder:
+        :type  folder: :py:class:`TTkFileTreeWidgetItem`
+        '''
+        return self._fileTreeWidget.folderActivated
     def setHeaderLabels(self, labels:TTkString) -> None:
         '''
         .. seealso:: this method is forwarded to :py:meth:`TTkFileTreeWidget.setHeaderLabels`

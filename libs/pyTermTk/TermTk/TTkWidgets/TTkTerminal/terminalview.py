@@ -139,54 +139,66 @@ class TTkTerminalView(TTkAbstractScrollView, _TTkTerminal_CSI_DEC):
         reportMove:  bool = False
         sgrMode:     bool = False
 
-    bell:pyTTkSignal
-    '''
-    This signal is emitted when the `bell <https://en.wikipedia.org/wiki/Bell_character>`__ is received.
-    '''
+    @property
+    def bell(self) -> pyTTkSignal:
+        '''
+        This signal is emitted when the `bell <https://en.wikipedia.org/wiki/Bell_character>`__ is received.
+        '''
+        return self._bell
 
-    terminalClosed:pyTTkSignal
-    '''
-    This signal is emitted when the terminal is closed.
-    '''
+    @property
+    def terminalClosed(self) -> pyTTkSignal:
+        '''
+        This signal is emitted when the terminal is closed.
+        '''
+        return self._terminalClosed
 
-    titleChanged:pyTTkSignal
-    '''
-    This signal is emitted when the terminal title change through OSC "ESC ]0;"
+    @property
+    def titleChanged(self) -> pyTTkSignal:
+        '''
+        This signal is emitted when the terminal title change through OSC "ESC ]0;"
 
-    :param title: the new title
-    :type title: str
-    '''
+        :param title: the new title
+        :type title: str
+        '''
+        return self._titleChanged
 
-    textSelected:pyTTkSignal
-    '''
-    This signal is emitted when a text is selected.
+    @property
+    def textSelected(self) -> pyTTkSignal:
+        '''
+        This signal is emitted when a text is selected.
 
-    :param text: the selected text
-    :type text: :py:class:`ttkString`
-    '''
+        :param text: the selected text
+        :type text: :py:class:`ttkString`
+        '''
+        return self._textSelected
 
-    termData:pyTTkSignal
-    '''
-    This signal is emitted when data event fires.
+    @property
+    def termData(self) -> pyTTkSignal:
+        '''
+        This signal is emitted when data event fires.
 
-    This happens for example when the user types or pastes into the terminal.
-    The event value is whatever 'str' results, in a typical setup,
-    this should be passed on to the backing pty.
+        This happens for example when the user types or pastes into the terminal.
+        The event value is whatever 'str' results, in a typical setup,
+        this should be passed on to the backing pty.
 
-    This signal is used in :py:class:`TTkTerminalHelper` through :py:meth:`TTkTerminalHelper.attachTTkTerminal`
-    to frward all the terminal events to the pty interface.
+        This signal is used in :py:class:`TTkTerminalHelper` through :py:meth:`TTkTerminalHelper.attachTTkTerminal`
+        to frward all the terminal events to the pty interface.
 
-    :param data: the event data
-    :type data: str
-    '''
+        :param data: the event data
+        :type data: str
+        '''
+        return self._termData
 
-    termResized:pyTTkSignal
-    '''
-    This signal is emitted when the terminal is resized.
+    @property
+    def termResized(self) -> pyTTkSignal:
+        '''
+        This signal is emitted when the terminal is resized.
 
-    :param size: the new size [width, height] of the terminal
-    :type size: (int,int)
-    '''
+        :param size: the new size [width, height] of the terminal
+        :type size: (int,int)
+        '''
+        return self._termResized
 
     __slots__ = (
             '_termLoop', '_newSize',
@@ -195,17 +207,17 @@ class TTkTerminalView(TTkAbstractScrollView, _TTkTerminal_CSI_DEC):
             '_keyboard', '_mouse', '_terminal',
             '_screen_current', '_screen_normal', '_screen_alt',
             # Signals
-            'bell',
-            'titleChanged', 'terminalClosed', 'textSelected',
-            'termData','termResized')
+            '_bell',
+            '_titleChanged', '_terminalClosed', '_textSelected',
+            '_termData','_termResized')
     def __init__(self, **kwargs) -> None:
         #Signals
-        self.bell = pyTTkSignal()
-        self.terminalClosed = pyTTkSignal()
-        self.titleChanged = pyTTkSignal(str)
-        self.textSelected = pyTTkSignal(TTkString)
-        self.termData = pyTTkSignal(str)
-        self.termResized = pyTTkSignal(int,int)
+        self._bell = pyTTkSignal()
+        self._terminalClosed = pyTTkSignal()
+        self._titleChanged = pyTTkSignal(str)
+        self._textSelected = pyTTkSignal(TTkString)
+        self._termData = pyTTkSignal(str)
+        self._termResized = pyTTkSignal(int,int)
 
         self._newSize = None
         self._terminal = TTkTerminalView._Terminal()

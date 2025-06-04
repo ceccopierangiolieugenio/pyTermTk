@@ -132,6 +132,60 @@ def autogen_methods(data: _ForwardData) -> List[str]:
 
     return signatures
 
+def autogen_signals(data: _ForwardData) -> List[str]:
+    """
+    Generates a list of signals signatures and return types for a given class.
+
+    Args:
+        data (Dict[str, Any]): A dictionary containing the class name and a list of methods.
+            Example: {'class': 'TTkTexteditView', 'methods': ['clear', 'setText', ...]}
+
+    Returns:
+        List[str]: A list of strings, where each string is a signal signature and return type.
+    """
+    import TermTk as ttk
+
+    class_name = data.forwardClass.__name__
+    signatures: List[str] = []
+
+    for signal_name in data.signals:
+        try:
+            # Get the method from the class
+            signal = getattr(data.forwardClass, signal_name)
+            # sig = inspect.signature(signal)
+            doc = inspect.getdoc(signal)
+            # return_type = sig.return_annotation
+            # params = ', '.join([f"{_p}={_p}" for _p in sig.parameters.keys() if _p != 'self'])
+
+            # source = inspect.getsource(signal)
+            # Extract the first line, which should be the method definition
+            # lines = source.splitlines()
+            # index_func = _index_of('    def ',lines)
+            # lines = lines[:index_func+1]
+            doc_lines:List[str] = []
+            doc_indent = "        "
+            doc_lines.extend([
+                doc_indent + f"'''",
+                doc_indent + f".. seealso:: this method is forwarded to :py:meth:`{class_name}.{signal_name}`\n",
+            ])
+            if doc:
+                doc_lines.extend([doc_indent + _l for _l in doc.split('\n')])
+            doc_lines.append(doc_indent + "'''")
+            # Format the signature string
+            signatures.extend([
+                 "    @property\n",
+                f"    def {signal_name}(self) -> pyTTkSignal:\n",
+                *[f"{_l}\n" for _l in doc_lines],
+                f"        return {data.instance}.{signal_name}\n"
+                ])
+
+        except AttributeError:
+            print(f"Error: Method '{signal_name}' not found in class '{class_name}'.")
+        except Exception as e:
+            print(f"Error: An error occurred while processing method '{signal_name}': {e}")
+
+    return signatures
+
 def get_classes_with_source_from_module(module) -> List[Dict[str, Any]]:
     classes_with_source: List[Dict[str, Any]] = []
 
@@ -172,7 +226,8 @@ if __name__ == "__main__":
             print(f"  Module: {class_data['module']}")
             print(f"  Filename: {class_data['filename']}")
             # print(f"  Source:\n{class_data['source']}")
-            autogenenerated = autogen_methods(class_data['forward'])
+            autogenenerated = autogen_signals(class_data['forward'])
+            autogenenerated += autogen_methods(class_data['forward'])
             if args.apply:
                 lines = read_file_to_lines(class_data['filename'])
                 index_start = _index_of(marker_start,lines)

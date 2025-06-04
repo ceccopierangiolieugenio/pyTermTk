@@ -77,52 +77,64 @@ class TTkFileTreeWidget(TTkTreeWidget):
         root.mainloop()
     '''
 
-    fileClicked:pyTTkSignal
-    '''
-    This signal is emitted when a file is clicked
+    @property
+    def fileClicked(self) -> pyTTkSignal:
+        '''
+        This signal is emitted when a file is clicked
 
-    :param file:
-    :type  file: :py:class:`TTkFileTreeWidgetItem`
-    '''
-    folderClicked:pyTTkSignal
-    '''
-    This signal is emitted when a folder is clicked
+        :param file:
+        :type  file: :py:class:`TTkFileTreeWidgetItem`
+        '''
+        return self._fileClicked
+    @property
+    def folderClicked(self) -> pyTTkSignal:
+        '''
+        This signal is emitted when a folder is clicked
 
-    :param folder:
-    :type  folder: :py:class:`TTkFileTreeWidgetItem`
-    '''
-    fileDoubleClicked:pyTTkSignal
-    '''
-    This signal is emitted when a file is doubleclicked
+        :param folder:
+        :type  folder: :py:class:`TTkFileTreeWidgetItem`
+        '''
+        return self._folderClicked
+    @property
+    def fileDoubleClicked(self) -> pyTTkSignal:
+        '''
+        This signal is emitted when a file is doubleclicked
 
-    :param file:
-    :type  file: :py:class:`TTkFileTreeWidgetItem`
-    '''
-    folderDoubleClicked:pyTTkSignal
-    '''
-    This signal is emitted when a folder is doubleclicked
+        :param file:
+        :type  file: :py:class:`TTkFileTreeWidgetItem`
+        '''
+        return self._fileDoubleClicked
+    @property
+    def folderDoubleClicked(self) -> pyTTkSignal:
+        '''
+        This signal is emitted when a folder is doubleclicked
 
-    :param folder:
-    :type  folder: :py:class:`TTkFileTreeWidgetItem`
-    '''
-    fileActivated:pyTTkSignal
-    '''
-    This signal is emitted when a file is activated
+        :param folder:
+        :type  folder: :py:class:`TTkFileTreeWidgetItem`
+        '''
+        return self._folderDoubleClicked
+    @property
+    def fileActivated(self) -> pyTTkSignal:
+        '''
+        This signal is emitted when a file is activated
 
-    :param file:
-    :type  file: :py:class:`TTkFileTreeWidgetItem`
-    '''
-    folderActivated:pyTTkSignal
-    '''
-    This signal is emitted when a fiilder is activated
+        :param file:
+        :type  file: :py:class:`TTkFileTreeWidgetItem`
+        '''
+        return self._fileActivated
+    @property
+    def folderActivated(self) -> pyTTkSignal:
+        '''
+        This signal is emitted when a fiilder is activated
 
-    :param folder:
-    :type  folder: :py:class:`TTkFileTreeWidgetItem`
-    '''
+        :param folder:
+        :type  folder: :py:class:`TTkFileTreeWidgetItem`
+        '''
+        return self._folderActivated
 
     __slots__ = ('_path', '_filter',
                  # Signals
-                 'fileClicked', 'folderClicked', 'fileDoubleClicked', 'folderDoubleClicked', 'fileActivated', 'folderActivated')
+                 '_fileClicked', '_folderClicked', '_fileDoubleClicked', '_folderDoubleClicked', '_fileActivated', '_folderActivated')
     def __init__(self,
                  path:str='.',
                  **kwargs) -> None:
@@ -131,12 +143,12 @@ class TTkFileTreeWidget(TTkTreeWidget):
         :type  path: str, optional
         '''
         # Signals
-        self.fileClicked         = pyTTkSignal(TTkFileTreeWidgetItem)
-        self.folderClicked       = pyTTkSignal(TTkFileTreeWidgetItem)
-        self.fileDoubleClicked   = pyTTkSignal(TTkFileTreeWidgetItem)
-        self.folderDoubleClicked = pyTTkSignal(TTkFileTreeWidgetItem)
-        self.fileActivated       = pyTTkSignal(TTkFileTreeWidgetItem)
-        self.folderActivated     = pyTTkSignal(TTkFileTreeWidgetItem)
+        self._fileClicked         = pyTTkSignal(TTkFileTreeWidgetItem)
+        self._folderClicked       = pyTTkSignal(TTkFileTreeWidgetItem)
+        self._fileDoubleClicked   = pyTTkSignal(TTkFileTreeWidgetItem)
+        self._folderDoubleClicked = pyTTkSignal(TTkFileTreeWidgetItem)
+        self._fileActivated       = pyTTkSignal(TTkFileTreeWidgetItem)
+        self._folderActivated     = pyTTkSignal(TTkFileTreeWidgetItem)
         self._path   = path
         self._filter = '*'
         super().__init__(**kwargs)
