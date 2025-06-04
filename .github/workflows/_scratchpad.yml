@@ -2,44 +2,29 @@ name: _Scratchpad
 
 on:
   workflow_dispatch:
-    inputs:
-      app:
-        description: The changed app
-        type: string
-        default: pyTermTk
-      message:
-        description: The release message
-        type: string
-        default: pyTermTk released
-  workflow_call:
-    inputs:
-      app:
-        description: The changed app
-        type: string
-        default: pyTermTk
-      message:
-        description: The release message
-        type: string
-        default: pyTermTk released
+  # push:
+  #   branches:
+  #     - main
+
+permissions:
+  contents: write
+  pull-requests: write
+  actions: read
+  pages: write
+  id-token: write
 
 jobs:
-  notify-discord:
+  test:
     # runs-on: ubuntu-latest
     runs-on: self-hosted
+
     steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: ${{ github.sha }}
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.x"
-      - name: Instrall deps
-        run: |
-          python -m pip install discord.py
-      - name: Deploy Discord message
+      - run: echo Scratchpad
         env:
-          MESSAGE: ${{ inputs.message }}
-        run: |
-          python tools/social/notify_discord.py ${{ inputs.app }}
-
-
+          GH: ${{ toJson(github) }}
+          GHE: ${{ toJson(github.event) }}
+          GHEH: ${{ toJson(github.event.head_commit) }}
+          GHEHM: ${{ toJson(github.event.head_commit.modified) }}
+      # - uses: actions/checkout@v4
+      #   with:
+      #     ref: ${{ github.sha }}
