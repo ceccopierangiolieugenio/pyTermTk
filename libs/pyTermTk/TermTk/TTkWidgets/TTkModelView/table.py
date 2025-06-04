@@ -60,7 +60,7 @@ class TTkTable(TTkAbstractScrollArea):
             'setRowHeight', 'resizeRowToContents', 'resizeRowsToContents']
     )
 
-    __slots__ = ('_tableView', *_ttk_forward.signals)
+    __slots__ = ('_tableView')
 
     def __init__(self, *,
                  tableWidget:TTkTableWidget=None,
@@ -89,9 +89,6 @@ class TTkTable(TTkAbstractScrollArea):
         super().__init__(**kwargs)
         self.setViewport(self._tableView)
         # self.setFocusPolicy(TTkK.ClickFocus)
-
-        for _attr in self._ttk_forward.signals:
-            setattr(self,_attr,getattr(self._tableView,_attr))
 
     def style(self):
         if self._tableView:
@@ -130,7 +127,7 @@ class TTkTable(TTkAbstractScrollArea):
         .. seealso:: this method is forwarded to :py:meth:`TTkTableWidget.isUndoAvailable`
 
         isUndoAvailable
-        
+
         :return: bool
         '''
         return self._tableView.isUndoAvailable()
@@ -139,7 +136,7 @@ class TTkTable(TTkAbstractScrollArea):
         .. seealso:: this method is forwarded to :py:meth:`TTkTableWidget.isRedoAvailable`
 
         isRedoAvailable
-        
+
         :return: bool
         '''
         return self._tableView.isRedoAvailable()
@@ -175,9 +172,9 @@ class TTkTable(TTkAbstractScrollArea):
         If enable is true, enables sorting for the table and immediately trigger a
         call to :meth:`sortByColumn`
         with the current sort section and order
-        
+
         **Note**: Setter function for property sortingEnabled.
-        
+
         :param enable: the availability of undo
         :type enable: bool
         '''
@@ -189,11 +186,11 @@ class TTkTable(TTkAbstractScrollArea):
         This property holds whether sorting is enabled
         If this property is true, sorting is enabled for the table.
         If this property is false, sorting is not enabled. The default value is false.
-        
+
         **Note**: . Setting the property to true with :meth:`setSortingEnabled`
         immediately triggers a call to :meth:`sortByColumn`
         with the current sort section and order.
-        
+
         :return: bool
         '''
         return self._tableView.isSortingEnabled()
@@ -203,13 +200,13 @@ class TTkTable(TTkAbstractScrollArea):
         .. seealso:: this method is forwarded to :py:meth:`TTkTableWidget.sortByColumn`
 
         Sorts the model by the values in the given column and order.
-        
+
         column may be -1, in which case no sort indicator will be shown and the model will return to its natural, unsorted order.
         Note that not all models support this and may even crash in this case.
-        
+
         :param column: the column used for the sorting, -1 to keep the table unsorted
         :type column: bool
-        
+
         :param order: the sort order
         :type order: :py:class:`TTkK.SortOrder`
         '''
@@ -235,7 +232,7 @@ class TTkTable(TTkAbstractScrollArea):
         .. seealso:: this method is forwarded to :py:meth:`TTkTableWidget.setSelection`
 
         Selects the items within the given rect and in accordance with the specified selection flags.
-        
+
         :param pos: the x,y position of the rect
         :type pos: tuple[int,int]
         :param size: the width,height of the rect used for the selection
@@ -249,7 +246,7 @@ class TTkTable(TTkAbstractScrollArea):
         .. seealso:: this method is forwarded to :py:meth:`TTkTableWidget.selectRow`
 
         Selects the given row in the table view
-        
+
         :param row: the row to be selected
         :type row: int
         '''
@@ -259,7 +256,7 @@ class TTkTable(TTkAbstractScrollArea):
         .. seealso:: this method is forwarded to :py:meth:`TTkTableWidget.selectColumn`
 
         Selects the given column in the table view
-        
+
         :param col: the column to be selected
         :type col: int
         '''
@@ -269,7 +266,7 @@ class TTkTable(TTkAbstractScrollArea):
         .. seealso:: this method is forwarded to :py:meth:`TTkTableWidget.unselectRow`
 
         Unselects the given row in the table view
-        
+
         :param row: the row to be unselected
         :type row: int
         '''
@@ -279,7 +276,7 @@ class TTkTable(TTkAbstractScrollArea):
         .. seealso:: this method is forwarded to :py:meth:`TTkTableWidget.unselectColumn`
 
         Unselects the given column in the table view
-        
+
         :param column: the column to be unselected
         :type column: int
         '''
@@ -289,7 +286,7 @@ class TTkTable(TTkAbstractScrollArea):
         .. seealso:: this method is forwarded to :py:meth:`TTkTableWidget.rowCount`
 
         Returns the number of rows.
-        
+
         :return: int
         '''
         return self._tableView.rowCount()
@@ -298,7 +295,7 @@ class TTkTable(TTkAbstractScrollArea):
         .. seealso:: this method is forwarded to :py:meth:`TTkTableWidget.currentRow`
 
         Returns the row of the current item.
-        
+
         :return: int
         '''
         return self._tableView.currentRow()
@@ -307,7 +304,7 @@ class TTkTable(TTkAbstractScrollArea):
         .. seealso:: this method is forwarded to :py:meth:`TTkTableWidget.columnCount`
 
         Returns the number of columns.
-        
+
         :return: int
         '''
         return self._tableView.columnCount()
@@ -316,7 +313,7 @@ class TTkTable(TTkAbstractScrollArea):
         .. seealso:: this method is forwarded to :py:meth:`TTkTableWidget.currentColumn`
 
         Returns the column of the current item.
-        
+
         :return: int
         '''
         return self._tableView.currentColumn()
@@ -325,7 +322,7 @@ class TTkTable(TTkAbstractScrollArea):
         .. seealso:: this method is forwarded to :py:meth:`TTkTableWidget.verticalHeader`
 
         Returns the table view's vertical header.
-        
+
         :return: :py:class:`TTkHeaderView`
         '''
         return self._tableView.verticalHeader()
@@ -334,7 +331,7 @@ class TTkTable(TTkAbstractScrollArea):
         .. seealso:: this method is forwarded to :py:meth:`TTkTableWidget.horizontalHeader`
 
         Returns the table view's horizontal header.
-        
+
         :return: :py:class:`TTkHeaderView`
         '''
         return self._tableView.horizontalHeader()
@@ -343,7 +340,7 @@ class TTkTable(TTkAbstractScrollArea):
         .. seealso:: this method is forwarded to :py:meth:`TTkTableWidget.hSeparatorVisibility`
 
         Returns the visibility status of the horizontal separator
-        
+
         :return: bool
         '''
         return self._tableView.hSeparatorVisibility()
@@ -352,7 +349,7 @@ class TTkTable(TTkAbstractScrollArea):
         .. seealso:: this method is forwarded to :py:meth:`TTkTableWidget.vSeparatorVisibility`
 
         Returns the visibility status of the vertical separator
-        
+
         :return: bool
         '''
         return self._tableView.vSeparatorVisibility()
@@ -361,9 +358,9 @@ class TTkTable(TTkAbstractScrollArea):
         .. seealso:: this method is forwarded to :py:meth:`TTkTableWidget.setHSeparatorVisibility`
 
         Set the the visibility of the horizontal separators (lines)
-        
+
         ::
-        
+
                  Customer Id      First Name  Last Name   Company
             1  │ DD37Cf93aecA6Dc  Sheryl      Baxter      Rasmussen Group
             ╾╌╌┼───────────────────────────────────────────────────────────
@@ -371,7 +368,7 @@ class TTkTable(TTkAbstractScrollArea):
             ╾╌╌┼───────────────────────────────────────────────────────────
             3  │ 6F94879bDAfE5a6  Roy         Berry       Murillo-Perry
             ╾╌╌┼───────────────────────────────────────────────────────────
-        
+
         :param visibility: the visibility status
         :type visibility: bool
         '''
@@ -381,9 +378,9 @@ class TTkTable(TTkAbstractScrollArea):
         .. seealso:: this method is forwarded to :py:meth:`TTkTableWidget.setVSeparatorVisibility`
 
         Set the the visibility of the vertical separators (lines)
-        
+
         ::
-        
+
                  Customer Id     ╿First Name ╿Last Name   ╿Company                     ╿
             1  │ DD37Cf93aecA6Dc │Sheryl     │Baxter      │Rasmussen Group             │
             2  │ 1Ef7b82A4CAAD10 │Preston    │Lozano      │Vega-Gentry                 │
@@ -391,7 +388,7 @@ class TTkTable(TTkAbstractScrollArea):
             4  │ 5Cef8BFA16c5e3c │Linda      │Olsen       │Dominguez, Mcmillan and Don │
             5  │ 053d585Ab6b3159 │Joanna     │Bender      │Martin, Lang and Andrade    │
             6  │ 2d08FB17EE273F4 │Aimee      │Downs       │Steele Group                │
-        
+
         :param visibility: the visibility status
         :type visibility: bool
         '''
@@ -401,7 +398,7 @@ class TTkTable(TTkAbstractScrollArea):
         .. seealso:: this method is forwarded to :py:meth:`TTkTableWidget.model`
 
         Returns the model that this view is presenting.
-        
+
         :return: :py:class:`TTkAbstractTableModel`
         '''
         return self._tableView.model()
@@ -410,7 +407,7 @@ class TTkTable(TTkAbstractScrollArea):
         .. seealso:: this method is forwarded to :py:meth:`TTkTableWidget.setModel`
 
         Sets the model for the view to present.
-        
+
         :param model:
         :type model: :py:class:`TTkAbstractTableModel`
         '''
@@ -421,7 +418,7 @@ class TTkTable(TTkAbstractScrollArea):
         .. seealso:: this method is forwarded to :py:meth:`TTkTableWidget.setColumnWidth`
 
         Sets the width of the given column.
-        
+
         :param column: the column
         :type column: int
         :param width: its width
@@ -434,7 +431,7 @@ class TTkTable(TTkAbstractScrollArea):
         .. seealso:: this method is forwarded to :py:meth:`TTkTableWidget.resizeColumnToContents`
 
         Resizes the given column based on the size hints of the delegate used to render each item in the column.
-        
+
         :param column: the column to be resized
         :type column: int
         '''
@@ -453,7 +450,7 @@ class TTkTable(TTkAbstractScrollArea):
         .. seealso:: this method is forwarded to :py:meth:`TTkTableWidget.setRowHeight`
 
         Sets the height of the given row.
-        
+
         :param row: the row
         :type row: int
         :param height: its height
@@ -466,7 +463,7 @@ class TTkTable(TTkAbstractScrollArea):
         .. seealso:: this method is forwarded to :py:meth:`TTkTableWidget.resizeRowToContents`
 
         Resizes the given row based on the size hints of the delegate used to render each item in the row.
-        
+
         :param row: the row to be resized
         :type row: int
         '''

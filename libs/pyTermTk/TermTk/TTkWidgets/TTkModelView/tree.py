@@ -49,7 +49,7 @@ class TTkTree(TTkAbstractScrollArea):
             'addTopLevelItem', 'addTopLevelItems', 'takeTopLevelItem', 'topLevelItem', 'indexOfTopLevelItem', 'selectedItems', 'clear']
     )
 
-    __slots__ = ('_treeView', *_ttk_forward.signals)
+    __slots__ = ('_treeView')
 
     def __init__(self, *,
                  treeWidget:TTkTreeWidget=None,
@@ -64,9 +64,6 @@ class TTkTree(TTkAbstractScrollArea):
         self._treeView:TTkTreeWidget = treeWidget if treeWidget else TTkTreeWidget(**kwargs)
         self.setViewport(self._treeView)
         self.setFocusPolicy(TTkK.ClickFocus)
-
-        for _attr in self._ttk_forward.signals:
-            setattr(self,_attr,getattr(self._treeView,_attr))
 
     #--FORWARD-AUTOGEN-START--#
     def setHeaderLabels(self, labels:TTkString) -> None:

@@ -43,7 +43,7 @@ class TTkTerminal(TTkAbstractScrollArea):
             'termWrite', 'termSize']
     )
 
-    __slots__ = ('_terminalView', *_ttk_forward.signals)
+    __slots__ = ('_terminalView')
 
     def __init__(self, **kwargs) -> None:
         super().__init__(**kwargs)
@@ -52,9 +52,6 @@ class TTkTerminal(TTkAbstractScrollArea):
         self._terminalView = TTkTerminalView(**kwargs)
         self.setFocusPolicy(TTkK.ClickFocus)
         self.setViewport(self._terminalView)
-
-        for _attr in self._ttk_forward.signals:
-            setattr(self,_attr,getattr(self._terminalView,_attr))
 
         self.terminalClosed = pyTTkSignal(TTkTerminal)
         self._terminalView.terminalClosed.connect(lambda : self.terminalClosed.emit(self))
@@ -69,7 +66,7 @@ class TTkTerminal(TTkAbstractScrollArea):
         .. seealso:: this method is forwarded to :py:meth:`TTkTerminalView.termWrite`
 
         Write data to the terminal.
-        
+
         :params data: the data to write
         :type data: str
         '''
@@ -79,7 +76,7 @@ class TTkTerminal(TTkAbstractScrollArea):
         .. seealso:: this method is forwarded to :py:meth:`TTkTerminalView.termSize`
 
         This property holds the size of the terminal
-        
+
         :return: a tuple of 2 integers (width, height)
         :rtype: tuple
         '''

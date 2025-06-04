@@ -48,7 +48,7 @@ class TTkFileTree(TTkTree):
             'setFilter']
     )
 
-    __slots__ = ('_fileTreeWidget', *_ttk_forward.signals)
+    __slots__ = ('_fileTreeWidget')
 
     def __init__(self, **kwargs) -> None:
         wkwargs = kwargs.copy()
@@ -57,9 +57,6 @@ class TTkFileTree(TTkTree):
         self._fileTreeWidget = TTkFileTreeWidget(**wkwargs)
 
         super().__init__(**kwargs, treeWidget=self._fileTreeWidget)
-
-        for _attr in self._ttk_forward.signals:
-            setattr(self,_attr,getattr(self._fileTreeWidget,_attr))
 
     #--FORWARD-AUTOGEN-START--#
     def setHeaderLabels(self, labels:TTkString) -> None:

@@ -49,7 +49,7 @@ class TTkList(TTkAbstractScrollArea):
             ]
     )
 
-    __slots__ = ('_listView', *_ttk_forward.signals)
+    __slots__ = ('_listView')
 
     def __init__(self, *,
                  listWidget:TTkListWidget=None,
@@ -68,9 +68,6 @@ class TTkList(TTkAbstractScrollArea):
                                                             **kwargs|{'parent':None,'visible':True})
         super().__init__(**kwargs)
         self.setViewport(self._listView)
-
-        for _attr in self._ttk_forward.signals:
-            setattr(self,_attr,getattr(self._listView,_attr))
 
     #--FORWARD-AUTOGEN-START--#
     def items(self) -> list[TTkAbstractListItem]:

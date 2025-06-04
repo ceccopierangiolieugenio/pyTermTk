@@ -953,9 +953,7 @@ class TTkTextEdit(TTkAbstractScrollArea):
 
     __slots__ = (
         '_textEditView',
-        '_lineNumberView', '_lineNumber',
-        *_ttk_forward.signals
-        )
+        '_lineNumberView', '_lineNumber')
 
     def __init__(self, *,
                  # TTkWidget init
@@ -992,9 +990,6 @@ class TTkTextEdit(TTkAbstractScrollArea):
         self._lineNumberView.setTextWrap(self._textEditView._textWrap)
         textEditLayout.addWidget(self._lineNumberView,0,0)
         self.setViewport(textEditLayout)
-
-        for _attr in self._ttk_forward.signals:
-            setattr(self,_attr,getattr(self._textEditView,_attr))
 
     def ruler(self) -> TTkTextEditRuler:
         '''ruler'''
@@ -1138,7 +1133,7 @@ class TTkTextEdit(TTkAbstractScrollArea):
         .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.extraSelections`
 
         Returns previously set extra selections.
-        
+
         :rtype: list[:py:class:`ExtraSelection`]
         '''
         return self._textEditView.extraSelections()
@@ -1149,7 +1144,7 @@ class TTkTextEdit(TTkAbstractScrollArea):
         This function allows temporarily marking certain regions in the document with a given color,
         specified as selections. This can be useful for example in a programming editor to mark a
         whole line of text with a given background color to indicate the existence of a breakpoint.
-        
+
         :param extraSelections: the list of extra selections.
         :type extraSelections: list[:py:class:`ExtraSelection`]
         '''
