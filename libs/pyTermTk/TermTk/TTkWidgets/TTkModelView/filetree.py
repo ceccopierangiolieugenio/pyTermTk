@@ -143,6 +143,10 @@ class TTkFileTree(TTkTree):
         '''
         .. seealso:: this method is forwarded to :py:meth:`TTkFileTreeWidget.fileClicked`
 
+        This signal is emitted when a file is clicked
+        
+        :param file:
+        :type  file: :py:class:`TTkFileTreeWidgetItem`
         '''
         return self._fileTreeWidget.fileClicked
     @property
@@ -150,6 +154,10 @@ class TTkFileTree(TTkTree):
         '''
         .. seealso:: this method is forwarded to :py:meth:`TTkFileTreeWidget.folderClicked`
 
+        This signal is emitted when a folder is clicked
+        
+        :param folder:
+        :type  folder: :py:class:`TTkFileTreeWidgetItem`
         '''
         return self._fileTreeWidget.folderClicked
     @property
@@ -157,6 +165,10 @@ class TTkFileTree(TTkTree):
         '''
         .. seealso:: this method is forwarded to :py:meth:`TTkFileTreeWidget.fileDoubleClicked`
 
+        This signal is emitted when a file is doubleclicked
+        
+        :param file:
+        :type  file: :py:class:`TTkFileTreeWidgetItem`
         '''
         return self._fileTreeWidget.fileDoubleClicked
     @property
@@ -164,6 +176,10 @@ class TTkFileTree(TTkTree):
         '''
         .. seealso:: this method is forwarded to :py:meth:`TTkFileTreeWidget.folderDoubleClicked`
 
+        This signal is emitted when a folder is doubleclicked
+        
+        :param folder:
+        :type  folder: :py:class:`TTkFileTreeWidgetItem`
         '''
         return self._fileTreeWidget.folderDoubleClicked
     @property
@@ -171,6 +187,10 @@ class TTkFileTree(TTkTree):
         '''
         .. seealso:: this method is forwarded to :py:meth:`TTkFileTreeWidget.fileActivated`
 
+        This signal is emitted when a file is activated
+        
+        :param file:
+        :type  file: :py:class:`TTkFileTreeWidgetItem`
         '''
         return self._fileTreeWidget.fileActivated
     @property
@@ -178,6 +198,10 @@ class TTkFileTree(TTkTree):
         '''
         .. seealso:: this method is forwarded to :py:meth:`TTkFileTreeWidget.folderActivated`
 
+        This signal is emitted when a fiilder is activated
+        
+        :param folder:
+        :type  folder: :py:class:`TTkFileTreeWidgetItem`
         '''
         return self._fileTreeWidget.folderActivated
     def setHeaderLabels(self, labels:TTkString) -> None:

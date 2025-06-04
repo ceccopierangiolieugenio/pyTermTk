@@ -66,6 +66,7 @@ class TTkTerminal(TTkAbstractScrollArea):
         '''
         .. seealso:: this method is forwarded to :py:meth:`TTkTerminalView.bell`
 
+        This signal is emitted when the `bell <https://en.wikipedia.org/wiki/Bell_character>`__ is received.
         '''
         return self._terminalView.bell
     @property
@@ -73,6 +74,10 @@ class TTkTerminal(TTkAbstractScrollArea):
         '''
         .. seealso:: this method is forwarded to :py:meth:`TTkTerminalView.titleChanged`
 
+        This signal is emitted when the terminal title change through OSC "ESC ]0;"
+        
+        :param title: the new title
+        :type title: str
         '''
         return self._terminalView.titleChanged
     @property
@@ -80,6 +85,7 @@ class TTkTerminal(TTkAbstractScrollArea):
         '''
         .. seealso:: this method is forwarded to :py:meth:`TTkTerminalView.terminalClosed`
 
+        This signal is emitted when the terminal is closed.
         '''
         return self._terminalView.terminalClosed
     @property
@@ -87,6 +93,10 @@ class TTkTerminal(TTkAbstractScrollArea):
         '''
         .. seealso:: this method is forwarded to :py:meth:`TTkTerminalView.textSelected`
 
+        This signal is emitted when a text is selected.
+        
+        :param text: the selected text
+        :type text: :py:class:`ttkString`
         '''
         return self._terminalView.textSelected
     @property
@@ -94,6 +104,17 @@ class TTkTerminal(TTkAbstractScrollArea):
         '''
         .. seealso:: this method is forwarded to :py:meth:`TTkTerminalView.termData`
 
+        This signal is emitted when data event fires.
+        
+        This happens for example when the user types or pastes into the terminal.
+        The event value is whatever 'str' results, in a typical setup,
+        this should be passed on to the backing pty.
+        
+        This signal is used in :py:class:`TTkTerminalHelper` through :py:meth:`TTkTerminalHelper.attachTTkTerminal`
+        to frward all the terminal events to the pty interface.
+        
+        :param data: the event data
+        :type data: str
         '''
         return self._terminalView.termData
     @property
@@ -101,6 +122,10 @@ class TTkTerminal(TTkAbstractScrollArea):
         '''
         .. seealso:: this method is forwarded to :py:meth:`TTkTerminalView.termResized`
 
+        This signal is emitted when the terminal is resized.
+        
+        :param size: the new size [width, height] of the terminal
+        :type size: (int,int)
         '''
         return self._terminalView.termResized
     def termWrite(self, data:str) -> None:

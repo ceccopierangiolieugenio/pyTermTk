@@ -23,6 +23,7 @@
 
 __all__ = ['TTkTableWidget','TTkHeaderView']
 
+from typing import Optional
 from dataclasses import dataclass
 
 from TermTk.TTkCore.log import TTkLog
@@ -154,61 +155,71 @@ class TTkTableWidget(TTkAbstractScrollView):
 
     '''
 
-    cellChanged:pyTTkSignal
-    '''
-        This signal is emitted whenever the data of the item in the cell specified by row and column has changed.
+    @property
+    def cellChanged(self) -> pyTTkSignal:
+        '''
+            This signal is emitted whenever the data of the item in the cell specified by row and column has changed.
 
-        :param row: the row
-        :type row: int
-        :param col: the column
-        :type col: int
-    '''
-    cellClicked:pyTTkSignal
-    '''
-        This signal is emitted whenever a cell in the table is clicked.
-        The row and column specified is the cell that was clicked.
+            :param row: the row
+            :type row: int
+            :param col: the column
+            :type col: int
+        '''
+        return self._cellChanged
+    @property
+    def cellClicked(self) -> pyTTkSignal:
+        '''
+            This signal is emitted whenever a cell in the table is clicked.
+            The row and column specified is the cell that was clicked.
 
-        :param row: the row
-        :type row: int
-        :param col: the column
-        :type col: int
-    '''
-    cellDoubleClicked:pyTTkSignal
-    '''
-        This signal is emitted whenever a cell in the table is double clicked.
-        The row and column specified is the cell that was double clicked.
+            :param row: the row
+            :type row: int
+            :param col: the column
+            :type col: int
+        '''
+        return self._cellClicked
+    @property
+    def cellDoubleClicked(self) -> pyTTkSignal:
+        '''
+            This signal is emitted whenever a cell in the table is double clicked.
+            The row and column specified is the cell that was double clicked.
 
-        :param row: the row
-        :type row: int
-        :param col: the column
-        :type col: int
-    '''
-    cellEntered:pyTTkSignal
-    '''
-        This signal is emitted when the mouse cursor enters a cell.
-        The cell is specified by row and column.
+            :param row: the row
+            :type row: int
+            :param col: the column
+            :type col: int
+        '''
+        return self._cellDoubleClicked
+    @property
+    def cellEntered(self) -> pyTTkSignal:
+        '''
+            This signal is emitted when the mouse cursor enters a cell.
+            The cell is specified by row and column.
 
-        :param row: the row
-        :type row: int
-        :param col: the column
-        :type col: int
-    '''
+            :param row: the row
+            :type row: int
+            :param col: the column
+            :type col: int
+        '''
+        return self._cellEntered
     # self.cellPressed       = pyTTkSignal(int,int)
-    currentCellChanged:pyTTkSignal
-    '''
-        This signal is emitted whenever the current cell changes.
-        The cell specified by **prevRow** and **prevCol** is the cell that previously had the focus,
-        the cell specified by **currRow** and **currCol** is the new current cell.
+    @property
+    def currentCellChanged(self) -> pyTTkSignal:
+        '''
+            This signal is emitted whenever the current cell changes.
+            The cell specified by **prevRow** and **prevCol** is the cell that previously had the focus,
+            the cell specified by **currRow** and **currCol** is the new current cell.
 
-        :param currRow: the current row
-        :type currRow: int
-        :param currColumn: the current column
-        :type currColumn: int
-        :param prevRow: the previous row
-        :type prevRow: int
-        :param prevCol: the previous column
-        :type prevCol: int
-    '''
+            :param currRow: the current row
+            :type currRow: int
+            :param currColumn: the current column
+            :type currColumn: int
+            :param prevRow: the previous row
+            :type prevRow: int
+            :param prevCol: the previous column
+            :type prevCol: int
+        '''
+        return self._currentCellChanged
 
     classStyle = {
                 'default':     {
@@ -246,15 +257,15 @@ class TTkTableWidget(TTkAbstractScrollView):
                   '_fastCheck', '_guessDataEdit',
                   '_snapshot', '_snapshotId',
                   # Signals
-                  # 'cellActivated',
-                  'cellChanged',
-                  'cellClicked', 'cellDoubleClicked',
-                  'cellEntered', # 'cellPressed',
-                  'currentCellChanged',
+                  # '_cellActivated',
+                  '_cellChanged',
+                  '_cellClicked', '_cellDoubleClicked',
+                  '_cellEntered', # '_cellPressed',
+                  '_currentCellChanged',
                   )
 
     def __init__(self, *,
-                 tableModel:TTkAbstractTableModel=None,
+                 tableModel:Optional[TTkAbstractTableModel]=None,
                  vSeparator:bool=True,
                  hSeparator:bool=True,
                  vHeader:bool=True,
@@ -292,14 +303,14 @@ class TTkTableWidget(TTkAbstractScrollView):
         # self.itemExpanded      = pyTTkSignal(TTkTableWidgetItem)
         # self.itemCollapsed     = pyTTkSignal(TTkTableWidgetItem)
 
-        # self.cellActivated     = pyTTkSignal(int,int)
-        self.cellChanged       = pyTTkSignal(int,int)
-        self.cellClicked       = pyTTkSignal(int,int)
-        self.cellDoubleClicked = pyTTkSignal(int,int)
-        self.cellEntered       = pyTTkSignal(int,int)
-        # self.cellPressed       = pyTTkSignal(int,int)
-        self.currentCellChanged = pyTTkSignal(int,int,int,int)
-        # self.currentItemChanged(QTableWidgetItem *current, QTableWidgetItem *previous)
+        # self._cellActivated     = pyTTkSignal(int,int)
+        self._cellChanged       = pyTTkSignal(int,int)
+        self._cellClicked       = pyTTkSignal(int,int)
+        self._cellDoubleClicked = pyTTkSignal(int,int)
+        self._cellEntered       = pyTTkSignal(int,int)
+        # self._cellPressed       = pyTTkSignal(int,int)
+        self._currentCellChanged = pyTTkSignal(int,int,int,int)
+        # self._currentItemChanged(QTableWidgetItem *current, QTableWidgetItem *previous)
 
         self._fastCheck = True
         self._guessDataEdit = True

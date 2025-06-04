@@ -76,6 +76,10 @@ class TTkList(TTkAbstractScrollArea):
         '''
         .. seealso:: this method is forwarded to :py:meth:`TTkListWidget.itemClicked`
 
+        This signal is emitted whenever an item is clicked.
+        
+        :param item: the item selected
+        :type item: :py:class:`TTkAbstractListItem`
         '''
         return self._listView.itemClicked
     @property
@@ -83,6 +87,10 @@ class TTkList(TTkAbstractScrollArea):
         '''
         .. seealso:: this method is forwarded to :py:meth:`TTkListWidget.textClicked`
 
+        This signal is emitted whenever an item is clicked.
+        
+        :param text: the text of the item selected
+        :type text: str
         '''
         return self._listView.textClicked
     @property
@@ -90,6 +98,10 @@ class TTkList(TTkAbstractScrollArea):
         '''
         .. seealso:: this method is forwarded to :py:meth:`TTkListWidget.searchModified`
 
+        This signal is emitted whenever the search text is modified.
+        
+        :param text: the search text
+        :type text: str
         '''
         return self._listView.searchModified
     def items(self) -> list[TTkAbstractListItem]:

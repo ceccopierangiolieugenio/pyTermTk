@@ -155,27 +155,35 @@ class TTkListWidget(TTkAbstractScrollView):
 
     '''
 
-    itemClicked:pyTTkSignal
-    '''
-        This signal is emitted whenever an item is clicked.
+    @property
+    def itemClicked(self) -> pyTTkSignal:
+        '''
+            This signal is emitted whenever an item is clicked.
 
-        :param item: the item selected
-        :type item: :py:class:`TTkAbstractListItem`
-    '''
-    textClicked:pyTTkSignal
-    '''
-        This signal is emitted whenever an item is clicked.
+            :param item: the item selected
+            :type item: :py:class:`TTkAbstractListItem`
+        '''
+        return self._itemClicked
 
-        :param text: the text of the item selected
-        :type text: str
-    '''
-    searchModified:pyTTkSignal
-    '''
-        This signal is emitted whenever the search text is modified.
+    @property
+    def textClicked(self) -> pyTTkSignal:
+        '''
+            This signal is emitted whenever an item is clicked.
 
-        :param text: the search text
-        :type text: str
-    '''
+            :param text: the text of the item selected
+            :type text: str
+        '''
+        return self._textClicked
+
+    @property
+    def searchModified(self) -> pyTTkSignal:
+        '''
+            This signal is emitted whenever the search text is modified.
+
+            :param text: the search text
+            :type text: str
+        '''
+        return self._searchModified
 
     classStyle = {
         'default':{'searchColor': TTkColor.fg("#FFFF00") + TTkColor.UNDERLINE}}
@@ -190,7 +198,7 @@ class TTkListWidget(TTkAbstractScrollView):
                  '_dragPos', '_dndMode',
                  '_searchText', '_showSearch',
                  # Signals
-                 'itemClicked', 'textClicked', 'searchModified')
+                 '_itemClicked', '_textClicked', '_searchModified')
     def __init__(self, *,
                  items:list[str]=[],
                  selectionMode:int=TTkK.SelectionMode.SingleSelection,
@@ -208,9 +216,9 @@ class TTkListWidget(TTkAbstractScrollView):
         :type showSearch: bool, optional
         '''
         # Signals
-        self.itemClicked = pyTTkSignal(TTkAbstractListItem)
-        self.textClicked = pyTTkSignal(str)
-        self.searchModified = pyTTkSignal(str)
+        self._itemClicked = pyTTkSignal(TTkAbstractListItem)
+        self._textClicked = pyTTkSignal(str)
+        self._searchModified = pyTTkSignal(str)
 
         # Default Class Specific Values
         self._selectionMode = selectionMode

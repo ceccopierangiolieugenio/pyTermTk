@@ -279,46 +279,56 @@ class TTkTextEditView(TTkAbstractScrollView):
             '''
             self._cursor = cursor
 
-    currentColorChanged:pyTTkSignal
-    '''
-    This signal is emitted if the current character color has changed,
-    for example caused by a change of the cursor position.
+    @property
+    def currentColorChanged(self) -> pyTTkSignal:
+        '''
+        This signal is emitted if the current character color has changed,
+        for example caused by a change of the cursor position.
 
-    :param color: the new color
-    :type color: :py:class:`TTkColor`
-    '''
+        :param color: the new color
+        :type color: :py:class:`TTkColor`
+        '''
+        return self._currentColorChanged
 
-    cursorPositionChanged:pyTTkSignal
-    '''
-    This signal is emitted whenever the position of the cursor changed.
+    @property
+    def cursorPositionChanged(self) -> pyTTkSignal:
+        '''
+        This signal is emitted whenever the position of the cursor changed.
 
-    :param cursor: the cursor changed.
-    :type cursor: :py:class:`TTkTextCursor`
-    '''
+        :param cursor: the cursor changed.
+        :type cursor: :py:class:`TTkTextCursor`
+        '''
+        return self._cursorPositionChanged_sig
 
-    undoAvailable:pyTTkSignal
-    '''
-    This signal is emitted whenever undo operations become available (available is true)
-    or unavailable (available is false).
+    @property
+    def undoAvailable(self) -> pyTTkSignal:
+        '''
+        This signal is emitted whenever undo operations become available (available is true)
+        or unavailable (available is false).
 
-    :param available: the availability of undo
-    :type available: bool
-    '''
+        :param available: the availability of undo
+        :type available: bool
+        '''
+        return self._undoAvailable_sig
 
-    redoAvailable:pyTTkSignal
-    '''
-    This signal is emitted whenever redo operations become available (available is true)
-    or unavailable (available is false).
+    @property
+    def redoAvailable(self) -> pyTTkSignal:
+        '''
+        This signal is emitted whenever redo operations become available (available is true)
+        or unavailable (available is false).
 
-    :param available: the availability of redo
-    :type available: bool
-    '''
+        :param available: the availability of redo
+        :type available: bool
+        '''
+        return self._redoAvailable_sig
 
-    textChanged:pyTTkSignal
-    '''
-    This signal is emitted whenever the document's content changes;
-    for example, when text is inserted or deleted, or when formatting is applied.
-    '''
+    @property
+    def textChanged(self) -> pyTTkSignal:
+        '''
+        This signal is emitted whenever the document's content changes;
+        for example, when text is inserted or deleted, or when formatting is applied.
+        '''
+        return self._textChanged
 
     classStyle = {
                 'default':     {'color':         TTkColor.fg("#dddddd")+TTkColor.bg("#222222"),
@@ -346,9 +356,9 @@ class TTkTextEditView(TTkAbstractScrollView):
             # 'wrapWidth',    'setWrapWidth',
             # 'wordWrapMode', 'setWordWrapMode',
             # Signals
-            'currentColorChanged', 'cursorPositionChanged',
-            'undoAvailable', 'redoAvailable',
-            'textChanged'
+            '_currentColorChanged', '_cursorPositionChanged_sig',
+            '_undoAvailable_sig', '_redoAvailable_sig',
+            '_textChanged'
         )
 
     #    in order to support the line wrap, I need to divide the full data text in;
@@ -377,11 +387,11 @@ class TTkTextEditView(TTkAbstractScrollView):
         :type document: :py:class:`TTkTextDocument`, optional
         '''
 
-        self.currentColorChanged = pyTTkSignal(TTkColor)
-        self.cursorPositionChanged = pyTTkSignal(TTkTextCursor)
-        self.undoAvailable = pyTTkSignal(bool)
-        self.redoAvailable = pyTTkSignal(bool)
-        self.textChanged = pyTTkSignal()
+        self._currentColorChanged = pyTTkSignal(TTkColor)
+        self._cursorPositionChanged_sig = pyTTkSignal(TTkTextCursor)
+        self._undoAvailable_sig = pyTTkSignal(bool)
+        self._redoAvailable_sig = pyTTkSignal(bool)
+        self._textChanged = pyTTkSignal()
 
         self._readOnly:bool = readOnly
         self._multiLine:bool = multiLine
@@ -1030,6 +1040,11 @@ class TTkTextEdit(TTkAbstractScrollArea):
         '''
         .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.currentColorChanged`
 
+        This signal is emitted if the current character color has changed,
+        for example caused by a change of the cursor position.
+        
+        :param color: the new color
+        :type color: :py:class:`TTkColor`
         '''
         return self._textEditView.currentColorChanged
     @property
@@ -1037,6 +1052,10 @@ class TTkTextEdit(TTkAbstractScrollArea):
         '''
         .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.cursorPositionChanged`
 
+        This signal is emitted whenever the position of the cursor changed.
+        
+        :param cursor: the cursor changed.
+        :type cursor: :py:class:`TTkTextCursor`
         '''
         return self._textEditView.cursorPositionChanged
     @property
@@ -1044,6 +1063,11 @@ class TTkTextEdit(TTkAbstractScrollArea):
         '''
         .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.undoAvailable`
 
+        This signal is emitted whenever undo operations become available (available is true)
+        or unavailable (available is false).
+        
+        :param available: the availability of undo
+        :type available: bool
         '''
         return self._textEditView.undoAvailable
     @property
@@ -1051,6 +1075,11 @@ class TTkTextEdit(TTkAbstractScrollArea):
         '''
         .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.redoAvailable`
 
+        This signal is emitted whenever redo operations become available (available is true)
+        or unavailable (available is false).
+        
+        :param available: the availability of redo
+        :type available: bool
         '''
         return self._textEditView.redoAvailable
     @property
@@ -1058,6 +1087,8 @@ class TTkTextEdit(TTkAbstractScrollArea):
         '''
         .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.textChanged`
 
+        This signal is emitted whenever the document's content changes;
+        for example, when text is inserted or deleted, or when formatting is applied.
         '''
         return self._textEditView.textChanged
     @pyTTkSlot()
@@ -1169,7 +1200,7 @@ class TTkTextEdit(TTkAbstractScrollArea):
         .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.extraSelections`
 
         Returns previously set extra selections.
-
+        
         :rtype: list[:py:class:`ExtraSelection`]
         '''
         return self._textEditView.extraSelections()
@@ -1180,7 +1211,7 @@ class TTkTextEdit(TTkAbstractScrollArea):
         This function allows temporarily marking certain regions in the document with a given color,
         specified as selections. This can be useful for example in a programming editor to mark a
         whole line of text with a given background color to indicate the existence of a breakpoint.
-
+        
         :param extraSelections: the list of extra selections.
         :type extraSelections: list[:py:class:`ExtraSelection`]
         '''
