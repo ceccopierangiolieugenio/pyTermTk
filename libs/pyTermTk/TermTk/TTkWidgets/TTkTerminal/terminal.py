@@ -61,12 +61,54 @@ class TTkTerminal(TTkAbstractScrollArea):
         return super().close()
 
     #--FORWARD-AUTOGEN-START--#
+    @property
+    def bell(self) -> pyTTkSignal:
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkTerminalView.bell`
+
+        '''
+        return self._terminalView.bell
+    @property
+    def titleChanged(self) -> pyTTkSignal:
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkTerminalView.titleChanged`
+
+        '''
+        return self._terminalView.titleChanged
+    @property
+    def terminalClosed(self) -> pyTTkSignal:
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkTerminalView.terminalClosed`
+
+        '''
+        return self._terminalView.terminalClosed
+    @property
+    def textSelected(self) -> pyTTkSignal:
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkTerminalView.textSelected`
+
+        '''
+        return self._terminalView.textSelected
+    @property
+    def termData(self) -> pyTTkSignal:
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkTerminalView.termData`
+
+        '''
+        return self._terminalView.termData
+    @property
+    def termResized(self) -> pyTTkSignal:
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkTerminalView.termResized`
+
+        '''
+        return self._terminalView.termResized
     def termWrite(self, data:str) -> None:
         '''
         .. seealso:: this method is forwarded to :py:meth:`TTkTerminalView.termWrite`
 
         Write data to the terminal.
-
+        
         :params data: the data to write
         :type data: str
         '''
@@ -76,7 +118,7 @@ class TTkTerminal(TTkAbstractScrollArea):
         .. seealso:: this method is forwarded to :py:meth:`TTkTerminalView.termSize`
 
         This property holds the size of the terminal
-
+        
         :return: a tuple of 2 integers (width, height)
         :rtype: tuple
         '''

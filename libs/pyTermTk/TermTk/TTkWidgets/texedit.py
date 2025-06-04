@@ -931,7 +931,7 @@ class TTkTextEdit(TTkAbstractScrollArea):
         forwardClass=TTkTextEditView ,
         instance="self._textEditView",
         signals=[ # Forwarded Signals From TTkTexteditView
-            'focusChanged', 'currentColorChanged', 'cursorPositionChanged',
+            'currentColorChanged', 'cursorPositionChanged',
             'undoAvailable', 'redoAvailable',
             'textChanged'],
         methods=[
@@ -990,6 +990,7 @@ class TTkTextEdit(TTkAbstractScrollArea):
         self._lineNumberView.setTextWrap(self._textEditView._textWrap)
         textEditLayout.addWidget(self._lineNumberView,0,0)
         self.setViewport(textEditLayout)
+        self.focusChanged = self._textEditView.focusChanged
 
     def ruler(self) -> TTkTextEditRuler:
         '''ruler'''
@@ -1024,6 +1025,41 @@ class TTkTextEdit(TTkAbstractScrollArea):
         self._lineNumberView.setTextWrap(self._textEditView._textWrap)
 
     #--FORWARD-AUTOGEN-START--#
+    @property
+    def currentColorChanged(self) -> pyTTkSignal:
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.currentColorChanged`
+
+        '''
+        return self._textEditView.currentColorChanged
+    @property
+    def cursorPositionChanged(self) -> pyTTkSignal:
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.cursorPositionChanged`
+
+        '''
+        return self._textEditView.cursorPositionChanged
+    @property
+    def undoAvailable(self) -> pyTTkSignal:
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.undoAvailable`
+
+        '''
+        return self._textEditView.undoAvailable
+    @property
+    def redoAvailable(self) -> pyTTkSignal:
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.redoAvailable`
+
+        '''
+        return self._textEditView.redoAvailable
+    @property
+    def textChanged(self) -> pyTTkSignal:
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.textChanged`
+
+        '''
+        return self._textEditView.textChanged
     @pyTTkSlot()
     def clear(self) -> None:
         '''

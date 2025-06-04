@@ -22,6 +22,7 @@
 
 __all__ = ['TTkList']
 
+from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkWidgets.listwidget import TTkListWidget, TTkAbstractListItem
 from TermTk.TTkAbstract.abstractscrollarea import TTkAbstractScrollArea, _ForwardData
@@ -70,6 +71,27 @@ class TTkList(TTkAbstractScrollArea):
         self.setViewport(self._listView)
 
     #--FORWARD-AUTOGEN-START--#
+    @property
+    def itemClicked(self) -> pyTTkSignal:
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkListWidget.itemClicked`
+
+        '''
+        return self._listView.itemClicked
+    @property
+    def textClicked(self) -> pyTTkSignal:
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkListWidget.textClicked`
+
+        '''
+        return self._listView.textClicked
+    @property
+    def searchModified(self) -> pyTTkSignal:
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkListWidget.searchModified`
+
+        '''
+        return self._listView.searchModified
     def items(self) -> list[TTkAbstractListItem]:
         '''
         .. seealso:: this method is forwarded to :py:meth:`TTkListWidget.items`
