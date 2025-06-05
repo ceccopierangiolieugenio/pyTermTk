@@ -14,7 +14,7 @@ permissions:
   id-token: write
 
 env:
-  MY_ARRAY: '["value1", "value2", "value3"]'  # Define the array as a JSON string
+  MY_ARRAY: '["libs/pyTermTk", "apps/dumbPaintTool", "apps/ttkDesigner", "apps/ttkode", "apps/tlogg"]'
 
 jobs:
   test:
@@ -28,9 +28,9 @@ jobs:
           GHE: ${{ toJson(github.event) }}
           GHEH: ${{ toJson(github.event.head_commit) }}
           GHEHM: ${{ toJson(github.event.head_commit.modified) }}
-      # - uses: actions/checkout@v4
-      #   with:
-      #     ref: ${{ github.sha }}
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
       - name: Use the array
         shell: bash
         run: |
@@ -39,5 +39,8 @@ jobs:
 
           # Loop through the array
           for item in "${my_bash_array[@]}"; do
-            echo "Item: $item"
+            # Update version in the project
+            _VERSION=$(jq -r ".[\"${item}\"]" .release-please-manifest.json)
+            _NAME=$(jq -r ".packages[\"${item}\"][\"package-name\"]" .release-please-config.json)
+            echo "Version ${_NAME}: ${_VERSION}"
           done
