@@ -34,9 +34,6 @@ jobs:
       - name: Use the array
         shell: bash
         run: |
-          # Parse the JSON string into a Bash array
-          my_bash_array=($(echo "$MY_ARRAY" | jq -r '.[ ]'))
-
           _get_name(){
             _ITEM=$1
             jq -r ".packages[\"${_ITEM}\"][\"package-name\"]" .release-please-config.json
@@ -46,6 +43,8 @@ jobs:
             jq -r ".[\"${_ITEM}\"]" .release-please-manifest.json
           }
 
+          # Parse the JSON string into a Bash array
+          my_bash_array=($(echo "$MY_ARRAY" | jq -r '.[ ]'))
           # Loop through the array
           for item in "${my_bash_array[@]}"; do
             # Update version in the project
