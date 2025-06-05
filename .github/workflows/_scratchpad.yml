@@ -37,10 +37,19 @@ jobs:
           # Parse the JSON string into a Bash array
           my_bash_array=($(echo "$MY_ARRAY" | jq -r '.[ ]'))
 
+          _get_name(){
+            _ITEM=$1
+            jq -r ".packages[\"${_ITEM}\"][\"package-name\"]" .release-please-config.json
+          }
+          _get_version(){
+            _ITEM=$1
+            jq -r ".[\"${_ITEM}\"]" .release-please-manifest.json
+          }
+
           # Loop through the array
           for item in "${my_bash_array[@]}"; do
             # Update version in the project
-            _VERSION=$(jq -r ".[\"${item}\"]" .release-please-manifest.json)
-            _NAME=$(jq -r ".packages[\"${item}\"][\"package-name\"]" .release-please-config.json)
+            _VERSION=$(_get_name ${item})
+            _NAME=$(_get_version ${item})
             echo "Version ${_NAME}: ${_VERSION}"
           done
