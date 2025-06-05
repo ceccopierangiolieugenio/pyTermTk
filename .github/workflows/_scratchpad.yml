@@ -13,6 +13,9 @@ permissions:
   pages: write
   id-token: write
 
+env:
+  MY_ARRAY: '["value1", "value2", "value3"]'  # Define the array as a JSON string
+
 jobs:
   test:
     # runs-on: ubuntu-latest
@@ -28,3 +31,13 @@ jobs:
       # - uses: actions/checkout@v4
       #   with:
       #     ref: ${{ github.sha }}
+      - name: Use the array
+        shell: bash
+        run: |
+          # Parse the JSON string into a Bash array
+          my_bash_array=($(echo "$MY_ARRAY" | jq -r '.[ ]'))
+
+          # Loop through the array
+          for item in "${my_bash_array[@]}"; do
+            echo "Item: $item"
+          done
