@@ -11,7 +11,7 @@ on:
         description: The app version
         type: string
         default: v0.0.0
-      message:
+      discord-message:
         description: The release message
         type: string
         default: pyTermTk released
@@ -25,7 +25,7 @@ on:
         description: The app version
         type: string
         default: v0.0.0
-      message:
+      discord-message:
         description: The release message
         type: string
         default: pyTermTk released
@@ -46,9 +46,9 @@ jobs:
           python -m pip install discord.py
       - name: Deploy Discord message
         env:
-          MESSAGE: ${{ inputs.message }}
+          MESSAGE: ${{ inputs.discord-message }}
         run: |
-          python tools/social/notify_discord.py ${{ inputs.app }} ${{ inputs.version }}
+          python tools/ci/social/notify_discord.py ${{ inputs.app }} ${{ inputs.version }}
 
 
 

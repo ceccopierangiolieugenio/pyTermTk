@@ -21,7 +21,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import os
+import os, sys
 import re
 import asyncio
 import argparse
@@ -29,22 +29,20 @@ from typing import Dict,List,Any
 
 import discord
 
-def _get_env_var(name:str) -> str:
-    value = os.environ.get(name)
-    if value is None:
-        raise EnvironmentError(f"{name} environment variable is not available")
-    return value
+current_dir = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(current_dir)
+from social_common import get_social_data, SocialData, get_env_var
 
-async def send_discord_message(app:str, version: str, data:Dict[str,Any]):
-    token = _get_env_var("DISCORD_TOKEN")
-    message = _get_env_var("MESSAGE")
+async def send_discord_message(version: str, data:SocialData):
+    token = get_env_var("DISCORD_TOKEN")
+    message = get_env_var("MESSAGE")
 
     intents = discord.Intents.default()
     client = discord.Client(intents=intents)
 
     embed = discord.Embed(
-        title=f"{app} Released!!!",
-        url=data['url'],
+        title=f"{data.name} Released!!!",
+        url=data.link,
         # description="Here's a new feature we added.",
         color=0x00ff00,
     )
@@ -61,7 +59,7 @@ async def send_discord_message(app:str, version: str, data:Dict[str,Any]):
     @client.event
     async def on_ready():
         print(f'Logged in as {client.user}')
-        channel = client.get_channel(data['channel_id'])
+        channel = client.get_channel(data.discord_channel_id)
         await channel.send(embed=embed)
         await channel.send(message)
         await client.close()  # Optional: close after sending
@@ -74,21 +72,8 @@ if __name__ == "__main__":
     parser.add_argument("version", type=str, help="The application version.")
     args = parser.parse_args()
 
-    data:Dict[str,Any] = {
-        'pytermtk' :
-            { 'channel_id': 1379381341145268305,
-              'url' : 'https://github.com/ceccopierangiolieugenio/pyTermTk' },
-        'ttkode' :
-            { 'channel_id': 1379381474783924295,
-              'url' : 'https://github.com/ceccopierangiolieugenio/pyTermTk/tree/main/apps/ttkode' },
-        'dumbpainttool' :
-            { 'channel_id': 1379381571412430931,
-              'url' : 'https://github.com/ceccopierangiolieugenio/pyTermTk/tree/main/apps/dumbPaintTool' },
-        'tlogg' :
-            { 'channel_id': 1379381593378000916,
-              'url' : 'https://github.com/ceccopierangiolieugenio/pyTermTk/tree/main/apps/tlogg' },
-    }.get(args.app.lower(),{})
+    data = get_social_data(args.app)
     if not data:
         raise ValueError(f"app: {args.app} is not recognised")
 
-    asyncio.run(send_discord_message(args.app, args.version, data))
+    asyncio.run(send_discord_message(args.version, data))
