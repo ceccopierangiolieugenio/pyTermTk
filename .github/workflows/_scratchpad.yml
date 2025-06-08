@@ -52,3 +52,26 @@ jobs:
             _NAME=$(_get_version ${item})
             echo "Version ${_NAME}: ${_VERSION}"
           done
+
+  generate-matrix:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - name: Convert global MY_ARRAY to matrix
+        id: set-matrix
+        run: |
+          echo "MY_ARRAY=${MY_ARRAY}"
+          MATRIX=$(echo "${MY_ARRAY}" | jq -c '[.[] | {app: .}]')
+          echo "matrix=$MATRIX"
+          echo "matrix=$MATRIX" >> $GITHUB_OUTPUT
+
+  build:
+    needs: generate-matrix
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include: ${{ fromJson(needs.generate-matrix.outputs.matrix) }}
+    steps:
+      - name: Build ${{ matrix.app }}
+        run: echo "Building app at path: ${{ matrix.app }}"
