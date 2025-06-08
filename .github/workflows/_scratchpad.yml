@@ -54,7 +54,7 @@ jobs:
           done
 
   generate-matrix:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
@@ -68,10 +68,11 @@ jobs:
 
   build:
     needs: generate-matrix
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     strategy:
       matrix:
         include: ${{ fromJson(needs.generate-matrix.outputs.matrix) }}
     steps:
       - name: Build ${{ matrix.app }}
-        run: echo "Building app at path: ${{ matrix.app }}"
+        run: |
+          echo "Building app at path: ${{ matrix.app }}"
