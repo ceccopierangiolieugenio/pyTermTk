@@ -55,25 +55,25 @@ jobs:
           # Loop through the array
           for item in "${my_bash_array[@]}"; do
             # Update version in the project
-            _VERSION=$(_get_name ${item})
-            _NAME=$(_get_version ${item})
-            echo "(${item}) Version ${_NAME}: ${_VERSION}"
+            _VERSION=$(_get_version ${item})
+            _NAME=$(_get_name ${item})
+            echo "(${item}) Version ${_VERSION}: ${_NAME}"
           done
 
           # Loop through the array
           for item in $(jq -r '.[].name' <<< ${MY_ARRAY}) ; do
             # Update version in the project
-            _VERSION=$(_get_name ${item})
-            _NAME=$(_get_version ${item})
-            echo "(${item}) Version ${_NAME}: ${_VERSION}"
+            _VERSION=$(_get_version ${item})
+            _NAME=$(_get_name ${item})
+            echo "(${item}) Version ${_VERSION}: ${_NAME}"
           done
 
           # Loop through the array
           for item in $(jq -r '.[].path' <<< ${MY_ARRAY}) ; do
             # Update version in the project
-            _VERSION=$(_get_name ${item})
-            _NAME=$(_get_version ${item})
-            echo "(${item}) Version ${_NAME}: ${_VERSION}"
+            _VERSION=$(_get_version ${item})
+            _NAME=$(_get_name ${item})
+            echo "(${item}) Version ${_VERSION}: ${_NAME}"
           done
 
   generate-matrix:
