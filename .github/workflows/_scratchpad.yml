@@ -68,7 +68,7 @@ jobs:
         id: set-matrix
         run: |
           echo "MY_ARRAY=${MY_ARRAY}"
-          MATRIX=$(echo "${MY_ARRAY}" | jq -c '[.[] | {app: .}]')
+          MATRIX=$(echo "${MY_ARRAY}" | jq -c '[.[] | {app: .name, name: .name, path: .path}]'')
           echo "matrix=$MATRIX"
           echo "matrix=$MATRIX" >> $GITHUB_OUTPUT
 
@@ -79,9 +79,9 @@ jobs:
       matrix:
         include: ${{ fromJson(needs.generate-matrix.outputs.matrix) }}
     steps:
-      - name: Build ${{ matrix.app }}
+      - name: Build ${{ matrix.name }}
         run: |
-          echo "Building app at path: ${{ matrix.app }}"
+          echo "Building app at path: ${{ matrix.path }}"
 
   pippo:
     needs: generate-matrix
