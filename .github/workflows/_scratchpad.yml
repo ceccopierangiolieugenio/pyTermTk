@@ -57,7 +57,7 @@ jobs:
             # Update version in the project
             _VERSION=$(_get_name ${item})
             _NAME=$(_get_version ${item})
-            echo "Version ${_NAME}: ${_VERSION}"
+            echo "(${item}) Version ${_NAME}: ${_VERSION}"
           done
 
           # Parse the JSON string into a Bash array
@@ -68,7 +68,7 @@ jobs:
             # Update version in the project
             _VERSION=$(_get_name ${item})
             _NAME=$(_get_version ${item})
-            echo "Version ${_NAME}: ${_VERSION}"
+            echo "(${item}) Version ${_NAME}: ${_VERSION}"
           done
 
   generate-matrix:
@@ -84,6 +84,7 @@ jobs:
           echo "matrix=$MATRIX" >> $GITHUB_OUTPUT
 
   build:
+    name: Build ${{ matrix.name }}
     needs: generate-matrix
     runs-on: self-hosted
     strategy:
@@ -92,9 +93,10 @@ jobs:
     steps:
       - name: Build ${{ matrix.name }}
         run: |
-          echo "Building app at path: ${{ matrix.path }}"
+          echo "Building ${{ matrix.name }} at path: ${{ matrix.path }}"
 
   pippo:
+    name: Pippo ${{ matrix.name }}
     needs: generate-matrix
     runs-on: self-hosted
     strategy:
@@ -103,4 +105,4 @@ jobs:
     steps:
       - name: Build ${{ matrix.app }}
         run: |
-          echo "Building app at path: ${{ matrix.app }}"
+          echo "Building ${{ matrix.name }} at path: ${{ matrix.path }}"
