@@ -19,7 +19,7 @@ env:
         { "name": "dumbPaintTool" , "path": "apps/dumbPaintTool" , "pypi" : true , "itch" : true  },
         { "name": "ttkDesigner"   , "path": "apps/ttkDesigner"   , "pypi" : true , "itch" : false },
         { "name": "ttkode"        , "path": "apps/ttkode"        , "pypi" : true , "itch" : false },
-        { "name": "tlogg"         , "path": "apps/tlogg"         , "pypi" : true , "itch" : false ]}
+        { "name": "tlogg"         , "path": "apps/tlogg"         , "pypi" : true , "itch" : false }
       ]'
 
 jobs:
@@ -80,6 +80,8 @@ jobs:
     runs-on: self-hosted
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
+      matrix-pypi: ${{ steps.set-matrix.outputs.matrix_pypi }}
+      matrix-itch: ${{ steps.set-matrix.outputs.matrix_itch }}
     steps:
       - name: Convert global APPS_ARRAY to matrix
         id: set-matrix
@@ -87,6 +89,8 @@ jobs:
           MATRIX=$(jq -c '[.[] | {app: .name, name: .name, path: .path}]' <<< ${APPS_ARRAY} )
           echo "matrix=$MATRIX"
           echo "matrix=$MATRIX" >> $GITHUB_OUTPUT
+          echo matrix_itch=$(jq '[.[] | select(.itch == true)]' <<< ${APPS_ARRAY}) >> $GITHUB_OUTPUT
+          echo matrix_pypi=$(jq '[.[] | select(.pypi == true)]' <<< ${APPS_ARRAY}) >> $GITHUB_OUTPUT
 
   build:
     name: Build ${{ matrix.name }}
@@ -101,26 +105,24 @@ jobs:
           echo "Building ${{ matrix.name }} at path: ${{ matrix.path }}"
 
   publish-pypi:
-    if: matrix.pypi
     name: Build ${{ matrix.name }}
     needs: generate-matrix
     runs-on: self-hosted
     strategy:
       matrix:
-        include: ${{ fromJson(needs.generate-matrix.outputs.matrix) }}
+        include: ${{ fromJson(needs.generate-matrix.outputs.matrix-pypi) }}
     steps:
       - name: Build ${{ matrix.name }}
         run: |
           echo "Building ${{ matrix.name }} at path: ${{ matrix.path }}"
 
   publish-itch:
-    if: matrix.itch
     name: Build ${{ matrix.name }}
     needs: generate-matrix
     runs-on: self-hosted
     strategy:
       matrix:
-        include: ${{ fromJson(needs.generate-matrix.outputs.matrix) }}
+        include: ${{ fromJson(needs.generate-matrix.outputs.matrix-itch) }}
     steps:
       - name: Build ${{ matrix.name }}
         run: |
