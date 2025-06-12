@@ -60,11 +60,16 @@ jobs:
             echo "(${item}) Version ${_NAME}: ${_VERSION}"
           done
 
-          # Parse the JSON string into a Bash array
-          my_bash_array=($(jq -r '.[].name' <<< ${MY_ARRAY}))
-          echo ${my_bash_array}
           # Loop through the array
           for item in $(jq -r '.[].name' <<< ${MY_ARRAY}) ; do
+            # Update version in the project
+            _VERSION=$(_get_name ${item})
+            _NAME=$(_get_version ${item})
+            echo "(${item}) Version ${_NAME}: ${_VERSION}"
+          done
+
+          # Loop through the array
+          for item in $(jq -r '.[].path' <<< ${MY_ARRAY}) ; do
             # Update version in the project
             _VERSION=$(_get_name ${item})
             _NAME=$(_get_version ${item})
