@@ -214,7 +214,7 @@ jobs:
       - name: Convert global APPS_ARRAY to matrix
         id: set-matrix
         run: |
-          echo matrix=$(jq '[.[] | select(.itch == true)]' <<< ${APPS_ARRAY}) >> $GITHUB_OUTPUT
+          echo matrix=$(jq '[.[]]' <<< ${APPS_ARRAY}) >> $GITHUB_OUTPUT
           echo matrix_itch=$(jq '[.[] | select(.itch == true)]' <<< ${APPS_ARRAY}) >> $GITHUB_OUTPUT
           echo matrix_pypi=$(jq '[.[] | select(.pypi == true)]' <<< ${APPS_ARRAY}) >> $GITHUB_OUTPUT
 
