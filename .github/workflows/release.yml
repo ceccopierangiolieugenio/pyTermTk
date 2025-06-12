@@ -23,11 +23,11 @@ env:
   APP_NAME: pyTermTk
   APP_TTK: libs/pyTermTk
   APPS_ARRAY: '[
-        { "name": "pyTermTk"      , "path": "libs/pyTermTk"},
-        { "name": "dumbPaintTool" , "path": "apps/dumbPaintTool"},
-        { "name": "ttkDesigner"   , "path": "apps/ttkDesigner"},
-        { "name": "ttkode"        , "path": "apps/ttkode"},
-        { "name": "tlogg"         , "path": "apps/tlogg"}
+        { "name": "pyTermTk"      , "path": "libs/pyTermTk"      , "pypi" : true , "itch" : false },
+        { "name": "dumbPaintTool" , "path": "apps/dumbPaintTool" , "pypi" : true , "itch" : true  },
+        { "name": "ttkDesigner"   , "path": "apps/ttkDesigner"   , "pypi" : true , "itch" : false },
+        { "name": "ttkode"        , "path": "apps/ttkode"        , "pypi" : true , "itch" : false },
+        { "name": "tlogg"         , "path": "apps/tlogg"         , "pypi" : true , "itch" : false }
       ]'
 
 jobs:
@@ -204,60 +204,50 @@ jobs:
       - pyTermTk-deploy-artifacts
     secrets: inherit
 
-  publish-pyTermTk:
-    if: ${{ fromJson(needs.release-please.outputs.rp_out)['libs/pyTermTk--release_created'] }}
-    name: Publish pyTermTk
-    uses: ./.github/workflows/python-publish.yml
-    with:
-      pkg_name: pyTermTk
-      pkg_folder: libs/pyTermTk
+  generate-matrix:
+    runs-on: self-hosted
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+      matrix-pypi: ${{ steps.set-matrix.outputs.matrix_pypi }}
+      matrix-itch: ${{ steps.set-matrix.outputs.matrix_itch }}
+    steps:
+      - name: Convert global APPS_ARRAY to matrix
+        id: set-matrix
+        run: |
+          echo matrix=$(jq '[.[] | select(.itch == true)]' <<< ${APPS_ARRAY}) >> $GITHUB_OUTPUT
+          echo matrix_itch=$(jq '[.[] | select(.itch == true)]' <<< ${APPS_ARRAY}) >> $GITHUB_OUTPUT
+          echo matrix_pypi=$(jq '[.[] | select(.pypi == true)]' <<< ${APPS_ARRAY}) >> $GITHUB_OUTPUT
+
+  publish-pypi:
+    name: Publish pypi ${{ matrix.name }}
     needs:
       - release-please
+      - generate-matrix
+    strategy:
+      matrix:
+        include: ${{ fromJson(needs.generate-matrix.outputs.matrix-pypi) }}
+    uses: ./.github/workflows/python-publish.yml
+    with:
+      pkg_name: ${{ matrix.name }}
+      pkg_folder: ${{ matrix.path }}
     secrets: inherit
 
-  publish-ttkDesigner:
-    if: ${{ fromJson(needs.release-please.outputs.rp_out)['apps/ttkDesigner--release_created'] }}
-    name: Publish ttkDesigner
-    uses: ./.github/workflows/python-publish.yml
-    with:
-      pkg_name: ttkDesigner
-      pkg_folder: apps/ttkDesigner
-    needs:
-      - release-please
-    secrets: inherit
-
-  publish-ttkode:
-    if: ${{ fromJson(needs.release-please.outputs.rp_out)['apps/ttkode--release_created'] }}
-    name: Publish ttkode
-    uses: ./.github/workflows/python-publish.yml
-    with:
-      pkg_name: ttkode
-      pkg_folder: apps/ttkode
-    needs:
-      - release-please
-    secrets: inherit
-
-  publish-tlogg:
-    if: ${{ fromJson(needs.release-please.outputs.rp_out)['apps/tlogg--release_created'] }}
-    name: Publish tlogg
-    uses: ./.github/workflows/python-publish.yml
-    with:
-      pkg_name: tlogg
-      pkg_folder: apps/tlogg
-    needs:
-      - release-please
-    secrets: inherit
-
-  publish-dumbPaintTool:
-    if: ${{ fromJson(needs.release-please.outputs.rp_out)['apps/dumbPaintTool--release_created'] }}
-    name: Publish dumbPaintTool
-    uses: ./.github/workflows/python-publish.yml
-    with:
-      pkg_name: dumbPaintTool
-      pkg_folder: apps/dumbPaintTool
-    needs:
-      - release-please
-    secrets: inherit
+  # publish-itch:
+  #   name: Publish Itch ${{ matrix.name }}
+  #   needs:
+  #     - release-please
+  #     - generate-matrix
+  #   runs-on: self-hosted
+  #   strategy:
+  #     matrix:
+  #       include: ${{ fromJson(needs.generate-matrix.outputs.matrix-itch) }}
+  #   steps:
+  #     - name: Build ${{ matrix.name }}
+  #       run: |
+  #         echo "Building ${{ matrix.name }} at path: ${{ matrix.path }}"
+  #   uses: ./.github/workflows/itch-publish.yml
+  #   with:
+  #     pkg_name: dumb-paint-tool
 
   publish-dumbPaintTool-itch:
     if: ${{ fromJson(needs.release-please.outputs.rp_out)['apps/dumbPaintTool--release_created'] }}

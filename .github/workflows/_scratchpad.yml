@@ -86,9 +86,7 @@ jobs:
       - name: Convert global APPS_ARRAY to matrix
         id: set-matrix
         run: |
-          MATRIX=$(jq -c '[.[] | {app: .name, name: .name, path: .path}]' <<< ${APPS_ARRAY} )
-          echo "matrix=$MATRIX"
-          echo "matrix=$MATRIX" >> $GITHUB_OUTPUT
+          echo matrix=$(jq '[.[] | select(.itch == true)]' <<< ${APPS_ARRAY}) >> $GITHUB_OUTPUT
           echo matrix_itch=$(jq '[.[] | select(.itch == true)]' <<< ${APPS_ARRAY}) >> $GITHUB_OUTPUT
           echo matrix_pypi=$(jq '[.[] | select(.pypi == true)]' <<< ${APPS_ARRAY}) >> $GITHUB_OUTPUT
 
@@ -136,6 +134,6 @@ jobs:
       matrix:
         include: ${{ fromJson(needs.generate-matrix.outputs.matrix) }}
     steps:
-      - name: Build ${{ matrix.app }}
+      - name: Build ${{ matrix.name }}
         run: |
           echo "Building ${{ matrix.name }} at path: ${{ matrix.path }}"
