@@ -14,12 +14,12 @@ permissions:
   id-token: write
 
 env:
-  MY_ARRAY: '[
-        { "name": "pyTermTk"      , "path": "libs/pyTermTk"},
-        { "name": "dumbPaintTool" , "path": "apps/dumbPaintTool"},
-        { "name": "ttkDesigner"   , "path": "apps/ttkDesigner"},
-        { "name": "ttkode"        , "path": "apps/ttkode"},
-        { "name": "tlogg"         , "path": "apps/tlogg"}
+  APPS_ARRAY: '[
+        { "name": "pyTermTk"      , "path": "libs/pyTermTk"      , "pypi" : true , "itch" : false },
+        { "name": "dumbPaintTool" , "path": "apps/dumbPaintTool" , "pypi" : true , "itch" : true  },
+        { "name": "ttkDesigner"   , "path": "apps/ttkDesigner"   , "pypi" : true , "itch" : false },
+        { "name": "ttkode"        , "path": "apps/ttkode"        , "pypi" : true , "itch" : false },
+        { "name": "tlogg"         , "path": "apps/tlogg"         , "pypi" : true , "itch" : false ]}
       ]'
 
 jobs:
@@ -50,7 +50,7 @@ jobs:
           }
 
           # Parse the JSON string into a Bash array
-          my_bash_array=($(jq -r '.[].name' <<< ${MY_ARRAY}))
+          my_bash_array=($(jq -r '.[].name' <<< ${APPS_ARRAY}))
           echo ${my_bash_array}
           # Loop through the array
           for item in "${my_bash_array[@]}"; do
@@ -61,7 +61,7 @@ jobs:
           done
 
           # Loop through the array
-          for item in $(jq -r '.[].name' <<< ${MY_ARRAY}) ; do
+          for item in $(jq -r '.[].name' <<< ${APPS_ARRAY}) ; do
             # Update version in the project
             _VERSION=$(_get_version ${item})
             _NAME=$(_get_name ${item})
@@ -69,7 +69,7 @@ jobs:
           done
 
           # Loop through the array
-          for item in $(jq -r '.[].path' <<< ${MY_ARRAY}) ; do
+          for item in $(jq -r '.[].path' <<< ${APPS_ARRAY}) ; do
             # Update version in the project
             _VERSION=$(_get_version ${item})
             _NAME=$(_get_name ${item})
@@ -81,14 +81,40 @@ jobs:
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
-      - name: Convert global MY_ARRAY to matrix
+      - name: Convert global APPS_ARRAY to matrix
         id: set-matrix
         run: |
-          MATRIX=$(jq -c '[.[] | {app: .name, name: .name, path: .path}]' <<< ${MY_ARRAY} )
+          MATRIX=$(jq -c '[.[] | {app: .name, name: .name, path: .path}]' <<< ${APPS_ARRAY} )
           echo "matrix=$MATRIX"
           echo "matrix=$MATRIX" >> $GITHUB_OUTPUT
 
   build:
+    name: Build ${{ matrix.name }}
+    needs: generate-matrix
+    runs-on: self-hosted
+    strategy:
+      matrix:
+        include: ${{ fromJson(needs.generate-matrix.outputs.matrix) }}
+    steps:
+      - name: Build ${{ matrix.name }}
+        run: |
+          echo "Building ${{ matrix.name }} at path: ${{ matrix.path }}"
+
+  publish-pypi:
+    if: matrix.pypi
+    name: Build ${{ matrix.name }}
+    needs: generate-matrix
+    runs-on: self-hosted
+    strategy:
+      matrix:
+        include: ${{ fromJson(needs.generate-matrix.outputs.matrix) }}
+    steps:
+      - name: Build ${{ matrix.name }}
+        run: |
+          echo "Building ${{ matrix.name }} at path: ${{ matrix.path }}"
+
+  publish-itch:
+    if: matrix.itch
     name: Build ${{ matrix.name }}
     needs: generate-matrix
     runs-on: self-hosted

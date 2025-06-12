@@ -22,7 +22,13 @@ permissions:
 env:
   APP_NAME: pyTermTk
   APP_TTK: libs/pyTermTk
-  APPS_ARRAY: '["libs/pyTermTk", "apps/dumbPaintTool", "apps/ttkDesigner", "apps/ttkode", "apps/tlogg"]'
+  APPS_ARRAY: '[
+        { "name": "pyTermTk"      , "path": "libs/pyTermTk"},
+        { "name": "dumbPaintTool" , "path": "apps/dumbPaintTool"},
+        { "name": "ttkDesigner"   , "path": "apps/ttkDesigner"},
+        { "name": "ttkode"        , "path": "apps/ttkode"},
+        { "name": "tlogg"         , "path": "apps/tlogg"}
+      ]'
 
 jobs:
   release-please:
@@ -76,17 +82,14 @@ jobs:
 
           cd pyTermTk.new
 
-          # Parse the JSON string into a Bash array
-          my_bash_array=($(echo "$MY_ARRAY" | jq -r '.[ ]'))
-
           _ALL_VERSIONS=""
 
           echo '::group::Print the Versions'
-            for item in "${my_bash_array[@]}"; do
+            for item in $(jq -r '.[].path' <<< ${APPS_ARRAY}) ; do; do
               # Update version in the project
-              _VERSION=$(_get_name ${item})
-              _NAME=$(_get_version ${item})
-              echo "Version ${_NAME}: ${_VERSION}"
+              _VERSION=$(_get_version ${item})
+              _NAME=$(_get_name ${item})
+              echo "(${item}) Version ${_VERSION}: ${_NAME}"
               _ALL_VERSIONS="${_ALL_VERSIONS} ${_VERSION}"
             done
           echo '::endgroup::'
@@ -99,10 +102,10 @@ jobs:
               "s|__version__:str.*|__version__:str = '${_VERSION_TTK}'|" \
               libs/pyTermTk/TermTk/__init__.py
 
-            for item in "${my_bash_array[@]}"; do
+            for item in $(jq -r '.[].path' <<< ${APPS_ARRAY}) ; do; do
               # Update version in the project
-              _VERSION=$(_get_name ${item})
-              _NAME=$(_get_version ${item})
+              _VERSION=$(_get_version ${item})
+              _NAME=$(_get_name ${item})
               if grep -q "${_NAME}: ${_VERSION}" <<< ' ${{ steps.release-please.outputs.pr }}' ; then
                 sed -i \
                   "s|__version__:str.*|__version__:str = '${_VERSION}'|" \
@@ -223,27 +226,6 @@ jobs:
       - release-please
     secrets: inherit
 
-  publish-dumbPaintTool:
-    if: ${{ fromJson(needs.release-please.outputs.rp_out)['apps/dumbPaintTool--release_created'] }}
-    name: Publish dumbPaintTool
-    uses: ./.github/workflows/python-publish.yml
-    with:
-      pkg_name: dumbPaintTool
-      pkg_folder: apps/dumbPaintTool
-    needs:
-      - release-please
-    secrets: inherit
-
-  publish-dumbPaintTool-itch:
-    if: ${{ fromJson(needs.release-please.outputs.rp_out)['apps/dumbPaintTool--release_created'] }}
-    name: Publish dumbPaintTool on itch.io
-    uses: ./.github/workflows/itch-publish.yml
-    with:
-      pkg_name: dumb-paint-tool
-    needs:
-      - release-please
-    secrets: inherit
-
   publish-ttkode:
     if: ${{ fromJson(needs.release-please.outputs.rp_out)['apps/ttkode--release_created'] }}
     name: Publish ttkode
@@ -262,6 +244,27 @@ jobs:
     with:
       pkg_name: tlogg
       pkg_folder: apps/tlogg
+    needs:
+      - release-please
+    secrets: inherit
+
+  publish-dumbPaintTool:
+    if: ${{ fromJson(needs.release-please.outputs.rp_out)['apps/dumbPaintTool--release_created'] }}
+    name: Publish dumbPaintTool
+    uses: ./.github/workflows/python-publish.yml
+    with:
+      pkg_name: dumbPaintTool
+      pkg_folder: apps/dumbPaintTool
+    needs:
+      - release-please
+    secrets: inherit
+
+  publish-dumbPaintTool-itch:
+    if: ${{ fromJson(needs.release-please.outputs.rp_out)['apps/dumbPaintTool--release_created'] }}
+    name: Publish dumbPaintTool on itch.io
+    uses: ./.github/workflows/itch-publish.yml
+    with:
+      pkg_name: dumb-paint-tool
     needs:
       - release-please
     secrets: inherit
