@@ -19,8 +19,7 @@ env:
         { "name": "dumbPaintTool" , "path": "apps/dumbPaintTool"},
         { "name": "ttkDesigner"   , "path": "apps/ttkDesigner"},
         { "name": "ttkode"        , "path": "apps/ttkode"},
-        { "name": "tlogg"         , "path": "apps/tlogg"},
-          "apps/dumbPaintTool", "apps/ttkDesigner", "apps/ttkode", "apps/tlogg"]
+        { "name": "tlogg"         , "path": "apps/tlogg"}
       ]'
 
 jobs:
