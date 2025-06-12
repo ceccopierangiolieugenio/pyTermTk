@@ -79,7 +79,7 @@ jobs:
       - name: Convert global MY_ARRAY to matrix
         id: set-matrix
         run: |
-          MATRIX=$(jq -c '[.[] | {app: .name, name: .name, path: .path}]' <<< ${MY_ARRAY )
+          MATRIX=$(jq -c '[.[] | {app: .name, name: .name, path: .path}]' <<< ${MY_ARRAY} )
           echo "matrix=$MATRIX"
           echo "matrix=$MATRIX" >> $GITHUB_OUTPUT
 
