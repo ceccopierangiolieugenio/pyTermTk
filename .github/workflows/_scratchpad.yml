@@ -105,7 +105,7 @@ jobs:
           echo "Building ${{ matrix.name }} at path: ${{ matrix.path }}"
 
   publish-pypi:
-    name: Build ${{ matrix.name }}
+    name: Publish pypi ${{ matrix.name }}
     needs: generate-matrix
     runs-on: self-hosted
     strategy:
@@ -117,7 +117,7 @@ jobs:
           echo "Building ${{ matrix.name }} at path: ${{ matrix.path }}"
 
   publish-itch:
-    name: Build ${{ matrix.name }}
+    name: Publish Itch ${{ matrix.name }}
     needs: generate-matrix
     runs-on: self-hosted
     strategy:
