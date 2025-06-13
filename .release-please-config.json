@@ -16,19 +16,29 @@
   ],
   "packages": {
     "libs/pyTermTk": {
-      "package-name": "pyTermTk"
+      "package-name": "pyTermTk",
+      "pypi": true,
+      "itch": false
     },
     "apps/dumbPaintTool": {
-      "package-name": "theDumbPaintTool"
+      "package-name": "theDumbPaintTool",
+      "pypi": true,
+      "itch": true
     },
     "apps/ttkDesigner": {
-      "package-name": "ttkDesigner"
+      "package-name": "ttkDesigner",
+      "pypi": true,
+      "itch": false
     },
     "apps/ttkode": {
-      "package-name": "ttkode"
+      "package-name": "ttkode",
+      "pypi": true,
+      "itch": false
     },
     "apps/tlogg": {
-      "package-name": "tlogg"
+      "package-name": "tlogg",
+      "pypi": true,
+      "itch": false
     }
   }
 }
