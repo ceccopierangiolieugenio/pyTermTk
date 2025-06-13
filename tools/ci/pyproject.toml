@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=45", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ci_tools"
+version = "0.1.0"
+description = "ci helpers"
+authors = [
+    {name = "Eugenio Parodi", email = "ceccopierangiolieugenio@googlemail.com"},
+]
+requires-python = ">=3.9"
+dependencies = [
+    'gitpython'
+]
+
+[project.scripts]
+release-helper = "ci_tools.release_helper:main"
+
+[tool.setuptools]
+packages = ["ci_tools"]
