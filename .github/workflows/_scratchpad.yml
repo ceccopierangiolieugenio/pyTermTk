@@ -145,6 +145,9 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
       - name: Install dependencies
         shell: bash
         run:
