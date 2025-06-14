@@ -81,14 +81,14 @@ jobs:
 
           _ALL_VERSIONS=""
 
-          echo '::group::Print the Versions'
+          echo '::group::🍧 Print the Versions'
             release-helper \
               --config .release-please-config.json \
               --manifest .release-please-manifest.json \
               info
           echo '::endgroup::'
 
-          echo '::group::Update the Versions'
+          echo '::group::🍓 Update the Versions'
 
             _VERSION_TTK=$(_get_name ${APP_TTK})
 
