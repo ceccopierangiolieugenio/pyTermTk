@@ -152,6 +152,12 @@ jobs:
         shell: bash
         run:
           pip install -e tools/ci
+      - name: Test Things
+        shell: bash
+        run: |
+          echo '::group::Print the Versions'
+            release-helper --config .release-please-config.json --manifest .release-please-manifest.json info            done
+          echo '::endgroup::'
 
   generate-matrix:
     runs-on: self-hosted
