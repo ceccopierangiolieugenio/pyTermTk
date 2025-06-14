@@ -82,13 +82,7 @@ jobs:
           _ALL_VERSIONS=""
 
           echo '::group::Print the Versions'
-            for item in $(jq -r '.[].path' <<< ${APPS_ARRAY}) ; do; do
-              # Update version in the project
-              _VERSION=$(_get_version ${item})
-              _NAME=$(_get_name ${item})
-              echo "(${item}) Version ${_VERSION}: ${_NAME}"
-              _ALL_VERSIONS="${_ALL_VERSIONS} ${_VERSION}"
-            done
+            release-helper --config .release-please-config.json --manifest .release-please-manifest.json info            done
           echo '::endgroup::'
 
           echo '::group::Update the Versions'

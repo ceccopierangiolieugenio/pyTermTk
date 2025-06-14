@@ -38,6 +38,7 @@ class MatrixType(Enum):
 class _AppData():
     name: str
     path: str
+    version: str
     pypi: bool = False
     itch: bool = False
 
@@ -45,9 +46,15 @@ class _AppData():
         return {
             "name": self.name,
             "path": self.path,
+            "version" : self.version,
             "pypi": str(self.pypi).lower(),
             "itch": str(self.itch).lower()
         }
+
+def _print_info(apps_data:List[_AppData]):
+    for _a in apps_data:
+        print(f"{_a.name} : {_a.version}")
+
 
 def _gen_matrix(matrix_type: MatrixType, rp_data:Dict, apps_data:List[_AppData]) -> List[_AppData]:
     if matrix_type == MatrixType.PYPI:
@@ -115,13 +122,16 @@ def main():
         _AppData(
             name=_v.get('package-name',''),
             path=_a,
+            version=manifest.get(_a,"0.0.0"),
             itch=_v.get('itch',False),
             pypi=_v.get('pypi',False))
                 for _a,_v in config.get('packages',{}).items()]
 
     # print(apps_data)
 
-    if args.feature == "apps":
+    if args.feature == "info":
+        _print_info(apps_data)
+    elif args.feature == "apps":
         if args.list:
             print("Available Apps:")
             for app in apps_data:
