@@ -156,7 +156,10 @@ jobs:
         shell: bash
         run: |
           echo '::group::Print the Versions'
-            release-helper --config .release-please-config.json --manifest .release-please-manifest.json info            done
+           release-helper \
+              --config .release-please-config.json \
+              --manifest .release-please-manifest.json \
+              info
           echo '::endgroup::'
 
   generate-matrix:
