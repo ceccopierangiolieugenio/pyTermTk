@@ -21,9 +21,12 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import argparse
+import re
 import sys
+import glob
 import json
+import argparse
+import fileinput
 from dataclasses import dataclass
 from enum import Enum
 
@@ -47,13 +50,53 @@ class _AppData():
             "name": self.name,
             "path": self.path,
             "version" : self.version,
-            "pypi": str(self.pypi).lower(),
-            "itch": str(self.itch).lower()
+            "pypi": self.pypi,
+            "itch": self.itch
         }
 
-def _print_info(apps_data:List[_AppData]):
+def _print_info(apps_data:List[_AppData]) -> None:
     for _a in apps_data:
         print(f"{_a.name} : {_a.version}")
+
+# for item in $(jq -r '.[].path' <<< ${APPS_ARRAY}) ; do; do
+#   # Update version in the project
+#   _VERSION=$(_get_version ${item})
+#   _NAME=$(_get_name ${item})
+#   if grep -q "${_NAME}: ${_VERSION}" <<< ' ${{ steps.release-please.outputs.pr }}' ; then
+#     sed -i \
+#       "s|__version__:str.*|__version__:str = '${_VERSION}'|" \
+#       ${item}/*/__init__.py
+#     sed  "s|'pyTermTk *>=[^']*'|'pyTermTk>=${_VERSION_TTK}'|" -i ${item}/pyproject.toml
+#     echo ✅ Bumped ${_NAME} to ${_VERSION}
+#   else
+#     echo 🆗 No new release found for ${_NAME}
+#   fi
+# done
+def _upgrade_files(apps_data:List[_AppData], rp_data:Dict, dry_run:bool) -> None:
+    _ttk = [_a for _a in apps_data if _a.name=='pyTermTk'][0]
+    for _a in apps_data:
+        print(f"{_a.name} : {_a.version}")
+        if f"{_a.name}: {_a.version}" in rp_data.get('pr',''):
+            print(f"sed {_a.path}/*/__init__.py <<< {_a.version}")
+
+            pattern = re.compile(r"__version__:str.*")
+            replacement=f"__version__:str = '{_a.version}'"
+            files = glob.glob(f"{_a.path}/*/__init__.py")
+            if dry_run:
+                print(files, replacement)
+            else:
+                for line in fileinput.input(files, inplace=True):
+                    print(pattern.sub(replacement, line), end="")
+
+            pattern = re.compile(r"'pyTermTk *>=[^']*'")
+            replacement = f"'pyTermTk>={_ttk.version}'"
+
+            files = glob.glob(f"{_a.path}/pyproject.toml")
+            if dry_run:
+                print(files, replacement)
+            else:
+                for line in fileinput.input(files, inplace=True):
+                    print(pattern.sub(replacement, line), end="")
 
 
 def _gen_matrix(matrix_type: MatrixType, rp_data:Dict, apps_data:List[_AppData]) -> List[_AppData]:
@@ -121,6 +164,15 @@ def main():
             print(f"Error: Configuration file '{args.manifest.name}' is not valid JSON.")
             sys.exit(1)
 
+    input_data = {}
+    if not sys.stdin.isatty(): # or sys.stdin.peek(1):
+        try:
+            read = sys.stdin.read()
+            input_data = json.loads(read)
+        except json.JSONDecodeError:
+            print("Error: Invalid JSON input.")
+            sys.exit(1)
+
     apps_data = [
         _AppData(
             name=_v.get('package-name',''),
@@ -135,7 +187,8 @@ def main():
     if args.feature == "info":
         _print_info(apps_data)
     elif args.feature == "upgrade":
-        _print_info(apps_data)
+        print(args)
+        _upgrade_files(apps_data, input_data, args.dry_run)
     elif args.feature == "apps":
         if args.list:
             print("Available Apps:")
@@ -147,17 +200,14 @@ def main():
         else:
             apps_parser.print_help()
     elif args.feature == "matrix":
-        if not sys.stdin.isatty() or sys.stdin.peek(1):
-            try:
-                input_data = json.load(sys.stdin)
-                matrix_type = MatrixType(args.type)
-                matrix = _gen_matrix(matrix_type, input_data, apps_data)
-                print(json.dumps([app.to_dict() for app in matrix], indent=2))
-            except json.JSONDecodeError:
-                print("Error: Invalid JSON input.")
-                sys.exit(1)
-        else:
-            matrix_parser.print_help()
+        matrix_type = MatrixType(args.type)
+        matrix = _gen_matrix(matrix_type, input_data, apps_data)
+        print(json.dumps(
+                {
+                    'has_matrix': bool(matrix),
+                    'matrix':[app.to_dict() for app in matrix]
+                }
+            , indent=2))
     else:
         parser.print_help()
 
