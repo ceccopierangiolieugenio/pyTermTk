@@ -155,11 +155,37 @@ jobs:
       - name: Test Things
         shell: bash
         run: |
-          echo '::group::Print the Versions'
+          echo '::group::🍧 Print the Versions'
            release-helper \
               --config .release-please-config.json \
               --manifest .release-please-manifest.json \
               info
+          echo '::endgroup::'
+
+          echo '::group::🍓 Update the Versions'
+
+            _VERSION_TTK=$(_get_name libs/pyTermTk)
+
+            sed -i \
+              "s|__version__:str.*|__version__:str = '${_VERSION_TTK}'|" \
+              libs/pyTermTk/TermTk/__init__.py
+
+            for item in $(jq -r '.[].path' <<< ${APPS_ARRAY}) ; do; do
+              # Update version in the project
+              _VERSION=$(_get_version ${item})
+              _NAME=$(_get_name ${item})
+              if grep -q "${_NAME}: ${_VERSION}" <<< ' ${{ steps.release-please.outputs.pr }}' ; then
+                sed -i \
+                  "s|__version__:str.*|__version__:str = '${_VERSION}'|" \
+                  ${item}/*/__init__.py
+                sed  "s|'pyTermTk *>=[^']*'|'pyTermTk>=${_VERSION_TTK}'|" -i ${item}/pyproject.toml
+                echo ✅ Bumped ${_NAME} to ${_VERSION}
+              else
+                echo 🆗 No new release found for ${_NAME}
+              fi
+            done
+
+            cp libs/pyTermTk/CHANGELOG.md CHANGELOG.md
           echo '::endgroup::'
 
   generate-matrix:
