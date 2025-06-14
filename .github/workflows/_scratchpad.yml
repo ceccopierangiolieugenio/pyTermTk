@@ -159,6 +159,7 @@ jobs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
       matrix-pypi: ${{ steps.set-matrix.outputs.matrix_pypi }}
       matrix-itch: ${{ steps.set-matrix.outputs.matrix_itch }}
+      matrix-void: ${{ steps.set-matrix.outputs.void }}
     steps:
       - name: Convert global APPS_ARRAY to matrix
         id: set-matrix
@@ -166,6 +167,7 @@ jobs:
           echo matrix=$(jq '[.[]]' <<< ${APPS_ARRAY}) >> $GITHUB_OUTPUT
           echo matrix_itch=$(jq '[.[] | select(.itch == true)]' <<< ${APPS_ARRAY}) >> $GITHUB_OUTPUT
           echo matrix_pypi=$(jq '[.[] | select(.pypi == true)]' <<< ${APPS_ARRAY}) >> $GITHUB_OUTPUT
+          echo matrix_void='[]' >> $GITHUB_OUTPUT
 
   build:
     name: Build ${{ matrix.name }}
@@ -198,6 +200,18 @@ jobs:
     strategy:
       matrix:
         include: ${{ fromJson(needs.generate-matrix.outputs.matrix-itch) }}
+    steps:
+      - name: Build ${{ matrix.name }}
+        run: |
+          echo "Building ${{ matrix.name }} at path: ${{ matrix.path }}"
+
+  publish-void:
+    name: Publish Void ${{ matrix.name }}
+    needs: generate-matrix
+    runs-on: self-hosted
+    strategy:
+      matrix:
+        include: ${{ fromJson(needs.generate-matrix.outputs.matrix-void) }}
     steps:
       - name: Build ${{ matrix.name }}
         run: |
