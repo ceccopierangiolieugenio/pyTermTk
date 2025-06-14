@@ -80,7 +80,10 @@ def main():
     subparsers = parser.add_subparsers(title="Features", dest="feature")
 
     # Apps Feature
-    apps_parser = subparsers.add_parser("info", help="Print release info")
+    info_parser = subparsers.add_parser("info", help="Print release info")
+
+    upgrade_parser = subparsers.add_parser("upgrade", help="update the app versions")
+    upgrade_parser.add_argument("--dry-run", action="store_true", help="Do not apply thw changes")
 
     # Apps Feature
     apps_parser = subparsers.add_parser("apps", help="Apps related operations")
@@ -130,6 +133,8 @@ def main():
     # print(apps_data)
 
     if args.feature == "info":
+        _print_info(apps_data)
+    elif args.feature == "upgrade":
         _print_info(apps_data)
     elif args.feature == "apps":
         if args.list:
