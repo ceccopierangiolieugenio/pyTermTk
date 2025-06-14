@@ -73,9 +73,7 @@ def main():
     subparsers = parser.add_subparsers(title="Features", dest="feature")
 
     # Apps Feature
-    apps_parser = subparsers.add_parser("apps", help="Apps related operations")
-    apps_parser.add_argument("--list", action="store_true", help="List available apps")
-    apps_parser.add_argument("--build", metavar="app_name", type=str, help="Build a specific app")
+    apps_parser = subparsers.add_parser("info", help="Print release info")
 
     # Apps Feature
     apps_parser = subparsers.add_parser("apps", help="Apps related operations")
@@ -133,7 +131,6 @@ def main():
             # Implement build logic here
         else:
             apps_parser.print_help()
-
     elif args.feature == "matrix":
         if not sys.stdin.isatty() or sys.stdin.peek(1):
             try:

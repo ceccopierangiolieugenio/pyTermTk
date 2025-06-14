@@ -22,13 +22,6 @@ permissions:
 env:
   APP_NAME: pyTermTk
   APP_TTK: libs/pyTermTk
-  APPS_ARRAY: '[
-        { "name": "pyTermTk"      , "path": "libs/pyTermTk"      , "pypi" : true , "itch" : false },
-        { "name": "dumbPaintTool" , "path": "apps/dumbPaintTool" , "pypi" : true , "itch" : true  },
-        { "name": "ttkDesigner"   , "path": "apps/ttkDesigner"   , "pypi" : true , "itch" : false },
-        { "name": "ttkode"        , "path": "apps/ttkode"        , "pypi" : true , "itch" : false },
-        { "name": "tlogg"         , "path": "apps/tlogg"         , "pypi" : true , "itch" : false }
-      ]'
 
 jobs:
   release-please:
@@ -56,6 +49,10 @@ jobs:
           OUTPUTS: ${{ toJSON(steps.release-please.outputs) }}
         run: |
           echo OUTPUTS: "$OUTPUTS"
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
       - name: Update Version
         if: ${{ steps.release-please.outputs.prs_created == 'true'}}
         shell: bash
