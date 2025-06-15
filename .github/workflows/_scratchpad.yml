@@ -195,6 +195,9 @@ jobs:
       matrix-itch: ${{ steps.set-matrix.outputs.matrix_itch }}
       matrix-void: ${{ steps.set-matrix.outputs.void }}
     steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
       - name: Set up Python 3.11
         uses: actions/setup-python@v5
         with:
