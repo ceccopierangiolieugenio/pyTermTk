@@ -234,6 +234,14 @@ jobs:
           # echo matrix_itch=$(jq '[.[] | select(.itch == true)]' <<< ${APPS_ARRAY}) >> $GITHUB_OUTPUT
           # echo matrix_pypi=$(jq '[.[] | select(.pypi == true)]' <<< ${APPS_ARRAY}) >> $GITHUB_OUTPUT
           echo matrix_void='[]' >> $GITHUB_OUTPUT
+      - name: Print Output
+        env:
+          OUT:    ${{ toJSON(steps.set-matrix) }}
+          OUT1:   ${{ toJSON(steps.set-matrix.matrix) }}
+          OUT2.1: ${{ toJSON(steps.set-matrix.matrix)['matrix'] }}
+          OUT2.2: ${{ toJSON(steps.set-matrix.matrix['matrix']) }}
+        run: |
+          echo: $OUT
 
   build:
     if:  ${{ fromJson(needs.generate-matrix.outputs.matrix['has_matrix']) }}
@@ -255,7 +263,7 @@ jobs:
     runs-on: self-hosted
     strategy:
       matrix:
-        include: ${{ fromJson(needs.generate-matrix.outputs.matrix-pypi) }}
+        include: ${{ fromJson(needs.generate-matrix.outputs.matrix-pypi['matrix']) }}
     steps:
       - name: Build ${{ matrix.name }}
         run: |
@@ -268,7 +276,7 @@ jobs:
     runs-on: self-hosted
     strategy:
       matrix:
-        include: ${{ fromJson(needs.generate-matrix.outputs.matrix-itch) }}
+        include: ${{ fromJson(needs.generate-matrix.outputs.matrix-itch['matrix']) }}
     steps:
       - name: Build ${{ matrix.name }}
         run: |
