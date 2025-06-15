@@ -236,10 +236,10 @@ jobs:
           echo matrix_void='[]' >> $GITHUB_OUTPUT
       - name: Print Output
         env:
-          OUT:    ${{ toJSON(steps.set-matrix) }}
-          OUT1:   ${{ toJSON(steps.set-matrix.matrix) }}
-          OUT2.1: ${{ toJSON(steps.set-matrix.matrix)['matrix'] }}
-          OUT2.2: ${{ toJSON(steps.set-matrix.matrix['matrix']) }}
+          OUT:    ${{ toJSON(steps.set-matrix.outputs) }}
+          OUT1:   ${{ toJSON(steps.set-matrix.outputs.matrix) }}
+          OUT2.1: ${{ toJSON(steps.set-matrix.outputs.matrix)['matrix'] }}
+          OUT2.2: ${{ toJSON(steps.set-matrix.outputs.matrix['matrix']) }}
         run: |
           echo: $OUT
 
