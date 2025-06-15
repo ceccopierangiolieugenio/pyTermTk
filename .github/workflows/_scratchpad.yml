@@ -240,6 +240,7 @@ jobs:
           OUT1:   ${{ toJSON(steps.set-matrix.outputs.matrix) }}
           OUT2.1: ${{ toJSON(steps.set-matrix.outputs.matrix)['matrix'] }}
           OUT2.2: ${{ toJSON(steps.set-matrix.outputs.matrix['matrix']) }}
+          OUT2.3: ${{ fromJson(toJSON(steps.set-matrix.outputs.matrix))['matrix'] }}
         run: |
           echo: $OUT
 
