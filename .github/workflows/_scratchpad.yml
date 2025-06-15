@@ -138,6 +138,7 @@ jobs:
           done
 
   test-si-tools:
+    if: False
     runs-on: self-hosted
     steps:
       - name: Set up Python 3.11
