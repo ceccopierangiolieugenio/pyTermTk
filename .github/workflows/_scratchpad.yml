@@ -245,6 +245,9 @@ jobs:
           OUT2.5: ${{ fromJson(toJSON(steps.set-matrix.outputs.matrix)) }}
           # OUT2.6: ${{ fromJson(steps.set-matrix.outputs.matrix) }}
           OUT2.7: ${{ steps.set-matrix.outputs.matrix }}
+          OUT2.8: ${{ steps.set-matrix.outputs.matrix.matrix }}
+          OUT2.8.1: ${{ steps.set-matrix.outputs.matrix['matrix'] }}
+          OUT2.9: ${{ fromJson(toJSON(steps.set-matrix.outputs.matrix)).matrix }}
         run: |
           echo: $OUT
 
