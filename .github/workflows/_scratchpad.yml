@@ -170,6 +170,8 @@ jobs:
               info
           echo '::endgroup::'
 
+          echo PIPPO
+
           echo '::group::🍓 Update the Versions'
 
             _VERSION_TTK=$(_get_name libs/pyTermTk)
