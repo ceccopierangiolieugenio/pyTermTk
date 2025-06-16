@@ -47,15 +47,15 @@ env:
       "libs/pyTermTk--prNumber": "397",
       "apps/ttkode--release_created": "true",
       "apps/ttkode--id": "222844984",
-      "apps/ttkode--name": "ttkode: v0.4.0-a.2",
-      "apps/ttkode--tag_name": "ttkode-v0.4.0-a.2",
+      "apps/ttkode--name": "ttkode: v0.4.0-a.2111",
+      "apps/ttkode--tag_name": "ttkode-v0.4.0-a.2111",
       "apps/ttkode--sha": "edce717e527f2fe93a8a0c7f17e08a6b5fecd7bd",
       "apps/ttkode--body": "## [0.4.0-a.2](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/ttkode-v0.3.2-a.2...ttkode-v0.4.0-a.2) (2025-06-03)\n\n\n### ⚠ BREAKING CHANGES\n\n* **TabWidget:** tab request close  event need to be handled inside the app\n\n### Features\n\n* add save feature ([#407](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/407)) ([26ff9b2](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/26ff9b2f0a81bddadeb6849d5d560ae67406f973))\n\n\n### Refactors\n\n* **TabWidget:** tab request close  event need to be handled inside the app ([9420adf](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/9420adf68e2184482cd71266f280c560ea911f45))",
       "apps/ttkode--html_url": "https://github.com/ceccopierangiolieugenio/pyTermTk/releases/tag/ttkode-v0.4.0-a.2",
       "apps/ttkode--draft": "false",
       "apps/ttkode--upload_url": "https://uploads.github.com/repos/ceccopierangiolieugenio/pyTermTk/releases/222844984/assets{?name,label}",
       "apps/ttkode--path": "apps/ttkode",
-      "apps/ttkode--version": "0.4.0-a.2",
+      "apps/ttkode--version": "0.4.0-a.2111",
       "apps/ttkode--major": "0",
       "apps/ttkode--minor": "4",
       "apps/ttkode--patch": "0",
@@ -162,6 +162,16 @@ jobs:
             _ITEM=$1
             jq -r ".[\"${_ITEM}\"]" .release-please-manifest.json
           }
+
+          cat > .release-please-manifest.json <<__EOF
+          {
+              "libs/pyTermTk": "0.43.2-a.1234",
+              "apps/ttkode": "0.4.0-a.1234",
+              "apps/tlogg": "0.7.0-a.1234",
+              "apps/ttkDesigner": "0.41.4-a.1234",
+              "apps/dumbPaintTool": "0.41.9-a.1234"
+          }
+          __EOF
 
           echo '::group::🍧 Print the Versions'
            release-helper \
