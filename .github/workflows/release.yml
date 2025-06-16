@@ -218,28 +218,14 @@ jobs:
       - pyTermTk-deploy-artifacts
     secrets: inherit
 
-  generate-matrix:
-    runs-on: self-hosted
-    outputs:
-      matrix: ${{ steps.set-matrix.outputs.matrix }}
-      matrix-pypi: ${{ steps.set-matrix.outputs.matrix_pypi }}
-      matrix-itch: ${{ steps.set-matrix.outputs.matrix_itch }}
-    steps:
-      - name: Convert global APPS_ARRAY to matrix
-        id: set-matrix
-        run: |
-          echo matrix=$(jq '[.[]]' <<< ${APPS_ARRAY}) >> $GITHUB_OUTPUT
-          echo matrix_itch=$(jq '[.[] | select(.itch == true)]' <<< ${APPS_ARRAY}) >> $GITHUB_OUTPUT
-          echo matrix_pypi=$(jq '[.[] | select(.pypi == true)]' <<< ${APPS_ARRAY}) >> $GITHUB_OUTPUT
-
   publish-pypi:
+    if:  ${{ needs.release-please.outputs.matrix-pypi != '[]' }}
     name: Publish pypi ${{ matrix.name }}
     needs:
       - release-please
-      - generate-matrix
     strategy:
       matrix:
-        include: ${{ fromJson(needs.generate-matrix.outputs.matrix-pypi) }}
+        include: ${{ fromJson(needs.release-please.outputs.matrix-pypi) }}
     uses: ./.github/workflows/python-publish.yml
     with:
       pkg_name: ${{ matrix.name }}

@@ -154,11 +154,20 @@ jobs:
       - name: Test Things
         shell: bash
         run: |
+          _get_name(){
+            _ITEM=$1
+            jq -r ".packages[\"${_ITEM}\"][\"package-name\"]" .release-please-config.json
+          }
+          _get_version(){
+            _ITEM=$1
+            jq -r ".[\"${_ITEM}\"]" .release-please-manifest.json
+          }
+
           echo '::group::🍧 Print the Versions'
            release-helper \
               --config .release-please-config.json \
               --manifest .release-please-manifest.json \
-              info <<< ${RP_PR}
+              info
           echo '::endgroup::'
 
           echo '::group::🍓 Update the Versions'
