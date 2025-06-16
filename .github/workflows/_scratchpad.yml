@@ -305,6 +305,7 @@ jobs:
           echo "Building ${{ matrix.name }} at path: ${{ matrix.path }}"
 
   publish-void:
+    if:  ${{ needs.generate-matrix.outputs.void1 != '[]' }}
     name: Publish Void ${{ matrix.name }}
     needs: generate-matrix
     runs-on: self-hosted
