@@ -194,7 +194,8 @@ jobs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
       matrix-pypi: ${{ steps.set-matrix.outputs.matrix_pypi }}
       matrix-itch: ${{ steps.set-matrix.outputs.matrix_itch }}
-      matrix-void: ${{ steps.set-matrix.outputs.void }}
+      void: ${{ steps.set-matrix.outputs.void }}
+      void1: ${{ steps.set-matrix.outputs.void1 }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -234,6 +235,7 @@ jobs:
           # echo matrix_itch=$(jq '[.[] | select(.itch == true)]' <<< ${APPS_ARRAY}) >> $GITHUB_OUTPUT
           # echo matrix_pypi=$(jq '[.[] | select(.pypi == true)]' <<< ${APPS_ARRAY}) >> $GITHUB_OUTPUT
           echo matrix_void='[1,2,3]' >> $GITHUB_OUTPUT
+          echo matrix_void1='[]' >> $GITHUB_OUTPUT
       - name: Print Output
         env:
           OUT:    ${{ toJSON(steps.set-matrix.outputs) }} # ok
@@ -250,11 +252,16 @@ jobs:
           OUT2.9: ${{ fromJson(toJSON(steps.set-matrix.outputs.matrix)).matrix }}
           OUT3: ${{ toJSON(steps.set-matrix.outputs.matrix) }}
           OUT3.1: ${{ toJSON(steps.set-matrix.outputs.matrix)['matrix'] }}
-          OUT4 : ${{ steps.set-matrix.outputs.matrix-void }}
-          OUT4.1 : ${{ steps.set-matrix.outputs.matrix-void == '[]' }}
-          OUT4.2 : ${{ toJSON(steps.set-matrix.outputs.matrix-void) == '[]' }}
-          OUT4.3 : ${{ steps.set-matrix.outputs.matrix-void != '[]' }}
-          OUT4.4 : ${{ toJSON(steps.set-matrix.outputs.matrix-void) != '[]' }}
+          OUT4 : ${{ steps.set-matrix.outputs.void }}
+          OUT4.1 : ${{ steps.set-matrix.outputs.void == '[]' }}
+          OUT4.2 : ${{ toJSON(steps.set-matrix.outputs.void) == '[]' }}
+          OUT4.3 : ${{ steps.set-matrix.outputs.void != '[]' }}
+          OUT4.4 : ${{ toJSON(steps.set-matrix.outputs.void) != '[]' }}
+          OUT5 : ${{ steps.set-matrix.outputs.void1 }}
+          OUT5.1 : ${{ steps.set-matrix.outputs.void1 == '[]' }}
+          OUT5.2 : ${{ toJSON(steps.set-matrix.outputs.void1) == '[]' }}
+          OUT5.3 : ${{ steps.set-matrix.outputs.void1 != '[]' }}
+          OUT5.4 : ${{ toJSON(steps.set-matrix.outputs.void1) != '[]' }}
         run: |
           echo: $OUT
 
@@ -298,13 +305,13 @@ jobs:
           echo "Building ${{ matrix.name }} at path: ${{ matrix.path }}"
 
   publish-void:
-    if: ${{ fromJson(needs.generate-matrix.outputs.matrix-void) != '[]' }}
+    if: ${{ fromJson(needs.generate-matrix.outputs.void) != '[]' }}
     name: Publish Void ${{ matrix.name }}
     needs: generate-matrix
     runs-on: self-hosted
     strategy:
       matrix:
-        include: ${{ fromJson(needs.generate-matrix.outputs.matrix-void) }}
+        include: ${{ fromJson(needs.generate-matrix.outputs.void) }}
     steps:
       - name: Build ${{ matrix.name }}
         run: |
