@@ -30,7 +30,7 @@ import fileinput
 from dataclasses import dataclass
 from enum import Enum
 
-from typing import List, Dict
+from typing import List, Dict, Union
 
 class MatrixType(Enum):
     ALL = "all"
@@ -44,14 +44,16 @@ class _AppData():
     version: str
     pypi: bool = False
     itch: bool = False
+    tag: str = ""
 
-    def to_dict(self) -> Dict[str, str]:
+    def to_dict(self) -> Dict[str, Union[str,bool]]:
         return {
-            "name": self.name,
-            "path": self.path,
+            "name" : self.name,
+            "path" : self.path,
             "version" : self.version,
-            "pypi": self.pypi,
-            "itch": self.itch
+            "pypi" : self.pypi,
+            "itch" : self.itch,
+            "tag" : self.tag
         }
 
 def _print_info(apps_data:List[_AppData]) -> None:
@@ -109,17 +111,27 @@ def _gen_matrix(matrix_type: MatrixType, rp_data:Dict, apps_data:List[_AppData])
     else:
         raise ValueError(f"Invalid matrix type: {matrix_type}")
 
-    if 'pr' not in rp_data:
-        return []
+    # if 'pr' not in rp_data:
+    #     return []#
 
-    pr = json.loads(rp_data['pr'])
+    # pr = json.loads(rp_data['pr'])
 
-    apps = [app for app in apps if f"<summary>{app.name}:" in pr.get('body', "")]
+    print(rp_data)
+    for app in apps:
+        print(f"{app.name}: [{app.path}--release_created]: ", rp_data.get(f"{app.path}--release_created",False))
+
+    apps = [app for app in apps if rp_data.get(f"{app.path}--release_created",False) in ('true',True)]
+    for app in apps:
+        app.tag = rp_data.get(f"{app.path}--tag_name",'')
 
     return apps
 
 def main():
     parser = argparse.ArgumentParser(description="Release Helper Script")
+    # Configuration File Argument
+    parser.add_argument("--config",   metavar="config_file", type=argparse.FileType("r"), help="Path to the configuration file")
+    parser.add_argument("--manifest", metavar="config_file", type=argparse.FileType("r"), help="Path to the configuration file")
+
     subparsers = parser.add_subparsers(title="Features", dest="feature")
 
     # Apps Feature
@@ -136,11 +148,6 @@ def main():
     # Matrix Feature
     matrix_parser = subparsers.add_parser("matrix", help="Matrix related operations")
     matrix_parser.add_argument("type", metavar="matrix_type", type=str, choices=[e.value for e in MatrixType], help="Specify the type of matrix to generate")
-    matrix_parser.add_argument("--generate", action="store_true", help="Generate a matrix configuration")
-
-    # Configuration File Argument
-    parser.add_argument("--config",   metavar="config_file", type=argparse.FileType("r"), help="Path to the configuration file")
-    parser.add_argument("--manifest", metavar="config_file", type=argparse.FileType("r"), help="Path to the configuration file")
 
     args = parser.parse_args()
 
