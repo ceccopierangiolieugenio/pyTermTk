@@ -167,7 +167,7 @@ jobs:
            release-helper \
               --config .release-please-config.json \
               --manifest .release-please-manifest.json \
-              info
+              info <<< '{}'
           echo '::endgroup::'
 
           echo PIPPO
