@@ -90,9 +90,8 @@ def _upgrade_files(apps_data:List[_AppData], rp_data:Dict, dry_run:bool) -> None
             if dry_run:
                 print(files, replacement)
             else:
-                for file in files:
-                    for line in fileinput.input(file, inplace=True):
-                        print(pattern.sub(replacement, line), end="")
+                for line in fileinput.input(files, inplace=True):
+                    print(pattern.sub(replacement, line), end="")
 
             pattern = re.compile(r"'pyTermTk *>=[^']*'")
             replacement = f"'pyTermTk>={_ttk.version}'"
