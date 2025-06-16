@@ -158,7 +158,7 @@ jobs:
            release-helper \
               --config .release-please-config.json \
               --manifest .release-please-manifest.json \
-              info
+              info <<< ${RP_PR}
           echo '::endgroup::'
 
           echo '::group::🍓 Update the Versions'
