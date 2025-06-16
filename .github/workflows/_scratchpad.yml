@@ -263,7 +263,7 @@ jobs:
           OUT5.3 : ${{ steps.set-matrix.outputs.matrix_void1 != '[]' }}
           OUT5.4 : ${{ toJSON(steps.set-matrix.outputs.matrix_void1) != '[]' }}
         run: |
-          echo: $OUT
+          echo $OUT
 
   build:
     if:  ${{ needs.generate-matrix.outputs.matrix != '[]' }}
