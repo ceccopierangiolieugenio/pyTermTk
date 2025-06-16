@@ -116,9 +116,9 @@ def _gen_matrix(matrix_type: MatrixType, rp_data:Dict, apps_data:List[_AppData])
 
     # pr = json.loads(rp_data['pr'])
 
-    print(rp_data)
-    for app in apps:
-        print(f"{app.name}: [{app.path}--release_created]: ", rp_data.get(f"{app.path}--release_created",False))
+    # print(rp_data)
+    # for app in apps:
+    #     print(f"{app.name}: [{app.path}--release_created]: ", rp_data.get(f"{app.path}--release_created",False))
 
     apps = [app for app in apps if rp_data.get(f"{app.path}--release_created",False) in ('true',True)]
     for app in apps:
