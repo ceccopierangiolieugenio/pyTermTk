@@ -233,7 +233,7 @@ jobs:
           # echo matrix=$(jq '[.[]]' <<< ${APPS_ARRAY}) >> $GITHUB_OUTPUT
           # echo matrix_itch=$(jq '[.[] | select(.itch == true)]' <<< ${APPS_ARRAY}) >> $GITHUB_OUTPUT
           # echo matrix_pypi=$(jq '[.[] | select(.pypi == true)]' <<< ${APPS_ARRAY}) >> $GITHUB_OUTPUT
-          echo matrix_void='[]' >> $GITHUB_OUTPUT
+          echo matrix_void='[1,2,3]' >> $GITHUB_OUTPUT
       - name: Print Output
         env:
           OUT:    ${{ toJSON(steps.set-matrix.outputs) }} # ok
@@ -253,6 +253,8 @@ jobs:
           OUT4 : ${{ steps.set-matrix.outputs.matrix-void }}
           OUT4.1 : ${{ steps.set-matrix.outputs.matrix-void == '[]' }}
           OUT4.2 : ${{ toJSON(steps.set-matrix.outputs.matrix-void) == '[]' }}
+          OUT4.3 : ${{ steps.set-matrix.outputs.matrix-void != '[]' }}
+          OUT4.4 : ${{ toJSON(steps.set-matrix.outputs.matrix-void) != '[]' }}
         run: |
           echo: $OUT
 
