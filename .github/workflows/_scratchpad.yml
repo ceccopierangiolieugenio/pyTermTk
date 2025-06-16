@@ -194,8 +194,8 @@ jobs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
       matrix-pypi: ${{ steps.set-matrix.outputs.matrix_pypi }}
       matrix-itch: ${{ steps.set-matrix.outputs.matrix_itch }}
-      void: ${{ steps.set-matrix.outputs.void }}
-      void1: ${{ steps.set-matrix.outputs.void1 }}
+      void: ${{ steps.set-matrix.outputs.matrix_void }}
+      void1: ${{ steps.set-matrix.outputs.matrix_void1 }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -252,16 +252,16 @@ jobs:
           OUT2.9: ${{ fromJson(toJSON(steps.set-matrix.outputs.matrix)).matrix }}
           OUT3: ${{ toJSON(steps.set-matrix.outputs.matrix) }}
           OUT3.1: ${{ toJSON(steps.set-matrix.outputs.matrix)['matrix'] }}
-          OUT4 : ${{ steps.set-matrix.outputs.void }}
-          OUT4.1 : ${{ steps.set-matrix.outputs.void == '[]' }}
-          OUT4.2 : ${{ toJSON(steps.set-matrix.outputs.void) == '[]' }}
-          OUT4.3 : ${{ steps.set-matrix.outputs.void != '[]' }}
-          OUT4.4 : ${{ toJSON(steps.set-matrix.outputs.void) != '[]' }}
-          OUT5 : ${{ steps.set-matrix.outputs.void1 }}
-          OUT5.1 : ${{ steps.set-matrix.outputs.void1 == '[]' }}
-          OUT5.2 : ${{ toJSON(steps.set-matrix.outputs.void1) == '[]' }}
-          OUT5.3 : ${{ steps.set-matrix.outputs.void1 != '[]' }}
-          OUT5.4 : ${{ toJSON(steps.set-matrix.outputs.void1) != '[]' }}
+          OUT4 : ${{ steps.set-matrix.outputs.matrix_void }}
+          OUT4.1 : ${{ steps.set-matrix.outputs.matrix_void == '[]' }}
+          OUT4.2 : ${{ toJSON(steps.set-matrix.outputs.matrix_void) == '[]' }}
+          OUT4.3 : ${{ steps.set-matrix.outputs.matrix_void != '[]' }}
+          OUT4.4 : ${{ toJSON(steps.set-matrix.outputs.matrix_void) != '[]' }}
+          OUT5 : ${{ steps.set-matrix.outputs.matrix_void1 }}
+          OUT5.1 : ${{ steps.set-matrix.outputs.matrix_void1 == '[]' }}
+          OUT5.2 : ${{ toJSON(steps.set-matrix.outputs.matrix_void1) == '[]' }}
+          OUT5.3 : ${{ steps.set-matrix.outputs.matrix_void1 != '[]' }}
+          OUT5.4 : ${{ toJSON(steps.set-matrix.outputs.matrix_void1) != '[]' }}
         run: |
           echo: $OUT
 
@@ -305,13 +305,13 @@ jobs:
           echo "Building ${{ matrix.name }} at path: ${{ matrix.path }}"
 
   publish-void:
-    if: ${{ fromJson(needs.generate-matrix.outputs.void) != '[]' }}
+    if: ${{ fromJson(needs.generate-matrix.outputs.matrix_void) != '[]' }}
     name: Publish Void ${{ matrix.name }}
     needs: generate-matrix
     runs-on: self-hosted
     strategy:
       matrix:
-        include: ${{ fromJson(needs.generate-matrix.outputs.void) }}
+        include: ${{ fromJson(needs.generate-matrix.outputs.matrix_void) }}
     steps:
       - name: Build ${{ matrix.name }}
         run: |
