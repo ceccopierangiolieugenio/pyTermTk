@@ -30,6 +30,9 @@ jobs:
 
     outputs:
       rp_out: ${{ toJson(steps.release-please.outputs) }}
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+      matrix-pypi: ${{ steps.set-matrix.outputs.matrix_pypi }}
+      matrix-itch: ${{ steps.set-matrix.outputs.matrix_itch }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -58,6 +61,7 @@ jobs:
         shell: bash
         env:
           GITHUB_TOKEN: ${{ secrets.GH_PAT_TOKEN }}
+          RP_OUT: ${{ steps.release-please.outputs }}
         run: |
           _get_name(){
             _ITEM=$1
@@ -96,20 +100,11 @@ jobs:
               "s|__version__:str.*|__version__:str = '${_VERSION_TTK}'|" \
               libs/pyTermTk/TermTk/__init__.py
 
-            for item in $(jq -r '.[].path' <<< ${APPS_ARRAY}) ; do; do
-              # Update version in the project
-              _VERSION=$(_get_version ${item})
-              _NAME=$(_get_name ${item})
-              if grep -q "${_NAME}: ${_VERSION}" <<< ' ${{ steps.release-please.outputs.pr }}' ; then
-                sed -i \
-                  "s|__version__:str.*|__version__:str = '${_VERSION}'|" \
-                  ${item}/*/__init__.py
-                sed  "s|'pyTermTk *>=[^']*'|'pyTermTk>=${_VERSION_TTK}'|" -i ${item}/pyproject.toml
-                echo ✅ Bumped ${_NAME} to ${_VERSION}
-              else
-                echo 🆗 No new release found for ${_NAME}
-              fi
-            done
+            release-helper \
+              --config .release-please-config.json \
+              --manifest .release-please-manifest.json \
+              upgrade <<< ${RP_OUT}
+
 
             cp libs/pyTermTk/CHANGELOG.md CHANGELOG.md
           echo '::endgroup::'
@@ -125,6 +120,31 @@ jobs:
               git push
             fi
           echo '::endgroup::'
+      - name: Define the Matrix strategy
+        id: set-matrix
+        env:
+          RP_OUT: ${{ steps.release-please.outputs }}
+        run: |
+          echo "matrix<<EOF" >> $GITHUB_OUTPUT
+            release-helper \
+              --config .release-please-config.json \
+              --manifest .release-please-manifest.json \
+              matrix all <<< ${RP_OUR} >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+          echo "matrix_itch<<EOF" >> $GITHUB_OUTPUT
+            release-helper \
+              --config .release-please-config.json \
+              --manifest .release-please-manifest.json \
+              matrix itch <<< ${RP_OUR} >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+          echo "matrix_pypi<<EOF" >> $GITHUB_OUTPUT
+            release-helper \
+              --config .release-please-config.json \
+              --manifest .release-please-manifest.json \
+              matrix pypi <<< ${RP_OUR} >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
 
   pyTermTk-deploy-artifacts:
     if: ${{ fromJson(needs.release-please.outputs.rp_out)['libs/pyTermTk--release_created'] }}

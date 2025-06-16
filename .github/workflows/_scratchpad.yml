@@ -138,7 +138,6 @@ jobs:
           done
 
   test-si-tools:
-    if: False
     runs-on: self-hosted
     steps:
       - name: Set up Python 3.11
@@ -170,23 +169,15 @@ jobs:
               "s|__version__:str.*|__version__:str = '${_VERSION_TTK}'|" \
               libs/pyTermTk/TermTk/__init__.py
 
-            for item in $(jq -r '.[].path' <<< ${APPS_ARRAY}) ; do; do
-              # Update version in the project
-              _VERSION=$(_get_version ${item})
-              _NAME=$(_get_name ${item})
-              if grep -q "${_NAME}: ${_VERSION}" <<< ' ${{ steps.release-please.outputs.pr }}' ; then
-                sed -i \
-                  "s|__version__:str.*|__version__:str = '${_VERSION}'|" \
-                  ${item}/*/__init__.py
-                sed  "s|'pyTermTk *>=[^']*'|'pyTermTk>=${_VERSION_TTK}'|" -i ${item}/pyproject.toml
-                echo ✅ Bumped ${_NAME} to ${_VERSION}
-              else
-                echo 🆗 No new release found for ${_NAME}
-              fi
-            done
+            release-helper \
+              --config .release-please-config.json \
+              --manifest .release-please-manifest.json \
+              upgrade <<< ${RP_PR}
 
             cp libs/pyTermTk/CHANGELOG.md CHANGELOG.md
           echo '::endgroup::'
+
+          git diff
 
   generate-matrix:
     runs-on: self-hosted
@@ -208,7 +199,7 @@ jobs:
         shell: bash
         run:
           pip install -e tools/ci
-      - name: Convert global APPS_ARRAY to matrix
+      - name: Define the Matrix strategy
         id: set-matrix
         run: |
           echo "matrix<<EOF" >> $GITHUB_OUTPUT

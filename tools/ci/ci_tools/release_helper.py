@@ -78,7 +78,10 @@ def _upgrade_files(apps_data:List[_AppData], rp_data:Dict, dry_run:bool) -> None
     _ttk = [_a for _a in apps_data if _a.name=='pyTermTk'][0]
     for _a in apps_data:
         print(f"{_a.name} : {_a.version}")
-        if f"{_a.name}: {_a.version}" in rp_data.get('pr',''):
+        if f"{_a.name}: {_a.version}" not in rp_data.get('pr',''):
+            print(f"🆗 No new release found for ${_a.name}")
+        else:
+            print(f"✅ Bumped ${_a.name} to ${_a.version}")
             print(f"sed {_a.path}/*/__init__.py <<< {_a.version}")
 
             pattern = re.compile(r"__version__:str.*")
