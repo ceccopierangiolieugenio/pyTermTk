@@ -209,12 +209,13 @@ def main():
     elif args.feature == "matrix":
         matrix_type = MatrixType(args.type)
         matrix = _gen_matrix(matrix_type, input_data, apps_data)
-        print(json.dumps(
-                {
-                    'has_matrix': bool(matrix),
-                    'matrix':[app.to_dict() for app in matrix]
-                }
-            , indent=2))
+        # print(json.dumps(
+        #         {
+        #             'has_matrix': bool(matrix),
+        #             'matrix':[app.to_dict() for app in matrix]
+        #         }
+        #     , indent=2))
+        print(json.dumps([app.to_dict() for app in matrix], indent=2))
     else:
         parser.print_help()
 

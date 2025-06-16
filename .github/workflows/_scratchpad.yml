@@ -266,52 +266,51 @@ jobs:
           echo: $OUT
 
   build:
-    if:  ${{ fromJson(needs.generate-matrix.outputs.matrix['has_matrix']) }}
+    if:  ${{ needs.generate-matrix.outputs.matrix != '[]' }}
     name: Build ${{ matrix.name }}
     needs: generate-matrix
     runs-on: self-hosted
     strategy:
       matrix:
-        include: ${{ fromJson(needs.generate-matrix.outputs.matrix['matrix']) }}
+        include: ${{ fromJson(needs.generate-matrix.outputs.matrix) }}
     steps:
       - name: Build ${{ matrix.name }}
         run: |
           echo "Building ${{ matrix.name }} at path: ${{ matrix.path }}"
 
   publish-pypi:
-    if:  ${{ fromJson(needs.generate-matrix.outputs.matrix-pypi['has_matrix']) }}
+    if:  ${{ needs.generate-matrix.outputs.matrix-pypi != '[]' }}
     name: Publish pypi ${{ matrix.name }}
     needs: generate-matrix
     runs-on: self-hosted
     strategy:
       matrix:
-        include: ${{ fromJson(needs.generate-matrix.outputs.matrix-pypi['matrix']) }}
+        include: ${{ fromJson(needs.generate-matrix.outputs.matrix-pypi) }}
     steps:
       - name: Build ${{ matrix.name }}
         run: |
           echo "Building ${{ matrix.name }} at path: ${{ matrix.path }}"
 
   publish-itch:
-    if:  ${{ fromJson(needs.generate-matrix.outputs.matrix-itch['has_matrix']) }}
+    if:  ${{ needs.generate-matrix.outputs.matrix-itch != '[]' }}
     name: Publish Itch ${{ matrix.name }}
     needs: generate-matrix
     runs-on: self-hosted
     strategy:
       matrix:
-        include: ${{ fromJson(needs.generate-matrix.outputs.matrix-itch['matrix']) }}
+        include: ${{ fromJson(needs.generate-matrix.outputs.matrix-itch) }}
     steps:
       - name: Build ${{ matrix.name }}
         run: |
           echo "Building ${{ matrix.name }} at path: ${{ matrix.path }}"
 
   publish-void:
-    if: ${{ fromJson(needs.generate-matrix.outputs.matrix_void) != '[]' }}
     name: Publish Void ${{ matrix.name }}
     needs: generate-matrix
     runs-on: self-hosted
     strategy:
       matrix:
-        include: ${{ fromJson(needs.generate-matrix.outputs.matrix_void) }}
+        include: ${{ fromJson(needs.generate-matrix.outputs.void1) }}
     steps:
       - name: Build ${{ matrix.name }}
         run: |
