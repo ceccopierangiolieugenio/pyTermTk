@@ -248,7 +248,11 @@ jobs:
           OUT2.8: ${{ steps.set-matrix.outputs.matrix.matrix }}
           OUT2.8.1: ${{ steps.set-matrix.outputs.matrix['matrix'] }}
           OUT2.9: ${{ fromJson(toJSON(steps.set-matrix.outputs.matrix)).matrix }}
-          OUT3: ${{ toJSON(steps.set-matrix.outputs.matrix)['matrix'] }}
+          OUT3: ${{ toJSON(steps.set-matrix.outputs.matrix) }}
+          OUT3.1: ${{ toJSON(steps.set-matrix.outputs.matrix)['matrix'] }}
+          OUT4 : ${{ steps.set-matrix.outputs.matrix-void }}
+          OUT4.1 : ${{ steps.set-matrix.outputs.matrix-void == '[]' }}
+          OUT4.2 : ${{ toJSON(steps.set-matrix.outputs.matrix-void) == '[]' }}
         run: |
           echo: $OUT
 
