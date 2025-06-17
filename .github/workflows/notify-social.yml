@@ -1,0 +1,57 @@
+name: Release Sandbox
+
+permissions:
+  contents: read
+
+on:
+  workflow_dispatch:
+    inputs:
+      app:
+        description: The changed app
+        type: string
+        default: pyTermTk
+      version:
+        description: The app version
+        type: string
+        default: v0.0.0
+      discord-message:
+        description: The release message
+        type: string
+        default: pyTermTk released
+  workflow_call:
+    inputs:
+      app:
+        description: The changed app
+        type: string
+        default: pyTermTk
+      version:
+        description: The app version
+        type: string
+        default: v0.0.0
+      discord-message:
+        description: The release message
+        type: string
+        default: pyTermTk released
+
+jobs:
+  notify-discord:
+    # runs-on: ubuntu-latest
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+      - name: Instrall deps
+        run: |
+          python -m pip install discord.py
+      - name: Deploy Discord message
+        env:
+          MESSAGE: ${{ inputs.discord-message }}
+        run: |
+          python tools/ci/social/notify_discord.py ${{ inputs.app }} ${{ inputs.version }}
+
+
+

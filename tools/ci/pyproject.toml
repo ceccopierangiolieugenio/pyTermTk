@@ -1,0 +1,27 @@
+[build-system]
+    requires = ["setuptools>=45", "wheel"]
+    build-backend = "setuptools.build_meta"
+
+[project]
+    name = "ci_tools"
+    version = "0.1.0"
+    description = "ci helpers"
+    authors = [
+        {name = "Eugenio Parodi", email = "ceccopierangiolieugenio@googlemail.com"},
+    ]
+    requires-python = ">=3.9"
+    dependencies = [
+        'GitPython==3.1.44'
+    ]
+
+[project.optional-dependencies]
+    social = [
+        'discord.py==2.5.2'
+    ]
+
+[project.scripts]
+    release-helper = "ci_tools.release_helper:main"
+    notify-discord = "ci_tools.social.notify_discord:main"
+
+[tool.setuptools]
+    packages = ["ci_tools"]

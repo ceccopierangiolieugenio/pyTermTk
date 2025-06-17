@@ -21,6 +21,7 @@ permissions:
 
 env:
   APP_NAME: pyTermTk
+  APP_TTK: libs/pyTermTk
 
 jobs:
   release-please:
@@ -29,6 +30,9 @@ jobs:
 
     outputs:
       rp_out: ${{ toJson(steps.release-please.outputs) }}
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+      matrix-pypi: ${{ steps.set-matrix.outputs.matrix_pypi }}
+      matrix-itch: ${{ steps.set-matrix.outputs.matrix_itch }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -48,12 +52,26 @@ jobs:
           OUTPUTS: ${{ toJSON(steps.release-please.outputs) }}
         run: |
           echo OUTPUTS: "$OUTPUTS"
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
       - name: Update Version
         if: ${{ steps.release-please.outputs.prs_created == 'true'}}
         shell: bash
         env:
           GITHUB_TOKEN: ${{ secrets.GH_PAT_TOKEN }}
+          RP_OUT: ${{ steps.release-please.outputs }}
         run: |
+          _get_name(){
+            _ITEM=$1
+            jq -r ".packages[\"${_ITEM}\"][\"package-name\"]" .release-please-config.json
+          }
+          _get_version(){
+            _ITEM=$1
+            jq -r ".[\"${_ITEM}\"]" .release-please-manifest.json
+          }
+
           echo '::group::Setup Git'
             git config --global user.name 'Eugenio Parodi - Action'
             git config --global user.email 'ceccopierangioliegenio@googlemail.com'
@@ -65,55 +83,27 @@ jobs:
 
           cd pyTermTk.new
 
-          echo '::group::Retrieve the Versions'
-            # Update version in the project
-            _VERSION_TTK=$(jq -r '.["libs/pyTermTk"     ]' .release-please-manifest.json)
-            _VERSION_DPT=$(jq -r '.["apps/dumbPaintTool"]' .release-please-manifest.json)
-            _VERSION_T_D=$(jq -r '.["apps/ttkDesigner"  ]' .release-please-manifest.json)
-            _VERSION_KOD=$(jq -r '.["apps/ttkode"       ]' .release-please-manifest.json)
-            _VERSION_TLG=$(jq -r '.["apps/tlogg"        ]' .release-please-manifest.json)
-            _NAME_TTK=$(jq -r '.packages["libs/pyTermTk"     ]["package-name"]' .release-please-config.json)
-            _NAME_DPT=$(jq -r '.packages["apps/dumbPaintTool"]["package-name"]' .release-please-config.json)
-            _NAME_T_D=$(jq -r '.packages["apps/ttkDesigner"  ]["package-name"]' .release-please-config.json)
-            _NAME_KOD=$(jq -r '.packages["apps/ttkode"       ]["package-name"]' .release-please-config.json)
-            _NAME_TLG=$(jq -r '.packages["apps/tlogg"        ]["package-name"]' .release-please-config.json)
-
-            echo "Version ${_NAME_TTK}: ${_VERSION_TTK}"
-            echo "Version ${_NAME_DPT}: ${_VERSION_DPT}"
-            echo "Version ${_NAME_T_D}: ${_VERSION_T_D}"
-            echo "Version ${_NAME_KOD}: ${_VERSION_KOD}"
-            echo "Version ${_NAME_TLG}: ${_VERSION_TLG}"
+          echo '::group::🍧 Print the Versions'
+            release-helper \
+              --config .release-please-config.json \
+              --manifest .release-please-manifest.json \
+              info <<< '{}'
           echo '::endgroup::'
 
-          echo '::group::Update the Versions'
+          echo '::group::🍓 Update the Versions'
+
+            _VERSION_TTK=$(_get_name ${APP_TTK})
+
             sed -i \
               "s|__version__:str.*|__version__:str = '${_VERSION_TTK}'|" \
               libs/pyTermTk/TermTk/__init__.py
 
-            if grep -q "${_NAME_DPT}: ${_VERSION_DPT}" <<< ' ${{ steps.release-please.outputs.pr }}' ; then
-              sed -i \
-                "s|__version__:str.*|__version__:str = '${_VERSION_T_D}'|" \
-                apps/ttkDesigner/ttkDesigner/__init__.py
-              sed  "s|'pyTermTk *>=[^']*'|'pyTermTk>=${_VERSION_TTK}'|" -i apps/dumbPaintTool/pyproject.toml
-            fi
-            if grep -q "${_NAME_T_D}: ${_VERSION_T_D}" <<< ' ${{ steps.release-please.outputs.pr }}' ; then
-              sed -i \
-                "s|__version__:str.*|__version__:str = '${_VERSION_DPT}'|" \
-                apps/dumbPaintTool/dumbPaintTool/__init__.py
-              sed  "s|'pyTermTk *>=[^']*'|'pyTermTk>=${_VERSION_TTK}'|" -i apps/ttkDesigner/pyproject.toml
-            fi
-            if grep -q "${_NAME_KOD}: ${_VERSION_KOD}" <<< ' ${{ steps.release-please.outputs.pr }}' ; then
-              sed -i \
-                "s|__version__:str.*|__version__:str = '${_VERSION_KOD}'|" \
-                apps/ttkode/ttkode/__init__.py
-              sed  "s|'pyTermTk *>=[^']*'|'pyTermTk>=${_VERSION_TTK}'|" -i apps/ttkode/pyproject.toml
-            fi
-            if grep -q "${_NAME_TLG}: ${_VERSION_TLG}" <<< ' ${{ steps.release-please.outputs.pr }}' ; then
-              sed -i \
-                "s|__version__:str.*|__version__:str = '${_VERSION_TLG}'|" \
-                apps/tlogg/tlogg/__init__.py
-              sed  "s|'pyTermTk *>=[^']*'|'pyTermTk>=${_VERSION_TTK}'|" -i apps/tlogg/pyproject.toml
-            fi
+            release-helper \
+              --config .release-please-config.json \
+              --manifest .release-please-manifest.json \
+              upgrade <<< ${RP_OUT}
+
+
             cp libs/pyTermTk/CHANGELOG.md CHANGELOG.md
           echo '::endgroup::'
 
@@ -124,10 +114,35 @@ jobs:
               CHANGELOG.md
             find . -name pyproject.toml | xargs git add
             if [[ $(git status --porcelain) ]] ; then
-              git commit -m "chore: updated TermTk and apps to versions to ${_VERSION_TTK}, ${_VERSION_DPT}, ${_VERSION_T_D} ${_VERSION_KOD}"
+              git commit -m "chore: updated TermTk and apps to versions"
               git push
             fi
           echo '::endgroup::'
+      - name: Define the Matrix strategy
+        id: set-matrix
+        env:
+          RP_OUT: ${{ steps.release-please.outputs }}
+        run: |
+          echo "matrix<<EOF" >> $GITHUB_OUTPUT
+            release-helper \
+              --config .release-please-config.json \
+              --manifest .release-please-manifest.json \
+              matrix all <<< ${RP_OUR} >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+          echo "matrix_itch<<EOF" >> $GITHUB_OUTPUT
+            release-helper \
+              --config .release-please-config.json \
+              --manifest .release-please-manifest.json \
+              matrix itch <<< ${RP_OUR} >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+          echo "matrix_pypi<<EOF" >> $GITHUB_OUTPUT
+            release-helper \
+              --config .release-please-config.json \
+              --manifest .release-please-manifest.json \
+              matrix pypi <<< ${RP_OUR} >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
 
   pyTermTk-deploy-artifacts:
     if: ${{ fromJson(needs.release-please.outputs.rp_out)['libs/pyTermTk--release_created'] }}
@@ -201,38 +216,36 @@ jobs:
       - pyTermTk-deploy-artifacts
     secrets: inherit
 
-  publish-pyTermTk:
-    if: ${{ fromJson(needs.release-please.outputs.rp_out)['libs/pyTermTk--release_created'] }}
-    name: Publish pyTermTk
-    uses: ./.github/workflows/python-publish.yml
-    with:
-      pkg_name: pyTermTk
-      pkg_folder: libs/pyTermTk
+  publish-pypi:
+    if:  ${{ needs.release-please.outputs.matrix-pypi != '[]' }}
+    name: Publish pypi ${{ matrix.name }}
     needs:
       - release-please
+    strategy:
+      matrix:
+        include: ${{ fromJson(needs.release-please.outputs.matrix-pypi) }}
+    uses: ./.github/workflows/python-publish.yml
+    with:
+      pkg_name: ${{ matrix.name }}
+      pkg_folder: ${{ matrix.path }}
     secrets: inherit
 
-  publish-ttkDesigner:
-    if: ${{ fromJson(needs.release-please.outputs.rp_out)['apps/ttkDesigner--release_created'] }}
-    name: Publish ttkDesigner
-    uses: ./.github/workflows/python-publish.yml
-    with:
-      pkg_name: ttkDesigner
-      pkg_folder: apps/ttkDesigner
-    needs:
-      - release-please
-    secrets: inherit
-
-  publish-dumbPaintTool:
-    if: ${{ fromJson(needs.release-please.outputs.rp_out)['apps/dumbPaintTool--release_created'] }}
-    name: Publish dumbPaintTool
-    uses: ./.github/workflows/python-publish.yml
-    with:
-      pkg_name: dumbPaintTool
-      pkg_folder: apps/dumbPaintTool
-    needs:
-      - release-please
-    secrets: inherit
+  # publish-itch:
+  #   name: Publish Itch ${{ matrix.name }}
+  #   needs:
+  #     - release-please
+  #     - generate-matrix
+  #   runs-on: self-hosted
+  #   strategy:
+  #     matrix:
+  #       include: ${{ fromJson(needs.generate-matrix.outputs.matrix-itch) }}
+  #   steps:
+  #     - name: Build ${{ matrix.name }}
+  #       run: |
+  #         echo "Building ${{ matrix.name }} at path: ${{ matrix.path }}"
+  #   uses: ./.github/workflows/itch-publish.yml
+  #   with:
+  #     pkg_name: dumb-paint-tool
 
   publish-dumbPaintTool-itch:
     if: ${{ fromJson(needs.release-please.outputs.rp_out)['apps/dumbPaintTool--release_created'] }}
@@ -244,24 +257,30 @@ jobs:
       - release-please
     secrets: inherit
 
-  publish-ttkode:
-    if: ${{ fromJson(needs.release-please.outputs.rp_out)['apps/ttkode--release_created'] }}
-    name: Publish ttkode
-    uses: ./.github/workflows/python-publish.yml
-    with:
-      pkg_name: ttkode
-      pkg_folder: apps/ttkode
+  notify:
+    if:  ${{ needs.release-please.outputs.matrix != '[]' }}
+    name: Notify ${{ matrix.name }} to the socials
     needs:
       - release-please
-    secrets: inherit
-
-  publish-tlogg:
-    if: ${{ fromJson(needs.release-please.outputs.rp_out)['apps/tlogg--release_created'] }}
-    name: Publish tlogg
-    uses: ./.github/workflows/python-publish.yml
-    with:
-      pkg_name: tlogg
-      pkg_folder: apps/tlogg
-    needs:
-      - release-please
-    secrets: inherit
+    runs-on: self-hosted
+    strategy:
+      matrix:
+        include: ${{ fromJson(needs.release-please.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        shell: bash
+        run:
+          pip install -e 'tools/ci[social]'
+      - name: Notify ${{ matrix.name }} on Discord
+        env:
+          RN: ${{ matrix.release-notes }}
+          MESSAGE: ${{ matrix.release-notes }}
+        run: |
+          notify-discord ${{ matrix.name }} v${{ matrix.version }}
