@@ -297,13 +297,12 @@ jobs:
         shell: bash
         run:
           pip install -e tools/ci
-      - name: Build ${{ matrix.name }}
+      - name: Notify ${{ matrix.name }} on Discord
         env:
           RN: ${{ matrix.release-notes }}
           MESSAGE: ${{ matrix.release-notes }}
         run: |
-          echo "Building ${{ matrix.name }} at path: ${{ matrix.path }}"
-          echo "RN: ${RN}"
+          notify-discord ${{ matrix.name }} v${{ matrix.version }}
 
 
   publish-pypi:
