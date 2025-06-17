@@ -26,6 +26,8 @@ import argparse
 from dataclasses import dataclass
 from typing import Optional,Tuple,List,Dict
 
+from PIL import ImageDraw, ImageFilter
+
 import numpy as np
 
 from wand.image import Image

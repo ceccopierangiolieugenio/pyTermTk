@@ -22,6 +22,8 @@
 
 __all__ = ['TTkConstant', 'TTkK']
 
+from enum import IntEnum
+
 class TTkConstant:
     '''Class container of all the constants used in :mod:`~TermTk`'''
 
@@ -56,7 +58,7 @@ class TTkConstant:
         ColorModifier = 0x08
         '''The :py:class:`TTkColor` include a color modifier based on :py:class:`TTkColorModifier`'''
 
-    class FocusPolicy(int):
+    class FocusPolicy(IntEnum):
         '''
         This Class type defines the various policies a widget
         can have with respect to acquiring keyboard focus.

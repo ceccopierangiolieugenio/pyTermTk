@@ -20,14 +20,11 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
+
 __all__ = ['TTkWidget']
 
-from typing import Callable, Any, List
-
-try:
-    from typing import Self
-except:
-    class Self(): pass
+from typing import ( TYPE_CHECKING, Callable, Any, List, Optional, Tuple, Union, Dict )
 
 from TermTk.TTkCore.cfg       import TTkCfg, TTkGlbl
 from TermTk.TTkCore.constant  import TTkK
@@ -42,6 +39,9 @@ from TermTk.TTkTemplates.mouseevents import TMouseEvents
 from TermTk.TTkTemplates.keyevents import TKeyEvents
 from TermTk.TTkLayouts.layout import TTkWidgetItem
 from TermTk.TTkCore.TTkTerm.inputmouse import TTkMouseEvent
+
+if TYPE_CHECKING:
+    from TermTk import TTkContainer
 
 class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
     ''' Widget sizes:
@@ -122,25 +122,51 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
         #Signals
         'focusChanged', 'sizeChanged', 'currentStyleChanged', 'closed')
 
-    def __init__(self,
-                 parent:Self = None,
-                 x:int=0,     y:int=0,
-                 width:int=0, height:int=0,
-                 pos  : tuple = None,
-                 size : tuple = None,
-                 maxSize  : tuple = None,
-                 maxWidth : int   = 0x10000,
-                 maxHeight: int   = 0x10000,
-                 minSize  : tuple = None,
-                 minWidth : int   = 0x00000,
-                 minHeight: int   = 0x00000,
-                 name     : str = None,
-                 visible  : bool = True,
-                 enabled  : bool = True,
-                 toolTip  : TTkString = '',
-                 style    : dict = None,
-                 addStyle : dict = None,
-                 **kwargs) -> None:
+    _name:str
+    _parent:Optional[TTkContainer]
+    _x:int
+    _y:int
+    _width:int
+    _height:int
+    _maxw:int
+    _maxh:int
+    _minw:int
+    _minh:int
+    _focus:bool
+    _focus_policy:TTkK.FocusPolicy
+    _canvas:TTkCanvas
+    _widgetItem:TTkWidgetItem
+    _visible:bool
+    _pendingMouseRelease:bool
+    _enabled:bool
+    _style:Dict
+    _currentStyle:Dict
+    _toolTip:TTkString
+    _dropEventProxy:Any
+    _widgetCursor:Tuple[int,int]
+    _widgetCursorEnabled:bool
+    _widgetCursorType:int
+
+    def __init__(
+            self,
+            parent:Optional[TTkContainer] = None,
+            x:int=0,     y:int=0,
+            width:int=0, height:int=0,
+            pos  : Optional[Tuple[int,int]] = None,
+            size : Optional[Tuple[int,int]] = None,
+            maxSize  : Optional[Tuple[int,int]] = None,
+            maxWidth : int   = 0x10000,
+            maxHeight: int   = 0x10000,
+            minSize  : Optional[Tuple[int,int]] = None,
+            minWidth : int   = 0x00000,
+            minHeight: int   = 0x00000,
+            name     : Optional[str] = None,
+            visible  : bool = True,
+            enabled  : bool = True,
+            toolTip  : Union[TTkString,str] = '',
+            style    : Optional[Dict] = None,
+            addStyle : Optional[Dict] = None,
+            **kwargs) -> None:
         '''
         :param name: the name of the widget, defaults to ""
         :type name: str, optional
@@ -401,7 +427,7 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
         :param txt: the paste object
         :type txt: str
         '''
-        return False
+        pass
 
     def _mouseEventParseChildren(self, evt:TTkMouseEvent) -> bool:
         return False
@@ -813,14 +839,15 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
     _S_PRESSED  = 0x20
     _S_RELEASED = 0x40
 
-    def style(self) -> dict:
+    def style(self) -> Dict:
         return self._style.copy()
 
-    def currentStyle(self) -> dict:
+    def currentStyle(self) -> Dict:
         return self._currentStyle
 
-    def setCurrentStyle(self, style) -> dict:
-        if style == self._currentStyle: return
+    def setCurrentStyle(self, style) -> None:
+        if style == self._currentStyle:
+            return
         self._currentStyle = style
         self.currentStyleChanged.emit(style)
         self.update()

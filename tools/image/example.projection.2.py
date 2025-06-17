@@ -1,4 +1,5 @@
 import math
+import numpy as np,array
 
 def project_3d_to_2d(square_3d, observer, look_at, fov=90, aspect_ratio=1, near=0.1, far=1000):
     """

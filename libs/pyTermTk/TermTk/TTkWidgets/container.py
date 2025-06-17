@@ -22,7 +22,7 @@
 
 __all__ = ['TTkContainer', 'TTkPadding']
 
-from typing import NamedTuple
+from typing import NamedTuple, Optional
 
 from TermTk.TTkCore.constant  import TTkK
 from TermTk.TTkCore.log       import TTkLog
@@ -104,8 +104,8 @@ class TTkContainer(TTkWidget):
         '_layout')
 
     def __init__(self, *,
-                 layout:TTkLayout=None,
-                 padding:TTkPadding = None,
+                 layout:Optional[TTkLayout]=None,
+                 padding:Optional[TTkPadding] = None,
                  paddingTop:int = 0,
                  paddingBottom:int = 0,
                  paddingLeft:int = 0,
@@ -381,7 +381,7 @@ class TTkContainer(TTkWidget):
                         self._height  - self._padt - self._padb)
             self.rootLayout().update()
 
-    def getWidgetByName(self, name: str) -> TTkWidget:
+    def getWidgetByName(self, name: str) -> Optional[TTkWidget]:
         '''
         Return the widget from its name.
 
