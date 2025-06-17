@@ -83,8 +83,6 @@ jobs:
 
           cd pyTermTk.new
 
-          _ALL_VERSIONS=""
-
           echo '::group::🍧 Print the Versions'
             release-helper \
               --config .release-please-config.json \
@@ -116,7 +114,7 @@ jobs:
               CHANGELOG.md
             find . -name pyproject.toml | xargs git add
             if [[ $(git status --porcelain) ]] ; then
-              git commit -m "chore: updated TermTk and apps to versions to ${_ALL_VERSIONS}"
+              git commit -m "chore: updated TermTk and apps to versions"
               git push
             fi
           echo '::endgroup::'
