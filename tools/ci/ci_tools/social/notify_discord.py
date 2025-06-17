@@ -66,7 +66,7 @@ async def send_discord_message(version: str, data:SocialData):
 
     await client.start(token)
 
-if __name__ == "__main__":
+def main():
     parser = argparse.ArgumentParser(description="Send a Discord notification.")
     parser.add_argument("app", type=str, help="The application name.")
     parser.add_argument("version", type=str, help="The application version.")
@@ -77,3 +77,6 @@ if __name__ == "__main__":
         raise ValueError(f"app: {args.app} is not recognised")
 
     asyncio.run(send_discord_message(args.version, data))
+
+if __name__ == "__main__":
+    main()
