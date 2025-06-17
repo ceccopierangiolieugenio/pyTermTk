@@ -8,6 +8,7 @@ __check(){
         grep -v -e "import re" -e "import os" -e "import datetime" |
         grep -v \
             -e "from dataclasses" \
+            -e "from __future__ import annotations" \
             -e "signal.py:from inspect import getfullargspec" \
             -e "signal.py:from types import LambdaType" \
             -e "signal.py:from threading import Lock" \
@@ -41,8 +42,8 @@ __check(){
             -e "propertyanimation.py:from types import LambdaType" \
             -e "propertyanimation.py:import time, math" \
             -e "savetools.py:import importlib.util" \
-            -e "savetools.py:import json" |
-            -e "TTkCore/color.py:from __future__ import annotations" |
+            -e "savetools.py:import json" \
+            -e "TTkCore/constant.py:from enum import IntEnum" |
         grep -v \
             -e "TTkTerm/input_mono.py:from time import time" \
             -e "TTkTerm/input_mono.py:import platform" \
@@ -109,6 +110,7 @@ __check(){
             -e "TTkTerminal/__init__.py:import importlib.util" \
             -e "TTkTerminal/__init__.py:import platform" |
         grep -v \
+            -e "TTkWidgets/widget.py:from __future__ import annotations" \
             -e "TTkWidgets/tabwidget.py:from enum import Enum"  \
             -e "TTkModelView/__init__.py:from importlib.util import find_spec" \
             -e "TTkModelView/tablemodelcsv.py:import csv" \

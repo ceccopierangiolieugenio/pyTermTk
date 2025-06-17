@@ -20,18 +20,15 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
+
 __all__ = ['TTkString']
 
 import os
 import re
 import unicodedata
 from types import GeneratorType
-from typing import Any
-
-try:
-    from typing import Self
-except:
-    class Self(): pass
+from typing import Any, Optional, Union, List, Tuple
 
 from TermTk.TTkCore.cfg import TTkCfg
 from TermTk.TTkCore.constant import TTkK
@@ -69,11 +66,13 @@ class TTkString():
     unicodeWideOverflowColor = TTkColor.fg("#888888")+TTkColor.bg("#000088")
 
     __slots__ = ('_text','_colors','_baseColor','_hasTab','_hasSpecialWidth')
-
+    _text:str
+    _colors:List[TTkColor]
+    _baseColor:TTkColor
     def __init__(self,
-                 text:str="",
-                 color:TTkColor=None) -> None:
-        if issubclass(type(text), TTkString):
+                 text:Union[str,TTkString]="",
+                 color:Optional[TTkColor]=None) -> None:
+        if isinstance(text, TTkString):
             self._text      = text._text
             self._colors    = text._colors if color is None else [color]*len(self._text)
             self._baseColor = text._baseColor
@@ -120,7 +119,7 @@ class TTkString():
     def __str__(self) -> str:
         return self._text
 
-    def __add__(self, other:Self) -> Self:
+    def __add__(self, other:TTkString) -> TTkString:
         ret = TTkString()
         ret._baseColor = self._baseColor
         if   isinstance(other, TTkString):
@@ -142,7 +141,7 @@ class TTkString():
             ret._baseColor = other
         return ret
 
-    def __radd__(self, other:Self) -> Self:
+    def __radd__(self, other:TTkString) -> TTkString:
         ret = TTkString()
         ret._baseColor = self._baseColor
         if  isinstance(other, TTkString):
@@ -180,7 +179,7 @@ class TTkString():
     def __gt__(self, other): return self._text >  other._text if issubclass(type(other),TTkString) else self._text >  other
     def __ge__(self, other): return self._text >= other._text if issubclass(type(other),TTkString) else self._text >= other
 
-    def sameAs(self, other:Self) -> bool:
+    def sameAs(self, other:TTkString) -> bool:
         if not issubclass(type(other),TTkString): return False
         return (
             self==other and
@@ -190,7 +189,7 @@ class TTkString():
     def isdigit(self) -> bool:
         return self._text.isdigit()
 
-    def lstrip(self, ch:str) -> Self:
+    def lstrip(self, ch:str) -> TTkString:
         ret = TTkString()
         ret._text = self._text.lstrip(ch)
         ret._colors = self._colors[-len(ret._text):]
@@ -199,7 +198,7 @@ class TTkString():
     def charAt(self, pos:int) -> str:
         return self._text[pos]
 
-    def setCharAt(self, pos:int, char:str) -> Self:
+    def setCharAt(self, pos:int, char:str) -> TTkString:
         self._text = self._text[:pos]+char+self._text[pos+1:]
         self._checkWidth()
         return self
@@ -209,11 +208,11 @@ class TTkString():
             return TTkColor()
         return self._colors[pos]
 
-    def setColorAt(self, pos, color) -> Self:
+    def setColorAt(self, pos, color) -> TTkString:
         self._colors[pos] = color
         return self
 
-    def tab2spaces(self, tabSpaces=4) -> Self:
+    def tab2spaces(self, tabSpaces=4) -> TTkString:
         '''Return the string representation with the tabs (converted in spaces) trimmed and aligned'''
         if not self._hasTab: return self
         ret = TTkString()
@@ -327,7 +326,7 @@ class TTkString():
             return out
         return out+str(TTkColor.RST)
 
-    def align(self, width=None, color=TTkColor.RST, alignment=TTkK.NONE) -> Self:
+    def align(self, width=None, color=TTkColor.RST, alignment=TTkK.NONE) -> TTkString:
         ''' Align the string
 
         :param width: the new width
@@ -389,7 +388,7 @@ class TTkString():
 
         return ret
 
-    def extractShortcuts(self) -> Self:
+    def extractShortcuts(self) -> Tuple[TTkString,List[str]]:
         def _chGenerator():
             for ch,color in zip(self._text,self._colors):
                 yield ch,color
@@ -406,7 +405,7 @@ class TTkString():
             _newColors.append(color)
         return TTkString._importString1(_newText,_newColors), _ret
 
-    def replace(self, *args, **kwargs) -> Self:
+    def replace(self, *args, **kwargs) -> TTkString:
         ''' **replace** (*old*, *new*, *count*)
 
         Replace "**old**" match with "**new**" string for "**count**" times
@@ -454,7 +453,7 @@ class TTkString():
 
         return ret
 
-    def completeColor(self, color:TTkColor, match=None, posFrom=None, posTo=None) -> Self:
+    def completeColor(self, color:TTkColor, match=None, posFrom=None, posTo=None) -> TTkString:
         ''' Complete the color of the entire string or a slice of it
 
         The Fg and/or Bg of the string is replaced with the selected Fg/Bg color only if missing
@@ -495,7 +494,7 @@ class TTkString():
         return ret
 
 
-    def setColor(self, color, match=None, posFrom=None, posTo=None) -> Self:
+    def setColor(self, color, match=None, posFrom=None, posTo=None) -> TTkString:
         ''' Set the color of the entire string or a slice of it
 
         If only the color is specified, the entire string is colorized
@@ -531,7 +530,7 @@ class TTkString():
             ret._colors += self._colors
         return ret
 
-    def substring(self, fr=None, to=None) -> Self:
+    def substring(self, fr=None, to=None) -> TTkString:
         ''' Return the substring
 
         :param fr: the starting of the slice, defaults to 0
@@ -546,7 +545,7 @@ class TTkString():
         ret._fastCheckWidth(self._hasSpecialWidth)
         return ret
 
-    def split(self, separator ) -> list[Self]:
+    def split(self, separator ) -> list[TTkString]:
         ''' Split the string using a separator
 
         .. note:: Only a one char separator is currently supported
@@ -599,7 +598,7 @@ class TTkString():
     def getIndexes(self, char):
         return [i for i,c in enumerate(self._text) if c==char]
 
-    def join(self, strings:list[Self]) -> Self:
+    def join(self, strings:list[TTkString]) -> TTkString:
         ''' Join the input strings using the current as separator
 
         :param strings: the list of strings to be joined
