@@ -296,7 +296,7 @@ jobs:
       - name: Install dependencies
         shell: bash
         run:
-          pip install -e tools/ci
+          pip install -e 'tools/ci[social]'
       - name: Notify ${{ matrix.name }} on Discord
         env:
           RN: ${{ matrix.release-notes }}
