@@ -16,6 +16,7 @@ dependencies = [
 
 [project.scripts]
 release-helper = "ci_tools.release_helper:main"
+notify-discord = "ci_tools.social.notify_discord:main"
 
 [tool.setuptools]
 packages = ["ci_tools"]

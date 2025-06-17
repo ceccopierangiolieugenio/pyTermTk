@@ -31,7 +31,7 @@ import discord
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(current_dir)
-from social_common import get_social_data, SocialData, get_env_var
+from ci_tools.social.social_common import get_social_data, SocialData, get_env_var
 
 async def send_discord_message(version: str, data:SocialData):
     token = get_env_var("DISCORD_TOKEN")

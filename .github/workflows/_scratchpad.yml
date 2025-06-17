@@ -286,9 +286,21 @@ jobs:
       matrix:
         include: ${{ fromJson(needs.generate-matrix.outputs.matrix) }}
     steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        shell: bash
+        run:
+          pip install -e tools/ci
       - name: Build ${{ matrix.name }}
         env:
           RN: ${{ matrix.release-notes }}
+          MESSAGE: ${{ matrix.release-notes }}
         run: |
           echo "Building ${{ matrix.name }} at path: ${{ matrix.path }}"
           echo "RN: ${RN}"
