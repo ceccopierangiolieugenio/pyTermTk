@@ -45,6 +45,7 @@ class _AppData():
     pypi: bool = False
     itch: bool = False
     tag: str = ""
+    release_notes: str = ""
 
     def to_dict(self) -> Dict[str, Union[str,bool]]:
         return {
@@ -53,7 +54,8 @@ class _AppData():
             "version" : self.version,
             "pypi" : self.pypi,
             "itch" : self.itch,
-            "tag" : self.tag
+            "tag" : self.tag,
+            "release-notes" : self.release_notes
         }
 
 def _print_info(apps_data:List[_AppData]) -> None:
@@ -126,6 +128,7 @@ def _gen_matrix(matrix_type: MatrixType, rp_data:Dict, apps_data:List[_AppData])
     apps = [app for app in apps if rp_data.get(f"{app.path}--release_created",False) in ('true',True)]
     for app in apps:
         app.tag = rp_data.get(f"{app.path}--tag_name",'')
+        app.release_notes = rp_data.get(f"{app.path}--body",'')
 
     return apps
 

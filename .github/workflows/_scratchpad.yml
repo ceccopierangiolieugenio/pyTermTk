@@ -277,9 +277,9 @@ jobs:
         run: |
           echo $OUT
 
-  build:
+  notify:
     if:  ${{ needs.generate-matrix.outputs.matrix != '[]' }}
-    name: Build ${{ matrix.name }}
+    name: Notify ${{ matrix.name }} to the socials
     needs: generate-matrix
     runs-on: self-hosted
     strategy:
@@ -287,8 +287,12 @@ jobs:
         include: ${{ fromJson(needs.generate-matrix.outputs.matrix) }}
     steps:
       - name: Build ${{ matrix.name }}
+        env:
+          RN: ${{ matrix.release-notes }}
         run: |
           echo "Building ${{ matrix.name }} at path: ${{ matrix.path }}"
+          echo "RN: ${RN}"
+
 
   publish-pypi:
     if:  ${{ needs.generate-matrix.outputs.matrix-pypi != '[]' }}
