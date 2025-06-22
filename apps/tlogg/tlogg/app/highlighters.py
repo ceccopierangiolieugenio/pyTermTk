@@ -140,8 +140,8 @@ def highlightersFormLayout(win):
             def _setCase(c):color['ignorecase'] = c
             ignoreCase.clicked.connect(_setCase)
             ## Color Button
-            def _setFg(c):color['fg'] = c.getHex(TTkK.Background)
-            def _setBg(c):color['bg'] = c.getHex(TTkK.Background)
+            def _setFg(c:TTkColor):color['fg'] = c.getHex(TTkK.ColorType.Background)
+            def _setBg(c:TTkColor):color['bg'] = c.getHex(TTkK.ColorType.Background)
             fgColor.colorSelected.connect(_setFg)
             bgColor.colorSelected.connect(_setBg)
 
