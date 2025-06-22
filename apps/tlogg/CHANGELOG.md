@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.7.1-a.0](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/tlogg-v0.7.0-a.0...tlogg-v0.7.1-a.0) (2025-06-22)
+
+
+### Fixes
+
+* color picker crash ([#423](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/423)) ([af5bce3](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/af5bce3d6a76d3ba35453c759a57f277bdf2b1ca))
+
 ## [0.7.0-a.0](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/tlogg-v0.6.0-a.0...tlogg-v0.7.0-a.0) (2025-06-03)
 
 

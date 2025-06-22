@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.43.3-a.0](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/pyTermTk-v0.43.2-a.0...pyTermTk-v0.43.3-a.0) (2025-06-22)
+
+
+### Chores
+
+* improve typing ([#417](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/417)) ([833005a](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/833005acd115f2a5cb467b614ff208bda013c043))
+
 ## [0.43.2-a.0](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/pyTermTk-v0.43.1-a.0...pyTermTk-v0.43.2-a.0) (2025-06-04)
 
 
