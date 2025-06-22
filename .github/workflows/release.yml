@@ -123,26 +123,26 @@ jobs:
         env:
           RP_OUT: ${{ toJson(steps.release-please.outputs) }}
         run: |
-          echo "matrix<<EOF" >> $GITHUB_OUTPUT
+          echo "matrix<<_EOF" >> $GITHUB_OUTPUT
             release-helper \
               --config .release-please-config.json \
               --manifest .release-please-manifest.json \
-              matrix all <<< ${RP_OUR} >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
+              matrix all <<< ${RP_OUR}
+          echo "_EOF" >> $GITHUB_OUTPUT
 
-          echo "matrix_itch<<EOF" >> $GITHUB_OUTPUT
+          echo "matrix_itch<<_EOF" >> $GITHUB_OUTPUT
             release-helper \
               --config .release-please-config.json \
               --manifest .release-please-manifest.json \
-              matrix itch <<< ${RP_OUR} >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
+              matrix itch <<< ${RP_OUR}
+          echo "_EOF" >> $GITHUB_OUTPUT
 
-          echo "matrix_pypi<<EOF" >> $GITHUB_OUTPUT
+          echo "matrix_pypi<<_EOF" >> $GITHUB_OUTPUT
             release-helper \
               --config .release-please-config.json \
               --manifest .release-please-manifest.json \
-              matrix pypi <<< ${RP_OUR} >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
+              matrix pypi <<< ${RP_OUR}
+          echo "_EOF" >> $GITHUB_OUTPUT
 
   pyTermTk-deploy-artifacts:
     if: ${{ fromJson(needs.release-please.outputs.rp_out)['libs/pyTermTk--release_created'] }}
