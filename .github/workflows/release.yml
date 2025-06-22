@@ -61,7 +61,7 @@ jobs:
         shell: bash
         env:
           GITHUB_TOKEN: ${{ secrets.GH_PAT_TOKEN }}
-          RP_OUT: ${{ steps.release-please.outputs }}
+          RP_OUT: ${{ toJson(steps.release-please.outputs) }}
         run: |
           _get_name(){
             _ITEM=$1
@@ -121,7 +121,7 @@ jobs:
       - name: Define the Matrix strategy
         id: set-matrix
         env:
-          RP_OUT: ${{ steps.release-please.outputs }}
+          RP_OUT: ${{ toJson(steps.release-please.outputs) }}
         run: |
           echo "matrix<<EOF" >> $GITHUB_OUTPUT
             release-helper \
