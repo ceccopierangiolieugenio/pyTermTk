@@ -127,21 +127,21 @@ jobs:
             release-helper \
               --config .release-please-config.json \
               --manifest .release-please-manifest.json \
-              matrix all <<< ${RP_OUR}
+              matrix all <<< ${RP_OUT}
           echo "_EOF" >> $GITHUB_OUTPUT
 
           echo "matrix_itch<<_EOF" >> $GITHUB_OUTPUT
             release-helper \
               --config .release-please-config.json \
               --manifest .release-please-manifest.json \
-              matrix itch <<< ${RP_OUR}
+              matrix itch <<< ${RP_OUT}
           echo "_EOF" >> $GITHUB_OUTPUT
 
           echo "matrix_pypi<<_EOF" >> $GITHUB_OUTPUT
             release-helper \
               --config .release-please-config.json \
               --manifest .release-please-manifest.json \
-              matrix pypi <<< ${RP_OUR}
+              matrix pypi <<< ${RP_OUT}
           echo "_EOF" >> $GITHUB_OUTPUT
 
   pyTermTk-deploy-artifacts:
