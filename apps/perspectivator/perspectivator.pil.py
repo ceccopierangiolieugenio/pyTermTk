@@ -63,7 +63,10 @@ def find_coeffs(pa, pb):
     A = np.matrix(matrix, dtype=float)
     B = np.array(pb).reshape(8)
 
-    res = np.dot(np.linalg.inv(A.T * A) * A.T, B)
+    # Math from:
+    #   https://stackoverflow.com/questions/14177744/how-does-perspective-transformation-work-in-pil
+    #res = np.dot(np.linalg.inv(A.T * A) * A.T, B)
+    res = np.linalg.solve(A,B)
     return np.array(res).reshape(8)
 
 def project_point(camera_position, look_at, point_3d):
@@ -655,20 +658,21 @@ class Perspectivator(ttk.TTkWidget):
             imageBottomAlphaGradient = ImageChops.multiply(imageBottomAlpha, gradient)
 
             # Create a gradient mask for the fog
-            gradient = Image.new("L", (imw, imh), 0)
-            draw = ImageDraw.Draw(gradient)
-            for i in range(imw):
-                an = 255-fogNear
-                af = 255-fogFar
-                zl = img.data['zleft']
-                zr = img.data['zright']
-                zi = (i/imw)*(zr-zl)+zl
-                znorm = (zi-znear)/(zfar-znear)
-                alpha = znorm*(an-af)+af
-                draw.rectangle((i, 0, i, imh), fill=int(alpha))
-            # resultAlpha.show()
-            imageTop.putalpha(ImageChops.multiply(imageTopAlpha, gradient))
-            imageBottom.putalpha(ImageChops.multiply(imageBottomAlphaGradient, gradient))
+            if zfar != znear:
+                gradient = Image.new("L", (imw, imh), 0)
+                draw = ImageDraw.Draw(gradient)
+                for i in range(imw):
+                    an = 255-fogNear
+                    af = 255-fogFar
+                    zl = img.data['zleft']
+                    zr = img.data['zright']
+                    zi = (i/imw)*(zr-zl)+zl
+                    znorm = (zi-znear)/(zfar-znear)
+                    alpha = znorm*(an-af)+af
+                    draw.rectangle((i, 0, i, imh), fill=int(alpha))
+                # resultAlpha.show()
+                imageTop.putalpha(ImageChops.multiply(imageTopAlpha, gradient))
+                imageBottom.putalpha(ImageChops.multiply(imageBottomAlphaGradient, gradient))
 
             # Define the source and destination points
             src_points = [(imw, 0), (0, 0), (imw, imh), (0, imh)]
@@ -960,6 +964,7 @@ def main():
     at = ttk.TTkAppTemplate()
     at.setWidget(widget=perspectivator,position=at.MAIN)
     at.setWidget(widget=controlPanel,position=at.RIGHT, size=30)
+    at.setWidget(widget=ttk.TTkLogViewer(),position=at.BOTTOM, size=4)
 
     root.layout().addWidget(at)
 
