@@ -48,7 +48,7 @@ class TTkLog:
     SystemMsg   = CriticalMsg
 
     # TypeHandlers = list[Callable]
-    _messageHandler: Set = []
+    _messageHandler: list[Callable] = []
 
     @staticmethod
     def _logging_message_handler(mode, context, message):
