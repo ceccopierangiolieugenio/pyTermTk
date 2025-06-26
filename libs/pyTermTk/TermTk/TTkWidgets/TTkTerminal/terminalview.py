@@ -27,7 +27,7 @@ import re
 from dataclasses import dataclass
 
 from TermTk.TTkCore.canvas import TTkCanvas
-from TermTk.TTkCore.color import TTkColor, _TTkColor, _TTkColor_mod, _TTkColor_mod_link
+from TermTk.TTkCore.color import TTkColor, _TTkColor_mod, _TTkColor_mod_link
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.string import TTkString
@@ -427,7 +427,7 @@ class TTkTerminalView(TTkAbstractScrollView, _TTkTerminal_CSI_DEC):
                         if mod:
                             color = _TTkColor_mod(fg=fg, bg=bg, mod=mod, clean=clean)
                         else:
-                            color = _TTkColor(fg=fg, bg=bg, clean=clean)
+                            color = TTkColor(fg=fg, bg=bg, clean=clean)
                         # color = TTkColor(fg=fg, bg=bg, mod=mod, clean=clean)
 
                     self._screen_alt.setColor(color)

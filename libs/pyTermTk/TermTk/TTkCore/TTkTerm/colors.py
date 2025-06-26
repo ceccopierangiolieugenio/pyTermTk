@@ -26,6 +26,7 @@ __all__ = ['TTkTermColor']
 # https://conemu.github.io/en/AnsiEscapeCodes.html
 
 import re
+from typing import Optional,Tuple
 
 from .colors_ansi_map import ansiMap256, ansiMap16
 
@@ -61,7 +62,7 @@ class TTkTermColor():
         29: ~STRIKETROUGH } # Ps = 2 9  ⇒  Not crossed-out, ECMA-48 3rd.
 
     @staticmethod
-    def rgb2ansi(fg: tuple=None, bg:tuple=None, mod:int=0, clean:bool=False):
+    def rgb2ansi(fg: Optional[Tuple[int,int,int]]=None, bg:Optional[Tuple[int,int,int]]=None, mod:int=0, clean:bool=False):
         ret = []
         ret_append = ret.append
 
@@ -96,7 +97,7 @@ class TTkTermColor():
             return '\033[0m'
 
     @staticmethod
-    def rgb2ansi_link(fg: tuple=None, bg:tuple=None, mod:int=0, link:str='', clean:bool=False, cleanLink:bool=False):
+    def rgb2ansi_link(fg: Optional[Tuple[int,int,int]]=None, bg:Optional[Tuple[int,int,int]]=None, mod:int=0, link:str='', clean:bool=False, cleanLink:bool=False):
         linkAnsi = ""
         if cleanLink:
             linkAnsi = "\033]8;;\033\\"

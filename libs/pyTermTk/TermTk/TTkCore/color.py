@@ -26,6 +26,8 @@ __all__ = ['TTkColor',
            'TTkColorModifier',
            'TTkColorGradient', 'TTkLinearGradient', 'TTkAlternateColor']
 
+from typing import Optional, Tuple, Dict, List
+
 from TermTk.TTkCore.TTkTerm.colors import TTkTermColor
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.helper import TTkHelper
@@ -65,30 +67,244 @@ from TermTk.TTkCore.helper import TTkHelper
 # [47m          --        set background color to white
 # [49m          2.53      set background color to default (black)
 
-class _TTkColor:
+class TTkColor:
+    ''' TermTk Color helper
+
+    .. role:: strike
+        :class: strike
+
+    .. role:: underline
+        :class: underline
+
+    The TTkColor constructor creates the color based on HEX values.
+
+    Example:
+
+    .. code:: python
+
+        # Foreground only colors:
+        color_fg_red   = TTkColor.fg('#FF0000')
+        color_fg_green = TTkColor.fg('#00FF00')
+        color_fg_blue  = TTkColor.fg('#0000FF')
+
+        # Background only colors:
+        color_bg_red   = TTkColor.bg('#FF0000')
+        color_bg_green = TTkColor.bg('#00FF00')
+        color_bg_blue  = TTkColor.bg('#0000FF')
+
+        # Combine
+        color_1 = color_fg_red + color_bg_blue
+        color_2 = color_fg_red + TTkColor.bg('#FFFF00')
+        color_3 = color_2 + TTkColor.UNDERLINE + TTkColor.BOLD
+
+        # Use presets
+        color_4 = TTkColor.RED
+        color_5 = TTkColor.BG_YELLOW + color_4
+        color_6 = color_5 + TTkColor.UNDERLINE + TTkColor.BOLD
+
+    '''
+    RST:TTkColor
+    '''Reset to the default terminal color and modifiers'''
+
+    BLACK:TTkColor
+    '''(fg) #000000 - Black'''
+    WHITE:TTkColor
+    '''(fg) #FFFFFF - White'''
+    RED:TTkColor
+    '''(fg) #FF0000 - Red'''
+    GREEN:TTkColor
+    '''(fg) #00FF00 - Green'''
+    BLUE:TTkColor
+    '''(fg) #0000FF - Blue'''
+    CYAN:TTkColor
+    '''(fg) #00FFFF - Cyan'''
+    MAGENTA:TTkColor
+    '''(fg) #FF00FF - Magenta'''
+    YELLOW:TTkColor
+    '''(fg) #FFFF00 - Yellow'''
+
+    FG_BLACK:TTkColor
+    '''(fg) #000000 - Black'''
+    FG_WHITE:TTkColor
+    '''(fg) #FFFFFF - White'''
+    FG_RED:TTkColor
+    '''(fg) #FF0000 - Red'''
+    FG_GREEN:TTkColor
+    '''(fg) #00FF00 - Green'''
+    FG_BLUE:TTkColor
+    '''(fg) #0000FF - Blue'''
+    FG_CYAN:TTkColor
+    '''(fg) #00FFFF - Cyan'''
+    FG_MAGENTA:TTkColor
+    '''(fg) #FF00FF - Magenta'''
+    FG_YELLOW:TTkColor
+    '''(fg) #FFFF00 - Yellow'''
+
+    BG_BLACK:TTkColor
+    '''(bg) #000000 - Black'''
+    BG_WHITE:TTkColor
+    '''(bg) #FFFFFF - White'''
+    BG_RED:TTkColor
+    '''(bg) #FF0000 - Red'''
+    BG_GREEN:TTkColor
+    '''(bg) #00FF00 - Green'''
+    BG_BLUE:TTkColor
+    '''(bg) #0000FF - Blue'''
+    BG_CYAN:TTkColor
+    '''(bg) #00FFFF - Cyan'''
+    BG_MAGENTA:TTkColor
+    '''(bg) #FF00FF - Magenta'''
+    BG_YELLOW:TTkColor
+    '''(bg) #FFFF00 - Yellow'''
+
+    # Modifiers:
+    BOLD:TTkColor
+    '''**Bold** modifier'''
+    ITALIC:TTkColor
+    '''*Italic* modifier'''
+    UNDERLINE:TTkColor
+    ''':underline:`Underline` modifier'''
+    STRIKETROUGH:TTkColor
+    ''':strike:`Striketrough` modifier'''
+
+    BLINKING:TTkColor
+    '''"Blinking" modifier'''
+
     __slots__ = ('_fg','_bg', '_colorMod', '_buffer', '_clean')
-    _fg: tuple[int,int,int]
-    _bg: tuple[int,int,int]
+    _fg: Optional[Tuple[int,int,int]]
+    _bg: Optional[Tuple[int,int,int]]
     def __init__(self,
-                 fg:tuple[int,int,int]=None,
-                 bg:tuple[int,int,int]=None,
+                 fg:Optional[Tuple[int,int,int]]=None,
+                 bg:Optional[Tuple[int,int,int]]=None,
                  colorMod=None,
                  clean=False) -> None:
         self._fg  = fg
         self._bg  = bg
         self._clean = clean or not (fg or bg)
         self._colorMod = colorMod
-        self._buffer = None
+        self._buffer = ''
 
-    def foreground(self):
+
+
+    @staticmethod
+    def hexToRGB(val) -> Tuple[int,int,int]:
+        r = int(val[1:3],base=16)
+        g = int(val[3:5],base=16)
+        b = int(val[5:7],base=16)
+        return (r,g,b)
+
+    @staticmethod
+    def ansi(ansi:str) -> TTkColor:
+        ''' Parse an ansi string and return the color representing it
+
+        :param str ansi: the ansi string to be parsed
+        :type ansi: str
+
+        :return: the :py:class:`TTkColor` representing the ansi value
+        :rtype: :py:class:`TTkColor`
+        '''
+        fg,bg,mod,clean = TTkTermColor.ansi2rgb(ansi)
+        if mod:
+            return _TTkColor_mod(fg=fg, bg=bg, mod=mod, clean=clean)
+        else:
+            return TTkColor(fg=fg, bg=bg, clean=clean)
+
+    @staticmethod
+    def fg(*args, **kwargs) -> TTkColor:
+        ''' Helper to generate a Foreground color
+
+        Example:
+
+        .. code:: python
+
+            color_1 = TTkColor.fg('#FF0000')
+            color_2 = TTkColor.fg(color='#00FF00')
+            color_3 = TTkColor.fg('#0000FF', modifier=TTkColorGradient(increment=6))
+
+        :param str color: the color representation in (str)HEX
+        :type color: str
+        :param str modifier: (experimental) the color modifier to be used to improve the **kinkiness**
+        :type modifier: TTkColorModifier, optional
+
+        :return: :py:class:`TTkColor`
+        '''
+        mod = kwargs.get('modifier', None )
+        link = kwargs.get('link', '' )
+        if len(args) > 0:
+            color = args[0]
+        else:
+            color = kwargs.get('color', "" )
+        if link:
+            return _TTkColor_mod_link(fg=TTkColor.hexToRGB(color), colorMod=mod, link=link)
+        else:
+            return TTkColor(fg=TTkColor.hexToRGB(color), colorMod=mod)
+
+    @staticmethod
+    def bg(*args, **kwargs) -> TTkColor:
+        ''' Helper to generate a Background color
+
+        Example:
+
+        .. code:: python
+
+            color_1 = TTkColor.bg('#FF0000')
+            color_2 = TTkColor.bg(color='#00FF00')
+            color_3 = TTkColor.bg('#0000FF', modifier=TTkColorGradient(increment=6))
+
+        :param str color: the color representation in (str)HEX
+        :type color: str
+        :param str modifier: (experimental) the color modifier to be used to improve the **kinkiness**
+        :type modifier: TTkColorModifier, optional
+
+        :return: :py:class:`TTkColor`
+        '''
+        mod = kwargs.get('modifier', None )
+        link = kwargs.get('link', '' )
+        if len(args) > 0:
+            color = args[0]
+        else:
+            color = kwargs.get('color', "" )
+        if link:
+            return _TTkColor_mod_link(bg=TTkColor.hexToRGB(color), colorMod=mod, link=link)
+        else:
+            return TTkColor(bg=TTkColor.hexToRGB(color), colorMod=mod)
+
+    @staticmethod
+    def fgbg(fg:str='', bg:str='', link:str='', modifier:Optional[TTkColorModifier]=None) -> TTkColor:
+        ''' Helper to generate a Background color
+
+        Example:
+
+        .. code:: python
+
+            color_1 = TTkColor.fgbg('#FF0000','#0000FF')
+            color_2 = TTkColor.fgbg(fg='#00FF00',bg='#0000FF')
+            color_3 = TTkColor.fgbg('#0000FF','#0000FF', modifier=TTkColorGradient(increment=6))
+
+        :param str fg: the foreground color representation in (str)HEX
+        :type fg: str
+        :param str bg: the background color representation in (str)HEX
+        :type bg: str
+        :param str modifier: (experimental) the color modifier to be used to improve the **kinkiness**
+        :type modifier: TTkColorModifier, optional
+
+        :return: :py:class:`TTkColor`
+        '''
+        if link:
+            return _TTkColor_mod_link(fg=TTkColor.hexToRGB(fg), bg=TTkColor.hexToRGB(bg), colorMod=modifier, link=link)
+        else:
+            return TTkColor(fg=TTkColor.hexToRGB(fg), bg=TTkColor.hexToRGB(bg), colorMod=modifier)
+
+
+    def foreground(self) -> TTkColor:
         if self._fg:
-            return _TTkColor(fg=self._fg)
+            return TTkColor(fg=self._fg)
         else:
             return TTkColor.RST
 
-    def background(self):
+    def background(self) -> TTkColor:
         if self._bg:
-            return _TTkColor(bg=self._bg)
+            return TTkColor(bg=self._bg)
         else:
             return TTkColor.RST
 
@@ -113,14 +329,14 @@ class _TTkColor:
     def blinking(self) -> bool:
         return  False
 
-    def colorType(self):
+    def colorType(self) -> int:
         return (
             ( TTkK.ColorType.ColorModifier if self._colorMod  else TTkK.NONE ) |
             ( TTkK.ColorType.Foreground    if self._fg        else TTkK.NONE ) |
             ( TTkK.ColorType.Background    if self._bg        else TTkK.NONE ) )
 
     @staticmethod
-    def rgb2hsl(rgb):
+    def rgb2hsl(rgb) -> Tuple[int,int,int]:
         r = rgb[0]/255
         g = rgb[1]/255
         b = rgb[2]/255
@@ -147,7 +363,7 @@ class _TTkColor:
         return hue,sat,lum
 
     @staticmethod
-    def hsl2rgb(hsl):
+    def hsl2rgb(hsl) -> Tuple[int,int,int]:
         hue = hsl[0]
         sat = hsl[1] / 100
         lum = hsl[2] / 100
@@ -175,54 +391,54 @@ class _TTkColor:
 
         return r,g,b
 
-    def getHex(self, ctype):
+    def getHex(self, ctype) -> str:
         if ctype == TTkK.ColorType.Foreground:
             r,g,b = self.fgToRGB()
         else:
             r,g,b = self.bgToRGB()
         return f"#{r<<16|g<<8|b:06x}"
 
-    def fgToRGB(self):
+    def fgToRGB(self) -> Tuple[int,int,int]:
         return self._fg if self._fg else (0,0,0)
 
-    def bgToRGB(self):
+    def bgToRGB(self) -> Tuple[int,int,int]:
         return self._bg if self._bg else (0,0,0)
 
-    def invertFgBg(self):
+    def invertFgBg(self) -> TTkColor:
         ret = self.copy()
         ret._fg = self._bg
         ret._bg = self._fg
         return ret
 
-    def __str__(self):
+    def __str__(self) -> str:
         if not self._buffer:
             self._buffer = TTkTermColor.rgb2ansi(
                                 fg=self._fg, bg=self._bg,
                                 clean=self._clean)
         return self._buffer
 
-    def __eq__(self, other):
+    def __eq__(self, other) -> bool:
         if not other: return False
         return (
             self._fg   == other._fg and
             self._bg   == other._bg )
 
     # self | other
-    def __or__(self, other):
+    def __or__(self, other) -> TTkColor:
         c = self.copy()
         c._clean = False
         return other + c
 
     # self + other
-    def __add__(self, other):
+    def __add__(self, other) -> TTkColor:
         # TTkLog.debug("__add__")
         if other._clean:
             return other
         clean = self._clean
-        fg:  str = other._fg or self._fg
-        bg:  str = other._bg or self._bg
+        fg = other._fg or self._fg
+        bg = other._bg or self._bg
         colorMod = other._colorMod or self._colorMod
-        return _TTkColor(
+        return TTkColor(
                     fg=fg, bg=bg,
                     colorMod=colorMod,
                     clean=clean)
@@ -238,18 +454,18 @@ class _TTkColor:
                                 clean=True)
         return str(self)
 
-    def modParam(self, *args, **kwargs) -> _TTkColor:
+    def modParam(self, *args, **kwargs) -> TTkColor:
         if not self._colorMod: return self
         ret = self.copy()
         ret._colorMod.setParam(*args, **kwargs)
         return ret
 
-    def mod(self, x , y):
+    def mod(self, x , y) -> TTkColor:
         if not self._colorMod: return self
         return self._colorMod.exec(x,y,self)
 
-    def copy(self, modifier=True):
-        ret = _TTkColor()
+    def copy(self, modifier=True) -> TTkColor:
+        ret = TTkColor()
         ret._fg   = self._fg
         ret._bg   = self._bg
         ret._clean = self._clean
@@ -257,7 +473,35 @@ class _TTkColor:
             ret._colorMod = self._colorMod.copy()
         return ret
 
-class _TTkColor_mod(_TTkColor):
+
+TTkColor.RST = TTkColor()
+TTkColor.BLACK   = TTkColor(fg=(  0,  0,  0))
+TTkColor.WHITE   = TTkColor(fg=(255,255,255))
+TTkColor.RED     = TTkColor(fg=(255,  0,  0))
+TTkColor.GREEN   = TTkColor(fg=(  0,255,  0))
+TTkColor.BLUE    = TTkColor(fg=(  0,  0,255))
+TTkColor.CYAN    = TTkColor(fg=(  0,255,255))
+TTkColor.MAGENTA = TTkColor(fg=(255,  0,255))
+TTkColor.YELLOW  = TTkColor(fg=(255,255,  0))
+TTkColor.FG_BLACK   = TTkColor.BLACK
+TTkColor.FG_WHITE   = TTkColor.WHITE
+TTkColor.FG_RED     = TTkColor.RED
+TTkColor.FG_GREEN   = TTkColor.GREEN
+TTkColor.FG_BLUE    = TTkColor.BLUE
+TTkColor.FG_CYAN    = TTkColor.CYAN
+TTkColor.FG_MAGENTA = TTkColor.MAGENTA
+TTkColor.FG_YELLOW  = TTkColor.YELLOW
+TTkColor.BG_BLACK   = TTkColor.BLACK.invertFgBg()
+TTkColor.BG_WHITE   = TTkColor.WHITE.invertFgBg()
+TTkColor.BG_RED     = TTkColor.RED.invertFgBg()
+TTkColor.BG_GREEN   = TTkColor.GREEN.invertFgBg()
+TTkColor.BG_BLUE    = TTkColor.BLUE.invertFgBg()
+TTkColor.BG_CYAN    = TTkColor.CYAN.invertFgBg()
+TTkColor.BG_MAGENTA = TTkColor.MAGENTA.invertFgBg()
+TTkColor.BG_YELLOW  = TTkColor.YELLOW.invertFgBg()
+
+
+class _TTkColor_mod(TTkColor):
     __slots__ = ('_mod')
     _mod: int
     def __init__(self, *,
@@ -283,40 +527,40 @@ class _TTkColor_mod(_TTkColor):
     def blinking(self) -> bool:
         return  bool(self._mod & TTkTermColor.BLINKING)
 
-    def colorType(self):
+    def colorType(self) -> int:
         return (
             super().colorType() |
             ( TTkK.ColorType.Modifier if self._mod else TTkK.NONE ))
 
-    def __str__(self):
+    def __str__(self) -> str:
         if not self._buffer:
             self._buffer = TTkTermColor.rgb2ansi(
                                 fg=self._fg, bg=self._bg, mod=self._mod,
                                 clean=self._clean)
         return self._buffer
 
-    def __eq__(self, other):
+    def __eq__(self, other) -> bool:
         return (
-                _TTkColor.__eq__(self,other) and
+                TTkColor.__eq__(self,other) and
                 ( self._mod == (other._mod if isinstance(other,_TTkColor_mod) else 0))
             )
 
     # self | other
-    def __or__(self, other):
+    def __or__(self, other) -> TTkColor:
         c = self.copy()
         c._clean = False
         return other + c
 
     # self + other
-    def __add__(self, other):
+    def __add__(self, other) -> TTkColor:
         # TTkLog.debug("__add__")
         if other._clean:
             return other
         otherMod = other._mod if isinstance(other,_TTkColor_mod) else 0
         clean = self._clean
-        fg:  str = other._fg or self._fg
-        bg:  str = other._bg or self._bg
-        mod: str = self._mod + otherMod
+        fg  = other._fg or self._fg
+        bg  = other._bg or self._bg
+        mod = self._mod + otherMod
         colorMod = other._colorMod or self._colorMod
         return _TTkColor_mod(
                     fg=fg, bg=bg, mod=mod,
@@ -324,14 +568,14 @@ class _TTkColor_mod(_TTkColor):
                     clean=clean)
 
     # self + other
-    def __radd__(self, other):
+    def __radd__(self, other) -> TTkColor:
         # TTkLog.debug("__add__")
         if self._clean:
             return self
         clean = other._clean
-        fg:  str = self._fg or other._fg
-        bg:  str = self._bg or other._bg
-        mod: str = self._mod
+        fg  = self._fg or other._fg
+        bg  = self._bg or other._bg
+        mod = self._mod
         colorMod = self._colorMod or other._colorMod
         return _TTkColor_mod(
                     fg=fg, bg=bg, mod=mod,
@@ -351,7 +595,7 @@ class _TTkColor_mod(_TTkColor):
     def __rsub__(self, other) -> str:
         return TTkTermColor.rgb2ansi(fg=other._fg, bg=other._bg, clean=True)
 
-    def copy(self, modifier=True):
+    def copy(self, modifier=True) -> TTkColor:
         ret = _TTkColor_mod()
         ret._fg   = self._fg
         ret._bg   = self._bg
@@ -361,6 +605,11 @@ class _TTkColor_mod(_TTkColor):
             ret._colorMod = self._colorMod.copy()
         return ret
 
+TTkColor.BOLD         = _TTkColor_mod(mod=TTkTermColor.BOLD)
+TTkColor.ITALIC       = _TTkColor_mod(mod=TTkTermColor.ITALIC)
+TTkColor.UNDERLINE    = _TTkColor_mod(mod=TTkTermColor.UNDERLINE)
+TTkColor.STRIKETROUGH = _TTkColor_mod(mod=TTkTermColor.STRIKETROUGH)
+TTkColor.BLINKING     = _TTkColor_mod(mod=TTkTermColor.BLINKING)
 
 class _TTkColor_mod_link(_TTkColor_mod):
     __slots__ = ('_link')
@@ -373,41 +622,41 @@ class _TTkColor_mod_link(_TTkColor_mod):
         super().__init__(**kwargs)
         self._clean = self._clean and not link
 
-    def colorType(self):
+    def colorType(self) -> int:
         return (
             super().colorType() |
-            ( TTkK.Link if self._link else TTkK.NONE ))
+            ( TTkK.ColorType.Link if self._link else TTkK.NONE ))
 
-    def __str__(self):
+    def __str__(self) -> str:
         if not self._buffer:
             self._buffer = TTkTermColor.rgb2ansi_link(
                                 fg=self._fg, bg=self._bg, mod=self._mod,
                                 link=self._link, clean=self._clean)
         return self._buffer
 
-    def __eq__(self, other):
+    def __eq__(self, other) -> bool:
         return (
                 _TTkColor_mod.__eq__(self,other) and
                 ( self._link == (other._link if isinstance(other,_TTkColor_mod_link) else 0))
             )
 
     # self | other
-    def __or__(self, other):
+    def __or__(self, other) -> TTkColor:
         c = self.copy()
         c._clean = False
         return other + c
 
     # self + other
-    def __add__(self, other):
+    def __add__(self, other) -> TTkColor:
         # TTkLog.debug("__add__")
         if other._clean:
             return other
         otherMod  = other._mod  if isinstance(other,_TTkColor_mod) else 0
         otherLink = other._link if isinstance(other,_TTkColor_mod_link) else ''
         clean = self._clean
-        fg:  str = other._fg or self._fg
-        bg:  str = other._bg or self._bg
-        mod: str = self._mod + otherMod
+        fg  = other._fg or self._fg
+        bg  = other._bg or self._bg
+        mod = self._mod + otherMod
         link:str = self._link or otherLink
         colorMod = other._colorMod or self._colorMod
         return _TTkColor_mod_link(
@@ -415,23 +664,23 @@ class _TTkColor_mod_link(_TTkColor_mod):
                     colorMod=colorMod, link=link,
                     clean=clean)
 
-    def __radd__(self, other):
+    def __radd__(self, other) -> TTkColor:
         # TTkLog.debug("__add__")
         if self._clean:
             return self
         otherMod  = other._mod  if isinstance(other,_TTkColor_mod) else 0
         clean = self._clean
-        fg:  str = self._fg or other._fg
-        bg:  str = self._bg or other._bg
-        mod: str = self._mod + otherMod
-        link:str = self._link
+        fg   = self._fg or other._fg
+        bg   = self._bg or other._bg
+        mod  = self._mod + otherMod
+        link = self._link
         colorMod = self._colorMod or other._colorMod
         return _TTkColor_mod_link(
                     fg=fg, bg=bg, mod=mod,
                     colorMod=colorMod, link=link,
                     clean=clean)
 
-    def __sub__(self, other):
+    def __sub__(self, other) -> str:
         # TTkLog.debug("__sub__")
         # if other is None: return str(self)
         otherMod  = other._mod  if isinstance(other,_TTkColor_mod) else 0
@@ -446,12 +695,12 @@ class _TTkColor_mod_link(_TTkColor_mod):
         return ''
 
     def __rsub__(self, other) -> str:
-        if type(other) == _TTkColor:
+        if type(other) == TTkColor:
             return TTkTermColor.rgb2ansi_link(fg=other._fg, bg=other._bg, clean=True, cleanLink=True)
         else:
             return TTkTermColor.rgb2ansi_link(fg=other._fg, bg=other._bg, mod=other._mod, clean=True, cleanLink=True)
 
-    def copy(self, modifier=True):
+    def copy(self, modifier=True) -> TTkColor:
         ret = _TTkColor_mod_link()
         ret._fg   = self._fg
         ret._bg   = self._bg
@@ -466,13 +715,14 @@ class _TTkColor_mod_link(_TTkColor_mod):
 class TTkColorModifier():
     def __init__(self, *args, **kwargs) -> None: pass
     def setParam(self, *args, **kwargs) -> None: pass
-    def copy(self): return self
+    def copy(self) -> TTkColorModifier: return self
 
 class TTkColorGradient(TTkColorModifier):
     '''TTkColorGradient'''
 
     __slots__ = ('_fgincrement', '_bgincrement', '_val', '_step', '_buffer', '_orientation')
     _increment: int; _val: int
+    _buffer: Dict[str,List[Optional[TTkColor]]]
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         if "increment" in kwargs:
@@ -490,7 +740,7 @@ class TTkColorGradient(TTkColorModifier):
         self._val = kwargs.get("val",0)
         self._step = kwargs.get("step",1)
 
-    def exec(self, x, y, color):
+    def exec(self, x, y, color) -> TTkColor:
         vx = x if self._orientation == TTkK.HORIZONTAL else y
         step = self._step
         def _applyGradient(c,incr):
@@ -527,7 +777,7 @@ class TTkLinearGradient(TTkColorModifier):
         '_direction', '_direction_squaredlength',
         '_base_pos', '_target_color')
 
-    default_target_color = _TTkColor(fg=(0,255,0), bg=(255,0,0))
+    default_target_color = TTkColor(fg=(0,255,0), bg=(255,0,0))
 
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
@@ -543,7 +793,7 @@ class TTkLinearGradient(TTkColorModifier):
         self._direction_squaredlength = direct[0]*direct[0] + direct[1]*direct[1]
         self._target_color = kwargs.get('target_color', self._target_color)
 
-    def exec(self, x, y, base_color):
+    def exec(self, x, y, base_color) -> TTkColor:
         diffx, diffy = x - self._base_pos[0], y - self._base_pos[1]
         prod = diffx * self._direction[0] + diffy * self._direction[1]
         beta = prod/self._direction_squaredlength
@@ -566,221 +816,17 @@ class TTkLinearGradient(TTkColorModifier):
                 int(alpha*base_color._bg[2] + beta*target_color._bg[2]))
         return copy
 
-class TTkColor(_TTkColor):
-    ''' TermTk Color helper
-
-    .. role:: strike
-        :class: strike
-
-    .. role:: underline
-        :class: underline
-
-    The TTkColor constructor creates the color based on HEX values.
-
-    Example:
-
-    .. code:: python
-
-        # Foreground only colors:
-        color_fg_red   = TTkColor.fg('#FF0000')
-        color_fg_green = TTkColor.fg('#00FF00')
-        color_fg_blue  = TTkColor.fg('#0000FF')
-
-        # Background only colors:
-        color_bg_red   = TTkColor.bg('#FF0000')
-        color_bg_green = TTkColor.bg('#00FF00')
-        color_bg_blue  = TTkColor.bg('#0000FF')
-
-        # Combine
-        color_1 = color_fg_red + color_bg_blue
-        color_2 = color_fg_red + TTkColor.bg('#FFFF00')
-        color_3 = color_2 + TTkColor.UNDERLINE + TTkColor.BOLD
-
-        # Use presets
-        color_4 = TTkColor.RED
-        color_5 = TTkColor.BG_YELLOW + color_4
-        color_6 = color_5 + TTkColor.UNDERLINE + TTkColor.BOLD
-
-    '''
-    RST = _TTkColor()
-    '''Reset to the default terminal color and modifiers'''
-
-    BLACK   = _TTkColor(fg=(  0,  0,  0))
-    '''(fg) #000000 - Black'''
-    WHITE   = _TTkColor(fg=(255,255,255))
-    '''(fg) #FFFFFF - White'''
-    RED     = _TTkColor(fg=(255,  0,  0))
-    '''(fg) #FF0000 - Red'''
-    GREEN   = _TTkColor(fg=(  0,255,  0))
-    '''(fg) #00FF00 - Green'''
-    BLUE    = _TTkColor(fg=(  0,  0,255))
-    '''(fg) #0000FF - Blue'''
-    CYAN    = _TTkColor(fg=(  0,255,255))
-    '''(fg) #00FFFF - Cyan'''
-    MAGENTA = _TTkColor(fg=(255,  0,255))
-    '''(fg) #FF00FF - Magenta'''
-    YELLOW  = _TTkColor(fg=(255,255,  0))
-    '''(fg) #FFFF00 - Yellow'''
-
-    FG_BLACK   = BLACK
-    '''(fg) #000000 - Black'''
-    FG_WHITE   = WHITE
-    '''(fg) #FFFFFF - White'''
-    FG_RED     = RED
-    '''(fg) #FF0000 - Red'''
-    FG_GREEN   = GREEN
-    '''(fg) #00FF00 - Green'''
-    FG_BLUE    = BLUE
-    '''(fg) #0000FF - Blue'''
-    FG_CYAN    = CYAN
-    '''(fg) #00FFFF - Cyan'''
-    FG_MAGENTA = MAGENTA
-    '''(fg) #FF00FF - Magenta'''
-    FG_YELLOW  = YELLOW
-    '''(fg) #FFFF00 - Yellow'''
-
-    BG_BLACK   = BLACK.invertFgBg()
-    '''(bg) #000000 - Black'''
-    BG_WHITE   = WHITE.invertFgBg()
-    '''(bg) #FFFFFF - White'''
-    BG_RED     = RED.invertFgBg()
-    '''(bg) #FF0000 - Red'''
-    BG_GREEN   = GREEN.invertFgBg()
-    '''(bg) #00FF00 - Green'''
-    BG_BLUE    = BLUE.invertFgBg()
-    '''(bg) #0000FF - Blue'''
-    BG_CYAN    = CYAN.invertFgBg()
-    '''(bg) #00FFFF - Cyan'''
-    BG_MAGENTA = MAGENTA.invertFgBg()
-    '''(bg) #FF00FF - Magenta'''
-    BG_YELLOW  = YELLOW.invertFgBg()
-    '''(bg) #FFFF00 - Yellow'''
-
-    # Modifiers:
-    BOLD         = _TTkColor_mod(mod=TTkTermColor.BOLD)
-    '''**Bold** modifier'''
-    ITALIC       = _TTkColor_mod(mod=TTkTermColor.ITALIC)
-    '''*Italic* modifier'''
-    UNDERLINE    = _TTkColor_mod(mod=TTkTermColor.UNDERLINE)
-    ''':underline:`Underline` modifier'''
-    STRIKETROUGH = _TTkColor_mod(mod=TTkTermColor.STRIKETROUGH)
-    ''':strike:`Striketrough` modifier'''
-
-    BLINKING     = _TTkColor_mod(mod=TTkTermColor.BLINKING)
-    '''"Blinking" modifier'''
-
-    @staticmethod
-    def hexToRGB(val):
-        r = int(val[1:3],base=16)
-        g = int(val[3:5],base=16)
-        b = int(val[5:7],base=16)
-        return (r,g,b)
-
-    @staticmethod
-    def ansi(ansi):
-        fg,bg,mod,clean = TTkTermColor.ansi2rgb(ansi)
-        if mod:
-            return _TTkColor_mod(fg=fg, bg=bg, mod=mod, clean=clean)
-        else:
-            return _TTkColor(fg=fg, bg=bg, clean=clean)
-
-    @staticmethod
-    def fg(*args, **kwargs) -> _TTkColor:
-        ''' Helper to generate a Foreground color
-
-        Example:
-
-        .. code:: python
-
-            color_1 = TTkColor.fg('#FF0000')
-            color_2 = TTkColor.fg(color='#00FF00')
-            color_3 = TTkColor.fg('#0000FF', modifier=TTkColorGradient(increment=6))
-
-        :param str color: the color representation in (str)HEX
-        :type color: str
-        :param str modifier: (experimental) the color modifier to be used to improve the **kinkiness**
-        :type modifier: TTkColorModifier, optional
-
-        :return: :py:class:`TTkColor`
-        '''
-        mod = kwargs.get('modifier', None )
-        link = kwargs.get('link', '' )
-        if len(args) > 0:
-            color = args[0]
-        else:
-            color = kwargs.get('color', "" )
-        if link:
-            return _TTkColor_mod_link(fg=TTkColor.hexToRGB(color), colorMod=mod, link=link)
-        else:
-            return _TTkColor(fg=TTkColor.hexToRGB(color), colorMod=mod)
-
-    @staticmethod
-    def bg(*args, **kwargs) -> _TTkColor:
-        ''' Helper to generate a Background color
-
-        Example:
-
-        .. code:: python
-
-            color_1 = TTkColor.bg('#FF0000')
-            color_2 = TTkColor.bg(color='#00FF00')
-            color_3 = TTkColor.bg('#0000FF', modifier=TTkColorGradient(increment=6))
-
-        :param str color: the color representation in (str)HEX
-        :type color: str
-        :param str modifier: (experimental) the color modifier to be used to improve the **kinkiness**
-        :type modifier: TTkColorModifier, optional
-
-        :return: :py:class:`TTkColor`
-        '''
-        mod = kwargs.get('modifier', None )
-        link = kwargs.get('link', '' )
-        if len(args) > 0:
-            color = args[0]
-        else:
-            color = kwargs.get('color', "" )
-        if link:
-            return _TTkColor_mod_link(bg=TTkColor.hexToRGB(color), colorMod=mod, link=link)
-        else:
-            return _TTkColor(bg=TTkColor.hexToRGB(color), colorMod=mod)
-
-    @staticmethod
-    def fgbg(fg:str='', bg:str='', link:str='', modifier:TTkColorModifier=None) -> _TTkColor:
-        ''' Helper to generate a Background color
-
-        Example:
-
-        .. code:: python
-
-            color_1 = TTkColor.fgbg('#FF0000','#0000FF')
-            color_2 = TTkColor.fgbg(fg='#00FF00',bg='#0000FF')
-            color_3 = TTkColor.fgbg('#0000FF','#0000FF', modifier=TTkColorGradient(increment=6))
-
-        :param str fg: the foreground color representation in (str)HEX
-        :type fg: str
-        :param str bg: the background color representation in (str)HEX
-        :type bg: str
-        :param str modifier: (experimental) the color modifier to be used to improve the **kinkiness**
-        :type modifier: TTkColorModifier, optional
-
-        :return: :py:class:`TTkColor`
-        '''
-        if link:
-            return _TTkColor_mod_link(fg=TTkColor.hexToRGB(fg), bg=TTkColor.hexToRGB(bg), colorMod=modifier, link=link)
-        else:
-            return _TTkColor(fg=TTkColor.hexToRGB(fg), bg=TTkColor.hexToRGB(bg), colorMod=modifier)
-
 class TTkAlternateColor(TTkColorModifier):
     '''TTkAlternateColor'''
 
     __slots__ = ('_alternateColor')
-    def __init__(self, alternateColor:_TTkColor=TTkColor.RST, **kwargs) -> None:
+    def __init__(self, alternateColor:TTkColor=TTkColor.RST, **kwargs) -> None:
         super().__init__(**kwargs)
         self.setParam(alternateColor)
 
-    def setParam(self, alternateColor:_TTkColor):
+    def setParam(self, alternateColor:TTkColor) -> None:
         self._alternateColor = alternateColor
 
-    def exec(self, x:int, y:int, base_color:_TTkColor) -> _TTkColor:
+    def exec(self, x:int, y:int, base_color:TTkColor) -> TTkColor:
         if y%2: return self._alternateColor
         else:   return base_color.copy(modifier=False)

@@ -53,9 +53,6 @@ class TTkTerminal(TTkAbstractScrollArea):
         self.setFocusPolicy(TTkK.ClickFocus)
         self.setViewport(self._terminalView)
 
-        self.terminalClosed = pyTTkSignal(TTkTerminal)
-        self._terminalView.terminalClosed.connect(lambda : self.terminalClosed.emit(self))
-
     def close(self):
         self._terminalView.close()
         return super().close()
@@ -75,7 +72,7 @@ class TTkTerminal(TTkAbstractScrollArea):
         .. seealso:: this method is forwarded to :py:meth:`TTkTerminalView.titleChanged`
 
         This signal is emitted when the terminal title change through OSC "ESC ]0;"
-        
+
         :param title: the new title
         :type title: str
         '''
@@ -94,7 +91,7 @@ class TTkTerminal(TTkAbstractScrollArea):
         .. seealso:: this method is forwarded to :py:meth:`TTkTerminalView.textSelected`
 
         This signal is emitted when a text is selected.
-        
+
         :param text: the selected text
         :type text: :py:class:`ttkString`
         '''
@@ -105,14 +102,14 @@ class TTkTerminal(TTkAbstractScrollArea):
         .. seealso:: this method is forwarded to :py:meth:`TTkTerminalView.termData`
 
         This signal is emitted when data event fires.
-        
+
         This happens for example when the user types or pastes into the terminal.
         The event value is whatever 'str' results, in a typical setup,
         this should be passed on to the backing pty.
-        
+
         This signal is used in :py:class:`TTkTerminalHelper` through :py:meth:`TTkTerminalHelper.attachTTkTerminal`
         to frward all the terminal events to the pty interface.
-        
+
         :param data: the event data
         :type data: str
         '''
@@ -123,7 +120,7 @@ class TTkTerminal(TTkAbstractScrollArea):
         .. seealso:: this method is forwarded to :py:meth:`TTkTerminalView.termResized`
 
         This signal is emitted when the terminal is resized.
-        
+
         :param size: the new size [width, height] of the terminal
         :type size: (int,int)
         '''
@@ -133,7 +130,7 @@ class TTkTerminal(TTkAbstractScrollArea):
         .. seealso:: this method is forwarded to :py:meth:`TTkTerminalView.termWrite`
 
         Write data to the terminal.
-        
+
         :params data: the data to write
         :type data: str
         '''
@@ -143,7 +140,7 @@ class TTkTerminal(TTkAbstractScrollArea):
         .. seealso:: this method is forwarded to :py:meth:`TTkTerminalView.termSize`
 
         This property holds the size of the terminal
-        
+
         :return: a tuple of 2 integers (width, height)
         :rtype: tuple
         '''

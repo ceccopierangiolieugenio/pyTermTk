@@ -32,7 +32,7 @@ from typing import Any, Optional, Union, List, Tuple
 
 from TermTk.TTkCore.cfg import TTkCfg
 from TermTk.TTkCore.constant import TTkK
-from TermTk.TTkCore.color import TTkColor, _TTkColor
+from TermTk.TTkCore.color import TTkColor
 
 class TTkString():
     ''' TermTk String Helper
@@ -133,7 +133,7 @@ class TTkString():
             ret._colors = self._colors + acol
             ret._hasTab = '\t' in ret._text
             ret._checkWidth()
-        elif isinstance(other, _TTkColor):
+        elif isinstance(other, TTkColor):
             ret._text   = self._text
             ret._colors = self._colors
             ret._hasSpecialWidth = self._hasSpecialWidth
