@@ -1200,7 +1200,7 @@ class TTkTextEdit(TTkAbstractScrollArea):
         .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.extraSelections`
 
         Returns previously set extra selections.
-        
+
         :rtype: list[:py:class:`ExtraSelection`]
         '''
         return self._textEditView.extraSelections()
@@ -1211,7 +1211,7 @@ class TTkTextEdit(TTkAbstractScrollArea):
         This function allows temporarily marking certain regions in the document with a given color,
         specified as selections. This can be useful for example in a programming editor to mark a
         whole line of text with a given background color to indicate the existence of a breakpoint.
-        
+
         :param extraSelections: the list of extra selections.
         :type extraSelections: list[:py:class:`ExtraSelection`]
         '''

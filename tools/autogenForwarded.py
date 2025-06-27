@@ -109,7 +109,7 @@ def autogen_methods(data: _ForwardData) -> List[str]:
                 doc_indent + f".. seealso:: this method is forwarded to :py:meth:`{class_name}.{method_name}`\n",
             ])
             if doc:
-                lines.extend([doc_indent + _l for _l in doc.split('\n')])
+                lines.extend([f"{doc_indent}{_l}" if _l else '' for _l in doc.split('\n')])
             lines.append(doc_indent + "'''")
             # Format the signature string
             signatures.extend([
