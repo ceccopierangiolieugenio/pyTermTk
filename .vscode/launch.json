@@ -30,12 +30,12 @@
             "request": "launch",
             "program": "${file}",
             "console": "integratedTerminal",
-            "justMyCode": true,
+            "justMyCode": false,
             "env": {
                 "PYTHONPATH": "libs/pyTermTk/"
             },
             "args": [
-                "tools/webExporter/js/ttkproxy.js"
+                "experiments/social/img2.png"
             ]
         },
         {
@@ -151,6 +151,20 @@
             "args": [
                 "-t"
             ]
+        },
+        {
+            "name": "Python: sphinx",
+            "type": "debugpy",
+            "request": "launch",
+            "program": ".venv/bin/sphinx-build",
+            "console": "integratedTerminal",
+            "justMyCode": false,
+            "args": [
+                "docs/source", "_build"
+            ],
+            "env": {
+                "PYTHONPATH": "libs/pyTermTk/"
+            },
         },
     ]
 }
