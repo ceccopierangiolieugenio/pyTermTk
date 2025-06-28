@@ -20,12 +20,13 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
+
 __all__ = ['TTkHelper']
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Set, Optional, Tuple, Callable
 from dataclasses import dataclass
 
-from TermTk.TTkCore.TTkTerm.colors import TTkTermColor
 from TermTk.TTkCore.TTkTerm.term import TTkTerm
 from TermTk.TTkCore.cfg import TTkCfg, TTkGlbl
 from TermTk.TTkCore.constant import TTkK
@@ -33,28 +34,27 @@ from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
 
 if TYPE_CHECKING:
     from TermTk.TTkGui.drag import TTkDnDEvent, TTkDrag
-    from TermTk.TTkWidgets import TTkWidget
-else:
-    class TTkDrag(): ...
-    class TTkDnDEvent(): ...
-    class TTkWidget(): ...
+    from TermTk.TTkCore.ttk import TTk
+    from TermTk.TTkCore.canvas import TTkCanvas
+    from TermTk.TTkCore.string import TTkString
+    from TermTk.TTkWidgets.widget import TTkWidget
+    from TermTk.TTkWidgets.container import TTkContainer
 
 class TTkHelper:
     '''TTkHelper
 
     This is a collection of helper utilities to be used all around TermTk
     '''
-    # TODO: Add Setter/Getter
-    _focusWidget = None
-    _rootCanvas = None
-    _rootWidget = None
-    _updateWidget = set()
-    _updateBuffer  = set()
-    _mousePos = (0,0)
-    _cursorPos = (0,0)
-    _cursor = False
-    _cursorType = TTkTerm.Cursor.BLINKING_BLOCK
-    _cursorWidget = None
+    _focusWidget: Optional[TTkWidget] = None
+    _rootCanvas: Optional[TTkCanvas] = None
+    _rootWidget: Optional[TTk] = None
+    _updateWidget:Set[TTkWidget] = set()
+    _updateBuffer:Set[TTkWidget]  = set()
+    _mousePos: Tuple[int, int] = (0,0)
+    _cursorPos: Tuple[int, int] = (0,0)
+    _cursor: bool = False
+    _cursorType: str = TTkTerm.Cursor.BLINKING_BLOCK
+    _cursorWidget: Optional[TTkWidget] = None
     class _Overlay():
         __slots__ = ('_widget','_prevFocus','_x','_y','_modal')
         def __init__(self,x,y,widget,prevFocus,modal):
@@ -62,43 +62,42 @@ class TTkHelper:
             self._prevFocus = prevFocus
             self._modal = modal
             widget.move(x,y)
-    _overlay = []
+    _overlay: list[_Overlay] = []
 
     @staticmethod
-    def updateAll():
+    def updateAll() -> None:
         if TTkHelper._rootWidget:
             TTkHelper._rootWidget.update(repaint=True, updateLayout=True)
             for w in TTkHelper._rootWidget.layout().iterWidgets():
                 w.update(repaint=True, updateLayout=True)
 
     @staticmethod
-    def unlockPaint():
+    def unlockPaint() -> None:
         if rw := TTkHelper._rootWidget:
             rw._paintEvent.set()
 
     @staticmethod
-    def addUpdateWidget(widget):
+    def addUpdateWidget(widget: TTkWidget) -> None:
         # if not widget.isVisibleAndParent(): return
         if widget not in TTkHelper._updateWidget:
             TTkHelper._updateWidget.add(widget)
             TTkHelper.unlockPaint()
 
     @staticmethod
-    def addUpdateBuffer(canvas):
-        if canvas is not TTkHelper._rootCanvas:
-            TTkHelper._updateBuffer.add(canvas)
+    def addUpdateBuffer(widget: TTkWidget) -> None:
+        TTkHelper._updateBuffer.add(widget)
 
     @staticmethod
-    def registerRootWidget(widget):
+    def registerRootWidget(widget: TTk) -> None:
         TTkHelper._rootCanvas = widget.getCanvas()
         TTkHelper._rootWidget = widget
         TTkHelper._rootCanvas.enableDoubleBuffer()
 
-    quitEvent = pyTTkSignal()
+    quitEvent: pyTTkSignal = pyTTkSignal()
 
     @staticmethod
     @pyTTkSlot()
-    def quit():
+    def quit() -> None:
         '''Quit TermTk'''
         TTkHelper.quitEvent.emit()
         if TTkHelper._rootWidget:
@@ -106,7 +105,7 @@ class TTkHelper:
 
     @staticmethod
     @pyTTkSlot()
-    def aboutTermTk():
+    def aboutTermTk() -> None:
         '''
         Displays a simple message box about `pyTermTk <https://github.com/ceccopierangiolieugenio/pyTermTk>`__.
         The message includes the version number of TermTk being used by the application.
@@ -119,12 +118,12 @@ class TTkHelper:
             TTkHelper._rootWidget.aboutTermTk()
 
     @staticmethod
-    def getTerminalSize():
+    def getTerminalSize() -> Tuple[int, int]:
         return TTkGlbl.term_w, TTkGlbl.term_h
 
     @staticmethod
-    def rootOverlay(widget):
-        if widget is None:
+    def rootOverlay(widget: TTkWidget) -> Optional[TTkWidget]:
+        if not widget:
             return None
         if not TTkHelper._overlay:
             return None
@@ -136,12 +135,12 @@ class TTkHelper:
         return None
 
     @staticmethod
-    def focusLastModal():
+    def focusLastModal() -> None:
         if modal := TTkHelper.getLastModal():
             modal._widget.setFocus()
 
     @staticmethod
-    def getLastModal():
+    def getLastModal() -> Optional["_Overlay"]:
         modal = None
         for o in TTkHelper._overlay:
             if o._modal:
@@ -149,7 +148,7 @@ class TTkHelper:
         return modal
 
     @staticmethod
-    def checkModalOverlay(widget):
+    def checkModalOverlay(widget: TTkWidget) -> bool:
         #if not TTkHelper._overlay:
         #    # There are no Overlays
         #    return True
@@ -170,12 +169,14 @@ class TTkHelper:
         return False
 
     @staticmethod
-    def isOverlay(widget):
+    def isOverlay(widget: TTkWidget) -> bool:
         return TTkHelper.rootOverlay(widget) is not None
 
     @staticmethod
-    def overlay(caller, widget, x:int, y:int, modal:bool=False, forceBoundaries:bool=True, toolWindow:bool=False):
+    def overlay(caller: Optional[TTkWidget], widget: TTkWidget, x:int, y:int, modal:bool=False, forceBoundaries:bool=True, toolWindow:bool=False) -> None:
         '''overlay'''
+        if not TTkHelper._rootWidget:
+            return
         if not caller:
             caller = TTkHelper._rootWidget
         wx, wy = TTkHelper.absPos(caller)
@@ -209,13 +210,15 @@ class TTkHelper:
                 w.update()
 
     @staticmethod
-    def getOverlay():
+    def getOverlay() -> Optional[TTkWidget]:
         if TTkHelper._overlay:
             return TTkHelper._overlay[-1]._widget
         return None
 
     @staticmethod
-    def removeOverlay():
+    def removeOverlay() -> None:
+        if not TTkHelper._rootWidget:
+            return
         if not TTkHelper._overlay:
             return
         bkFocus = None
@@ -233,8 +236,11 @@ class TTkHelper:
             bkFocus.setFocus()
 
     @staticmethod
-    def removeOverlayAndChild(widget):
-        if not TTkHelper.isOverlay(widget): return
+    def removeOverlayAndChild(widget: TTkWidget) -> None:
+        if not TTkHelper._rootWidget:
+            return
+        if not TTkHelper.isOverlay(widget):
+            return
         if len(TTkHelper._overlay) <= 1:
             return TTkHelper.removeOverlay()
         rootWidget = TTkHelper.rootOverlay(widget)
@@ -256,7 +262,9 @@ class TTkHelper:
             TTkHelper.removeOverlay()
 
     @staticmethod
-    def removeOverlayChild(widget):
+    def removeOverlayChild(widget: TTkWidget) -> None:
+        if not TTkHelper._rootWidget:
+            return
         rootWidget = TTkHelper.rootOverlay(widget)
         found = False
         newOverlay = []
@@ -274,7 +282,7 @@ class TTkHelper:
             TTkHelper.removeOverlay()
 
     @staticmethod
-    def setMousePos(pos):
+    def setMousePos(pos: Tuple[int, int]) -> None:
         TTkHelper._mousePos = pos
         # update the position of the Drag and Drop Widget
         if TTkHelper._dnd:
@@ -282,11 +290,11 @@ class TTkHelper:
             TTkHelper._dnd.d.pixmap().move(pos[0]-hsx, pos[1]-hsy)
 
     @staticmethod
-    def mousePos():
+    def mousePos() -> Tuple[int, int]:
         return TTkHelper._mousePos
 
     @staticmethod
-    def paintAll():
+    def paintAll() -> None:
         '''
             _updateBuffer = list widgets that require a repaint [paintEvent]
             _updateWidget = list widgets that need to be pushed below
@@ -346,20 +354,20 @@ class TTkHelper:
                 TTkTerm.Cursor.show(TTkHelper._cursorType)
 
     @staticmethod
-    def rePaintAll():
+    def rePaintAll() -> None:
         if TTkHelper._rootCanvas and  TTkHelper._rootWidget:
             TTkTerm.push(TTkTerm.CLEAR)
             TTkHelper._rootCanvas.cleanBuffers()
             TTkHelper._rootWidget.update()
 
     @staticmethod
-    def widgetDepth(widget) -> int:
+    def widgetDepth(widget: TTkWidget) -> int:
         if widget is None:
             return 0
         return 1 + TTkHelper.widgetDepth(widget.parentWidget())
 
     @staticmethod
-    def isParent(widget, parent):
+    def isParent(widget: TTkWidget, parent: TTkWidget) -> bool:
         if p := widget.parentWidget():
             if p == parent:
                 return True
@@ -367,7 +375,9 @@ class TTkHelper:
         return False
 
     @staticmethod
-    def widgetAt(x, y, layout=None):
+    def widgetAt(x: int, y: int, layout=None) -> Optional[TTkWidget]:
+        if not TTkHelper._rootWidget:
+            return None
         layout = layout if layout else TTkHelper._rootWidget.rootLayout()
         lx,ly,lw,lh =layout.geometry()
         lox, loy = layout.offset()
@@ -394,7 +404,7 @@ class TTkHelper:
         return layout.parentWidget()
 
     @staticmethod
-    def absPos(widget) -> tuple[int,int]:
+    def absPos(widget: TTkWidget) -> Tuple[int,int]:
         wx, wy = 0,0
         layout = widget.widgetItem()
         while layout:
@@ -405,20 +415,26 @@ class TTkHelper:
         return (wx, wy)
 
     @staticmethod
-    def nextFocus(widget):
+    def nextFocus(widget: TTkWidget) -> None:
+        from TermTk.TTkWidgets.container import TTkContainer
+        if not TTkHelper._rootWidget:
+            return
         rootWidget = TTkHelper.rootOverlay(widget)
+        checkWidget:Optional[TTkWidget] = widget
         if not rootWidget:
             rootWidget =  TTkHelper._rootWidget
-        if widget == rootWidget:
-            widget = None
+        if checkWidget == rootWidget:
+            checkWidget = None
+        if not isinstance(rootWidget, TTkContainer):
+            return
         first = None
         for w in rootWidget.rootLayout().iterWidgets():
             if not first and w.focusPolicy() & TTkK.TabFocus == TTkK.TabFocus:
                 first = w
             # TTkLog.debug(f"{w._name} {widget}")
-            if widget:
-                if w == widget:
-                    widget=None
+            if checkWidget:
+                if w == checkWidget:
+                    checkWidget=None
                 continue
             if w.isEnabled() and w.focusPolicy() & TTkK.TabFocus == TTkK.TabFocus:
                 w.setFocus()
@@ -429,17 +445,23 @@ class TTkHelper:
             first.update()
 
     @staticmethod
-    def prevFocus(widget):
+    def prevFocus(widget: TTkWidget) -> None:
+        from TermTk.TTkWidgets.container import TTkContainer
+        if not TTkHelper._rootWidget:
+            return
         rootWidget = TTkHelper.rootOverlay(widget)
+        checkWidget:Optional[TTkWidget] = widget
         if not rootWidget:
             rootWidget = TTkHelper._rootWidget
-        if widget == rootWidget:
-            widget = None
+        if checkWidget == rootWidget:
+            checkWidget = None
+        if not isinstance(rootWidget, TTkContainer):
+            return
         prev = None
         for w in rootWidget.rootLayout().iterWidgets():
             # TTkLog.debug(f"{w._name} {widget}")
-            if w == widget:
-                widget=None
+            if w == checkWidget:
+                checkWidget=None
                 if prev:
                     break
             if w.isEnabled() and w.focusPolicy() & TTkK.TabFocus == TTkK.TabFocus:
@@ -449,19 +471,19 @@ class TTkHelper:
             prev.update()
 
     @staticmethod
-    def setFocus(widget):
+    def setFocus(widget: TTkWidget) -> None:
         TTkHelper._focusWidget = widget
 
     @staticmethod
-    def getFocus():
+    def getFocus() -> Optional[TTkWidget]:
         return TTkHelper._focusWidget
 
     @staticmethod
-    def clearFocus():
+    def clearFocus() -> None:
         TTkHelper._focusWidget = None
 
     @staticmethod
-    def showCursor(cursorType = TTkK.Cursor_Blinking_Block):
+    def showCursor(cursorType: int = TTkK.Cursor_Blinking_Block) -> None:
         newType = {
             TTkK.Cursor_Blinking_Block      : TTkTerm.Cursor.BLINKING_BLOCK,
             TTkK.Cursor_Blinking_Block_Also : TTkTerm.Cursor.BLINKING_BLOCK_ALSO,
@@ -477,14 +499,14 @@ class TTkHelper:
         TTkHelper._cursor = True
 
     @staticmethod
-    def hideCursor():
+    def hideCursor() -> None:
         TTkTerm.Cursor.hide()
         TTkHelper._cursorType = TTkTerm.Cursor.BLINKING_BLOCK
         TTkHelper._cursor = False
         # TTkHelper._cursorWidget = None
 
     @staticmethod
-    def moveCursor(widget, x, y):
+    def moveCursor(widget: TTkWidget, x: int, y: int) -> None:
         TTkHelper._cursorWidget = widget
         xx, yy = TTkHelper.absPos(widget)
         pos = (xx+x,yy+y)
@@ -494,33 +516,37 @@ class TTkHelper:
         TTkTerm.push(TTkTerm.Cursor.moveTo(yy+y+1,xx+x+1))
 
     @staticmethod
-    def cursorWidget():
+    def cursorWidget() -> Optional[TTkWidget]:
         return TTkHelper._cursorWidget
 
     @dataclass(frozen=False)
     class _DnD():
-        d:    TTkDrag = None
-        w:  TTkWidget = None
+        d:  TTkDrag
+        w:  Optional[TTkWidget] = None
 
     # Drag and Drop related helper routines
-    _dnd = None
+    _dnd: Optional[TTkHelper._DnD] = None
 
     @staticmethod
-    def dndInit(drag:TTkDrag):
+    def dndInit(drag:TTkDrag) -> None:
+        if not TTkHelper._rootWidget:
+            return
         TTkHelper._dnd = TTkHelper._DnD(d=drag, w=None)
         TTkHelper._rootWidget.rootLayout().addWidget(drag.pixmap())
         drag.pixmap().raiseWidget()
 
     @staticmethod
-    def dndGetDrag() -> TTkDrag:
+    def dndGetDrag() -> Optional["TTkDrag"]:
         return TTkHelper._dnd.d if TTkHelper._dnd else None
 
     @staticmethod
-    def dndWidget() -> TTkWidget:
+    def dndWidget() -> Optional[TTkWidget]:
         return TTkHelper._dnd.w if TTkHelper._dnd else None
 
     @staticmethod
-    def dndEnter(widget:TTkWidget):
+    def dndEnter(widget:TTkWidget) -> None:
+        if not TTkHelper._dnd:
+            return
         TTkHelper._dnd.w = widget
 
     @staticmethod
@@ -528,23 +554,26 @@ class TTkHelper:
         return TTkHelper._dnd is not None
 
     @staticmethod
-    def dndEnd():
+    def dndEnd() -> None:
+        if not TTkHelper._rootWidget:
+            return
         if TTkHelper._dnd:
             TTkHelper._rootWidget.rootLayout().removeWidget(TTkHelper._dnd.d.pixmap())
         TTkHelper._dnd = None
         TTkHelper._rootWidget.update()
 
     # ToolTip Helper Methods
-    toolTipWidget = None
-    toolTipTrigger = lambda _: True
-    toolTipReset   = lambda  : True
+    toolTipWidget: Optional[TTkWidget] = None
+    toolTipTrigger: Callable[[TTkString], bool] = lambda _: True
+    toolTipReset:   Callable[[], None] = lambda  : None
 
     @staticmethod
-    def toolTipShow(tt):
+    def toolTipShow(tt: TTkWidget) -> None:
         TTkHelper.toolTipClose()
-        if not TTkHelper._rootWidget: return
+        if not TTkHelper._rootWidget:
+            return
         TTkHelper.toolTipWidget = tt
-        rw,rh = TTkHelper._rootWidget.size()
+        rw = TTkHelper._rootWidget.width()
         tw,th = tt.size()
         mx,my =  TTkHelper._mousePos
         x = max(0, min(mx-(tw//2),rw-tw))
@@ -558,7 +587,10 @@ class TTkHelper:
         TTkHelper._rootWidget.rootLayout().addWidget(tt)
         tt.raiseWidget()
 
-    def toolTipClose():
+    @staticmethod
+    def toolTipClose() -> None:
+        if not TTkHelper._rootWidget:
+            return
         TTkHelper.toolTipReset()
         if TTkHelper.toolTipWidget:
             TTkHelper._rootWidget.rootLayout().removeWidget(TTkHelper.toolTipWidget)

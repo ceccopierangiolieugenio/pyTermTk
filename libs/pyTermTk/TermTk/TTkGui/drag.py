@@ -166,7 +166,7 @@ class TTkDrag(TTkDnD):
             pixmap.updateSize()
             self._pixmap.setPixmap(pixmap, self._hotSpot)
 
-    def pixmap(self) -> TTkCanvas:
+    def pixmap(self) -> _TTkDragDisplayWidget:
         '''
         Returns the pixmap used to represent the data in a drag and drop operation.
 
