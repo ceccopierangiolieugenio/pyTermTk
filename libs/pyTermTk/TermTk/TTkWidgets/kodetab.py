@@ -138,7 +138,7 @@ class _TTkKodeTab(TTkTabWidget):
             index = splitter.indexOf(self)
             if splitter.orientation() != orientation:
                 splitter.replaceWidget(index, splitter := TTkSplitter(orientation=orientation, style=self.parentWidget().classStyle))
-                splitter.mergeStyle(_splitter_NERD_1_style)
+                splitter.setStyle(_splitter_NERD_1_style)
                 splitter.addWidget(self)
                 index=offset
             splitter.insertWidget(index+offset, kt:=_TTkKodeTab(baseWidget=self._baseWidget, border=self.border(), barType=self._barType, closable=self.tabsClosable()))
@@ -245,7 +245,7 @@ class TTkKodeTab(TTkSplitter):
 
         super().__init__(**kwargs|{'layout':TTkGridLayout()})
 
-        self.mergeStyle(_splitter_NERD_1_style)
+        self.setStyle(_splitter_NERD_1_style)
         kwargs.pop('parent',None)
         kwargs.pop('visible',None)
         # self.layout().addWidget(splitter := TTkSplitter())
