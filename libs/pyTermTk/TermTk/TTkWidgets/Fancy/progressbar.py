@@ -24,6 +24,7 @@
 __all__ = ['TTkFancyProgressBar', 'TTkLookAndFeelFPBar']
 
 import math
+from typing import Optional
 
 from TermTk.TTkCore.cfg       import TTkCfg
 from TermTk.TTkCore.color     import TTkColor
@@ -88,7 +89,7 @@ class TTkFancyProgressBar(TTkWidget):
 
     def __init__(self, *,
                  value:float=0.0,
-                 lookAndFeel:TTkLookAndFeelFPBar=None,
+                 lookAndFeel:Optional[TTkLookAndFeelFPBar]=None,
                  **kwargs) -> None:
         self.valueChanged = pyTTkSignal(float)
         super().__init__(**kwargs)

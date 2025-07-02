@@ -22,6 +22,8 @@
 
 __all__ = ['TTkFancyTreeWidget']
 
+from typing import Union, Optional
+
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.string import TTkString
@@ -48,9 +50,9 @@ class _TTkDisplayedTreeItem(TTkContainer):
     __slots__ = ('_depth', '_control', '_text', '_id', '_clicked', '_treeWidgetItem', '_isLeaf' )
     def __init__(self, *,
                   id:int=0,
-                  text:TTkString='',
+                  text:Union[str,TTkString]='',
                   depth:int=0,
-                  treeWidgetItem:TTkFancyTreeWidgetItem=None,
+                  treeWidgetItem:TTkFancyTreeWidgetItem,
                  **kwargs) -> None:
         super().__init__(**kwargs)
         #Signals

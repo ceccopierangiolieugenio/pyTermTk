@@ -253,7 +253,7 @@ class TTkConstant:
     AllowDrop      = DragDropMode.AllowDrop
     AllowDragDrop  = DragDropMode.AllowDragDrop
 
-    class ChildIndicatorPolicy(int):
+    class ChildIndicatorPolicy(IntEnum):
         ShowIndicator                  = 0x00 #The controls for expanding and collapsing will be shown for this item even if there are no children.
         DontShowIndicator              = 0x01 #The controls for expanding and collapsing will never be shown even if there are children. If the node is forced open the user will not be able to expand or collapse the item.
         DontShowIndicatorWhenChildless = 0x02 #The controls for expanding and collapsing will be shown if the item contains children.

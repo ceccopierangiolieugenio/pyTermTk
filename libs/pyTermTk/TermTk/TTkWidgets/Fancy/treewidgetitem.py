@@ -22,6 +22,8 @@
 
 __all__ = ['TTkFancyTreeWidgetItem']
 
+from typing import List
+
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.signal import pyTTkSignal
 
@@ -36,7 +38,7 @@ class TTkFancyTreeWidgetItem():
         # Signals
         self.refreshData = pyTTkSignal(TTkFancyTreeWidgetItem)
         self._data = args[0]
-        self._children = []
+        self._children:List = []
         self._childIndicatorPolicy = childIndicatorPolicy
         self._expand = False
         self._parent = parent

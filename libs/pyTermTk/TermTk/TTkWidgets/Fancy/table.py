@@ -22,6 +22,8 @@
 
 __all__ = ['TTkFancyTable']
 
+from typing import Optional
+
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkWidgets.widget import TTkWidget
@@ -39,11 +41,11 @@ class TTkFancyTable(TTkAbstractScrollArea):
 
     def __init__(self, *,
                  # TTkWidget init
-                 parent:TTkWidget=None,
+                 parent:Optional[TTkWidget]=None,
                  visible:bool=True,
                  # TTkFancyTableView init
-                 columns:list[int]=None,
-                 columnColors:list[TTkColor]=None,
+                 columns:Optional[list[int]]=None,
+                 columnColors:Optional[list[TTkColor]]=None,
                  selectColor:TTkColor=TTkColor.BOLD,
                  headerColor:TTkColor=TTkColor.BOLD,
                  showHeader:bool=True,

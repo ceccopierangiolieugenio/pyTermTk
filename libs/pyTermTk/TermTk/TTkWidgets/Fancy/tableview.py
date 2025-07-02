@@ -22,6 +22,8 @@
 
 __all__ = ['TTkFancyTableView']
 
+from typing import Optional, List
+
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
 from TermTk.TTkCore.color import TTkColor
@@ -36,7 +38,7 @@ from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollView
 class _TTkFancyTableViewHeader(TTkAbstractScrollView):
     __slots__ = ('_header', '_alignments', '_headerColor', '_columns')
     def __init__(self, *,
-                 columns:list[int]=None,
+                 columns:Optional[List[int]]=None,
                  headerColor:TTkColor=TTkColor.BOLD,
                  **kwargs) -> None:
         super().__init__(**kwargs)
@@ -102,9 +104,13 @@ class _TTkFancyTableView(TTkAbstractScrollView):
             '_tableWidth',
             # Signals
             'activated', 'doubleClicked')
+    _tableDataId:List[List[TTkString]]
+    _tableDataText:List[List[TTkString]]
+    _tableDataWidget:List[List[Optional[TTkWidget]]]
+    _shownWidgets:List[TTkWidget]
     def __init__(self, *,
-                 columns:list[int]=None,
-                 columnColors:list[TTkColor]=None,
+                 columns:Optional[List[int]]=None,
+                 columnColors:Optional[List[TTkColor]]=None,
                  selectColor:TTkColor=TTkColor.BOLD,
                  headerColor:TTkColor=TTkColor.BOLD,
                  **kwargs) -> None:
@@ -379,20 +385,20 @@ class TTkFancyTableView(TTkAbstractScrollView):
 
     def __init__(self, *,
                  # _TTkFancyTableView init
-                 columns:list[int]=None,
-                 columnColors:list[TTkColor]=None,
+                 columns:Optional[List[int]]=None,
+                 columnColors:Optional[List[TTkColor]]=None,
                  selectColor:TTkColor=TTkColor.BOLD,
                  headerColor:TTkColor=TTkColor.BOLD,
                  # TTkFancyTableView init
                  showHeader:bool=True,
                  **kwargs) -> None:
         self._excludeEvent = False
-        super().__init__(**kwargs|{'layout':TTkGridLayout()})
+        super().__init__(**kwargs|{'layout':(gl:=TTkGridLayout())})
         self._showHeader = showHeader
         self._tableView = _TTkFancyTableView(columns=columns, columnColors=columnColors, selectColor=selectColor, headerColor=headerColor, **kwargs)
         self._header = _TTkFancyTableViewHeader(columns=columns, headerColor=headerColor, **kwargs)
-        self.layout().addWidget(self._header,0,0)
-        self.layout().addWidget(self._tableView,1,0)
+        gl.addWidget(self._header,0,0)
+        gl.addWidget(self._tableView,1,0)
         self._tableView.viewChanged.connect(self._viewChanged)
         self._tableView.viewMovedTo.connect(self._viewMovedTo)
         # Forward the tableSignals
