@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.43.3-a.0](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/pyTermTk-v0.43.2-a.0...pyTermTk-v0.43.3-a.0) (2025-07-03)
+
+
+### Chores
+
+* fix log typing ([14e7739](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/14e77397ce1ea7bfa9af27ada4ccbfdbd971b8c3))
+* improve typing ([#417](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/417)) ([833005a](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/833005acd115f2a5cb467b614ff208bda013c043))
+* **KodeTab:** fix hover highlight ([c944b4d](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/c944b4d14603f35756fb2e7154eb8cda0ec58f4b))
+* reworked autogen ([f2d35ae](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/f2d35ae24a5e27885febe56ab25e50a884d516b6))
+* **Typing:** improved TTkHelper typings ([849ab5a](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/849ab5afe61e2519fb3e8c89dbd21cdf7f8a252c))
+* **Typing:** Reworked TTkColor  to solve all the typing issues ([c94c114](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/c94c114faac878c9c5f99619eaf9fd79bc285c42))
+* **Typing:** solved typing issues in the unsupported Fancy widgets ([e27b2af](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/e27b2afb0bb4c6d295f223c0f83b8ddab6f5d0e3))
+
 ## [0.43.2-a.0](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/pyTermTk-v0.43.1-a.0...pyTermTk-v0.43.2-a.0) (2025-06-04)
 
 
