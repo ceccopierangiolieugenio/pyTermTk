@@ -466,22 +466,23 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
             return False
 
         # Handle Drag and Drop Events
-        if TTkHelper.isDnD():
+        if _dnd:=TTkHelper.dndGetDnd():
             ret = False
+            dndw = _dnd.w
+            dndg = _dnd.d
             if evt.evt == TTkK.Drag:
-                dndw = TTkHelper.dndWidget()
                 if dndw == self:
-                    self.dragMoveEvent(TTkHelper.dndGetDrag().getDragMoveEvent(evt))
+                    self.dragMoveEvent(dndg.getDragMoveEvent(evt))
                     return True
                 else:
-                    if ( self.dragEnterEvent(TTkHelper.dndGetDrag().getDragEnterEvent(evt)) or
-                         self.dragMoveEvent(TTkHelper.dndGetDrag().getDragMoveEvent(evt))):
+                    if ( self.dragEnterEvent(dndg.getDragEnterEvent(evt)) or
+                         self.dragMoveEvent(dndg.getDragMoveEvent(evt))):
                         if dndw:
-                            ret = dndw.dragLeaveEvent(TTkHelper.dndGetDrag().getDragLeaveEvent(evt))
+                            ret = dndw.dragLeaveEvent(dndg.getDragLeaveEvent(evt))
                         TTkHelper.dndEnter(self)
                         return True
             if evt.evt == TTkK.Release:
-                if self.dropEvent(self._dropEventProxy(TTkHelper.dndGetDrag().getDropEvent(evt))):
+                if self.dropEvent(self._dropEventProxy(dndg.getDropEvent(evt))):
                     return True
             return ret
 
@@ -852,18 +853,9 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
         self.currentStyleChanged.emit(style)
         self.update()
 
-    def setStyle(self, style=None) -> None:
+    def setStyle(self, style:Dict[str,Dict]={}) -> None:
         if not style:
             style = self.classStyle.copy()
-        if 'default' not in style:
-            # find the closest subclass/parent holding the style
-            styleType = TTkWidget
-            for cc in type(self).__mro__:
-                if cc in style:
-                    styleType = cc
-                    break
-            # Filtering out the current object style
-            style = style[styleType]
         defaultStyle = style['default']
         # Use the default style to apply the missing fields of the other actions
         mergeStyle = {t:defaultStyle | style[t] for t in style}

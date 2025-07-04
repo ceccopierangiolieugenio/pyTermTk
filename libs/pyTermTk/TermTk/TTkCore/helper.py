@@ -536,7 +536,11 @@ class TTkHelper:
         drag.pixmap().raiseWidget()
 
     @staticmethod
-    def dndGetDrag() -> Optional["TTkDrag"]:
+    def dndGetDnd() -> Optional[_DnD]:
+        return TTkHelper._dnd
+
+    @staticmethod
+    def dndGetDrag() -> Optional[TTkDrag]:
         return TTkHelper._dnd.d if TTkHelper._dnd else None
 
     @staticmethod
