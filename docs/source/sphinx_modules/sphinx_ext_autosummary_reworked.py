@@ -153,7 +153,7 @@ def setup(app: Sphinx) -> ExtensionMetadata:
 
     def _getSignals(_obj):
         ret = []
-        for _name in (_th:=get_type_hints(_obj,localns={'TTkContainer':ttk.TTkContainer})):
+        for _name in (_th:=get_type_hints(_obj,localns=ttk.__dict__)):
             # print(f"{_th=}")
             if _name.startswith('_'): continue
             if 'pyTTkSignal' in str(_th[_name]):

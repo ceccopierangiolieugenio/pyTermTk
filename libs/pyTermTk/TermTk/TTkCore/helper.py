@@ -62,7 +62,7 @@ class TTkHelper:
             self._prevFocus = prevFocus
             self._modal = modal
             widget.move(x,y)
-    _overlay: list[_Overlay] = []
+    _overlay: list[TTkHelper._Overlay] = []
 
     @staticmethod
     def updateAll() -> None:
@@ -140,7 +140,7 @@ class TTkHelper:
             modal._widget.setFocus()
 
     @staticmethod
-    def getLastModal() -> Optional["_Overlay"]:
+    def getLastModal() -> Optional[TTkHelper._Overlay]:
         modal = None
         for o in TTkHelper._overlay:
             if o._modal:

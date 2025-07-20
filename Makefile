@@ -23,7 +23,6 @@
 
 doc: .venv
 	. .venv/bin/activate ; \
-	tools/prepareBuild.sh doc ; \
 	make -C docs/source/ clean ; \
 	make -C docs/source/ html ;
 
