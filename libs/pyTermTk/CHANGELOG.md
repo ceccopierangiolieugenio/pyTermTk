@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.43.4-a.0](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/pyTermTk-v0.43.3-a.0...pyTermTk-v0.43.4-a.0) (2025-07-20)
+
+
+### Chores
+
+* improved helper typing and reqork autodoc class resolution ([6872960](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/6872960acc21de909b9ce2e8a9c5ecad1f8a396b))
+
 ## [0.43.3-a.0](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/pyTermTk-v0.43.2-a.0...pyTermTk-v0.43.3-a.0) (2025-07-20)
 
 
