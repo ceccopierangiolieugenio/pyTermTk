@@ -282,5 +282,6 @@ jobs:
         env:
           RN: ${{ matrix.release-notes }}
           MESSAGE: ${{ matrix.release-notes }}
+          DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
         run: |
           notify-discord ${{ matrix.name }} v${{ matrix.version }}
