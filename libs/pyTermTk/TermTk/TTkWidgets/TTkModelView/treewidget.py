@@ -346,6 +346,8 @@ class TTkTreeWidget(TTkAbstractScrollView):
 
     def resizeColumnToContents(self, column:int) -> None:
         '''resizeColumnToContents'''
+        if not self._cache:
+            return
         contentSize = max(row.data[column].termWidth() for row in self._cache)
         self.setColumnWidth(column, contentSize)
 
