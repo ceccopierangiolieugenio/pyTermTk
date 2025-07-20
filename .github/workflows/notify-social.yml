@@ -50,6 +50,7 @@ jobs:
       - name: Deploy Discord message
         env:
           MESSAGE: ${{ inputs.discord-message }}
+          DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
         run: |
           python tools/ci/social/notify_discord.py ${{ inputs.app }} ${{ inputs.version }}
 
