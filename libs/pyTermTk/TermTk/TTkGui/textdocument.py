@@ -126,6 +126,7 @@ class TTkTextDocument():
             lines[d._i1:d._i2] = d._slice
             return d._snap
 
+    _default_init_text = ' '
 
     __slots__ = (
         '_dataLines', '_modified',
@@ -140,7 +141,7 @@ class TTkTextDocument():
         'undoAvailable', 'redoAvailable', 'undoCommandAdded',
         'modificationChanged'
         )
-    def __init__(self, *, text:TTkString=" ") -> None:
+    def __init__(self, *, text:Union[TTkString,str]=_default_init_text) -> None:
         from TermTk.TTkGui.textcursor import TTkTextCursor
         self._docMutex = Lock()
         self.cursorPositionChanged = pyTTkSignal(TTkTextCursor)
@@ -254,6 +255,8 @@ class TTkTextDocument():
     def appendText(self, text):
         if type(text) == str:
             text = TTkString() + text
+        if len(self._dataLines) == 1 and self._dataLines[0] == TTkString(TTkTextDocument._default_init_text):
+            return self.setText(text)
         self._acquire()
         oldLines = len(self._dataLines)
         self._dataLines += text.split('\n')
