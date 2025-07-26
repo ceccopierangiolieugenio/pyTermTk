@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.44.0-a.0](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/pyTermTk-v0.43.4-a.0...pyTermTk-v0.44.0-a.0) (2025-07-26)
+
+
+### Features
+
+* **TextDocument:** append on an empty document replace the text ([#429](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/429)) ([8c5f7d7](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/8c5f7d75cfd85af486cecb8bc1b50c469123ffa9))
+
 ## [0.43.4-a.0](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/pyTermTk-v0.43.3-a.0...pyTermTk-v0.43.4-a.0) (2025-07-20)
 
 
