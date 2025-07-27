@@ -60,6 +60,7 @@ __all__ = ['pyTTkSlot', 'pyTTkSignal']
 # from typing import TypeVar, TypeVarTuple, Generic, List
 from inspect import getfullargspec, iscoroutinefunction
 from types import LambdaType
+from typing import Union, get_origin, get_args
 from threading import Lock
 import asyncio
 
@@ -81,6 +82,29 @@ else:
 
     def _run_coroutines(coros):
         Thread(target=_async_runner, args=(coros,)).start()
+
+def _check_types(slot_type, signal_type):
+    ''' Comparing the signal and slot types
+
+    return True if the slot_type is compatible with the signal_type
+    '''
+    if signal_type==slot_type: return True
+
+    if get_origin(slot_type) is Union:
+        _sl_ts = get_args(slot_type)
+    else:
+        _sl_ts = (slot_type,)
+
+    if get_origin(signal_type) is Union:
+        _sig_ts = get_args(signal_type)
+    else:
+        _sig_ts = (signal_type,)
+
+    for _sig_t in _sig_ts:
+        if not any( issubclass(_sl_t, _sig_t) for _sl_t in _sl_ts):
+            return False
+
+    return True
 
 def pyTTkSlot(*args):
     def pyTTkSlot_d(func):
@@ -139,10 +163,9 @@ class pyTTkSignal():
                 error = "Decorated slot has no signature compatible: "+slot.__name__+str(slot._TTkslot_attr)+" != signal"+str(self._types)
                 raise TypeError(error)
             else:
-              for a,b in zip(slot._TTkslot_attr, self._types):
-                if a!=b and not issubclass(a,b):
-                    error = "Decorated slot has no signature compatible: "+slot.__name__+str(slot._TTkslot_attr)+" != signal"+str(self._types)
-                    raise TypeError(error)
+                for slot_type,signal_type in zip(slot._TTkslot_attr, self._types):
+                    if not _check_types(slot_type, signal_type):
+                        raise TypeError("Decorated slot has no signature compatible: "+slot.__name__+str(slot._TTkslot_attr)+" != signal"+str(self._types))
         if iscoroutinefunction(slot):
             if slot not in self._connected_async_slots:
                 self._connected_async_slots[slot]=slice(nargs)

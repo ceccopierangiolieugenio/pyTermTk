@@ -4,5 +4,11 @@
          "-vv", "--color=yes", "-s"
     ],
     "python.testing.unittestEnabled": false,
-    "python.testing.pytestEnabled": true
+    "python.testing.pytestEnabled": true,
+    "mypy-type-checker.args": [
+        "--config-file=pyproject.toml"
+    ],
+    "python.analysis.extraPaths": [
+        "./libs/pyTermTk",
+    ]
 }
