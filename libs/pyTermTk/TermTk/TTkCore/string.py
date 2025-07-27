@@ -22,7 +22,7 @@
 
 from __future__ import annotations
 
-__all__ = ['TTkString']
+__all__ = ['TTkString','TTkStringType']
 
 import os
 import re
@@ -713,3 +713,5 @@ class TTkString():
         _getDataW = _getDataW_tty
     else:
         _getDataW = _getDataW_pts
+
+TTkStringType = Union[str, TTkString]

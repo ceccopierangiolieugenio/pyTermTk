@@ -1,43 +1,49 @@
 [build-system]
-requires = ["setuptools>=42", "wheel"]
-build-backend = "setuptools.build_meta"
+    requires = ["setuptools>=42", "wheel"]
+    build-backend = "setuptools.build_meta"
 
 [project]
-name = "pyTermTk"
-dynamic = ["version"]
-requires-python = ">=3.9"
-description = "Python Terminal Toolkit"
-readme = {file = "README.md", content-type = "text/markdown"}
-license = { text = "MIT License" }
-authors = [
-    { name = "Eugenio Parodi", email = "ceccopierangiolieugenio@googlemail.com" }
-]
-classifiers = [
-    "Programming Language :: Python :: 3",
-    "License :: OSI Approved :: MIT License",
-    "Operating System :: OS Independent",
-    "Development Status :: 3 - Alpha",
-    "Environment :: Console",
-    "Intended Audience :: Education",
-    "Intended Audience :: Developers",
-    "Intended Audience :: Information Technology",
-    "Topic :: Terminals",
-    "Topic :: Text Editors :: Text Processing",
-    "Topic :: Software Development :: User Interfaces",
-    "Topic :: Software Development :: Libraries",
-    "Topic :: Software Development :: Libraries :: Python Modules",
-    "Topic :: Software Development :: Libraries :: Application Frameworks"
-]
+    name = "pyTermTk"
+    dynamic = ["version"]
+    requires-python = ">=3.9"
+    description = "Python Terminal Toolkit"
+    readme = {file = "README.md", content-type = "text/markdown"}
+    license = { text = "MIT License" }
+    authors = [
+        { name = "Eugenio Parodi", email = "ceccopierangiolieugenio@googlemail.com" }
+    ]
+    classifiers = [
+        "Programming Language :: Python :: 3",
+        "License :: OSI Approved :: MIT License",
+        "Operating System :: OS Independent",
+        "Development Status :: 3 - Alpha",
+        "Environment :: Console",
+        "Intended Audience :: Education",
+        "Intended Audience :: Developers",
+        "Intended Audience :: Information Technology",
+        "Topic :: Terminals",
+        "Topic :: Text Editors :: Text Processing",
+        "Topic :: Software Development :: User Interfaces",
+        "Topic :: Software Development :: Libraries",
+        "Topic :: Software Development :: Libraries :: Python Modules",
+        "Topic :: Software Development :: Libraries :: Application Frameworks"
+    ]
 
 [project.urls]
-Homepage      = "https://github.com/ceccopierangiolieugenio/pyTermTk"
-Documentation = "https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/"
-Repository    = "https://github.com/ceccopierangiolieugenio/pyTermTk.git"
-Issues        = "https://github.com/ceccopierangiolieugenio/pyTermTk/issues"
-Changelog     = "https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/libs/pyTermTk/CHANGELOG.md"
+    Homepage      = "https://github.com/ceccopierangiolieugenio/pyTermTk"
+    Documentation = "https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/"
+    Repository    = "https://github.com/ceccopierangiolieugenio/pyTermTk.git"
+    Issues        = "https://github.com/ceccopierangiolieugenio/pyTermTk/issues"
+    Changelog     = "https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/libs/pyTermTk/CHANGELOG.md"
 
 [tool.setuptools.packages.find]
-where = ["."]
+    where = ["."]
 
 [tool.setuptools.dynamic]
-version = {attr = "TermTk.__version__"}
+    version = {attr = "TermTk.__version__"}
+
+[tool.mypy]
+    ignore_missing_imports = true
+    warn_unused_configs = true
+    disallow_any_generics = true
+    disallow_subclassing_any = true
