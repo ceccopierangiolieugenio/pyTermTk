@@ -22,6 +22,10 @@
 
 __all__ = ['TTkTextCursor']
 
+from enum import IntEnum
+
+from typing import List
+
 try:
     from typing import Self
 except:
@@ -29,7 +33,7 @@ except:
 
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.color import TTkColor
-from TermTk.TTkCore.string import TTkString
+from TermTk.TTkCore.string import TTkString, TTkStringType
 from TermTk.TTkGui.textwrap1 import TTkTextWrap
 from TermTk.TTkGui.textdocument import TTkTextDocument
 
@@ -79,7 +83,7 @@ class _Prop():
         return not (self.position.line == self.anchor.line and self.position.pos == self.anchor.pos)
 
 class TTkTextCursor():
-    class MoveMode():
+    class MoveMode(IntEnum):
         MoveAnchor = 0x00
         '''Moves the anchor to the same position as the cursor itself.'''
         KeepAnchor = 0x01
@@ -87,7 +91,7 @@ class TTkTextCursor():
     MoveAnchor = MoveMode.MoveAnchor
     KeepAnchor = MoveMode.KeepAnchor
 
-    class SelectionType():
+    class SelectionType(IntEnum):
         Document         = 0x03
         '''Selects the entire document.'''
         BlockUnderCursor = 0x02
@@ -101,7 +105,7 @@ class TTkTextCursor():
     LineUnderCursor  = SelectionType.LineUnderCursor
     WordUnderCursor  = SelectionType.WordUnderCursor
 
-    class MoveOperation():
+    class MoveOperation(IntEnum):
         NoMove            = 0
         '''Keep the cursor where it is'''
         Start             = 1
@@ -267,7 +271,7 @@ class TTkTextCursor():
             self._properties[cID].anchor.set(line,pos)
         self._document.cursorPositionChanged.emit(self)
 
-    def getLinesUnderCursor(self) -> TTkString:
+    def getLinesUnderCursor(self) -> List[TTkString]:
         return [ self._document._dataLines[p.position.line] for p in self._properties ]
 
     def _checkCursors(self, notify:bool=False) -> None:
@@ -348,7 +352,7 @@ class TTkTextCursor():
     def document(self) -> TTkTextDocument:
         return self._document
 
-    def replaceText(self, text:TTkString, moveCursor:bool=False) -> None:
+    def replaceText(self, text:TTkStringType, moveCursor:bool=False) -> None:
         # if there is no selection, just select the next n chars till the end of the line
         # the newline is not replaced
         self._document._acquire()
@@ -365,7 +369,7 @@ class TTkTextCursor():
         self._document._release()
         return self.insertText(text, moveCursor)
 
-    def insertText(self, text:TTkString, moveCursor:bool=False) -> None:
+    def insertText(self, text:TTkStringType, moveCursor:bool=False) -> None:
         self._document._acquire()
         _lineFirst = -1
         if self.hasSelection():

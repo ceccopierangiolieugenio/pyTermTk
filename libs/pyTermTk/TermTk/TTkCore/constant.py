@@ -348,7 +348,7 @@ class TTkConstant:
     WrapAnywhere = WrapMode.WrapAnywhere
     WrapAtWordBoundaryOrAnywhere = WrapMode.WrapAtWordBoundaryOrAnywhere
 
-    class LineWrapMode(int):
+    class LineWrapMode(IntEnum):
         '''Those constants describes which wrapping status is required in the document
 
         .. autosummary::

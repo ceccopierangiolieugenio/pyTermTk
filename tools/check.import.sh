@@ -54,6 +54,7 @@ __check(){
             -e "TTkTerm/input.py:from .input_thread import *" |
         grep -v \
             -e "TTkGui/__init__.py:import importlib.util" \
+            -e "TTkGui/textcursor.py:from enum import IntEnum" \
             -e "TTkGui/textdocument.py:from threading import Lock" \
             -e "TTkGui/textdocument_highlight_pygments.py:from pygments" |
         grep -v \
