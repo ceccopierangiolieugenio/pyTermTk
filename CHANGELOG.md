@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.45.0-a.0](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/pyTermTk-v0.44.0-a.0...pyTermTk-v0.45.0-a.0) (2025-07-28)
+
+
+### Features
+
+* support Union types in the signals/slots ([#431](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/431)) ([4140d14](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/4140d14de58e8fc973c663251910582d5bd2ebf2))
+
+
+### Document Changes
+
+* **TextEdit:** improve documentation ([0f245b7](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/0f245b78e4eee1f3d48f60c24d4a21e0441c9ffc))
+
 ## [0.44.0-a.0](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/pyTermTk-v0.43.4-a.0...pyTermTk-v0.44.0-a.0) (2025-07-26)
 
 
