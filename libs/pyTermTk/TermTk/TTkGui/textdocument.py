@@ -27,7 +27,7 @@ from threading import Lock
 
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
-from TermTk.TTkCore.string import TTkString
+from TermTk.TTkCore.string import TTkString, TTkStringType
 from TermTk.TTkCore.color import TTkColor
 
 if TYPE_CHECKING:
@@ -141,7 +141,7 @@ class TTkTextDocument():
         'undoAvailable', 'redoAvailable', 'undoCommandAdded',
         'modificationChanged'
         )
-    def __init__(self, *, text:Union[TTkString,str]=_default_init_text) -> None:
+    def __init__(self, *, text:TTkStringType=_default_init_text) -> None:
         from TermTk.TTkGui.textcursor import TTkTextCursor
         self._docMutex = Lock()
         self.cursorPositionChanged = pyTTkSignal(TTkTextCursor)
@@ -238,7 +238,7 @@ class TTkTextDocument():
     def characterCount(self):
         return sum([len[x] for x in self._dataLines])+self.lineCount()
 
-    def setText(self, text:Union[str,TTkString]):
+    def setText(self, text:TTkStringType) -> None:
         remLines = len(self._dataLines)
         if not isinstance(text, str) and not isinstance(text,TTkString):
             text=str(text)
@@ -252,7 +252,7 @@ class TTkTextDocument():
         self.contentsChange.emit(0,remLines,len(self._dataLines))
         self._snapChanged = None
 
-    def appendText(self, text):
+    def appendText(self, text) -> None:
         if type(text) == str:
             text = TTkString() + text
         if len(self._dataLines) == 1 and self._dataLines[0] == TTkString(TTkTextDocument._default_init_text):
@@ -313,7 +313,7 @@ class TTkTextDocument():
         self.undoAvailable.emit(self.isUndoAvailable())
         self.redoAvailable.emit(self.isRedoAvailable())
 
-    def find(self, exp) -> TTkTextCursor:
+    def find(self, exp:TTkStringType) -> TTkTextCursor:
         for i,line in enumerate(self._dataLines):
             if -1 != (pos := line.find(str(exp))):
                 from .textcursor import TTkTextCursor

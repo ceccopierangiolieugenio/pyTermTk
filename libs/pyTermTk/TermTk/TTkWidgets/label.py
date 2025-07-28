@@ -25,7 +25,7 @@ __all__ = ['TTkLabel']
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkCore.canvas import TTkCanvas
-from TermTk.TTkCore.string import TTkString
+from TermTk.TTkCore.string import TTkString, TTkStringType
 from TermTk.TTkCore.signal import pyTTkSlot
 from TermTk.TTkWidgets.widget import TTkWidget
 
@@ -78,11 +78,11 @@ class TTkLabel(TTkWidget):
         '''text'''
         return TTkString('\n').join(self._text)
 
-    @pyTTkSlot(str)
-    def setText(self, text:TTkString):
+    @pyTTkSlot(TTkStringType)
+    def setText(self, text:TTkStringType):
         '''setText'''
         if self.text().sameAs(text): return
-        if issubclass(type(text), TTkString):
+        if isinstance(text, TTkString):
             self._text  = text.split('\n')
         else:
             self._text  = TTkString(text).split('\n')

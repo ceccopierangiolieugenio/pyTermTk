@@ -598,7 +598,7 @@ class TTkString():
     def getIndexes(self, char):
         return [i for i,c in enumerate(self._text) if c==char]
 
-    def join(self, strings:list[TTkString]) -> TTkString:
+    def join(self, strings:Union[List[TTkString],List[str]]) -> TTkString:
         ''' Join the input strings using the current as separator
 
         :param strings: the list of strings to be joined
@@ -628,13 +628,13 @@ class TTkString():
                  unicodedata.category(ch) in ('Me','Mn') )
 
     @staticmethod
-    def _getWidthText(txt):
+    def _getWidthText(txt:str):
         return ( len(txt) +
             sum(unicodedata.east_asian_width(ch) == 'W' for ch in txt) -
             sum(unicodedata.category(ch) in ('Me','Mn') for ch in txt) )
 
     @staticmethod
-    def _getLenTextWoZero(txt):
+    def _getLenTextWoZero(txt:str):
         return ( len(txt) -
             sum(unicodedata.category(ch) in ('Me','Mn') for ch in txt) )
 

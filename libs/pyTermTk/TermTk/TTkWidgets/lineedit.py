@@ -26,7 +26,7 @@ from TermTk.TTkCore.cfg import TTkCfg
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.helper import TTkHelper
-from TermTk.TTkCore.string import TTkString
+from TermTk.TTkCore.string import TTkString, TTkStringType
 from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
 from TermTk.TTkCore.TTkTerm.inputkey import TTkKeyEvent
@@ -100,8 +100,8 @@ class TTkLineEdit(TTkWidget):
         self.setFocusPolicy(TTkK.ClickFocus + TTkK.TabFocus)
         self.enableWidgetCursor()
 
-    @pyTTkSlot(str)
-    def setText(self, text, cursorPos=0x1000):
+    @pyTTkSlot(TTkStringType)
+    def setText(self, text:TTkStringType, cursorPos=0x1000):
         '''setText'''
         if text != self._text:
             self.textChanged.emit(text)
