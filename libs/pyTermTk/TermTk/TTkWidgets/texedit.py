@@ -537,25 +537,25 @@ class TTkTextEditView(TTkAbstractScrollView):
     # forward textWrap Methods
     def wrapWidth(self, *args, **kwargs) -> None:
         '''
-        This property is connected to :py:meth:`TTkTextWrap.wrapWidth`
+        .. seealso:: this method is forwarded to :py:meth:`TTkTextWrap.wrapWidth`
         '''
         return self._textWrap.wrapWidth(*args, **kwargs)
 
     def setWrapWidth(self, *args, **kwargs) -> None:
         '''
-        This property is connected to :py:meth:`TTkTextWrap.setWrapWidth`
+        .. seealso:: this method is forwarded to :py:meth:`TTkTextWrap.setWrapWidth`
         '''
         return self._textWrap.setWrapWidth(*args, **kwargs)
 
     def wordWrapMode(self, *args, **kwargs) -> None:
         '''
-        This property is connected to :py:meth:`TTkTextWrap.wordWrapMode`
+        .. seealso:: this method is forwarded to :py:meth:`TTkTextWrap.wordWrapMode`
         '''
         return self._textWrap.wordWrapMode(*args, **kwargs)
 
     def setWordWrapMode(self, *args, **kwargs) -> None:
         '''
-        This property is connected to :py:meth:`TTkTextWrap.setWordWrapMode`
+        .. seealso:: this method is forwarded to :py:meth:`TTkTextWrap.setWordWrapMode`
         '''
         return self._textWrap.setWordWrapMode(*args, **kwargs)
 
@@ -1191,7 +1191,7 @@ class TTkTextEdit(TTkAbstractScrollArea):
 
         This signal is emitted if the current character color has changed,
         for example caused by a change of the cursor position.
-        
+
         :param color: the new color
         :type color: :py:class:`TTkColor`
         '''
@@ -1202,7 +1202,7 @@ class TTkTextEdit(TTkAbstractScrollArea):
         .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.cursorPositionChanged`
 
         This signal is emitted whenever the position of the cursor changed.
-        
+
         :param cursor: the cursor changed.
         :type cursor: :py:class:`TTkTextCursor`
         '''
@@ -1214,7 +1214,7 @@ class TTkTextEdit(TTkAbstractScrollArea):
 
         This signal is emitted whenever undo operations become available (available is true)
         or unavailable (available is false).
-        
+
         :param available: the availability of undo
         :type available: bool
         '''
@@ -1226,7 +1226,7 @@ class TTkTextEdit(TTkAbstractScrollArea):
 
         This signal is emitted whenever redo operations become available (available is true)
         or unavailable (available is false).
-        
+
         :param available: the availability of redo
         :type available: bool
         '''
@@ -1314,14 +1314,14 @@ class TTkTextEdit(TTkAbstractScrollArea):
         '''
         .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.wrapWidth`
 
-        This property is connected to :py:meth:`TTkTextWrap.wrapWidth`
+        .. seealso:: this method is forwarded to :py:meth:`TTkTextWrap.wrapWidth`
         '''
         return self._textEditView.wrapWidth(*args, **kwargs)
     def setWrapWidth(self, *args, **kwargs) -> None:
         '''
         .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.setWrapWidth`
 
-        This property is connected to :py:meth:`TTkTextWrap.setWrapWidth`
+        .. seealso:: this method is forwarded to :py:meth:`TTkTextWrap.setWrapWidth`
         '''
         return self._textEditView.setWrapWidth(*args, **kwargs)
     def multiLine(self) -> bool:
@@ -1360,14 +1360,14 @@ class TTkTextEdit(TTkAbstractScrollArea):
         '''
         .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.wordWrapMode`
 
-        This property is connected to :py:meth:`TTkTextWrap.wordWrapMode`
+        .. seealso:: this method is forwarded to :py:meth:`TTkTextWrap.wordWrapMode`
         '''
         return self._textEditView.wordWrapMode(*args, **kwargs)
     def setWordWrapMode(self, *args, **kwargs) -> None:
         '''
         .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.setWordWrapMode`
 
-        This property is connected to :py:meth:`TTkTextWrap.setWordWrapMode`
+        .. seealso:: this method is forwarded to :py:meth:`TTkTextWrap.setWordWrapMode`
         '''
         return self._textEditView.setWordWrapMode(*args, **kwargs)
     def textCursor(self) -> TTkTextCursor:
