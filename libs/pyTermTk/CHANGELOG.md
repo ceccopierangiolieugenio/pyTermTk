@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.45.1-a.0](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/pyTermTk-v0.45.0-a.0...pyTermTk-v0.45.1-a.0) (2025-07-29)
+
+
+### Document Changes
+
+* **TextEdit:** reworked the forward messages ([5ed5429](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/5ed5429ecf7c0ba7062b9884002356cc2d9018e8))
+
 ## [0.45.0-a.0](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/pyTermTk-v0.44.0-a.0...pyTermTk-v0.45.0-a.0) (2025-07-28)
 
 
