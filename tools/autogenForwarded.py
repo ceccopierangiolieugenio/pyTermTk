@@ -213,6 +213,7 @@ def get_classes_with_source_from_module(module) -> List[Dict[str, Any]]:
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Read a file and write its lines to another file.")
     parser.add_argument('--apply', action='store_true', help='Apply the changes')
+    parser.add_argument('--clear', action='store_true', help='Remove the changes')
     args = parser.parse_args()
 
     import TermTk as ttk
@@ -233,6 +234,12 @@ if __name__ == "__main__":
                 index_start = _index_of(marker_start,lines)
                 index_end = _index_of(marker_end,lines)
                 lines[index_start+1:index_end] = autogenenerated
+                write_lines_to_file(lines,class_data['filename'])
+            elif args.clear:
+                lines = read_file_to_lines(class_data['filename'])
+                index_start = _index_of(marker_start,lines)
+                index_end = _index_of(marker_end,lines)
+                lines[index_start+1:index_end] = ''
                 write_lines_to_file(lines,class_data['filename'])
             else:
                 print(''.join(autogenenerated))
