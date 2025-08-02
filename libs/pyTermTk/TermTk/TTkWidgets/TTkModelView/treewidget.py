@@ -172,6 +172,7 @@ class TTkTreeWidget(TTkAbstractScrollView):
                   # Signals
                   '_itemChanged', '_itemClicked', '_itemDoubleClicked', '_itemExpanded', '_itemCollapsed', '_itemActivated'
                   )
+
     @dataclass(frozen=True)
     class _Cache:
         item: TTkTreeWidgetItem
@@ -179,6 +180,9 @@ class TTkTreeWidget(TTkAbstractScrollView):
         data: list
         widgets: list
         firstLine: bool
+
+    _cache:List[_Cache]
+    _selected:List[TTkTreeWidgetItem]
 
     @dataclass(frozen=True)
     class _DropTreeData:
@@ -207,7 +211,7 @@ class TTkTreeWidget(TTkAbstractScrollView):
         self._itemCollapsed     = pyTTkSignal(TTkTreeWidgetItem)
 
         self._dndMode = dragDropMode
-        self._selected = None
+        self._selected = []
         self._selectedId = None
         self._separatorSelected = None
         self._header = header if header else []
@@ -286,7 +290,7 @@ class TTkTreeWidget(TTkAbstractScrollView):
     def selectedItems(self) -> list[TTkTreeWidgetItem]:
         '''selectedItems'''
         if self._selected:
-            return [self._selected]
+            return self._selected
         return None
 
     def setHeaderLabels(self, labels:TTkString) -> None:
@@ -395,11 +399,11 @@ class TTkTreeWidget(TTkAbstractScrollView):
                     self.itemExpanded.emit(item)
                 else:
                     self.itemCollapsed.emit(item)
-            if self._selected:
-                self._selected.setSelected(False)
+            for _s in self._selected:
+                _s.setSelected(False)
             self._selectedId = y
-            self._selected = item
-            self._selected.setSelected(True)
+            self._selected = [item]
+            item.setSelected(True)
             col = -1
             for i, c in enumerate(self._columnsPos):
                 if x < c:
@@ -449,11 +453,13 @@ class TTkTreeWidget(TTkAbstractScrollView):
                 else:
                     self.itemCollapsed.emit(item)
             else:
-                if self._selected:
-                    self._selected.setSelected(False)
+                if not bool(evt.mod & TTkK.ControlModifier):
+                    for _s in self._selected:
+                        _s.setSelected(False)
+                    self._selected.clear()
                 self._selectedId = y
-                self._selected = item
-                self._selected.setSelected(True)
+                self._selected.append(item)
+                item.setSelected(True)
             col = -1
             for i, c in enumerate(self._columnsPos):
                 if x < c:
@@ -492,14 +498,16 @@ class TTkTreeWidget(TTkAbstractScrollView):
         elif ( self._dndMode & TTkK.DragDropMode.AllowDrag and
                evt.key == TTkMouseEvent.LeftButton and self._selected ):
             drag = TTkDrag()
-            data = TTkTreeWidget._DropTreeData(widget=self,items=[self._selected])
-            text = self._selected.data(0)
-            if text.termWidth() > 30:
-                text = '['+text.substring(to=27)+'...]'
-            else:
-                text = '['+text+']'
-            pm = TTkCanvas(text.termWidth()+2,1)
-            pm.drawTTkString(pos=(0,0),text=text)
+            data = TTkTreeWidget._DropTreeData(widget=self,items=self._selected)
+            text = [(_n.substring(to=27)+'...') if (_n:=_s.data(0)).termWidth()>30 else _n for _s in self._selected[:4]]
+            dh = len(text) + 2
+            dw = max(_t.termWidth() for _t in text[:3])+2
+            pm = TTkCanvas(width=dw,height=dh)
+            for _y,_t in enumerate(text[:3],1):
+                pm.drawTTkString(pos=(1,_y),text=_t)
+            if len(self._selected) > 3:
+                pm.drawText(pos=(1,4),text='...')
+            pm.drawBox(pos=(0,0),size=(dw,dh))
             drag.setPixmap(pm)
             drag.setData(data)
             drag.exec()
