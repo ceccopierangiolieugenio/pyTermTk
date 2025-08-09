@@ -23,6 +23,7 @@
 __all__ = ['TTkTabButton', 'TTkTabBar', 'TTkTabWidget', 'TTkBarType']
 
 from enum import Enum
+from typing import List, Tuple
 
 from TermTk.TTkCore.constant import  TTkK
 from TermTk.TTkCore.helper import TTkHelper
@@ -814,10 +815,29 @@ class TTkTabWidget(TTkFrame):
     def keyEvent(self, evt:TTkKeyEvent) -> bool:
         return self._tabBar.keyEvent(evt)
 
+    def _dropNewTab(self, x:int, y:int, data:_TTkNewTabWidgetDragData) -> None:
+        w = data.widget()
+        d = data.data()
+        l = data.label()
+        c = data.closable()
+        if y < 3:
+            tbx = self._tabBar.x()
+            newIndex = 0
+            for b in self._tabBar._tabButtons:
+                if tbx+b.x()+b.width()/2 < x:
+                    newIndex += 1
+            self.insertTab(newIndex, w, l, d, c)
+            self.setCurrentIndex(newIndex)
+        else:
+            self.addTab(w, l, d, c)
+            self.setCurrentIndex(len(self._tabBar._tabButtons)-1)
+
     def dropEvent(self, evt:TTkDnDEvent) -> bool:
         data = evt.data()
         x, y = evt.x, evt.y
-        if issubclass(type(data),_TTkTabWidgetDragData):
+        if not data:
+            return False
+        elif isinstance(data,_TTkTabWidgetDragData):
             tb = data.tabButton()
             tw = data.tabWidget()
             index  = tw._tabBar._tabButtons.index(tb)
@@ -846,22 +866,13 @@ class TTkTabWidget(TTkFrame):
                 self._tabChanged(newIndex)
             TTkLog.debug(f"Drop -> pos={evt.pos()}")
             return True
-        elif issubclass(type(data),_TTkNewTabWidgetDragData):
-            w = data.widget()
-            d = data.data()
-            l = data.label()
-            c = data.closable()
-            if y < 3:
-                tbx = self._tabBar.x()
-                newIndex = 0
-                for b in self._tabBar._tabButtons:
-                    if tbx+b.x()+b.width()/2 < x:
-                        newIndex += 1
-                self.insertTab(newIndex, w, l, d, c)
-                self.setCurrentIndex(newIndex)
-            else:
-                self.addTab(w, l, d, c)
-                self.setCurrentIndex(len(self._tabBar._tabButtons)-1)
+        elif isinstance(data,_TTkNewTabWidgetDragData):
+            self._dropNewTab(x,y,data)
+            TTkLog.debug(f"Drop -> pos={evt.pos()}")
+            return True
+        elif isinstance(data,list) and all(isinstance(_d,_TTkNewTabWidgetDragData) for _d in data):
+            for _d in data:
+                self._dropNewTab(x,y,_d)
             TTkLog.debug(f"Drop -> pos={evt.pos()}")
             return True
         return False
