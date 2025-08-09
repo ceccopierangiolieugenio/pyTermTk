@@ -70,26 +70,32 @@ def _load_gitignore_patterns(gitignore_path):
         return patterns
     return []
 
-def _should_ignore(path, patterns):
-    for pattern in patterns:
-        if fnmatch.fnmatch(path, pattern):
-            return True
-    return False
+def _glob_match_patterns(path, patterns) -> bool:
+    if path == '.':
+        check_path = ''
+    elif path.startswith('./'):
+        check_path = path[2:]
+    else:
+        check_path = path
+    return any(f"/{_p}/" in path for _p in patterns if _p) or any(fnmatch.fnmatch(check_path, _p) for _p in patterns if _p)
 
-def _custom_walk(directory:str, patterns:List[str]=[]) -> Generator[Tuple[str, str], None, None]:
+def _custom_walk(directory:str, include_patterns:List[str]=[], exclude_patterns:List[str]=[]) -> Generator[Tuple[str, str], None, None]:
     gitignore_path = os.path.join(directory, '.gitignore')
-    patterns = patterns + _load_gitignore_patterns(gitignore_path)
+    exclude_patterns = exclude_patterns + _load_gitignore_patterns(gitignore_path)
     for entry in sorted(os.listdir(directory)):
         full_path = os.path.join(directory, entry)
-        if _should_ignore(full_path, patterns):
+        if _glob_match_patterns(full_path, exclude_patterns):
             continue
         if not os.path.exists(full_path):
             continue
         if os.path.isdir(full_path):
             if entry == '.git':
                 continue
-            yield from _custom_walk(full_path, patterns)
+            yield from _custom_walk(full_path, include_patterns, exclude_patterns)
         else:
+            if include_patterns and not _glob_match_patterns(full_path, include_patterns):
+                # ttk.TTkLog.debug(f"{include_patterns=} {full_path=}")
+                continue
             yield directory, entry
 
 def _walk_with_gitignore(root):
@@ -97,7 +103,7 @@ def _walk_with_gitignore(root):
         gitignore_path = os.path.join(dirpath, '.gitignore')
         patterns = _load_gitignore_patterns(gitignore_path)
 
-        filenames[:] = [f for f in filenames if not _should_ignore(os.path.join(dirpath, f), patterns)]
+        filenames[:] = [f for f in filenames if not _glob_match_patterns(os.path.join(dirpath, f), patterns)]
 
         yield dirpath, filenames
 
@@ -182,6 +188,9 @@ class FindWidget(ttk.TTkContainer):
         btn_expand.clicked.connect(self._results_tree.expandAll)
         btn_collapse.clicked.connect(self._results_tree.collapseAll)
         search.returnPressed.connect(self._search)
+        replace.returnPressed.connect(self._search)
+        ft_incl.returnPressed.connect(self._search)
+        ft_excl.returnPressed.connect(self._search)
         res_tree.itemActivated.connect(self._activated)
 
         @ttk.pyTTkSlot(str)
@@ -203,14 +212,17 @@ class FindWidget(ttk.TTkContainer):
     def _search(self):
         self._runId += 1
         search_pattern = str(self._search_le.text())
+        replace_pattern = str(self._replace_le.text())
+        include_patterns = _s.split(',') if (_s:=str(self._files_inc_le.text())) else []
+        exclude_patterns = _s.split(',') if (_s:=str(self._files_exc_le.text())) else []
         if not search_pattern:
             return
         def _search_threading():
             self._results_tree.clear()
             group = []
             groupSize = 1
-            for (file,root,matches) in self._search_files('.',str(search_pattern),self._runId):
-                ttk.TTkLog.debug((file,matches))
+            for (file,root,matches) in self._search_files('.',str(search_pattern),self._runId,include_patterns,exclude_patterns):
+                # ttk.TTkLog.debug((file,matches))
                 item = ttk.TTkTreeWidgetItem([
                         ttk.TTkString(
                             ttk.TTkCfg.theme.fileIcon.getIcon(file),
@@ -222,13 +234,19 @@ class FindWidget(ttk.TTkContainer):
                     line = line.lstrip(' ')
                     # index = line.find(search_pattern)
                     # outLine =
-                    item.addChild(
-                        _MatchTreeWidgetItem([
-                            ttk.TTkString(str(num)+" ",ttk.TTkColor.CYAN) +
-                            ttk.TTkString(line.replace('\n','')).completeColor(
+                    if replace_pattern:
+                        _s = line.replace('\n','').split(search_pattern)
+                        _j = (
+                            ttk.TTkString(search_pattern,ttk.TTkColor.RED + ttk.TTkColor.STRIKETROUGH) +
+                            ttk.TTkString(replace_pattern,ttk.TTkColor.GREEN) + ttk.TTkColor.RST)
+                        ttkLine = _j.join(_s)
+                    else:
+                        ttkLine = ttk.TTkString(line.replace('\n','')).completeColor(
                                 match=search_pattern,
                                 color=ttk.TTkColor.GREEN)
-                            ],
+
+                    item.addChild(
+                        _MatchTreeWidgetItem([ttk.TTkString(str(num)+" ",ttk.TTkColor.CYAN) + ttkLine] ,
                             match=line,
                             lineNumber=num,
                             path=os.path.join(root,file)))
@@ -242,9 +260,8 @@ class FindWidget(ttk.TTkContainer):
                 self._results_tree.addTopLevelItems(group)
         Thread(target=_search_threading).start()
 
-    def _search_files(self, root_folder, match, runId):
-        matches = []
-        for root, file in _custom_walk(root_folder):
+    def _search_files(self, root_folder, match, runId, include_patterns, exclude_patterns):
+        for root, file in _custom_walk(root_folder,include_patterns,exclude_patterns):
             if runId != self._runId:
                 return
             if True: # file.endswith('.py'): # file.endswith(file_extension):
