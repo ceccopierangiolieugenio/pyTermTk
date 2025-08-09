@@ -198,7 +198,7 @@ class TTKode(ttk.TTkGridLayout):
         helpMenu.addMenu("About ...").menuButtonClicked.connect(_showAbout)
         helpMenu.addMenu("About ttk").menuButtonClicked.connect(_showAboutTTk)
 
-        fileTree = ttk.TTkFileTree(path='.', dragDropMode=ttk.TTkK.DragDropMode.AllowDrag)
+        fileTree = ttk.TTkFileTree(path='.', dragDropMode=ttk.TTkK.DragDropMode.AllowDrag, selectionMode=ttk.TTkK.SelectionMode.MultiSelection)
         self._activityBar = TTKodeActivityBar()
         self._activityBar.addActivity(name="Explorer", icon=ttk.TTkString("╔██\n╚═╝"), widget=fileTree, select=True)
 
@@ -344,8 +344,10 @@ class TTKode(ttk.TTkGridLayout):
                     kt.tabButton(index).mergeStyle(doc.getTabButtonStyle())
                     kt.tabButton(index).setText(doc._tabText)
 
-    def _openFile(self, filePath, line:int=0, pos:int=0):
+    def _openFile(self, filePath, line:int=0, pos:int=0) -> None:
         filePath = os.path.realpath(filePath)
+        if not os.path.isfile(filePath):
+            return
         doc, tedit = self._getDocument(filePath=filePath)
         if tedit:
             self._kodeTab.setCurrentWidget(tedit)
@@ -359,29 +361,36 @@ class TTKode(ttk.TTkGridLayout):
 
     def _dropEventProxyFile(self, evt:ttk.TTkDnDEvent):
         data = evt.data()
-        filePath = None
+        filePaths = []
+        linenums = []
 
         if ( issubclass(type(data), ttk.TTkTreeWidget._DropTreeData) and data.items ):
             if issubclass(type(data.items[0]), ttk.TTkFileTreeWidgetItem):
-                linenum:int = 0
-                ftwi:ttk.TTkFileTreeWidgetItem = data.items[0]
-                filePath = os.path.realpath(ftwi.path())
+                ftwis:List[ttk.TTkFileTreeWidgetItem] = data.items
+                filePaths = [os.path.realpath(_f.path()) for _f in ftwis]
+                linenums:List[int] = [0]*len(filePaths)
             elif issubclass(type(data.items[0]), TTKodeFileWidgetItem):
                 kfwi:TTKodeFileWidgetItem = data.items[0]
-                linenum:int = kfwi.lineNumber()
-                filePath = os.path.realpath(kfwi.path())
+                linenums:List[int] = [kfwi.lineNumber()]
+                filePaths = [os.path.realpath(kfwi.path())]
 
-        if filePath:
+        newData = []
+        for filePath,linenum in zip(filePaths,linenums) :
+            if not os.path.isfile(filePath):
+                continue
             doc, _ = self._getDocument(filePath=filePath)
             tedit = _TextEdit(document=doc, readOnly=False, lineNumber=True)
             tedit.docFocussed.connect(self._handleDocFocussed)
             tedit.goToLine(linenum)
-            newData = _TTkNewTabWidgetDragData(
-                widget=tedit,
-                label=doc._tabText,
-                data=None,
-                closable=True
+            newData.append(
+                _TTkNewTabWidgetDragData(
+                    widget=tedit,
+                    label=doc._tabText,
+                    data=None,
+                    closable=True
+                )
             )
+        if newData:
             newEvt = evt.clone()
             newEvt.setData(newData)
             return newEvt
