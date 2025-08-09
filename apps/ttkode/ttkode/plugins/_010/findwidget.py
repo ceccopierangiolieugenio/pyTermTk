@@ -24,7 +24,6 @@ __all__ = ['FindWidget']
 
 import os
 import re
-import glob
 import fnmatch
 import mimetypes
 
