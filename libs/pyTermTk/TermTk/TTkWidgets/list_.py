@@ -54,7 +54,7 @@ class TTkList(TTkAbstractScrollArea):
 
     def __init__(self, *,
                  listWidget:TTkListWidget=None,
-                 selectionMode:int=TTkK.SingleSelection,
+                 selectionMode:TTkK.SelectionMode=TTkK.SingleSelection,
                  dragDropMode:TTkK.DragDropMode=TTkK.DragDropMode.NoDragDrop,
                  showSearch:bool=True,
                  **kwargs) -> None:
@@ -195,14 +195,14 @@ class TTkList(TTkAbstractScrollArea):
         removeItems
         '''
         return self._listView.removeItems(items=items)
-    def selectionMode(self):
+    def selectionMode(self) -> TTkK.SelectionMode:
         '''
         .. seealso:: this method is forwarded to :py:meth:`TTkListWidget.selectionMode`
 
         selectionMode
         '''
         return self._listView.selectionMode()
-    def setSelectionMode(self, mode):
+    def setSelectionMode(self, mode:TTkK.SelectionMode) -> None:
         '''
         .. seealso:: this method is forwarded to :py:meth:`TTkListWidget.setSelectionMode`
 

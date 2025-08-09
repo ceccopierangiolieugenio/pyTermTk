@@ -100,7 +100,7 @@ class TTkConstant:
     HEADER = 0x0020
     FOOTER = 0x0040
 
-    class SelectionMode(int):
+    class SelectionMode(IntEnum):
         '''
         This class type indicates how the view responds to user selections.
 

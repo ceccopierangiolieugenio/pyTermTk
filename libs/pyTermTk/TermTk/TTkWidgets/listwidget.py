@@ -201,7 +201,7 @@ class TTkListWidget(TTkAbstractScrollView):
                  '_itemClicked', '_textClicked', '_searchModified')
     def __init__(self, *,
                  items:list[str]=[],
-                 selectionMode:int=TTkK.SelectionMode.SingleSelection,
+                 selectionMode:TTkK.SelectionMode=TTkK.SelectionMode.SingleSelection,
                  dragDropMode:TTkK.DragDropMode=TTkK.DragDropMode.NoDragDrop,
                  showSearch:bool=True,
                  **kwargs) -> None:
@@ -309,11 +309,11 @@ class TTkListWidget(TTkAbstractScrollView):
         '''setDragDropMode'''
         self._dndMode = dndMode
 
-    def selectionMode(self):
+    def selectionMode(self) -> TTkK.SelectionMode:
         '''selectionMode'''
         return self._selectionMode
 
-    def setSelectionMode(self, mode):
+    def setSelectionMode(self, mode:TTkK.SelectionMode) -> None:
         '''setSelectionMode'''
         self._selectionMode = mode
 

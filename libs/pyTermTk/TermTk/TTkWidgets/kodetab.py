@@ -22,7 +22,7 @@
 
 __all__ = ['TTkKodeTab']
 
-from typing import Callable, Iterator, Tuple
+from typing import Callable, Iterator, Tuple, List
 
 from TermTk.TTkCore.constant import  TTkK
 from TermTk.TTkCore.helper import  TTkHelper
@@ -121,18 +121,24 @@ class _TTkKodeTab(TTkTabWidget):
         self.update()
         return True
 
+    def _dropNewKodeTab(self, y:int, data:_TTkNewTabWidgetDragData) -> bool:
+        pass
+
     def dropEvent(self, evt:TTkDnDEvent) -> bool:
         self._frameOverlay = None
         x,y = evt.x, evt.y
         data = evt.data()
-        if issubclass(type(data),_TTkNewTabWidgetDragData):
-            tw = None
-        elif issubclass(type(data),_TTkTabWidgetDragData):
+        if isinstance(data, _TTkTabWidgetDragData):
             tw = data.tabWidget()
+        elif isinstance(data, _TTkNewTabWidgetDragData):
+            tw = None
+            data = [data]
+        elif isinstance(data,list) and all(isinstance(_d,_TTkNewTabWidgetDragData) for _d in data):
+            tw = None
         else:
             return False
 
-        def _processDrop(widget, label, orientation, offset):
+        def _processDrop(data:List[Tuple[TTkWidget,TTkString]], orientation, offset):
             fwold = self._baseWidget._getFirstWidget()
             splitter = self.parentWidget()
             index = splitter.indexOf(self)
@@ -144,34 +150,31 @@ class _TTkKodeTab(TTkTabWidget):
             splitter.insertWidget(index+offset, kt:=_TTkKodeTab(baseWidget=self._baseWidget, border=self.border(), barType=self._barType, closable=self.tabsClosable()))
             kt._dropEventProxy = self._dropEventProxy
             kt.kodeTabCloseRequested.connect(self._baseWidget._handleKodeTabCloseRequested)
-            ret = kt.addTab(widget,label)
-            self._baseWidget.tabAdded.emit(kt, ret)
+            for (_w,_l) in data:
+                _ret = kt.addTab(_w,_l)
+                self._baseWidget.tabAdded.emit(kt, _ret)
             if fwold!=(fwnew := self._baseWidget._getFirstWidget()) and fwold._hasMenu():
                 fwnew._importMenu(fwold)
 
         ret = True
         if y<3:
             ret = super().dropEvent(evt)
-        elif issubclass(type(data),_TTkNewTabWidgetDragData):
-            tw = None
-            widget = data.widget()
-            tabData = data.data()
-            label = data.label()
-            closable = data.closable()
+        elif isinstance(data,list) and all(isinstance(_d,_TTkNewTabWidgetDragData) for _d in data):
             w,h = self.size()
             h-=3
             y-=3
+            dropData = [(_d.widget(),_d.label()) for _d in data]
             if x<w//4:
-                _processDrop(widget, label, TTkK.HORIZONTAL, 0)
+                _processDrop(dropData, TTkK.HORIZONTAL, 0)
             elif x>w*3//4:
-                _processDrop(widget, label, TTkK.HORIZONTAL, 1)
+                _processDrop(dropData, TTkK.HORIZONTAL, 1)
             elif y<h//4:
-                _processDrop(widget, label, TTkK.VERTICAL, 0)
+                _processDrop(dropData, TTkK.VERTICAL, 0)
             elif y>h*3//4:
-                _processDrop(widget, label, TTkK.VERTICAL, 1)
+                _processDrop(dropData, TTkK.VERTICAL, 1)
             else:
                 ret = super().dropEvent(evt)
-        elif issubclass(type(data),_TTkTabWidgetDragData):
+        elif isinstance(data,_TTkTabWidgetDragData):
             tb = data.tabButton()
             tw = data.tabWidget()
             w,h = self.size()
@@ -180,19 +183,20 @@ class _TTkKodeTab(TTkTabWidget):
             index  = tw._tabBar._tabButtons.index(tb)
             widget = tw._tabWidgets[index]
             label  = tb.text()
+            dropData = [(widget,label)]
 
             if x<w//4:
                 tw.removeTab(index)
-                _processDrop(widget, label, TTkK.HORIZONTAL, 0)
+                _processDrop(dropData, TTkK.HORIZONTAL, 0)
             elif x>w*3//4:
                 tw.removeTab(index)
-                _processDrop(widget, label, TTkK.HORIZONTAL, 1)
+                _processDrop(dropData, TTkK.HORIZONTAL, 1)
             elif y<h//4:
                 tw.removeTab(index)
-                _processDrop(widget, label, TTkK.VERTICAL, 0)
+                _processDrop(dropData, TTkK.VERTICAL, 0)
             elif y>h*3//4:
                 tw.removeTab(index)
-                _processDrop(widget, label, TTkK.VERTICAL, 1)
+                _processDrop(dropData, TTkK.VERTICAL, 1)
             else:
                 ret = super().dropEvent(evt)
 
