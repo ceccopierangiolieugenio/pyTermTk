@@ -166,6 +166,7 @@ class TTkTreeWidget(TTkAbstractScrollView):
 
     __slots__ = ( '_rootItem', '_cache',
                   '_header', '_columnsPos',
+                  '_selectionMode',
                   '_selectedId', '_selected', '_separatorSelected',
                   '_sortColumn', '_sortOrder', '_sortingEnabled',
                   '_dndMode',
@@ -192,6 +193,7 @@ class TTkTreeWidget(TTkAbstractScrollView):
     def __init__(self, *,
                  header=None,
                  sortingEnabled=True,
+                 selectionMode:TTkK.SelectionMode=TTkK.SelectionMode.SingleSelection,
                  dragDropMode:TTkK.DragDropMode=TTkK.DragDropMode.NoDragDrop,
                  **kwargs) -> None:
         '''
@@ -199,6 +201,8 @@ class TTkTreeWidget(TTkAbstractScrollView):
         :type header: list[TTkString], optional
         :param sortingEnabled: enable the column sorting, defaults to False
         :type sortingEnabled: bool, optional
+        :param selectionMode: This property controls whether the user can select one or many items, defaults to :py:class:`TTkK.SelectionMode.SingleSelection`.
+        :type selectionMode: :py:class:`TTkK.SelectionMode`, optional
         :param dragDropMode: This property holds the drag and drop event the view will act upon, defaults to :py:class:`TTkK.DragDropMode.NoDragDrop`.
         :type dragDropMode: :py:class:`TTkK.DragDropMode`, optional
         '''
@@ -210,6 +214,7 @@ class TTkTreeWidget(TTkAbstractScrollView):
         self._itemExpanded      = pyTTkSignal(TTkTreeWidgetItem)
         self._itemCollapsed     = pyTTkSignal(TTkTreeWidgetItem)
 
+        self._selectionMode = selectionMode
         self._dndMode = dragDropMode
         self._selected = []
         self._selectedId = None
@@ -286,6 +291,14 @@ class TTkTreeWidget(TTkAbstractScrollView):
     def indexOfTopLevelItem(self, item:TTkTreeWidgetItem) -> int:
         '''indexOfTopLevelItem'''
         return self._rootItem.indexOfChild(item)
+
+    def selectionMode(self) -> TTkK.SelectionMode:
+        '''selectionMode'''
+        return self._selectionMode
+
+    def setSelectionMode(self, mode:TTkK.SelectionMode) -> None:
+        '''setSelectionMode'''
+        self._selectionMode = mode
 
     def selectedItems(self) -> list[TTkTreeWidgetItem]:
         '''selectedItems'''
@@ -453,13 +466,16 @@ class TTkTreeWidget(TTkAbstractScrollView):
                 else:
                     self.itemCollapsed.emit(item)
             else:
-                if not bool(evt.mod & TTkK.ControlModifier):
-                    for _s in self._selected:
-                        _s.setSelected(False)
-                    self._selected.clear()
-                self._selectedId = y
-                self._selected.append(item)
-                item.setSelected(True)
+                if self._selectionMode in (TTkK.SelectionMode.SingleSelection,TTkK.SelectionMode.MultiSelection):
+                    if not (
+                         bool(evt.mod & TTkK.ControlModifier) and
+                         self._selectionMode == TTkK.SelectionMode.MultiSelection ):
+                        for _s in self._selected:
+                            _s.setSelected(False)
+                        self._selected.clear()
+                    self._selectedId = y
+                    self._selected.append(item)
+                    item.setSelected(True)
             col = -1
             for i, c in enumerate(self._columnsPos):
                 if x < c:
