@@ -1191,7 +1191,7 @@ class TTkTextEdit(TTkAbstractScrollArea):
 
         This signal is emitted if the current character color has changed,
         for example caused by a change of the cursor position.
-
+        
         :param color: the new color
         :type color: :py:class:`TTkColor`
         '''
@@ -1202,7 +1202,7 @@ class TTkTextEdit(TTkAbstractScrollArea):
         .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.cursorPositionChanged`
 
         This signal is emitted whenever the position of the cursor changed.
-
+        
         :param cursor: the cursor changed.
         :type cursor: :py:class:`TTkTextCursor`
         '''
@@ -1214,7 +1214,7 @@ class TTkTextEdit(TTkAbstractScrollArea):
 
         This signal is emitted whenever undo operations become available (available is true)
         or unavailable (available is false).
-
+        
         :param available: the availability of undo
         :type available: bool
         '''
@@ -1226,7 +1226,7 @@ class TTkTextEdit(TTkAbstractScrollArea):
 
         This signal is emitted whenever redo operations become available (available is true)
         or unavailable (available is false).
-
+        
         :param available: the availability of redo
         :type available: bool
         '''
