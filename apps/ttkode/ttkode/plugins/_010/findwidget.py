@@ -83,6 +83,8 @@ def _custom_walk(directory:str, patterns:List[str]=[]) -> Generator[Tuple[str, s
         full_path = os.path.join(directory, entry)
         if _should_ignore(full_path, patterns):
             continue
+        if not os.path.exists(full_path):
+            continue
         if os.path.isdir(full_path):
             if entry == '.git':
                 continue
