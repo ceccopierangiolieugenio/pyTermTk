@@ -467,15 +467,19 @@ class TTkTreeWidget(TTkAbstractScrollView):
                     self.itemCollapsed.emit(item)
             else:
                 if self._selectionMode in (TTkK.SelectionMode.SingleSelection,TTkK.SelectionMode.MultiSelection):
-                    if not (
-                         bool(evt.mod & TTkK.ControlModifier) and
-                         self._selectionMode == TTkK.SelectionMode.MultiSelection ):
+                    _multiSelect = self._selectionMode == TTkK.SelectionMode.MultiSelection
+                    if not ( bool(evt.mod & TTkK.ControlModifier) and _multiSelect ):
                         for _s in self._selected:
                             _s.setSelected(False)
                         self._selected.clear()
                     self._selectedId = y
-                    self._selected.append(item)
-                    item.setSelected(True)
+                    # Unselect Items if already selected in multiselect mode
+                    if item in self._selected and _multiSelect:
+                        self._selected.remove(item)
+                        item.setSelected(False)
+                    else:
+                        self._selected.append(item)
+                        item.setSelected(True)
             col = -1
             for i, c in enumerate(self._columnsPos):
                 if x < c:
