@@ -28,7 +28,7 @@ import fnmatch
 import mimetypes
 
 from threading import Thread
-from typing import Generator,List,Tuple
+from typing import Generator,List,Tuple,Dict
 
 import TermTk as ttk
 
@@ -134,10 +134,12 @@ class _MatchTreeWidgetItem(TTKodeFileWidgetItem):
 
 class FindWidget(ttk.TTkContainer):
     __slots__ = (
-        '_runId'
+        '_runId',
+        '_replace_data',
         '_results_tree',
         '_search_le','_replace_le','_files_inc_le','_files_exc_le')
     _runId:int
+    _replace_data:Dict
     _results_tree:ttk.TTkTreeWidget
     _search_le:ttk.TTkLineEdit
     _replace_le:ttk.TTkLineEdit
@@ -145,6 +147,7 @@ class FindWidget(ttk.TTkContainer):
     _files_exc_le:ttk.TTkLineEdit
     def __init__(self, **kwargs):
         self._runId = 0
+        self._replace_data = {}
         super().__init__(**kwargs)
         self.setLayout(layout:=ttk.TTkGridLayout())
 
@@ -185,6 +188,7 @@ class FindWidget(ttk.TTkContainer):
         self._files_exc_le = ft_excl
 
         btn_search.clicked.connect(self._search)
+        btn_replace.clicked.connect(self._ask_replace)
         btn_expand.clicked.connect(self._results_tree.expandAll)
         btn_collapse.clicked.connect(self._results_tree.collapseAll)
         search.returnPressed.connect(self._search)
@@ -207,9 +211,17 @@ class FindWidget(ttk.TTkContainer):
             line = item.lineNumber()
             ttkodeProxy.openFile(file, line)
 
+    @ttk.pyTTkSlot()
+    def _ask_replace(self) -> None:
+        if not self._replace_le.text():
+            return
+        _numFiles = len(self._replace_data.get('files',[]))
+        _numMatches = sum(len(_r.get('matches',[])) for _r in self._replace_data.get('files',[]))
+        ttk.TTkLog.debug(f"{_numFiles=} {_numMatches=}")
+        # self._replace()
 
     @ttk.pyTTkSlot()
-    def _search(self):
+    def _search(self) -> None:
         self._runId += 1
         search_pattern = str(self._search_le.text())
         replace_pattern = str(self._replace_le.text())
@@ -221,7 +233,9 @@ class FindWidget(ttk.TTkContainer):
             self._results_tree.clear()
             group = []
             groupSize = 1
+            self._replace_data = {'files':[]}
             for (file,root,matches) in self._search_files('.',str(search_pattern),self._runId,include_patterns,exclude_patterns):
+                self._replace_data['files'].append({'file':file,'root':root,'matches':matches})
                 # ttk.TTkLog.debug((file,matches))
                 item = ttk.TTkTreeWidgetItem([
                         ttk.TTkString(
