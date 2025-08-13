@@ -27,8 +27,8 @@ import re
 import fnmatch
 import mimetypes
 
-from threading import Thread
-from typing import Generator,List,Tuple,Dict
+from threading import Thread,Event,Lock
+from typing import Generator,List,Tuple,Dict,Optional
 
 import TermTk as ttk
 
@@ -137,8 +137,12 @@ class FindWidget(ttk.TTkContainer):
         '_runId',
         '_replace_data',
         '_results_tree',
+        '_search_thread', '_search_stop_event', '_search_lock',
         '_search_le','_replace_le','_files_inc_le','_files_exc_le')
     _runId:int
+    _search_lock:Lock
+    _search_thread:Optional[Thread]
+    _search_stop_event:Event
     _replace_data:Dict
     _results_tree:ttk.TTkTreeWidget
     _search_le:ttk.TTkLineEdit
@@ -148,6 +152,9 @@ class FindWidget(ttk.TTkContainer):
     def __init__(self, **kwargs):
         self._runId = 0
         self._replace_data = {}
+        self._search_thread = None
+        self._search_lock = Lock()
+        self._search_stop_event = Event()
         super().__init__(**kwargs)
         self.setLayout(layout:=ttk.TTkGridLayout())
 
@@ -191,10 +198,17 @@ class FindWidget(ttk.TTkContainer):
         btn_replace.clicked.connect(self._ask_replace)
         btn_expand.clicked.connect(self._results_tree.expandAll)
         btn_collapse.clicked.connect(self._results_tree.collapseAll)
+
         search.returnPressed.connect(self._search)
         replace.returnPressed.connect(self._search)
         ft_incl.returnPressed.connect(self._search)
         ft_excl.returnPressed.connect(self._search)
+
+        search.textEdited.connect(self._search)
+        replace.textEdited.connect(self._search)
+        ft_incl.textEdited.connect(self._search)
+        ft_excl.textEdited.connect(self._search)
+
         res_tree.itemActivated.connect(self._activated)
 
         @ttk.pyTTkSlot(str)
@@ -217,62 +231,95 @@ class FindWidget(ttk.TTkContainer):
             return
         _numFiles = len(self._replace_data.get('files',[]))
         _numMatches = sum(len(_r.get('matches',[])) for _r in self._replace_data.get('files',[]))
-        ttk.TTkLog.debug(f"{_numFiles=} {_numMatches=}")
-        # self._replace()
+        _search_pattern = str(self._search_le.text())
+        _replace_pattern = str(self._replace_le.text())
+
+        messageBox = ttk.TTkMessageBox(
+            title="🚨 Apply? 🚨",
+            text=ttk.TTkString(f"Do you want to repace {_numMatches} occurrences of\n'{_search_pattern}'\nin {_numFiles} files with\n'{_replace_pattern}'?"),
+            icon=ttk.TTkMessageBox.Icon.Warning,
+            standardButtons=
+                ttk.TTkMessageBox.StandardButton.Ok|
+                ttk.TTkMessageBox.StandardButton.Cancel)
+
+        @ttk.pyTTkSlot(ttk.TTkMessageBox.StandardButton)
+        def _cb(btn):
+            if btn == ttk.TTkMessageBox.StandardButton.Ok:
+                ttk.TTkLog.debug(f"Replace '{_search_pattern}' with '{_replace_pattern}'")
+            else:
+                ttk.TTkLog.debug(f"Discard")
+        messageBox.buttonSelected.connect(_cb)
+        ttk.TTkHelper.overlay(None, messageBox, 5, 5, True)
+
+    def _search_threading(self, search_pattern:str, include_patterns:str, exclude_patterns:str, replace_pattern:str) -> None:
+        self._results_tree.clear()
+        group = []
+        groupSize = 1
+        self._replace_data = {'files':[]}
+        for (file,root,matches) in self._search_files('.',search_pattern,self._runId,include_patterns,exclude_patterns):
+            if self._search_stop_event.is_set():
+                break
+
+            self._replace_data['files'].append({'file':file,'root':root,'matches':matches})
+            # ttk.TTkLog.debug((file,matches))
+            item = ttk.TTkTreeWidgetItem([
+                    ttk.TTkString(
+                        ttk.TTkCfg.theme.fileIcon.getIcon(file),
+                        ttk.TTkCfg.theme.fileIconColor) + " " +
+                    ttk.TTkString(f" {file} ", ttk.TTkColor.YELLOW+ttk.TTkColor.BOLD+ttk.TTkColor.bg('#000088')) +
+                    ttk.TTkString(f" {root} ", ttk.TTkColor.fg("#888888"))
+                ],expanded=True)
+            for num,line in matches:
+                line = line.lstrip(' ')
+                # index = line.find(search_pattern)
+                # outLine =
+                if replace_pattern:
+                    _s = line.replace('\n','').split(search_pattern)
+                    _j = (
+                        ttk.TTkString(search_pattern,ttk.TTkColor.RED + ttk.TTkColor.STRIKETROUGH) +
+                        ttk.TTkString(replace_pattern,ttk.TTkColor.GREEN) + ttk.TTkColor.RST)
+                    ttkLine = _j.join(_s)
+                else:
+                    ttkLine = ttk.TTkString(line.replace('\n','')).completeColor(
+                            match=search_pattern,
+                            color=ttk.TTkColor.GREEN)
+
+                item.addChild(
+                    _MatchTreeWidgetItem([ttk.TTkString(str(num)+" ",ttk.TTkColor.CYAN) + ttkLine] ,
+                        match=line,
+                        lineNumber=num,
+                        path=os.path.join(root,file)))
+            group.append(item)
+            if len(group) > groupSize:
+                self._results_tree.addTopLevelItems(group)
+                group = []
+                groupSize <<= 1
+            # self._results_tree.addTopLevelItem(item)
+        if group:
+            self._results_tree.addTopLevelItems(group)
 
     @ttk.pyTTkSlot()
     def _search(self) -> None:
-        self._runId += 1
-        search_pattern = str(self._search_le.text())
-        replace_pattern = str(self._replace_le.text())
-        include_patterns = _s.split(',') if (_s:=str(self._files_inc_le.text())) else []
-        exclude_patterns = _s.split(',') if (_s:=str(self._files_exc_le.text())) else []
-        if not search_pattern:
-            return
-        def _search_threading():
-            self._results_tree.clear()
-            group = []
-            groupSize = 1
-            self._replace_data = {'files':[]}
-            for (file,root,matches) in self._search_files('.',str(search_pattern),self._runId,include_patterns,exclude_patterns):
-                self._replace_data['files'].append({'file':file,'root':root,'matches':matches})
-                # ttk.TTkLog.debug((file,matches))
-                item = ttk.TTkTreeWidgetItem([
-                        ttk.TTkString(
-                            ttk.TTkCfg.theme.fileIcon.getIcon(file),
-                            ttk.TTkCfg.theme.fileIconColor) + " " +
-                        ttk.TTkString(f" {file} ", ttk.TTkColor.YELLOW+ttk.TTkColor.BOLD+ttk.TTkColor.bg('#000088')) +
-                        ttk.TTkString(f" {root} ", ttk.TTkColor.fg("#888888"))
-                    ],expanded=True)
-                for num,line in matches:
-                    line = line.lstrip(' ')
-                    # index = line.find(search_pattern)
-                    # outLine =
-                    if replace_pattern:
-                        _s = line.replace('\n','').split(search_pattern)
-                        _j = (
-                            ttk.TTkString(search_pattern,ttk.TTkColor.RED + ttk.TTkColor.STRIKETROUGH) +
-                            ttk.TTkString(replace_pattern,ttk.TTkColor.GREEN) + ttk.TTkColor.RST)
-                        ttkLine = _j.join(_s)
-                    else:
-                        ttkLine = ttk.TTkString(line.replace('\n','')).completeColor(
-                                match=search_pattern,
-                                color=ttk.TTkColor.GREEN)
-
-                    item.addChild(
-                        _MatchTreeWidgetItem([ttk.TTkString(str(num)+" ",ttk.TTkColor.CYAN) + ttkLine] ,
-                            match=line,
-                            lineNumber=num,
-                            path=os.path.join(root,file)))
-                group.append(item)
-                if len(group) > groupSize:
-                    self._results_tree.addTopLevelItems(group)
-                    group = []
-                    groupSize <<= 1
-                # self._results_tree.addTopLevelItem(item)
-            if group:
-                self._results_tree.addTopLevelItems(group)
-        Thread(target=_search_threading).start()
+        with self._search_lock:
+            if self._search_thread:
+                self._search_stop_event.set()
+                self._search_thread.join()
+                self._search_stop_event.clear()
+                self._search_thread = None
+            self._runId += 1
+            search_pattern = str(self._search_le.text())
+            replace_pattern = str(self._replace_le.text())
+            include_patterns = _s.split(',') if (_s:=str(self._files_inc_le.text())) else []
+            exclude_patterns = _s.split(',') if (_s:=str(self._files_exc_le.text())) else []
+            if not search_pattern:
+                self._results_tree.clear()
+                return
+            if self._search_thread:
+                self._search_thread.join()
+            self._search_thread = Thread(
+                target=self._search_threading,
+                args=(search_pattern, include_patterns, exclude_patterns, replace_pattern))
+            self._search_thread.start()
 
     def _search_files(self, root_folder, match, runId, include_patterns, exclude_patterns):
         for root, file in _custom_walk(root_folder,include_patterns,exclude_patterns):
