@@ -27,6 +27,7 @@ import re
 import fnmatch
 import mimetypes
 
+from pathlib import Path
 from threading import Thread,Event,Lock
 from typing import Generator,List,Tuple,Dict,Optional
 
@@ -246,6 +247,14 @@ class FindWidget(ttk.TTkContainer):
         def _cb(btn):
             if btn == ttk.TTkMessageBox.StandardButton.Ok:
                 ttk.TTkLog.debug(f"Replace '{_search_pattern}' with '{_replace_pattern}'")
+                for _file_def in self._replace_data.get('files',[]):
+                    _file = Path(_file_def['root']) / _file_def['file']
+                    if not self._replace_data.get('files',[]):
+                        ttk.TTkLog.error(f"{_file} does not exists!!!")
+                    else:
+                        _content = _file.read_text()
+                        _new_content = _content.replace(_search_pattern,_replace_pattern)
+                        _file.write_text(_new_content)
             else:
                 ttk.TTkLog.debug(f"Discard")
         messageBox.buttonSelected.connect(_cb)
