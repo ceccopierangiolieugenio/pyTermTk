@@ -36,7 +36,7 @@ from TermTk.TTkWidgets.scrollbar import TTkScrollBar
     ref: https://doc.qt.io/qt-5/qslider.html
 '''
 class TTkSlider(TTkScrollBar):
-    '''TtkSlider'''
+    '''TTkSlider'''
 
     classStyle = {
                 'default':     {
