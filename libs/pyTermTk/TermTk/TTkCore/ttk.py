@@ -140,6 +140,10 @@ class TTk(TTkContainer):
             self.time  = curtime
 
     def mainloop(self):
+        with ttk_capture_stderr():
+            self._mainloop_1()
+
+    def _mainloop_1(self):
         try:
             '''Enters the main event loop and waits until :meth:`~quit` is called or the main widget is destroyed.'''
             TTkLog.debug( "" )
@@ -182,8 +186,7 @@ class TTk(TTkContainer):
                 self._mouseCursor.updated.connect(self.update)
                 self.paintChildCanvas = self._mouseCursorPaintChildCanvas
 
-            with ttk_capture_stderr():
-                self._mainLoop()
+            self._mainLoop_2()
         finally:
             if platform.system() != 'Emscripten':
                 TTkHelper.quitEvent.emit()
@@ -203,7 +206,7 @@ class TTk(TTkContainer):
         color = self._mouseCursor._color
         self.getCanvas().drawChar(char=ch, pos=pos, color=color)
 
-    def _mainLoop(self):
+    def _mainLoop_2(self):
         if platform.system() == 'Emscripten':
             return
         TTkInput.start()
