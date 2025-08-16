@@ -25,7 +25,6 @@ __all__ = ['TTk']
 import os
 import signal
 import time
-import queue
 import threading
 import platform
 
@@ -36,7 +35,7 @@ from TermTk.TTkCore.TTkTerm.inputmouse import TTkMouseEvent
 from TermTk.TTkCore.TTkTerm.term import TTkTerm
 from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
 from TermTk.TTkCore.constant import TTkK
-from TermTk.TTkCore.log import TTkLog
+from TermTk.TTkCore.log import TTkLog, ttk_capture_stderr
 from TermTk.TTkCore.cfg import TTkCfg, TTkGlbl
 from TermTk.TTkCore.helper import TTkHelper
 from TermTk.TTkCore.timer import TTkTimer
@@ -75,8 +74,6 @@ class _MouseCursor():
             self.updated.emit()
 
 class TTk(TTkContainer):
-
-
     __slots__ = (
         '_termMouse', '_termDirectMouse',
         '_title',
@@ -185,7 +182,8 @@ class TTk(TTkContainer):
                 self._mouseCursor.updated.connect(self.update)
                 self.paintChildCanvas = self._mouseCursorPaintChildCanvas
 
-            self._mainLoop()
+            with ttk_capture_stderr():
+                self._mainLoop()
         finally:
             if platform.system() != 'Emscripten':
                 TTkHelper.quitEvent.emit()
