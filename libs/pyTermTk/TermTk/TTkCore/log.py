@@ -20,13 +20,15 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-__all__ = ['TTkLog']
+__all__ = ['TTkLog', 'ttk_capture_stderr']
 
 # This code is inspired by
 # https://github.com/ceccopierangiolieugenio/pyCuT/blob/master/cupy/CuTCore/CuDebug.py
 
+import sys
 import inspect
 import logging
+import contextlib
 from collections.abc import Callable, Set
 
 class _TTkContext:
@@ -111,3 +113,28 @@ class TTkLog:
     @staticmethod
     def installMessageHandler(mh: Callable):
         TTkLog._messageHandler.append(mh)
+
+class TTkStderrHandler:
+    def write(self, text):
+        TTkLog.error(text)
+        return len(text)
+
+    def flush(self):
+        pass
+
+    def getvalue(self):
+        raise NotImplementedError()
+
+
+@contextlib.contextmanager
+def ttk_capture_stderr():
+    _stderr_bk = sys.stderr
+    try:
+        sys.stderr = TTkStderrHandler()
+        yield
+    except Exception as e:
+        sys.stderr = _stderr_bk
+        TTkLog.critical(f"Caught an exception: {e}")
+        print(f"Caught an exception: {e}",sys.stderr)
+    finally:
+        sys.stderr = _stderr_bk

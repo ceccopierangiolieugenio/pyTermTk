@@ -25,7 +25,6 @@ __all__ = ['TTk']
 import os
 import signal
 import time
-import queue
 import threading
 import platform
 
@@ -36,7 +35,7 @@ from TermTk.TTkCore.TTkTerm.inputmouse import TTkMouseEvent
 from TermTk.TTkCore.TTkTerm.term import TTkTerm
 from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
 from TermTk.TTkCore.constant import TTkK
-from TermTk.TTkCore.log import TTkLog
+from TermTk.TTkCore.log import TTkLog, ttk_capture_stderr
 from TermTk.TTkCore.cfg import TTkCfg, TTkGlbl
 from TermTk.TTkCore.helper import TTkHelper
 from TermTk.TTkCore.timer import TTkTimer
@@ -75,8 +74,6 @@ class _MouseCursor():
             self.updated.emit()
 
 class TTk(TTkContainer):
-
-
     __slots__ = (
         '_termMouse', '_termDirectMouse',
         '_title',
@@ -143,6 +140,10 @@ class TTk(TTkContainer):
             self.time  = curtime
 
     def mainloop(self):
+        with ttk_capture_stderr():
+            self._mainloop_1()
+
+    def _mainloop_1(self):
         try:
             '''Enters the main event loop and waits until :meth:`~quit` is called or the main widget is destroyed.'''
             TTkLog.debug( "" )
@@ -185,7 +186,7 @@ class TTk(TTkContainer):
                 self._mouseCursor.updated.connect(self.update)
                 self.paintChildCanvas = self._mouseCursorPaintChildCanvas
 
-            self._mainLoop()
+            self._mainLoop_2()
         finally:
             if platform.system() != 'Emscripten':
                 TTkHelper.quitEvent.emit()
@@ -205,7 +206,7 @@ class TTk(TTkContainer):
         color = self._mouseCursor._color
         self.getCanvas().drawChar(char=ch, pos=pos, color=color)
 
-    def _mainLoop(self):
+    def _mainLoop_2(self):
         if platform.system() == 'Emscripten':
             return
         TTkInput.start()
