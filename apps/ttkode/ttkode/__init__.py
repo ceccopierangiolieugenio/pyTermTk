@@ -22,7 +22,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-__version__:str = '0.4.0-a.2'
+__version__:str = '0.5.0-a.2'
 
 from .plugin import TTkodePlugin, TTkodePluginActivity
 from .proxy import TTKodeViewerProxy, ttkodeProxy
