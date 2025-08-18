@@ -21,6 +21,7 @@
 # SOFTWARE.
 
 import sys, os
+import logging
 import pytest
 from typing import Union, Optional
 
@@ -28,10 +29,23 @@ sys.path.append(os.path.join(sys.path[0],'../../libs/pyTermTk'))
 
 import TermTk as ttk
 
-def test_stderr_01():
-    ttk.TTkLog.use_default_stdout_logging()
+def message_handler(mode, context, message):
+    msgType = "NONE"
+    if   mode == ttk.TTkLog.InfoMsg:     msgType = "[INFO]"
+    elif mode == ttk.TTkLog.WarningMsg:  msgType = "[WARNING]"
+    elif mode == ttk.TTkLog.CriticalMsg: msgType = "[CRITICAL]"
+    elif mode == ttk.TTkLog.FatalMsg:    msgType = "[FATAL]"
+    elif mode == ttk.TTkLog.ErrorMsg:    msgType = "[ERROR]"
+    print(f"{msgType} {context.file} {message}")
 
+def test_stderr_01():
+    ttk.TTkLog.installMessageHandler(message_handler)
+
+    print('Test',file=sys.stderr)
     with ttk.ttk_capture_stderr():
+        print('XXXXX Test',file=sys.stderr)
         with open('pippo','r') as f:
             f.read()
+        raise ValueError('YYYYY Test')
+    print('After Test')
 
