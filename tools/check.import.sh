@@ -15,9 +15,11 @@ __check(){
             -e "signal.py:import asyncio" \
             -e "signal.py:import importlib.util" \
             -e "colors.py:from .colors_ansi_map" \
-            -e "log.py:import inspect" \
-            -e "log.py:import logging" \
-            -e "log.py:from collections.abc import Callable, Set" \
+            -e "TTkCore/log.py:import inspect" \
+            -e "TTkCore/log.py:import logging" \
+            -e "TTkCore/log.py:import sys" \
+            -e "TTkCore/log.py:import contextlib" \
+            -e "TTkCore/log.py:from collections.abc import Callable, Set" \
             -e "term.py:import importlib.util" \
             -e "term.*.py:import sys, os, signal" \
             -e "term.*.py:from .term_base import TTkTermBase" \
