@@ -134,6 +134,7 @@ def ttk_capture_stderr():
         yield
     except Exception as e:
         sys.stderr = _stderr_bk
+        TTkLog.critical(f"Caught an exception: {e}")
         print(f"Caught an exception: {e}",sys.stderr)
     finally:
         sys.stderr = _stderr_bk

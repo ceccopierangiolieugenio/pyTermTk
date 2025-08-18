@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import sys, os
+import sys, os, io
 import logging
 import pytest
 from typing import Union, Optional
@@ -29,7 +29,12 @@ sys.path.append(os.path.join(sys.path[0],'../../libs/pyTermTk'))
 
 import TermTk as ttk
 
+
+class FakeStderr():
+    value = []
+
 def message_handler(mode, context, message):
+    FakeStderr.value.append(message)
     msgType = "NONE"
     if   mode == ttk.TTkLog.InfoMsg:     msgType = "[INFO]"
     elif mode == ttk.TTkLog.WarningMsg:  msgType = "[WARNING]"
@@ -49,3 +54,18 @@ def test_stderr_01():
         raise ValueError('YYYYY Test')
     print('After Test')
 
+def test_ttk_capture_stderr():
+    ttk.TTkLog.installMessageHandler(message_handler)
+    with ttk.ttk_capture_stderr() as fake_stderr:
+        print("This is an error message", file=sys.stderr)
+    output = FakeStderr.value
+    assert "This is an error message" in output
+
+def test_ttk_capture_stderr_exception_handling():
+    ttk.TTkLog.installMessageHandler(message_handler)
+    with ttk.ttk_capture_stderr() as fake_stderr:
+        raise ValueError("Test exception")
+    # After the exception, sys.stderr should be restored
+    output = FakeStderr.value
+    assert any("Test exception" in _o for _o in output)
+    assert isinstance(sys.stderr, io.TextIOWrapper) or sys.stderr is sys.__stderr__
