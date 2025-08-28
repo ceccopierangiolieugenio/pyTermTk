@@ -280,6 +280,7 @@ class TTkListWidget(TTkAbstractScrollView):
         else:
             self._filteredItems = self._items
             for item in self._items:
+                item._quickVisible = True
                 item.setVisible(True)
 
         self._placeItems()
