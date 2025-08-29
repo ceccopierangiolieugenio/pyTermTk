@@ -25,6 +25,7 @@ __all__ = ['TTkTreeWidget']
 from typing import List
 
 from TermTk.TTkCore.cfg import TTkCfg
+from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkCore.string import TTkString
@@ -153,12 +154,14 @@ class TTkTreeWidget(TTkAbstractScrollView):
                 'default':     {
                     'color': TTkColor.RST,
                     'lineColor': TTkColor.fg("#444444"),
+                    'lineHeightColor': TTkColor.fg("#666666"),
                     'headerColor': TTkColor.fg("#ffffff")+TTkColor.bg("#444444")+TTkColor.BOLD,
                     'selectedColor': TTkColor.fg("#ffff88")+TTkColor.bg("#000066")+TTkColor.BOLD,
                     'separatorColor': TTkColor.fg("#444444")},
                 'disabled':    {
                     'color': TTkColor.fg("#888888"),
                     'lineColor': TTkColor.fg("#888888"),
+                    'lineHeightColor': TTkColor.fg("#666666"),
                     'headerColor': TTkColor.fg("#888888"),
                     'selectedColor': TTkColor.fg("#888888"),
                     'separatorColor': TTkColor.fg("#888888")},
@@ -174,15 +177,6 @@ class TTkTreeWidget(TTkAbstractScrollView):
                   '_itemChanged', '_itemClicked', '_itemDoubleClicked', '_itemExpanded', '_itemCollapsed', '_itemActivated'
                   )
 
-    @dataclass(frozen=True)
-    class _Cache:
-        item: TTkTreeWidgetItem
-        level: int
-        data: list
-        widgets: list
-        firstLine: bool
-
-    _cache:List[_Cache]
     _selected:List[TTkTreeWidgetItem]
 
     @dataclass(frozen=True)
@@ -214,6 +208,8 @@ class TTkTreeWidget(TTkAbstractScrollView):
         self._itemExpanded      = pyTTkSignal(TTkTreeWidgetItem)
         self._itemCollapsed     = pyTTkSignal(TTkTreeWidgetItem)
 
+        self._cache = []
+
         self._selectionMode = selectionMode
         self._dndMode = dragDropMode
         self._selected = []
@@ -221,7 +217,6 @@ class TTkTreeWidget(TTkAbstractScrollView):
         self._separatorSelected = None
         self._header = header if header else []
         self._columnsPos = []
-        self._cache = []
         self._sortingEnabled=sortingEnabled
         self._sortColumn = -1
         self._sortOrder = TTkK.AscendingOrder
@@ -363,8 +358,8 @@ class TTkTreeWidget(TTkAbstractScrollView):
 
     def resizeColumnToContents(self, column:int) -> None:
         '''resizeColumnToContents'''
-        if not self._cache:
-            return
+        TTkLog.critical('resizeColumnToContents Method Unimplemented')
+        return
         contentSize = max(row.data[column].termWidth() for row in self._cache)
         self.setColumnWidth(column, contentSize)
 
@@ -403,8 +398,9 @@ class TTkTreeWidget(TTkAbstractScrollView):
             return True
 
         y += oy-1
-        if 0 <= y < len(self._cache):
-            item  = self._cache[y].item
+        if  _item_at := self._rootItem._item_at(y+1):
+            _,_,_i = _item_at
+            item  = _i
             if item.childIndicatorPolicy() == TTkK.DontShowIndicatorWhenChildless and item.children() or \
                item.childIndicatorPolicy() == TTkK.ShowIndicator:
                 item.setExpanded(not item.isExpanded())
@@ -453,13 +449,14 @@ class TTkTreeWidget(TTkAbstractScrollView):
             return True
         # Handle Tree/Table Events
         y += oy-1
-        if 0 <= y < len(self._cache):
-            item  = self._cache[y].item
-            level = self._cache[y].level
+        if  _item_at := self._rootItem._item_at(y+1):
+            _l, _yi, _i = _item_at
+            item  = _i
+            level = _l
             # check if the expand button is pressed with +-1 tollerance
-            if level*2 <= x < level*2+3 and \
-               ( item.childIndicatorPolicy() == TTkK.DontShowIndicatorWhenChildless and item.children() or
-                 item.childIndicatorPolicy() == TTkK.ShowIndicator ):
+            if ( _yi==0 and level*2 <= x < level*2+3 and \
+                 ( item.childIndicatorPolicy() == TTkK.DontShowIndicatorWhenChildless and item.children() or
+                   item.childIndicatorPolicy() == TTkK.ShowIndicator )):
                 item.setExpanded(not item.isExpanded())
                 if item.isExpanded():
                     self.itemExpanded.emit(item)
@@ -548,6 +545,10 @@ class TTkTreeWidget(TTkAbstractScrollView):
 
     @pyTTkSlot()
     def _refreshCache(self) -> None:
+        self._alignWidgets()
+        self.update()
+        self.viewChanged.emit()
+        return
         # I save a representation of the displayed tree in a cache array
         # to avoid eccessve recursion over the items and
         # identify quickly the nth displayed line to improve the interaction
@@ -606,6 +607,7 @@ class TTkTreeWidget(TTkAbstractScrollView):
 
         color= style['color']
         lineColor= style['lineColor']
+        lineHeightColor= style['lineHeightColor']
         headerColor= style['headerColor']
         selectedColor= style['selectedColor']
         separatorColor= style['separatorColor']
@@ -628,16 +630,25 @@ class TTkTreeWidget(TTkAbstractScrollView):
             for sy in range(1,h):
                 canvas.drawChar(pos=(sx-x,sy), char=tt[4], color=lineColor)
 
-        # Draw cache
-        for i, c in enumerate(self._cache):
-            if i-y<0: continue
-            item  = c.item
+        col_slices = list(zip([0]+[_p+1 for _p in self._columnsPos], self._columnsPos))
+        for _y, (_l, _yi, _i) in enumerate(self._rootItem._get_page(-1,1+y,h+1)):
             for il in range(len(self._header)):
-                lx = 0 if il==0 else self._columnsPos[il-1]+1
-                lx1 = self._columnsPos[il]
-
-                text = c.data[il]
-                if item.isSelected():
-                    canvas.drawText(pos=(lx-x,i-y+1), text=text.completeColor(selectedColor), width=lx1-lx, alignment=item.textAlignment(il), color=selectedColor)
-                else:
-                    canvas.drawText(pos=(lx-x,i-y+1), text=text, width=lx1-lx, alignment=item.textAlignment(il))
+                _lx,_lx1 = col_slices[il]
+                _width = _lx1-_lx
+                _ih = _i.height()
+                _data = _i.data(il).split('\n') + [TTkString()]*_ih
+                if il==0: # First Column
+                    if _yi == 0:
+                        _icon = f"{'  '*_l} "+_i.icon(il)+" "
+                    elif _yi == _ih-1:
+                        _icon = TTkString(f"{'  '*_l} ╽ ", lineHeightColor)
+                    elif _yi == 1:
+                        _icon = TTkString(f"{'  '*_l} ┊ ", lineHeightColor)
+                    else:
+                        _icon = TTkString(f"{'  '*_l} │ ", lineHeightColor)
+                    _text=_icon+_data[_yi]
+                else: # Other columns
+                    _text=_data[_yi]
+                if _i.isSelected():
+                    _text = (_text + ' '*_width).completeColor(selectedColor)
+                canvas.drawTTkString(text=_text,pos=(_lx-x,_y+1),width=_width)
