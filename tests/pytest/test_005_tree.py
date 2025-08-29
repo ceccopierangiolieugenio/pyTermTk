@@ -31,8 +31,7 @@ import TermTk as ttk
 def _gen_childs(num:int,prefix:str,nesting=2) -> List[ttk.TTkTreeWidgetItem]:
     ret = []
     for i in range(num):
-        _c = ttk.TTkTreeWidgetItem([f"{prefix} A {i}", f"{prefix} B {i}", f"{prefix} C {i}"])
-        _c._height = i+1
+        _c = ttk.TTkTreeWidgetItem([f"{prefix} A {i}{'\nabc'*i}", f"{prefix} B {i}", f"{prefix} C {i}"])
         ret.append(_c)
         if i%2:
             _c.setExpanded(True)

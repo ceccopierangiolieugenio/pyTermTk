@@ -82,6 +82,7 @@ class _TTkTreeBuffer():
         # Add the item to the buffer
         if self.level != level:
             self.clearBuffer()
+            self.level = level
         if not self.buffer:
             self.buffer = [(level, _y, item) for _y in range(item._height)]
             self.buffer_link = [(item._height, 0)]
