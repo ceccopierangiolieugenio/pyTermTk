@@ -158,8 +158,6 @@ class TTkFileTreeWidget(TTkTreeWidget):
         self.resizeColumnToContents(1)
         self.resizeColumnToContents(2)
         self.resizeColumnToContents(3)
-        self.itemExpanded.connect(self._folderExpanded)
-        self.itemCollapsed.connect(self._folderCollapsed)
         self.itemExpanded.connect(self._updateChildren)
         self.itemActivated.connect(self._activated)
 
@@ -222,7 +220,6 @@ class TTkFileTreeWidget(TTkTreeWidget):
                                 raw = [ n , -1 , typef , rawTime ],
                                 path=nodePath,
                                 type=TTkFileTreeWidgetItem.DIR,
-                                icon=TTkString() + TTkCfg.theme.folderIconColor + TTkCfg.theme.fileIcon.folderClose + TTkColor.RST,
                                 childIndicatorPolicy=TTkK.ShowIndicator))
 
             elif os.path.isfile(nodePath) or os.path.islink(nodePath):
@@ -252,17 +249,8 @@ class TTkFileTreeWidget(TTkTreeWidget):
                                 raw = [ n , rawSize , typef , rawTime ],
                                 path=nodePath,
                                 type=TTkFileTreeWidgetItem.FILE,
-                                icon=TTkString() + TTkCfg.theme.fileIconColor + TTkCfg.theme.fileIcon.getIcon(n) + TTkColor.RST,
                                 childIndicatorPolicy=TTkK.DontShowIndicator))
         return ret
-
-    @staticmethod
-    def _folderExpanded(item):
-        item.setIcon(0, TTkString() + TTkCfg.theme.folderIconColor + TTkCfg.theme.fileIcon.folderOpen + TTkColor.RST,)
-
-    @staticmethod
-    def _folderCollapsed(item):
-        item.setIcon(0, TTkString() + TTkCfg.theme.folderIconColor + TTkCfg.theme.fileIcon.folderClose + TTkColor.RST,)
 
     @pyTTkSlot(TTkFileTreeWidgetItem)
     def _updateChildren(self, item):

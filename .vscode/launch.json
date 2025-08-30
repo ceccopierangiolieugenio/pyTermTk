@@ -46,7 +46,8 @@
             "console": "integratedTerminal",
             "justMyCode": true,
             "env": {
-                "TERMTK_GPM": "1"
+                "TERMTK_GPM": "1",
+                "PYTHONPATH": "./libs/pyTermTk"
             },
         },
         {
@@ -59,7 +60,10 @@
             "args": [
                 "-p",
                 "tmp/test.input.001.bin"
-            ]
+            ],
+            "env": {
+                "PYTHONPATH": "./libs/pyTermTk"
+            }
         },
         {
             "name": "py Debug: Module ttkDesigner",
@@ -69,7 +73,7 @@
             "console": "integratedTerminal",
             "justMyCode": true,
             "env": {
-                "PYTHONPATH": "./apps/ttkDesigner"
+                "PYTHONPATH": "./libs/pyTermTk:./apps/ttkDesigner"
             }
         },
         {
@@ -80,7 +84,7 @@
             "console": "integratedTerminal",
             "justMyCode": true,
             "env": {
-                "PYTHONPATH": "./tools"
+                "PYTHONPATH": "./libs/pyTermTk:./tools"
             },
             "args": [
                 "ttkDesigner/tui/newWindow.tui.json"
@@ -94,7 +98,7 @@
             "console": "integratedTerminal",
             "justMyCode": true,
             "env": {
-                "PYTHONPATH": "./apps/dumbPaintTool"
+                "PYTHONPATH": "./libs/pyTermTk:./apps/dumbPaintTool"
             }
         },
         {
@@ -105,7 +109,7 @@
             "console": "integratedTerminal",
             "justMyCode": true,
             "env": {
-                "PYTHONPATH": "./tools"
+                "PYTHONPATH": "./libs/pyTermTk:./tools"
             },
             "args": [
                 "experiments/untitled.DPT.json"
@@ -130,7 +134,7 @@
             "console": "integratedTerminal",
             "justMyCode": true,
             "env": {
-                "PYTHONPATH": "./apps/tlogg"
+                "PYTHONPATH": "./apps/tlogg:./libs/pyTermTk"
             }
         },
         {
@@ -139,7 +143,10 @@
             "request": "launch",
             "program": "demo/demo.py",
             "console": "integratedTerminal",
-            "justMyCode": true
+            "justMyCode": true,
+            "env": {
+                "PYTHONPATH": "./libs/pyTermTk"
+            }
         },
         {
             "name": "Python: Demo Mouse tracking",
@@ -150,7 +157,10 @@
             "justMyCode": true,
             "args": [
                 "-t"
-            ]
+            ],
+            "env": {
+                "PYTHONPATH": "./libs/pyTermTk"
+            }
         },
         {
             "name": "Python: sphinx",

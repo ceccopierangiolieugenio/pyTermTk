@@ -22,7 +22,7 @@
 
 __all__ = ['TTkTreeWidget']
 
-from typing import List
+from typing import List,Tuple,Optional
 
 from TermTk.TTkCore.cfg import TTkCfg
 from TermTk.TTkCore.log import TTkLog
@@ -39,6 +39,25 @@ from TermTk.TTkAbstract.abstractitemmodel import TTkAbstractItemModel
 from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
 
 from dataclasses import dataclass
+
+class _RootWidgetItem(TTkTreeWidgetItem):
+    def __init__(self):
+        super().__init__(expanded=True)
+
+    def _getColumnContentSize(self, column:int, offset:int) -> int:
+        if offset+0x200 > (_sz:=self.size()):
+            offset = _sz-0x200
+        if offset < 0x200:
+            offset = 0x200
+        limited_page = self._get_page_root(offset-0x200,0x400)
+        if column==0:
+            size = max(max(_l+_i.icon(column).termWidth()+_t.termWidth() for _t in _i.data(column).split('\n')) for _l,_y,_i in limited_page if not _y)
+        else:
+            size = max(max((_i.icon(column)+_t).termWidth() for _t in _i.data(column).split('\n')) for _l,_y,_i in limited_page if not _y)
+        return size-1
+
+    def _get_page_root(self, index:int, size:int) -> List[Tuple[int,int,TTkTreeWidgetItem]]:
+        return super()._get_page(-1, index+1, size)
 
 class TTkTreeWidget(TTkAbstractScrollView):
     '''
@@ -178,6 +197,7 @@ class TTkTreeWidget(TTkAbstractScrollView):
                   )
 
     _selected:List[TTkTreeWidgetItem]
+    _rootItem:_RootWidgetItem
 
     @dataclass(frozen=True)
     class _DropTreeData:
@@ -220,7 +240,7 @@ class TTkTreeWidget(TTkAbstractScrollView):
         self._sortingEnabled=sortingEnabled
         self._sortColumn = -1
         self._sortOrder = TTkK.AscendingOrder
-        self._rootItem = TTkTreeWidgetItem(expanded=True)
+        self._rootItem = _RootWidgetItem()
         super().__init__(**kwargs)
         self.setMinimumHeight(1)
         self.setFocusPolicy(TTkK.ClickFocus)
@@ -247,7 +267,7 @@ class TTkTreeWidget(TTkAbstractScrollView):
             ri.setTreeItemParent(None)
         if self._rootItem:
             self._rootItem.dataChanged.disconnect(self._refreshCache)
-        self._rootItem = TTkTreeWidgetItem(expanded=True)
+        self._rootItem = _RootWidgetItem()
         self._rootItem.dataChanged.connect(self._refreshCache)
         self.sortItems(self._sortColumn, self._sortOrder)
         self._refreshCache()
@@ -358,9 +378,8 @@ class TTkTreeWidget(TTkAbstractScrollView):
 
     def resizeColumnToContents(self, column:int) -> None:
         '''resizeColumnToContents'''
-        TTkLog.critical('resizeColumnToContents Method Unimplemented')
-        return
-        contentSize = max(row.data[column].termWidth() for row in self._cache)
+        _,oy = self.getViewOffsets()
+        contentSize = self._rootItem._getColumnContentSize(column, oy)
         self.setColumnWidth(column, contentSize)
 
     @pyTTkSlot()
@@ -631,7 +650,7 @@ class TTkTreeWidget(TTkAbstractScrollView):
                 canvas.drawChar(pos=(sx-x,sy), char=tt[4], color=lineColor)
 
         col_slices = list(zip([0]+[_p+1 for _p in self._columnsPos], self._columnsPos))
-        for _y, (_l, _yi, _i) in enumerate(self._rootItem._get_page(-1,1+y,h+1)):
+        for _y, (_l, _yi, _i) in enumerate(self._rootItem._get_page_root(y,h)):
             for il in range(len(self._header)):
                 _lx,_lx1 = col_slices[il]
                 _width = _lx1-_lx
@@ -639,7 +658,7 @@ class TTkTreeWidget(TTkAbstractScrollView):
                 _data = _i.data(il).split('\n') + [TTkString()]*_ih
                 if il==0: # First Column
                     if _yi == 0:
-                        _icon = f"{'  '*_l} "+_i.icon(il)+" "
+                        _icon = f"{'  '*_l}"+_i.icon(il)
                     elif _yi == _ih-1:
                         _icon = TTkString(f"{'  '*_l} ╽ ", lineHeightColor)
                     elif _yi == 1:

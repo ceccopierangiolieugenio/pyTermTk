@@ -24,6 +24,8 @@ __all__ = ['TTkFileTreeWidgetItem']
 
 import re
 
+from TermTk.TTkCore.cfg import TTkCfg
+from TermTk.TTkCore.string import TTkString
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkWidgets.TTkModelView.treewidgetitem import TTkTreeWidgetItem
 
@@ -58,6 +60,17 @@ class TTkFileTreeWidgetItem(TTkTreeWidgetItem):
                 self.setHidden(False)
             else:
                 self.setHidden(True)
+
+    def icon(self, col):
+        if col > 0:
+            return super().icon(col)
+        if self._type == TTkFileTreeWidgetItem.FILE:
+            return TTkString( ' '+TTkCfg.theme.fileIcon.getIcon(self._path)+' ', TTkCfg.theme.fileIconColor)
+        else:
+            if self._expanded:
+                return TTkString(' '+TTkCfg.theme.fileIcon.folderOpen+' ', TTkCfg.theme.folderIconColor)
+            else:
+                return TTkString(' '+TTkCfg.theme.fileIcon.folderClose+' ', TTkCfg.theme.folderIconColor)
 
     def sortData(self, col:int):
         return self._raw[col]

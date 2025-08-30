@@ -29,7 +29,7 @@ from typing import List, Tuple, Iterator, Generator, Optional, Callable, Any
 
 from TermTk.TTkCore.cfg import TTkCfg
 from TermTk.TTkCore.constant import TTkK
-from TermTk.TTkCore.string import TTkString
+from TermTk.TTkCore.string import TTkString, TTkStringType
 from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
 from TermTk.TTkWidgets import TTkWidget
 from TermTk.TTkAbstract.abstractitemmodel import TTkAbstractItemModel
@@ -157,6 +157,7 @@ class TTkTreeWidgetItem(TTkAbstractItemModel):
         '_sizeChangedHandler'
         )
 
+    _icon:List[TTkString]
     _children:List[TTkTreeWidgetItem]
     _buffer:_TTkTreeBuffer
     _sizeChangedHandler: Callable[[TTkTreeWidgetItem,int,int], None]
@@ -166,7 +167,7 @@ class TTkTreeWidgetItem(TTkAbstractItemModel):
                  expanded:bool=False,
                  selected:bool=False,
                  hidden:bool=False,
-                 icon:TTkString=None,
+                 icon:TTkStringType='',
                  childIndicatorPolicy:TTkK.ChildIndicatorPolicy =TTkK.ChildIndicatorPolicy.DontShowIndicatorWhenChildless,
                  **kwargs) -> None:
         # Signals
@@ -208,15 +209,15 @@ class TTkTreeWidgetItem(TTkAbstractItemModel):
         self._data, self._widgets = self._processDataInput(data)
         self._alignment = [TTkK.LEFT_ALIGN]*len(self._data)
 
-        self._icon = ['']*len(self._data)
+        self._icon = [TTkString()]*len(self._data)
         self._setDefaultIcon()
         if icon:
-            self._icon[0] = icon
+            self._icon[0] = ' '+TTkString(icon)+TTkString(' ')
             self._defaultIcon = False
         if parent:
             parent.addChild(self)
 
-    def _processDataInputWidget(self, widget, index):
+    def _processDataInputWidget(self, widget, index) -> TTkString:
         self._hasWidgets = True
         widget.hide()
         widget.sizeChanged.connect(self._widgetSizeChanged)
@@ -256,13 +257,13 @@ class TTkTreeWidgetItem(TTkAbstractItemModel):
 
     def _setDefaultIcon(self):
         if not self._defaultIcon: return
-        self._icon[0] = TTkCfg.theme.tree[0]
+        self._icon[0] = TTkString(' '+TTkCfg.theme.tree[0]+' ')
         if self._childIndicatorPolicy == TTkK.DontShowIndicatorWhenChildless and self._children or \
            self._childIndicatorPolicy == TTkK.ShowIndicator:
             if self._expanded:
-                self._icon[0] = TTkCfg.theme.tree[2]
+                self._icon[0] = TTkString(' '+TTkCfg.theme.tree[2]+' ')
             else:
-                self._icon[0] = TTkCfg.theme.tree[1]
+                self._icon[0] = TTkString(' '+TTkCfg.theme.tree[1]+' ')
 
     @pyTTkSlot(int, int)
     def _widgetSizeChanged(self, _, h):
@@ -449,15 +450,18 @@ class TTkTreeWidgetItem(TTkAbstractItemModel):
             return self._children.index(child)
         return None
 
-    def icon(self, col):
+    def icon(self, col) -> TTkString:
         if col >= len(self._icon):
-            return ''
+            return TTkString()
         return self._icon[col]
 
-    def setIcon(self, col, icon):
+    def setIcon(self, col:int, icon:TTkStringType) -> None:
         if col==0:
             self._defaultIcon = False
-        self._icon[col] = icon
+        if isinstance(icon,str):
+            self._icon[col] = TTkString(' '+icon+' ')
+        else:
+            self._icon[col] = ' '+icon+TTkString(' ')
         self.dataChanged.emit()
 
     def textAlignment(self, col):
@@ -469,9 +473,9 @@ class TTkTreeWidgetItem(TTkAbstractItemModel):
         self._alignment[col] = alignment
         self.dataChanged.emit()
 
-    def data(self, col, role=None):
+    def data(self, col, role=None) -> TTkString:
         if col >= len(self._data):
-            return ''
+            return TTkString()
         return self._data[col]
 
     def widget(self, col, role=None):
