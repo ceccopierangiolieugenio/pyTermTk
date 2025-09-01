@@ -1,5 +1,32 @@
 # Changelog
 
+## [0.46.0-a.0](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/pyTermTk-v0.45.0-a.0...pyTermTk-v0.46.0-a.0) (2025-09-01)
+
+
+### Fixes
+
+* **TTkList:** show items when search is emptied ([#450](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/450)) ([3db40ca](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/3db40ca8c652fa6e55850d1eb8c3cd414e17872d))
+
+
+### Features
+
+* handle stderr in TTkLog ([#448](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/448)) ([89c6cb5](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/89c6cb52f5209b91ba919778988701abcea4f8f3))
+* **Tab:** support for a single drop of multiple new tabs ([#437](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/437)) ([34e9a39](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/34e9a39dee0cc31f10bd591f459c9b194f6f8b2c))
+* **Tree:** add multiselect ([#436](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/436)) ([de0aefc](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/de0aefc11ef869cad807635297882641708c9a23))
+
+
+### Chores
+
+* add typing class ([5ee9e09](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/5ee9e09f587773085acbd5caf6874892b17f5cba))
+* **Tree:** allow multiselect mode to toggle item ([#441](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/441)) ([223a903](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/223a9038772de609e8b1e33b2c5eafa49b7c0555))
+* **TTkTree:** performance improvement due to smart caching ([#451](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/451)) ([26ce74c](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/26ce74c0225baa84b7212eb84e3fb843dd2ad480))
+
+
+### Document Changes
+
+* fix typo in the slider ([a3bad20](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/a3bad2024673bcfe4fa802a90bd65f214f9724bb))
+* **TextEdit:** reworked the forward messages ([5ed5429](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/5ed5429ecf7c0ba7062b9884002356cc2d9018e8))
+
 ## [0.45.0-a.0](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/pyTermTk-v0.44.0-a.0...pyTermTk-v0.45.0-a.0) (2025-07-28)
 
 
