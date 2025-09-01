@@ -267,7 +267,7 @@ class FindWidget(ttk.TTkContainer):
         self._replace_data = {'files':[]}
         for (file,root,matches) in self._search_files('.',search_pattern,self._runId,include_patterns,exclude_patterns):
             if self._search_stop_event.is_set():
-                break
+                return
 
             self._replace_data['files'].append({'file':file,'root':root,'matches':matches})
             # ttk.TTkLog.debug((file,matches))
@@ -278,6 +278,7 @@ class FindWidget(ttk.TTkContainer):
                     ttk.TTkString(f" {file} ", ttk.TTkColor.YELLOW+ttk.TTkColor.BOLD+ttk.TTkColor.bg('#000088')) +
                     ttk.TTkString(f" {root} ", ttk.TTkColor.fg("#888888"))
                 ],expanded=True)
+            children = []
             for num,line in matches:
                 line = line.lstrip(' ')
                 # index = line.find(search_pattern)
@@ -292,17 +293,17 @@ class FindWidget(ttk.TTkContainer):
                     ttkLine = ttk.TTkString(line.replace('\n','')).completeColor(
                             match=search_pattern,
                             color=ttk.TTkColor.GREEN)
-
-                item.addChild(
-                    _MatchTreeWidgetItem([ttk.TTkString(str(num)+" ",ttk.TTkColor.CYAN) + ttkLine] ,
+                children.append(_MatchTreeWidgetItem([ttk.TTkString(str(num)+" ",ttk.TTkColor.CYAN) + ttkLine] ,
                         match=line,
                         lineNumber=num,
                         path=os.path.join(root,file)))
+            item.addChildren(children)
             group.append(item)
             if len(group) > groupSize:
                 self._results_tree.addTopLevelItems(group)
                 group = []
-                groupSize <<= 1
+                if groupSize < 0x400:
+                    groupSize <<= 1
             # self._results_tree.addTopLevelItem(item)
         if group:
             self._results_tree.addTopLevelItems(group)
