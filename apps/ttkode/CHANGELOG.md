@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.5.0-a.2](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/ttkode-v0.4.0-a.2...ttkode-v0.5.0-a.2) (2025-09-01)
+
+
+### Features
+
+* add replace feature ([#444](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/444)) ([af59c33](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/af59c3391f0899db3a8445cf3d38a9612124ff32))
+* allow multiple files to be selected and dragged ([#438](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/438)) ([9fe249c](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/9fe249c0d24b46a4fd8381c7032f408581e7f5c5))
+* **FindPlugin:** support include and exclude files ([#443](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/443)) ([e7103c7](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/e7103c7b61850d44eda54aeb434a51a465151d32))
+
+
+### Chores
+
+* limit max find results to 1024 ([d54f4c1](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/d54f4c1e2e0475d12c02805c9b94d4e35b1e0bd7))
+
 ## [0.4.0-a.2](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/ttkode-v0.3.2-a.2...ttkode-v0.4.0-a.2) (2025-06-03)
 
 
