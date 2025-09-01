@@ -305,28 +305,24 @@ class TTkTreeWidget(TTkAbstractScrollView):
         self._rootItem = _RootWidgetItem()
         self._rootItem.dataChanged.connect(self._refreshCache)
         self.sortItems(self._sortColumn, self._sortOrder)
-        self._refreshCache()
         self.viewChanged.emit()
         self.update()
 
     def addTopLevelItem(self, item:TTkTreeWidgetItem) -> None:
         '''addTopLevelItem'''
         self._rootItem.addChild(item)
-        self._refreshCache()
         self.viewChanged.emit()
         self.update()
 
     def addTopLevelItems(self, items:TTkTreeWidgetItem) -> None:
         '''addTopLevelItems'''
         self._rootItem.addChildren(items)
-        self._refreshCache()
         self.viewChanged.emit()
         self.update()
 
     def takeTopLevelItem(self, index) -> None:
         '''takeTopLevelItem'''
         self._rootItem.takeChild(index)
-        self._refreshCache()
         self.viewChanged.emit()
         self.update()
 
@@ -424,7 +420,6 @@ class TTkTreeWidget(TTkAbstractScrollView):
         self._rootItem.dataChanged.disconnect(self._refreshCache)
         self._rootItem.expandAll()
         self._rootItem.dataChanged.connect(self._refreshCache)
-        self._refreshCache()
 
     @pyTTkSlot()
     def collapseAll(self) -> None:
@@ -434,7 +429,6 @@ class TTkTreeWidget(TTkAbstractScrollView):
         self._rootItem.dataChanged.disconnect(self._refreshCache)
         self._rootItem.collapseAll()
         self._rootItem.dataChanged.connect(self._refreshCache)
-        self._refreshCache()
 
     def mouseDoubleClickEvent(self, evt:TTkMouseEvent) -> bool:
         x,y = evt.x, evt.y
@@ -461,7 +455,6 @@ class TTkTreeWidget(TTkAbstractScrollView):
                     self.itemExpanded.emit(item)
                 else:
                     self.itemCollapsed.emit(item)
-                self._refreshCache()
             for _s in self._selected:
                 _s.setSelected(False)
             self._selectedId = y
@@ -515,7 +508,6 @@ class TTkTreeWidget(TTkAbstractScrollView):
                     self.itemExpanded.emit(item)
                 else:
                     self.itemCollapsed.emit(item)
-                self._refreshCache()
             else:
                 if self._selectionMode in (TTkK.SelectionMode.SingleSelection,TTkK.SelectionMode.MultiSelection):
                     _multiSelect = self._selectionMode == TTkK.SelectionMode.MultiSelection

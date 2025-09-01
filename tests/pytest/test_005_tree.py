@@ -71,7 +71,7 @@ def _create_tree() -> Tuple[ttk.TTkTreeWidgetItem,ttk.TTkTreeWidgetItem,ttk.TTkT
     return l0, l2, l5
 
 def _format_item(item:ttk.TTkTreeWidgetItem) -> str:
-    return f"{item.data(0)}          {item.data(1)} {item.data(2)}".replace('\n','_\\n_')
+    return f"{item.data(0)} h:{item.height()}         {item.data(1)} {item.data(2)}".replace('\n','_\\n_')
 
 def _print_tree(child:ttk.TTkTreeWidgetItem, level:int=0):
     if child.isExpanded() and child.children():
@@ -210,12 +210,12 @@ def _loop_2(item:ttk.TTkTreeWidgetItem):
             _loop_2(_ch)
 
 def test_tree_sizes_simple_1():
-    l0   = ttk.TTkTreeWidgetItem(["XX0","XX0","XX0"], expanded=True)
-    l1   = ttk.TTkTreeWidgetItem(["String A", "String B", "String C"], expanded=True)
-    l2   = ttk.TTkTreeWidgetItem(["String AA", "String BB", "String CC"], expanded=True)
-    l3   = ttk.TTkTreeWidgetItem(["String AAA\nAAA\nAAA", "String BBB", "String CCC"], expanded=False)
-    l4   = ttk.TTkTreeWidgetItem(["String AAAA", "String BBBB", "String CCCC"], expanded=True)
-    l5   = ttk.TTkTreeWidgetItem(["String AAAAA", "String BBBBB\nB\nB", "String CCCCC"], expanded=True)
+    l0   = ttk.TTkTreeWidgetItem(["l0 XX0","XX0","XX0"], expanded=True)
+    l1   = ttk.TTkTreeWidgetItem(["l1 String A", "String B", "String C"], expanded=True)
+    l2   = ttk.TTkTreeWidgetItem(["l2 String AA", "String BB", "String CC"], expanded=True)
+    l3   = ttk.TTkTreeWidgetItem(["l3 String AAA\nAAA\nAAA", "String BBB", "String CCC"], expanded=False)
+    l4   = ttk.TTkTreeWidgetItem(["l4 String AAAA", "String BBBB", "String CCCC"], expanded=True)
+    l5   = ttk.TTkTreeWidgetItem(["l5 String AAAAA", "String BBBBB\nB\nB", "String CCCCC"], expanded=True)
 
     l0.addChildren([l1,l2,l4])
     l1.addChild(l3)
@@ -292,6 +292,36 @@ def test_tree_sizes_simple_4_expanding():
     _expand_test(l4)
     _expand_test(l5)
 
+def test_tree_sizes_widgets_1():
+
+    btn_1 = ttk.TTkButton(text='Test B 1', border=True, height=5)
+    btn_2 = ttk.TTkButton(text='Test B 2', border=True, height=5)
+    btn_3 = ttk.TTkButton(text='Test B 3', border=True, height=5)
+
+    l0   = ttk.TTkTreeWidgetItem(["l0 XX0","XX0","XX0"], expanded=True)
+    l1   = ttk.TTkTreeWidgetItem(["l1 String A", "String B", "String C"], expanded=True)
+    l2   = ttk.TTkTreeWidgetItem(["l2 String AA", "String BB", "String CC"], expanded=True)
+    l3   = ttk.TTkTreeWidgetItem([btn_1, "l3 String BBB", "String CCC"], expanded=False)
+    l4   = ttk.TTkTreeWidgetItem(["l4 String AAAA", "String BBBB", btn_3], expanded=True)
+    l5   = ttk.TTkTreeWidgetItem(["l5 String AAAAA", btn_2, "String CCCCC"], expanded=True)
+
+    l0.addChildren([l1,l2,l4])
+    l1.addChild(l3)
+    l3.addChild(l5)
+
+    print('\nTree:')
+    _print_tree(l0)
+
+    _loop_1(l0)
+
+    assert l0.size() == 13
+    btn_1.resize(10,10)
+    assert l0.size() == 18
+    btn_2.resize(10,10)
+    assert l0.size() == 18
+    btn_3.resize(10,10)
+    assert l0.size() == 23
+
 def test_tree_sizes_complex():
     tree,c1,c2 = _create_tree()
 
@@ -365,4 +395,32 @@ def test_tree_get_page():
     for a,b,c in page:
         print(a, b, '  '*a, _format_item(c))
 
+def test_tree_sort():
+    tree,c1,c2 = _create_tree()
 
+    def _test():
+        full_page = _get_full_tree_page(tree)
+        page = tree._get_page(0,0,10000)
+        assert (
+            [f"{c.isExpanded()} {c.data(0)}" for c in full_page] ==
+            [f"{c.isExpanded()} {c.data(0)}" for _,_,c in page] )
+
+    _test()
+
+    tree.sortChildren(0,ttk.TTkK.AscendingOrder)
+    _test()
+
+    tree.sortChildren(0,ttk.TTkK.DescendingOrder)
+    _test()
+
+    tree.sortChildren(1,ttk.TTkK.AscendingOrder)
+    _test()
+
+    tree.sortChildren(1,ttk.TTkK.DescendingOrder)
+    _test()
+
+    tree.sortChildren(2,ttk.TTkK.AscendingOrder)
+    _test()
+
+    tree.sortChildren(2,ttk.TTkK.DescendingOrder)
+    _test()
