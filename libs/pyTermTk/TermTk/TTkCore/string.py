@@ -119,7 +119,7 @@ class TTkString():
     def __str__(self) -> str:
         return self._text
 
-    def __add__(self, other:TTkString) -> TTkString:
+    def __add__(self, other:Union[TTkStringType,TTkColor]) -> TTkString:
         ret = TTkString()
         ret._baseColor = self._baseColor
         if   isinstance(other, TTkString):
@@ -141,7 +141,7 @@ class TTkString():
             ret._baseColor = other
         return ret
 
-    def __radd__(self, other:TTkString) -> TTkString:
+    def __radd__(self, other:TTkStringType) -> TTkString:
         ret = TTkString()
         ret._baseColor = self._baseColor
         if  isinstance(other, TTkString):

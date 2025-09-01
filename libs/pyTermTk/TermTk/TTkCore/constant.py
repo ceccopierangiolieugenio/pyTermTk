@@ -262,7 +262,7 @@ class TTkConstant:
     DontShowIndicator              = ChildIndicatorPolicy.DontShowIndicator
     DontShowIndicatorWhenChildless = ChildIndicatorPolicy.DontShowIndicatorWhenChildless
 
-    class SortOrder(int):
+    class SortOrder(IntEnum):
         '''This enum describes how the items in a widget are sorted.
 
         .. autosummary::
@@ -418,7 +418,7 @@ class TTkConstant:
     Input_Password  = 0x04
 
     # Alignment
-    class Alignment(int):
+    class Alignment(IntEnum):
         ''' This type is used to describe alignment.
 
         .. autosummary::

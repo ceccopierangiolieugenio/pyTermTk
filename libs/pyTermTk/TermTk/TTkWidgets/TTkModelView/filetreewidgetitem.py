@@ -24,6 +24,8 @@ __all__ = ['TTkFileTreeWidgetItem']
 
 import re
 
+from TermTk.TTkCore.cfg import TTkCfg
+from TermTk.TTkCore.string import TTkString
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkWidgets.TTkModelView.treewidgetitem import TTkTreeWidgetItem
 
@@ -44,7 +46,7 @@ class TTkFileTreeWidgetItem(TTkTreeWidgetItem):
         self.setTextAlignment(1, TTkK.RIGHT_ALIGN)
 
     def setFilter(self, filter:str) -> None:
-        for c in self._children:
+        for c in self.children():
             c.dataChanged.disconnect(self.emitDataChanged)
             c._processFilter(filter)
             c.setFilter(filter)
@@ -58,6 +60,17 @@ class TTkFileTreeWidgetItem(TTkTreeWidgetItem):
                 self.setHidden(False)
             else:
                 self.setHidden(True)
+
+    def icon(self, col):
+        if col > 0:
+            return super().icon(col)
+        if self._type == TTkFileTreeWidgetItem.FILE:
+            return TTkString( ' '+TTkCfg.theme.fileIcon.getIcon(self._path)+' ', TTkCfg.theme.fileIconColor)
+        else:
+            if self._expanded:
+                return TTkString(' '+TTkCfg.theme.fileIcon.folderOpen+' ', TTkCfg.theme.folderIconColor)
+            else:
+                return TTkString(' '+TTkCfg.theme.fileIcon.folderClose+' ', TTkCfg.theme.folderIconColor)
 
     def sortData(self, col:int):
         return self._raw[col]
