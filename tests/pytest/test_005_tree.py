@@ -424,3 +424,27 @@ def test_tree_sort():
 
     tree.sortChildren(2,ttk.TTkK.DescendingOrder)
     _test()
+
+
+def test_tree_take_child():
+    tree,c1,c2 = _create_tree()
+
+    print('\nTree:')
+    _print_tree(tree)
+
+    def _test_page():
+        full_page = _get_full_tree_page(tree)
+        page = tree._get_page(0,0,1000)
+        assert len(full_page) == tree.size() == len(page)
+        assert (
+            [f"{c.isExpanded()} {c.data(0)}" for c in full_page] ==
+            [f"{c.isExpanded()} {c.data(0)}" for _,_,c in page] )
+        print(f"Testing: size={len(page)},{tree.size()}")
+
+    _test_page()
+
+    c2.takeChild(1)
+    _test_page()
+
+    c1.takeChildren()
+    _test_page()
