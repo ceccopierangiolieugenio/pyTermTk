@@ -100,9 +100,10 @@ def _add_many():
             _entries = []
             num = num<<1
             for ii in range(num):
+                _txt = f"Child A {ii}" + '\n'.join([f"l:{ii} - {_i}" for _i in range(ii)])
                 _e   = ttk.TTkTreeWidgetItem([f"({i}-{ii}) String A", "String B", "String C"])
                 _e.addChildren([
-                    ttk.TTkTreeWidgetItem(["Child A" + str(ii) + (f"\nl:{ii}"*ii), "Child B" + str(ii), "Child C" + str(ii)])
+                    ttk.TTkTreeWidgetItem([_txt, "Child B" + str(ii), "Child C" + str(ii)])
                     for i in range(3)
                     ])
                 _entries.append(_e)
@@ -123,9 +124,10 @@ def _add_enough():
             _entries = []
             num = num<<1
             for ii in range(num):
+                _txt = f"Child A {ii}" + '\n'.join([f"l:{ii} - {_i}" for _i in range(ii)])
                 _e   = ttk.TTkTreeWidgetItem([f"({i}-{ii}) String A", "String B", "String C"])
                 _e.addChildren([
-                    ttk.TTkTreeWidgetItem(["Child A" + str(ii) + (f"\nl:{ii}"*ii), "Child B" + str(ii), "Child C" + str(ii)])
+                    ttk.TTkTreeWidgetItem([_txt, "Child B" + str(ii), "Child C" + str(ii)])
                     for i in range(3)
                     ])
                 _entries.append(_e)

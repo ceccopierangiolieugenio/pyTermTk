@@ -448,3 +448,25 @@ def test_tree_take_child():
 
     c1.takeChildren()
     _test_page()
+
+def test_tree_show_hide():
+    l0   = ttk.TTkTreeWidgetItem(["l0", "l0", "l0", "l0", "l0"],expanded=True)
+    l1   = ttk.TTkTreeWidgetItem(["l1", "l1", "l1", "l1", "l1"],expanded=True)
+    l2   = ttk.TTkTreeWidgetItem(["l2", "l2", "l2", "l2", "l2"],expanded=True)
+    l3   = ttk.TTkTreeWidgetItem(["l3", "l3", "l3", "l3", "l3"],expanded=True)
+    l4   = ttk.TTkTreeWidgetItem(["l4", "l4", "l4", "l4", "l4"],expanded=True)
+    l5   = ttk.TTkTreeWidgetItem(["l5", "l5", "l5", "l5", "l5"],expanded=True)
+
+    l0.addChildren([l1,l2,l4])
+    l1.addChild(l3)
+    l3.addChild(l5)
+
+    print(l0.size())
+    l5.setHidden(True)
+    print(l0.size())
+    l4.setHidden(True)
+    print(l0.size())
+    l5.setHidden(False)
+    print(l0.size())
+    l4.setHidden(False)
+    print(l0.size())

@@ -186,7 +186,7 @@ class _TTkTreeChildren(TTkAbstractItemModel):
         return None
 
     def children(self) -> List[TTkTreeWidgetItem]:
-        return [x for x in self._children if not x.isHidden()]
+        return self._children
 
     def indexOfChild(self, child:TTkTreeWidgetItem) -> Optional[int]:
         if child in self._children:
@@ -370,9 +370,11 @@ class TTkTreeWidgetItem(TTkAbstractItemModel):
             self._sizeChangedHandler(self,diffSize)
 
     def height(self):
-        return self._height
+        return 0 if self._hidden else self._height
 
     def _get_page(self, level:int, index:int, size:int) -> List[Tuple[int,int,TTkTreeWidgetItem]]:
+        if self._hidden:
+            return []
         _h = self._height
         _to = index+size
 
@@ -402,6 +404,10 @@ class TTkTreeWidgetItem(TTkAbstractItemModel):
         if hide == self._hidden:
             return
         self._hidden = hide
+        if hide:
+            self._sizeChangedHandler(self,-self._height)
+        else:
+            self._sizeChangedHandler(self,self._height)
         self.emitDataChanged()
 
     def childIndicatorPolicy(self) -> TTkK.ChildIndicatorPolicy:
@@ -552,6 +558,8 @@ class TTkTreeWidgetItem(TTkAbstractItemModel):
         return self._selected
 
     def size(self) -> int:
+        if self._hidden:
+            return 0
         if ( self._expanded and
              self._children ):
             return self._height + self._children.size()
