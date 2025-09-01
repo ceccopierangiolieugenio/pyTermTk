@@ -46,7 +46,7 @@ class TTkFileTreeWidgetItem(TTkTreeWidgetItem):
         self.setTextAlignment(1, TTkK.RIGHT_ALIGN)
 
     def setFilter(self, filter:str) -> None:
-        for c in self._children:
+        for c in self.children():
             c.dataChanged.disconnect(self.emitDataChanged)
             c._processFilter(filter)
             c.setFilter(filter)

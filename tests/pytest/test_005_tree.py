@@ -39,6 +39,9 @@ def _gen_childs(num:int,prefix:str,nesting=2) -> List[ttk.TTkTreeWidgetItem]:
             _c.addChildren(_gen_childs(num,f"{prefix}_X",nesting-1))
     return ret
 
+def _add_children(item:ttk.TTkTreeWidgetItem):
+    item.addChildren(_gen_childs(4,'l2',2))
+
 def _create_tree() -> Tuple[ttk.TTkTreeWidgetItem,ttk.TTkTreeWidgetItem,ttk.TTkTreeWidgetItem]:
     l0   = ttk.TTkTreeWidgetItem(["XX0","XX0","XX0"])
     l1   = ttk.TTkTreeWidgetItem(["String A", "String B", "String C"])
@@ -68,7 +71,7 @@ def _create_tree() -> Tuple[ttk.TTkTreeWidgetItem,ttk.TTkTreeWidgetItem,ttk.TTkT
     return l0, l2, l5
 
 def _format_item(item:ttk.TTkTreeWidgetItem) -> str:
-    return f"{item.data(0)}          {item.data(1)} {item.data(2)}"
+    return f"{item.data(0)}          {item.data(1)} {item.data(2)}".replace('\n','_\\n_')
 
 def _print_tree(child:ttk.TTkTreeWidgetItem, level:int=0):
     if child.isExpanded() and child.children():
@@ -80,36 +83,36 @@ def _print_tree(child:ttk.TTkTreeWidgetItem, level:int=0):
     else:
         print('  '*level, ' - ', _format_item(child))
 
-def test_tree_item_iterate_skip():
-    tree,_,_ = _create_tree()
+# def test_tree_item_iterate_skip():
+#     tree,_,_ = _create_tree()
 
-    print('\nTree:')
-    _print_tree(tree)
+#     print('\nTree:')
+#     _print_tree(tree)
 
-    # for i,(a,b) in enumerate(tree.iterate()):
-    #     print(f"{i:03} - ", b, '  '*b, _format_item(a))
+#     # for i,(a,b) in enumerate(tree.iterate()):
+#     #     print(f"{i:03} - ", b, '  '*b, _format_item(a))
 
-    # print('\nSkip 3')
-    # for i,(a,b) in enumerate(tree.iterate(skip=3),3):
-    #     print(f"{i:03} - ", b, '  '*b, _format_item(a))
+#     # print('\nSkip 3')
+#     # for i,(a,b) in enumerate(tree.iterate(skip=3),3):
+#     #     print(f"{i:03} - ", b, '  '*b, _format_item(a))
 
-    # print('\nSkip 7')
-    # for i,(a,b) in enumerate(tree.iterate(skip=7),7):
-    #     print(f"{i:03} - ", b, '  '*b, _format_item(a))
+#     # print('\nSkip 7')
+#     # for i,(a,b) in enumerate(tree.iterate(skip=7),7):
+#     #     print(f"{i:03} - ", b, '  '*b, _format_item(a))
 
-    full = [(a,b) for a,b in tree._iterate()]
+#     full = [(a,b) for a,b in tree._iterate()]
 
-    assert full      == [(a,b) for a,b in tree._iterate()]
-    assert full      == [(a,b) for a,b in tree._iterate(skip= 0)]
-    assert full[ 3:] == [(a,b) for a,b in tree._iterate(skip= 3)]
-    assert full[ 5:] == [(a,b) for a,b in tree._iterate(skip= 5)]
-    assert full[ 6:] == [(a,b) for a,b in tree._iterate(skip= 6)]
-    assert full[10:] == [(a,b) for a,b in tree._iterate(skip=10)]
-    assert full[15:] == [(a,b) for a,b in tree._iterate(skip=15)]
-    assert full[20:] == [(a,b) for a,b in tree._iterate(skip=20)]
-    assert full[30:] == [(a,b) for a,b in tree._iterate(skip=30)]
-    assert full[80:] == [(a,b) for a,b in tree._iterate(skip=80)]
-    assert []        == [(a,b) for a,b in tree._iterate(skip=80)]
+#     assert full      == [(a,b) for a,b in tree._iterate()]
+#     assert full      == [(a,b) for a,b in tree._iterate(skip= 0)]
+#     assert full[ 3:] == [(a,b) for a,b in tree._iterate(skip= 3)]
+#     assert full[ 5:] == [(a,b) for a,b in tree._iterate(skip= 5)]
+#     assert full[ 6:] == [(a,b) for a,b in tree._iterate(skip= 6)]
+#     assert full[10:] == [(a,b) for a,b in tree._iterate(skip=10)]
+#     assert full[15:] == [(a,b) for a,b in tree._iterate(skip=15)]
+#     assert full[20:] == [(a,b) for a,b in tree._iterate(skip=20)]
+#     assert full[30:] == [(a,b) for a,b in tree._iterate(skip=30)]
+#     assert full[80:] == [(a,b) for a,b in tree._iterate(skip=80)]
+#     assert []        == [(a,b) for a,b in tree._iterate(skip=80)]
 
 
 
@@ -130,57 +133,190 @@ def test_tree_item_iterate_skip_2():
     for i,item in enumerate(gen):
         print(i, item)
 
-def test_tree_item_listify():
+# def test_tree_item_listify():
+#     tree,c1,c2 = _create_tree()
+
+#     print('\nTree:')
+#     _print_tree(tree)
+
+#     for i,(a,b,c) in enumerate(tree.listify()):
+#         print(f"{i:03} - ", b, c, '  '*b, _format_item(a))
+
+#     full = [(a,b) for a,b in tree._iterate()]
+
+#     print('expand')
+#     c1.setExpanded(False)
+#     for i,(a,b,c) in enumerate(tree.listify()):
+#         print(f"{i:03} - ", b, c, '  '*b, _format_item(a))
+
+#     print('expand')
+#     c1.setExpanded(True)
+#     for i,(a,b,c) in enumerate(tree.listify()):
+#         print(f"{i:03} - ", b, c, '  '*b, _format_item(a))
+
+#     print('expand')
+#     c2.setExpanded(False)
+#     for i,(a,b,c) in enumerate(tree.listify()):
+#         print(f"{i:03} - ", b, c, '  '*b, _format_item(a))
+
+#     print('expand')
+#     c2.setExpanded(True)
+#     for i,(a,b,c) in enumerate(tree.listify()):
+#         print(f"{i:03} - ", b, c, '  '*b, _format_item(a))
+
+#     print('expand c1 False')
+#     c1.setExpanded(False)
+#     for i,(a,b,c) in enumerate(tree.listify()):
+#         print(f"{i:03} - ", b, c, '  '*b, _format_item(a))
+
+#     print('expand c2 False')
+#     c2.setExpanded(False)
+#     for i,(a,b,c) in enumerate(tree.listify()):
+#         print(f"{i:03} - ", b, c, '  '*b, _format_item(a))
+
+#     print('expand c2 True')
+#     c2.setExpanded(True)
+#     for i,(a,b,c) in enumerate(tree.listify()):
+#         print(f"{i:03} - ", b, c, '  '*b, _format_item(a))
+
+#     print('expand c1 True')
+#     c1.setExpanded(True)
+#     for i,(a,b,c) in enumerate(tree.listify()):
+#         print(f"{i:03} - ", b, c, '  '*b, _format_item(a))
+
+def _get_node_size(item:ttk.TTkTreeWidgetItem):
+    size = item.height()
+    if item.isExpanded():
+        for _ch in item.children():
+            size += _get_node_size(_ch)
+    return size
+
+def _test_size_ch(ch:ttk.TTkTreeWidgetItem):
+    print(_format_item(ch))
+    assert _get_node_size(ch) == ch.size() , _format_item(ch)
+
+# Test first the children and the parent
+def _loop_1(item:ttk.TTkTreeWidgetItem):
+    if item.isExpanded():
+        for _ch in item.children():
+            _loop_1(_ch)
+    _test_size_ch(item)
+
+# Test first the parent and the children
+def _loop_2(item:ttk.TTkTreeWidgetItem):
+    _test_size_ch(item)
+    if item.isExpanded():
+        for _ch in item.children():
+            _loop_2(_ch)
+
+def test_tree_sizes_simple_1():
+    l0   = ttk.TTkTreeWidgetItem(["XX0","XX0","XX0"], expanded=True)
+    l1   = ttk.TTkTreeWidgetItem(["String A", "String B", "String C"], expanded=True)
+    l2   = ttk.TTkTreeWidgetItem(["String AA", "String BB", "String CC"], expanded=True)
+    l3   = ttk.TTkTreeWidgetItem(["String AAA\nAAA\nAAA", "String BBB", "String CCC"], expanded=False)
+    l4   = ttk.TTkTreeWidgetItem(["String AAAA", "String BBBB", "String CCCC"], expanded=True)
+    l5   = ttk.TTkTreeWidgetItem(["String AAAAA", "String BBBBB\nB\nB", "String CCCCC"], expanded=True)
+
+    l0.addChildren([l1,l2,l4])
+    l1.addChild(l3)
+    l3.addChild(l5)
+
+    _loop_1(l0)
+
+def test_tree_sizes_simple_2():
+    l0   = ttk.TTkTreeWidgetItem(["XX0","XX0","XX0"], expanded=False)
+    l1   = ttk.TTkTreeWidgetItem(["String A", "String B", "String C"], expanded=False)
+    l2   = ttk.TTkTreeWidgetItem(["String AA", "String BB", "String CC"], expanded=False)
+
+    l0.addChild(l1)
+
+    l0.setExpanded(True)
+    l1.setExpanded(True)
+    l2.setExpanded(True)
+
+    l1.addChild(l2)
+
+    assert _get_node_size(l0) == l0.size() , _format_item(l0)
+
+def test_tree_sizes_simple_3():
+    l0   = ttk.TTkTreeWidgetItem(["XX0","XX0","XX0"], expanded=True)
+    l1   = ttk.TTkTreeWidgetItem(["String A", "String B", "String C"], expanded=True)
+    l3   = ttk.TTkTreeWidgetItem(["String AAA\nAAA\nAAA", "String BBB", "String CCC"], expanded=False)
+    l5   = ttk.TTkTreeWidgetItem(["String AAAAA", "String BBBBB\nB\nB", "String CCCCC"], expanded=True)
+
+    l0.addChild(l1)
+    l1.addChild(l3)
+    l3.addChild(l5)
+
+    _loop_1(l0)
+
+def test_tree_sizes_simple_4_expanding():
+    l0   = ttk.TTkTreeWidgetItem(["XX0","XX0","XX0"], expanded=True)
+    l1   = ttk.TTkTreeWidgetItem(["String A", "String B", "String C"], expanded=True)
+    l2   = ttk.TTkTreeWidgetItem(["String AA", "String BB", "String CC"], expanded=True)
+    l3   = ttk.TTkTreeWidgetItem(["String AAA\nAAA\nAAA", "String BBB", "String CCC"], expanded=False)
+    l4   = ttk.TTkTreeWidgetItem(["String AAAA", "String BBBB", "String CCCC"], expanded=True)
+    l5   = ttk.TTkTreeWidgetItem(["String AAAAA", "String BBBBB\nB\nB", "String CCCCC"], expanded=True)
+
+    l0.addChildren([l1,l2,l4])
+    l1.addChild(l3)
+    l3.addChild(l5)
+
+    def _expand_test(item:ttk.TTkTreeWidgetItem):
+        item.setExpanded(True)
+        _loop_1(item)
+        item.setExpanded(False)
+        _loop_1(item)
+        item.setExpanded(True)
+        _loop_1(item)
+        for ch in item.children():
+            ch.setExpanded(True)
+            _loop_1(item)
+            ch.setExpanded(False)
+            _loop_1(item)
+            ch.setExpanded(True)
+            _loop_1(item)
+            ch.collapseAll()
+            _loop_1(item)
+            ch.expandAll()
+            _loop_1(item)
+        item.collapseAll()
+        _loop_1(item)
+        item.expandAll()
+        _loop_1(item)
+
+    _expand_test(l0)
+    _expand_test(l1)
+    _expand_test(l2)
+    _expand_test(l3)
+    _expand_test(l4)
+    _expand_test(l5)
+
+def test_tree_sizes_complex():
     tree,c1,c2 = _create_tree()
 
-    print('\nTree:')
-    _print_tree(tree)
+    _loop_1(tree)
 
-    for i,(a,b,c) in enumerate(tree.listify()):
-        print(f"{i:03} - ", b, c, '  '*b, _format_item(a))
+    tree,c1,c2 = _create_tree()
 
-    full = [(a,b) for a,b in tree._iterate()]
+    _loop_2(tree)
 
-    print('expand')
-    c1.setExpanded(False)
-    for i,(a,b,c) in enumerate(tree.listify()):
-        print(f"{i:03} - ", b, c, '  '*b, _format_item(a))
+def test_tree_sizes_adding_nodes():
+    tree,c1,c2 = _create_tree()
 
-    print('expand')
-    c1.setExpanded(True)
-    for i,(a,b,c) in enumerate(tree.listify()):
-        print(f"{i:03} - ", b, c, '  '*b, _format_item(a))
+    _loop_1(tree)
+    _add_children(c1)
+    _loop_1(tree)
+    _add_children(c2)
+    _loop_1(tree)
 
-    print('expand')
-    c2.setExpanded(False)
-    for i,(a,b,c) in enumerate(tree.listify()):
-        print(f"{i:03} - ", b, c, '  '*b, _format_item(a))
+    tree,c1,c2 = _create_tree()
 
-    print('expand')
-    c2.setExpanded(True)
-    for i,(a,b,c) in enumerate(tree.listify()):
-        print(f"{i:03} - ", b, c, '  '*b, _format_item(a))
-
-    print('expand c1 False')
-    c1.setExpanded(False)
-    for i,(a,b,c) in enumerate(tree.listify()):
-        print(f"{i:03} - ", b, c, '  '*b, _format_item(a))
-
-    print('expand c2 False')
-    c2.setExpanded(False)
-    for i,(a,b,c) in enumerate(tree.listify()):
-        print(f"{i:03} - ", b, c, '  '*b, _format_item(a))
-
-    print('expand c2 True')
-    c2.setExpanded(True)
-    for i,(a,b,c) in enumerate(tree.listify()):
-        print(f"{i:03} - ", b, c, '  '*b, _format_item(a))
-
-    print('expand c1 True')
-    c1.setExpanded(True)
-    for i,(a,b,c) in enumerate(tree.listify()):
-        print(f"{i:03} - ", b, c, '  '*b, _format_item(a))
-
+    _loop_2(tree)
+    _add_children(c1)
+    _loop_1(tree)
+    _add_children(c2)
+    _loop_1(tree)
 
 def _get_full_tree_page(item:ttk.TTkTreeWidgetItem) -> List[ttk.TTkTreeWidgetItem]:
     ret = [item]*item._height
@@ -200,7 +336,9 @@ def test_tree_get_page():
     def _test_page(index,size):
         page = tree._get_page(0,index,size)
         # print(f"Testing: {index=} {size=} , page size={len(page)}")
-        assert [f"{c.isExpanded()} {c.data(0)}" for c in full_page[index:index+size]] == [f"{c.isExpanded()} {c.data(0)}" for a,b,c in page]
+        assert (
+            [f"{c.isExpanded()} {c.data(0)}" for c in full_page[index:index+size]] ==
+            [f"{c.isExpanded()} {c.data(0)}" for _,_,c in page] )
 
     # _test_page(0,1)
     # _test_page(0,2)

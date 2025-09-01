@@ -301,9 +301,18 @@ class TTkLayout(TTkLayoutItem):
         '''removeItem'''
         self.removeItems([item])
 
+    def clear(self) -> None:
+        '''clear'''
+        for item in self._items:
+            if item._layoutItemType == TTkK.WidgetItem:
+                item.widget().setParent(None)
+            item.setParent(None)
+        self._items = []
+        self._zSortItems()
+
     def removeItems(self, items):
         '''removeItems'''
-        for item in items:
+        for item in items.copy():
             if item in self._items:
                 self._items.remove(item)
                 if item._layoutItemType == TTkK.WidgetItem:

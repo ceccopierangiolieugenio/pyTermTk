@@ -35,88 +35,195 @@ from TermTk.TTkWidgets import TTkWidget
 from TermTk.TTkAbstract.abstractitemmodel import TTkAbstractItemModel
 
 @dataclass
-class _TTkTreePageItem():
-    y:int
-    level:int
-    item:TTkTreeWidgetItem
+class _TTkTreeChildren(TTkAbstractItemModel):
+    __slots__ = (
+        '_parent',
+        '_level',
+        '_total_size',
+        '_buffer','_buffer_link',
+        '_children',
+        '_childrenSizeChanged', '_childrenSizeChangedHandler')
 
-@dataclass
-class _TTkTreeBuffer():
-    level:int
-    total_size:int
-    buffered_size:int
-    buffer:List[Tuple[int,int,TTkTreeWidgetItem]]
-    buffer_link:List[Tuple[int,int]]
+    _parent:TTkTreeWidgetItem
+    _level:int
+    _total_size:int
+    _buffer:List[Tuple[int,int,TTkTreeWidgetItem]]
+    _buffer_link:List[Tuple[int,int]]
+    _children: List[TTkTreeWidgetItem]
+    _childrenSizeChangedHandler: Callable[[TTkTreeWidgetItem,int,int], None]
 
+    def __init__(self, parent:TTkTreeWidgetItem):
+        self._parent = parent
+        self._childrenSizeChanged = pyTTkSignal(TTkTreeWidgetItem,int)
+        self._level = 0
+        self._total_size = 0
+        self._buffer = []
+        self._buffer_link = []
+        self._children = []
 
-    def __init__(self):
-        self.level = 0
-        self.total_size = 0
-        self.buffer = []
-        self.buffer_link = []
-        self._gen:Optional[Iterator] = None
+        @pyTTkSlot(TTkTreeWidgetItem, int)
+        def _sch(item:TTkTreeWidgetItem, diffSize:int) -> None:
+            self.clearBufferFromIndex(self._children.index(item))
+            self._total_size += diffSize
+            self._childrenSizeChanged.emit(self, diffSize)
+        self._childrenSizeChangedHandler = _sch
+
+        super().__init__()
 
     def get_link(self, index:int) -> int:
         if index<0:
             return 0
-        if index >= len(self.buffer_link):
-            return len(self.buffer)
-        return self.buffer_link[index][0]
+        if index >= len(self._buffer_link):
+            return len(self._buffer)
+        return self._buffer_link[index][0]
 
     def clearBuffer(self):
-        self.buffer = []
-        self.buffer_link = []
+        self._buffer = []
+        self._buffer_link = []
 
     def clearBufferFromIndex(self, index:int) -> None:
         if index<0:
             self.clearBuffer()
-        elif index >= len(self.buffer_link):
+        elif index >= len(self._buffer_link):
             pass
         else:
-            link = self.buffer_link[index][0]
-            self.buffer[link:] = []
-            self.buffer_link[index+1:] = []
-            link = self.buffer_link[index] = (link,0)
+            link = self._buffer_link[index][0]
+            self._buffer[link:] = []
+            self._buffer_link[index+1:] = []
+            self._buffer_link[index] = (link,0)
 
-    def get_page(self, item:TTkTreeWidgetItem, level:int, index:int, size:int) -> List[Tuple[int,int,TTkTreeWidgetItem]]:
+    def get_page(self, level:int, index:int, size:int) -> List[Tuple[int,int,TTkTreeWidgetItem]]:
         # Add the item to the buffer
-        if self.level != level:
+        if self._level != level:
             self.clearBuffer()
-            self.level = level
-        if not self.buffer:
-            self.buffer = [(level, _y, item) for _y in range(item._height)]
-            self.buffer_link = [(item._height, 0)]
+            self._level = level
+        if not self._buffer:
+            self._buffer_link = [(0, 0)]
         final_index = index+size
-        buffered_size = len(self.buffer)
-        if item._expanded:
-            while buffered_size < final_index:
-                last_index = len(self.buffer_link)-1
-                if len(item._children) <= last_index:
-                    break
-                #                   | last_index
-                #                   |    ch_last_index = ch_h
-                #                   |    |       => left to fetch = (ch_h, final_index - buffered_size)
-                # Children  * <---> * <--|xxxx|      > * <  >
-                #          /
-                # item    *<-------------|xxxx|             buffer
-                #                        |    final_index
-                #                        buffered_size
-                #
-                ch_buffer_index, ch_h = self.buffer_link[last_index]
-                child = item._children[last_index]
-                ch_s = child.size()
-                if ch_h != ch_s:
-                    ch_index = ch_h
-                    ch_size = final_index - ch_buffer_index - ch_h
-                    child_page = child._get_page(level+1, ch_index, ch_size)
+        buffered_size = len(self._buffer)
+        while buffered_size < final_index:
+            last_index = len(self._buffer_link)-1
+            if len(self._children) <= last_index:
+                break
+            #                   | last_index
+            #                   |    ch_last_index = ch_h
+            #                   |    |       => left to fetch = (ch_h, final_index - buffered_size)
+            # Children  * <---> * <--|xxxx|      > * <  >
+            #          /
+            # item    *<-------------|xxxx|             buffer
+            #                        |    final_index
+            #                        buffered_size
+            #
+            ch_buffer_index, ch_h = self._buffer_link[last_index]
+            child = self._children[last_index]
+            ch_s = child.size()
+            if ch_h != ch_s:
+                ch_index = ch_h
+                ch_size = final_index - ch_buffer_index - ch_h
+                child_page = child._get_page(level, ch_index, ch_size)
 
-                    self.buffer.extend(child_page)
-                    ch_h += len(child_page)
-                    self.buffer_link[last_index] = (ch_buffer_index, ch_h)
-                    buffered_size = len(self.buffer)
-                if ch_h == ch_s:
-                    self.buffer_link.append((buffered_size, 0))
-        return self.buffer[index:final_index]
+                self._buffer.extend(child_page)
+                ch_h += len(child_page)
+                self._buffer_link[last_index] = (ch_buffer_index, ch_h)
+                buffered_size = len(self._buffer)
+            if ch_h == ch_s:
+                self._buffer_link.append((buffered_size, 0))
+        return self._buffer[index:final_index]
+
+    @pyTTkSlot()
+    def emitDataChanged(self):
+        self.dataChanged.emit()
+
+    def _addChild(self, parent:TTkTreeWidgetItem, child:TTkTreeWidgetItem):
+        self._children.append(child)
+        child._parent = self._parent
+        child._sortOrder = self._parent._sortOrder
+        child._sortColumn = self._parent._sortColumn
+        child.dataChanged.connect(self.emitDataChanged)
+        child._sizeChanged.connect(self._childrenSizeChangedHandler)
+
+    def addChild(self, parent:TTkTreeWidgetItem, child:TTkTreeWidgetItem):
+        self._addChild(parent, child)
+        self._childrenSizeChangedHandler(child, child.size())
+        self.sort()
+        self.emitDataChanged()
+
+    def addChildren(self, parent:TTkTreeWidgetItem, children:List[TTkTreeWidgetItem]):
+        if children:
+            for child in children:
+                self._addChild(parent, child)
+            sizes = sum(_c.size() for _c in children)
+            self._childrenSizeChangedHandler(children[0], sizes)
+            self.sort()
+            self.emitDataChanged()
+
+    def removeChild(self, child:TTkTreeWidgetItem) -> None:
+        if child in self._children:
+            self.takeChild(self._children.index(child))
+
+    def takeChild(self, index) -> Optional[TTkTreeWidgetItem]:
+        if not ( self._children and
+                 0<= index < len(self._children) ):
+            return None
+        child = self._children.pop(index)
+        child.dataChanged.disconnect(self.emitDataChanged)
+        child._sizeChanged.disconnect(self._childrenSizeChangedHandler)
+        self._childrenSizeChangedHandler(self, -child.size())
+        self.emitDataChanged()
+        return child
+
+    def takeChildren(self) -> List[TTkTreeWidgetItem]:
+        children = self._children
+        for child in children:
+            child.dataChanged.disconnect(self.emitDataChanged)
+            child._sizeChanged.disconnect(self._childrenSizeChangedHandler)
+        self._childrenSizeChangedHandler(self, -self._total_size)
+        self.emitDataChanged()
+        return children
+
+    def child(self, index:int) -> Optional[TTkTreeWidgetItem]:
+        if 0 <= index < len(self._children):
+            return self._children[index]
+        return None
+
+    def children(self) -> List[TTkTreeWidgetItem]:
+        return [x for x in self._children if not x.isHidden()]
+
+    def indexOfChild(self, child:TTkTreeWidgetItem) -> Optional[int]:
+        if child in self._children:
+            return self._children.index(child)
+        return None
+
+    def expandAll(self) -> None:
+        for child in self._children:
+            child.setExpanded(True)
+            child.expandAll()
+
+    def collapseAll(self) -> None:
+        for child in self._children:
+            child.setExpanded(False)
+            child.collapseAll()
+
+    def sort(self):
+        if self._parent._sortColumn == -1: return
+        self._children = sorted(
+                self._children,
+                key = lambda _i : _i.data(self._parent._sortColumn),
+                reverse = self._parent._sortOrder == TTkK.DescendingOrder)
+        self.clearBuffer()
+        for c in self._children:
+            c.dataChanged.disconnect(self.emitDataChanged)
+            c._sizeChanged.disconnect(self._childrenSizeChangedHandler)
+            c.sortChildren(self._parent._sortColumn, self._parent._sortOrder)
+            c._sizeChanged.connect(self._childrenSizeChangedHandler)
+            c.dataChanged.connect(self.emitDataChanged)
+        self.clearBuffer()
+        self.emitDataChanged()
+
+    def size(self):
+        if not self._total_size:
+            self._total_size = sum(_c.size() for _c in self._children)
+        return self._total_size
 
 class TTkTreeWidgetItem(TTkAbstractItemModel):
     '''
@@ -146,21 +253,20 @@ class TTkTreeWidgetItem(TTkAbstractItemModel):
 
     __slots__ = ('_parent', '_data', '_widgets', '_height', '_alignment', '_children', '_expanded', '_selected', '_hidden',
                  '_childIndicatorPolicy', '_icon', '_defaultIcon',
-                 '_sortColumn', '_sortOrder', '_hasWidgets', '_parentWidget',
-                 '_list_bk', '_list_h_bk',
-                 '_buffer',
+                 '_sortColumn', '_sortOrder', '_hasWidgets',
+                 '_buffer', '_level',
         # Signals
         # 'refreshData'
-        'heightChanged', '_invalidateListBuffer', '_sizeChanged',
+        'heightChanged', '_sizeChanged',
 
         # Slot that accept itself
         '_sizeChangedHandler'
         )
 
     _icon:List[TTkString]
-    _children:List[TTkTreeWidgetItem]
-    _buffer:_TTkTreeBuffer
-    _sizeChangedHandler: Callable[[TTkTreeWidgetItem,int,int], None]
+    _buffer:List[Tuple[int,int,TTkTreeWidgetItem]]
+    _children:Optional[_TTkTreeChildren]
+    _sizeChangedHandler: Callable[[int], None]
 
     def __init__(self, *args,
                  parent:TTkTreeWidgetItem=None,
@@ -173,14 +279,11 @@ class TTkTreeWidgetItem(TTkAbstractItemModel):
         # Signals
         # self.refreshData = pyTTkSignal(TTkTreeWidgetItem)
         self.heightChanged = pyTTkSignal(int)
-        self._invalidateListBuffer = pyTTkSignal(TTkTreeWidgetItem)
         self._sizeChanged = pyTTkSignal(TTkTreeWidgetItem,int)
+        self._children = None
+        self._buffer = []
+        self._level = 0
         self._hasWidgets = False
-        self._children = []
-        self._list_bk = []
-        self._list_h_bk = []
-        self._buffer = _TTkTreeBuffer()
-        self._parentWidget = None
         self._height = 1
         data = args[0] if len(args)>0 and type(args[0])==list else [TTkString()]
         # self._data = [i if issubclass(type(i), TTkString) else TTkString(i) if isinstance(i,str) else TTkString() for i in data]
@@ -196,12 +299,7 @@ class TTkTreeWidgetItem(TTkAbstractItemModel):
         # I need this hack because I cannot define the class itself in the slot
         @pyTTkSlot(TTkTreeWidgetItem, int)
         def _sch(item:TTkTreeWidgetItem, diffSize:int) -> None:
-            if item == self or self._expanded:
-                if item==self:
-                    self._buffer.clearBuffer()
-                else:
-                    self._buffer.clearBufferFromIndex(self._children.index(item))
-                self._buffer.total_size += diffSize
+            if self._expanded or item==self:
                 self._sizeChanged.emit(self, diffSize)
         self._sizeChangedHandler = _sch
 
@@ -215,15 +313,13 @@ class TTkTreeWidgetItem(TTkAbstractItemModel):
             self._icon[0] = ' '+TTkString(icon)+TTkString(' ')
             self._defaultIcon = False
         if parent:
-            parent.addChild(self)
+            parent.addChild(parent, self)
 
     def _processDataInputWidget(self, widget, index) -> TTkString:
         self._hasWidgets = True
         widget.hide()
         widget.sizeChanged.connect(self._widgetSizeChanged)
         self._height = max(self._height,widget.height())
-        if self._parentWidget:
-            widget.setTreeItemParent(self._parentWidget)
         if hasattr(widget, 'text'):
             ret = widget.text()
             if hasattr(widget,'textChanged'):
@@ -252,14 +348,14 @@ class TTkTreeWidgetItem(TTkAbstractItemModel):
                 retData.append(TTkString())
                 retWidgets.append(None)
             self._height = max(self._height,len(retData[-1].split('\n')))
-            self._buffer.total_size = self._height
         return retData, retWidgets
 
     def _setDefaultIcon(self):
         if not self._defaultIcon: return
         self._icon[0] = TTkString(' '+TTkCfg.theme.tree[0]+' ')
-        if self._childIndicatorPolicy == TTkK.DontShowIndicatorWhenChildless and self._children or \
-           self._childIndicatorPolicy == TTkK.ShowIndicator:
+        if ( self._childIndicatorPolicy == TTkK.DontShowIndicatorWhenChildless and
+             self._children and self._children._children or
+             self._childIndicatorPolicy == TTkK.ShowIndicator ):
             if self._expanded:
                 self._icon[0] = TTkString(' '+TTkCfg.theme.tree[2]+' ')
             else:
@@ -274,87 +370,29 @@ class TTkTreeWidgetItem(TTkAbstractItemModel):
             self._height = h
             self.heightChanged.emit(h)
             self._sizeChangedHandler(self,diffSize)
-            if self._parentWidget:
-                self._parentWidget._refreshCache()
 
     def height(self):
         return self._height
 
-    def _clearTreeItemParent(self):
-        widgets = []
-        if self._hasWidgets:
-            widgets += [w for w in self._widgets if w and w.parentWidget()]
-            # for widget in widgets:
-            #     if pw := widget.parentWidget():
-            #         pw.rootLayout().removeWidgets([w for w in self._widgets if w])
-            if self._parentWidget:
-                self._parentWidget.rootLayout().removeWidgets(widgets)
-        self._parentWidget = None
-        for c in self._children:
-            widgets += c._clearTreeItemParent()
-        return widgets
-
-    def _setTreeItemParent(self, parent):
-        self._parentWidget = parent
-        widgets = []
-        if self._hasWidgets:
-            widgets += [w for w in self._widgets if w]
-            # parent.layout().addWidgets(widgets)
-        for c in self._children:
-            widgets += c._setTreeItemParent(parent)
-        return widgets
-
-    def _item_at(self, pos:int) -> Optional[Tuple[int,int,TTkTreeWidgetItem]]:
-        if pos < 0:
-            return None
-        if page := self._get_page(self._buffer.level, pos, 1):
-            return page[0]
-        else:
-            return None
-
     def _get_page(self, level:int, index:int, size:int) -> List[Tuple[int,int,TTkTreeWidgetItem]]:
-        return self._buffer.get_page(self,level,index,size)
+        _h = self._height
+        _to = index+size
 
-    def _iterate(self, level:int=0, skip:int=0) ->  Generator[Tuple[TTkTreeWidgetItem, int], None, int]:
-        for _c in self._children:
-            if skip>0:
-                skip -= 1
-            else:
-                yield _c, level
-            if _c._expanded:
-                skip = yield from _c._iterate(level+1, skip)
-        return skip
+        if self._level != level:
+            self._buffer=[]
+            self._level = level
 
-    def _iterate_h(self, level:int=0, skip:int=0) -> Generator[Tuple[TTkTreeWidgetItem, int, int], None, int]:
-        for _c in self._children:
-            for _y in range(_c._height):
-                if skip>0:
-                    skip -= 1
-                else:
-                    yield _c, level, _y
-            if _c._expanded:
-                skip = yield from _c._iterate_h(level+1, skip)
-        return skip
+        if not self._buffer:
+            self._buffer = [(level, _y, self) for _y in range(_h)]
 
-    def _listify(self, level:int):
-        self._list_h_bk = [(self,level,_y) for _y in range(self._height)]
-        if self._expanded:
-            for _c in self._children:
-                self._list_h_bk.extend(_c.listify(level+1))
-
-    def listify(self,level:int=0) -> List[TTkTreeWidgetItem, int, int]:
-        if not self._list_h_bk:
-            self._listify(level=level)
-        return self._list_h_bk
-
-    def setTreeItemParent(self, parent):
-        if parent:
-            widgets = self._setTreeItemParent(parent)
-            parent.layout().addWidgets(widgets)
-        else:
-            # pw = self._parentWidget
-            widgets = self._clearTreeItemParent()
-            # pw.rootLayout().removeWidgets(widgets)
+        # The page is among the children
+        if self._expanded and self._children and index >= _h :
+            return self._children.get_page(level+1, index-_h, size)
+        elif _to <= _h: # The page is in this node
+            return self._buffer[index:_to]
+        elif index < _h and self._expanded and self._children: # the page include the current item and the children
+            return self._buffer[index:] + self._children.get_page(level+1, 0, size+index-_h)
+        return self._buffer[index:]
 
     def hasWidgets(self):
         return self._hasWidgets
@@ -374,81 +412,65 @@ class TTkTreeWidgetItem(TTkAbstractItemModel):
         self._childIndicatorPolicy = policy
         self._setDefaultIcon()
 
-    def _addChild(self, child:TTkTreeWidgetItem):
-        self._children.append(child)
-        child._parent = self
-        child._sortOrder = self._sortOrder
-        child._sortColumn = self._sortColumn
-        self._setDefaultIcon()
-        self._sort(children=False)
-        if self._parentWidget:
-            child.setTreeItemParent(self._parentWidget)
-        child.dataChanged.connect(self.emitDataChanged)
-        child._sizeChanged.connect(self._sizeChangedHandler)
-        child._invalidateListBuffer.connect(self._invalidateListBufferHandler)
 
     def addChild(self, child:TTkTreeWidgetItem):
-        self._addChild(child)
-        self._list_h_bk = []
-        self._invalidateListBuffer.emit(self)
-        if self._expanded:
-            self._sizeChangedHandler(self, child.size())
-        self.emitDataChanged()
-
-    def addChildren(self, children:List[TTkTreeWidgetItem]):
-        for child in children:
-            self._addChild(child)
-        self._list_h_bk = []
-        self._invalidateListBuffer.emit(self)
-        if self._expanded:
-            sizes = sum(_c.size() for _c in children)
-            self._sizeChangedHandler(self, sizes)
-        self.emitDataChanged()
-
-    def removeChild(self, child:TTkTreeWidgetItem):
-        if child in self._children:
-            self.takeChild(self._children.index(child))
-
-    def takeChild(self, index):
-        if not (self._children and 0<= index < len(self._children)):
-            return None
-        child = self._children.pop(index)
-        child.dataChanged.disconnect(self.emitDataChanged)
-        child._sizeChanged.disconnect(self._sizeChangedHandler)
-        child._invalidateListBuffer.disconnect(self._invalidateListBufferHandler)
-        child.setTreeItemParent(None)
-        self._sizeChangedHandler(self, -child.size())
-        self._list_h_bk = []
-        self._invalidateListBuffer.emit(self)
-        self.emitDataChanged()
+        if not self._children:
+            self._children = _TTkTreeChildren(self)
+            self._children._childrenSizeChanged.connect(self._sizeChangedHandler)
+        child = self._children.addChild(self, child)
+        self._setDefaultIcon()
         return child
 
-    def takeChildren(self):
-        children = self._children
-        for child in children:
-            child.dataChanged.disconnect(self.emitDataChanged)
-            child._sizeChanged.disconnect(self._sizeChangedHandler)
-            child._invalidateListBuffer.disconnect(self._invalidateListBufferHandler)
-            child.setTreeItemParent(None)
-        self._sizeChangedHandler(self, self._height-self._buffer.total_size)
-        self._children = []
-        self._list_h_bk = []
-        self._invalidateListBuffer.emit(self)
-        self.emitDataChanged()
+    def addChildren(self, children:List[TTkTreeWidgetItem]):
+        if not self._children:
+            self._children = _TTkTreeChildren(self)
+            self._children._childrenSizeChanged.connect(self._sizeChangedHandler)
+        children = self._children.addChildren(self, children)
+        self._setDefaultIcon()
         return children
 
-    def child(self, index:int) -> TTkTreeWidgetItem:
-        if 0 <= index < len(self._children):
-            return self._children[index]
-        return None
+    def removeChild(self, child:TTkTreeWidgetItem) -> None:
+        if not self._children:
+            return
+        self._children.removeChild(child)
+        if not self._children.size():
+            self._children._childrenSizeChanged.disconnect(self._sizeChangedHandler)
+            self._children = None
+        self._setDefaultIcon()
+
+    def takeChild(self, index) -> Optional[TTkTreeWidgetItem]:
+        if not self._children:
+            return None
+        child = self._children.takeChild(index)
+        if not self._children.size():
+            self._children._childrenSizeChanged.disconnect(self._sizeChangedHandler)
+            self._children = None
+        self._setDefaultIcon()
+        return child
+
+    def takeChildren(self) -> List[TTkTreeWidgetItem]:
+        if not self._children:
+            return None
+        children = self._children.takeChildren()
+        self._children._childrenSizeChanged.disconnect(self._sizeChangedHandler)
+        self._children = None
+        self._setDefaultIcon()
+        return children
+
+    def child(self, index:int) -> Optional[TTkTreeWidgetItem]:
+        if not self._children:
+            return None
+        return self._children.child(index)
 
     def children(self) -> List[TTkTreeWidgetItem]:
-        return [x for x in self._children if not x.isHidden()]
+        if not self._children:
+            return []
+        return self._children.children()
 
     def indexOfChild(self, child:TTkTreeWidgetItem) -> Optional[int]:
-        if child in self._children:
-            return self._children.index(child)
-        return None
+        if not self._children:
+            return None
+        return self._children.indexOfChild(child)
 
     def icon(self, col) -> TTkString:
         if col >= len(self._icon):
@@ -484,76 +506,33 @@ class TTkTreeWidgetItem(TTkAbstractItemModel):
         return self._widgets[col]
 
     def expandAll(self) -> None:
-        for child in self._children:
-            child.setExpanded(True)
-            child.expandAll()
+        if self._children:
+            self._children.expandAll()
 
     def collapseAll(self) -> None:
-        for child in self._children:
-            child.setExpanded(False)
-            child.collapseAll()
-
-    def sortData(self, col):
-        return self.data(col)
-
-    def _sort(self, children):
-        if self._sortColumn == -1: return
-        self._children = sorted(
-                self._children,
-                key = lambda x : x.sortData(self._sortColumn),
-                reverse = self._sortOrder == TTkK.DescendingOrder)
-        self._buffer.clearBuffer()
-        # Broadcast the sorting to the children
-        if children:
-            for c in self._children:
-                c.dataChanged.disconnect(self.emitDataChanged)
-                c._sizeChanged.disconnect(self._sizeChangedHandler)
-                c._invalidateListBuffer.disconnect(self._invalidateListBufferHandler)
-                c.sortChildren(self._sortColumn, self._sortOrder)
-                c._invalidateListBuffer.connect(self._invalidateListBufferHandler)
-                c._sizeChanged.connect(self._sizeChangedHandler)
-                c.dataChanged.connect(self.emitDataChanged)
+        if self._children:
+            self._children.collapseAll()
 
     def sortChildren(self, col, order):
         self._sortColumn = col
         self._sortOrder = order
-        if not self._children: return
-        self._sort(children=True)
-        self._list_h_bk = []
-        self._invalidateListBuffer.emit(self)
-        self.dataChanged.emit()
+        if not self._children:
+            return
+        self._children.sort()
 
     @pyTTkSlot()
     def emitDataChanged(self):
         self.dataChanged.emit()
 
-    @pyTTkSlot()
-    def _invalidateListBufferHandler(self):
-        self._list_h_bk = []
-        if self._expanded:
-            self._invalidateListBuffer.emit(self)
-
     # def setDisabled(disabled):
     #    pass
 
     def setExpanded(self, expand:bool):
-        # hide all the widgets if this item is not expanded
-        if not expand:
-            def _recurseHide(item):
-                for c in item._children:
-                    if c._hasWidgets:
-                        for widget in [w for w in c._widgets if w]:
-                            widget.hide()
-                    if c._expanded:
-                        _recurseHide(c)
-            _recurseHide(self)
         if self._expanded != expand and self._children:
-            self._list_h_bk = []
             if expand:
-                self._sizeChangedHandler(self, sum(_c.size() for _c in self._children))
+                self._sizeChangedHandler(self, self._children.size())
             else:
-                self._sizeChangedHandler(self, self._height-self._buffer.total_size)
-            self._invalidateListBuffer.emit(self)
+                self._sizeChangedHandler(self, -self._children.size())
         self._expanded = expand
         self._setDefaultIcon()
         self.dataChanged.emit()
@@ -571,14 +550,7 @@ class TTkTreeWidgetItem(TTkAbstractItemModel):
         return self._selected
 
     def size(self):
-        if not self._children:
-            return self._height
-        if not self._buffer.total_size:
-            if self._expanded:
-                ret = self._height
-                for _c in self._children:
-                    ret += _c.size()
-                self._buffer.total_size = ret
-            else:
-                self._buffer.total_size = self._height
-        return self._buffer.total_size
+        if ( self._expanded and
+             self._children ):
+            return self._height + self._children.size()
+        return self._height

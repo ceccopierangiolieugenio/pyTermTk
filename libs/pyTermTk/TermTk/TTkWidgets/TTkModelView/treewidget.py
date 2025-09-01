@@ -41,7 +41,14 @@ from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
 from dataclasses import dataclass
 
 class _RootWidgetItem(TTkTreeWidgetItem):
+    __slots__ = ('_widgets_buffer','_widgets_buffer_check')
+
+    _widgets_buffer:List[int]
+    _widgets_buffer_check:int
+
     def __init__(self):
+        self._widgets_buffer = []
+        self._widgets_buffer_check=0
         super().__init__(expanded=True)
 
     def _getColumnContentSize(self, column:int, offset:int) -> int:
@@ -57,7 +64,34 @@ class _RootWidgetItem(TTkTreeWidgetItem):
         return size-1
 
     def _get_page_root(self, index:int, size:int) -> List[Tuple[int,int,TTkTreeWidgetItem]]:
-        return super()._get_page(-1, index+1, size)
+        if self._children:
+            if self._widgets_buffer_check >= len(self._children._buffer):
+                self._widgets_buffer = []
+                self._widgets_buffer_check=0
+            page = self._children.get_page(0, index, size)
+            if any(_wbi[1] != self._children._buffer[_wbi[0]] for _wbi in self._widgets_buffer):
+                self._widgets_buffer = []
+                self._widgets_buffer_check=0
+            if self._widgets_buffer_check < len(self._children._buffer):
+                for i,(_l,_y,_i) in enumerate(self._children._buffer[self._widgets_buffer_check:]):
+                    if not _y and _i.hasWidgets():
+                        self._widgets_buffer.append((_l,i,_i))
+                self._widgets_buffer_check = len(self._children._buffer)
+            return page
+        return []
+
+    def _item_at(self, pos:int) -> Optional[Tuple[int,int,TTkTreeWidgetItem]]:
+        if pos < 0 or not self._children:
+            return None
+        if page := self._children.get_page(0, pos, 1):
+            return page[0]
+        else:
+            return None
+
+    def size(self):
+        if self._children:
+            return self._children.size()
+        return 0
 
 class TTkTreeWidget(TTkAbstractScrollView):
     '''
@@ -247,6 +281,9 @@ class TTkTreeWidget(TTkAbstractScrollView):
         self.clear()
         self.setPadding(1,0,0,0)
         self.viewChanged.connect(self._viewChangedHandler)
+        self._alignWidgets()
+        self.sizeChanged.connect(self._alignWidgets)
+        self._rootItem.dataChanged.connect(self._refreshCache)
 
     @pyTTkSlot()
     def _viewChangedHandler(self) -> None:
@@ -256,15 +293,13 @@ class TTkTreeWidget(TTkAbstractScrollView):
     # Overridden function
     def viewFullAreaSize(self) -> tuple[int, int]:
         w = self._columnsPos[-1]+1 if self._columnsPos else 0
-        h = self._rootItem.size()
+        h = self._rootItem.size()+1
         # TTkLog.debug(f"{w=} {h=}")
         return w,h
 
     def clear(self) -> None:
         '''clear'''
         # Remove all the widgets
-        for ri in self._rootItem.children():
-            ri.setTreeItemParent(None)
         if self._rootItem:
             self._rootItem.dataChanged.disconnect(self._refreshCache)
         self._rootItem = _RootWidgetItem()
@@ -277,7 +312,6 @@ class TTkTreeWidget(TTkAbstractScrollView):
     def addTopLevelItem(self, item:TTkTreeWidgetItem) -> None:
         '''addTopLevelItem'''
         self._rootItem.addChild(item)
-        item.setTreeItemParent(self)
         self._refreshCache()
         self.viewChanged.emit()
         self.update()
@@ -285,9 +319,6 @@ class TTkTreeWidget(TTkAbstractScrollView):
     def addTopLevelItems(self, items:TTkTreeWidgetItem) -> None:
         '''addTopLevelItems'''
         self._rootItem.addChildren(items)
-        self._rootItem.setTreeItemParent(self)
-        #for item in items:
-        #    item.setTreeItemParent(self)
         self._refreshCache()
         self.viewChanged.emit()
         self.update()
@@ -356,7 +387,10 @@ class TTkTreeWidget(TTkAbstractScrollView):
         if not self._sortingEnabled: return
         self._sortColumn = col
         self._sortOrder = order
+        self._rootItem.dataChanged.disconnect(self._refreshCache)
         self._rootItem.sortChildren(col, order)
+        self._rootItem.dataChanged.connect(self._refreshCache)
+        self._refreshCache()
 
     def columnWidth(self, column:int) -> int:
         '''columnWidth'''
@@ -417,7 +451,7 @@ class TTkTreeWidget(TTkAbstractScrollView):
             return True
 
         y += oy-1
-        if  _item_at := self._rootItem._item_at(y+1):
+        if  _item_at := self._rootItem._item_at(y):
             _,_,_i = _item_at
             item  = _i
             if item.childIndicatorPolicy() == TTkK.DontShowIndicatorWhenChildless and item.children() or \
@@ -427,6 +461,7 @@ class TTkTreeWidget(TTkAbstractScrollView):
                     self.itemExpanded.emit(item)
                 else:
                     self.itemCollapsed.emit(item)
+                self._refreshCache()
             for _s in self._selected:
                 _s.setSelected(False)
             self._selectedId = y
@@ -439,7 +474,6 @@ class TTkTreeWidget(TTkAbstractScrollView):
                     break
             self.itemDoubleClicked.emit(item, col)
             self.itemActivated.emit(item, col)
-
             self.update()
         return True
 
@@ -468,7 +502,7 @@ class TTkTreeWidget(TTkAbstractScrollView):
             return True
         # Handle Tree/Table Events
         y += oy-1
-        if  _item_at := self._rootItem._item_at(y+1):
+        if  _item_at := self._rootItem._item_at(y):
             _l, _yi, _i = _item_at
             item  = _i
             level = _l
@@ -481,6 +515,7 @@ class TTkTreeWidget(TTkAbstractScrollView):
                     self.itemExpanded.emit(item)
                 else:
                     self.itemCollapsed.emit(item)
+                self._refreshCache()
             else:
                 if self._selectionMode in (TTkK.SelectionMode.SingleSelection,TTkK.SelectionMode.MultiSelection):
                     _multiSelect = self._selectionMode == TTkK.SelectionMode.MultiSelection
@@ -503,7 +538,7 @@ class TTkTreeWidget(TTkAbstractScrollView):
                     break
             self.itemClicked.emit(item, col)
             self.update()
-        return True
+            return True
 
     def mouseDragEvent(self, evt:TTkMouseEvent) -> bool:
         #    columnPos       (Selected = 2)
@@ -550,17 +585,30 @@ class TTkTreeWidget(TTkAbstractScrollView):
             return True
         return False
 
+    @pyTTkSlot()
     def _alignWidgets(self) -> None:
-        for y,c in enumerate(self._cache):
-            if not c.firstLine:
-                continue
-            for i,w in enumerate(c.widgets):
-                if w:
-                    _pos   = self._columnsPos[i-1]+1 if i else 3 + c.level*2
-                    _width = self._columnsPos[i] - _pos
-                    _height = w.height()
-                    w.setGeometry(_pos,y,_width,_height)
-                    w.show()
+        self.layout().clear()
+
+        ox, oy = self.getViewOffsets()
+        w,h = self.size()
+        self._rootItem._get_page_root(0,oy+h)
+
+        if not self._rootItem._widgets_buffer:
+            self.update()
+            return
+
+        wids = []
+        for _l,_y,_i in self._rootItem._widgets_buffer:
+            for _il in range(len(self._header)):
+                if _wid:=_i.widget(_il):
+                    _pos   = self._columnsPos[_il-1]+1 if _il else 3 + _l*2
+                    _width = self._columnsPos[_il] - _pos
+                    _height = _wid.height()
+                    _wid.setGeometry(_pos,_y,_width,_height)
+                    _wid.show()
+                    wids.append(_wid)
+        if wids:
+            self.layout().addWidgets(wids)
 
     @pyTTkSlot()
     def _refreshCache(self) -> None:
@@ -568,58 +616,6 @@ class TTkTreeWidget(TTkAbstractScrollView):
         self.update()
         self.viewChanged.emit()
         return
-        # I save a representation of the displayed tree in a cache array
-        # to avoid eccessve recursion over the items and
-        # identify quickly the nth displayed line to improve the interaction
-        #
-        # _cache is an array of TTkTreeWidget._Cache:
-        # [ item, level, data=[txtCol1, txtCol2, txtCol3, ... ]]
-        self._cache = []
-        def _addToCache(_child, _level:int) -> None:
-            _data = []
-            _widgets = []
-            _h =_child.height()
-            for _il in range(len(self._header)):
-                _lines = _child.data(_il).split('\n')
-                if _il==0:
-                    _data0 = []
-                    for _id in range(_h):
-                        # Trying to define an icon to obtain this results on multiline field
-                        #  ▶ Label
-                        #  ┊ NewLine 1
-                        #  │ NewLine 2
-                        #  ╽
-                        if _id == 0:
-                            _icon = " "+_child.icon(_il)+" "
-                        elif _id == _h-1:
-                            _icon = TTkString(" ╽ ", TTkColor.fg("#666666"))
-                        elif _id == 1:
-                            _icon = TTkString(" ┊ ", TTkColor.fg("#666666"))
-                        else:
-                            _icon = TTkString(" │ ", TTkColor.fg("#666666"))
-                        _text = _lines[_id] if _id<len(_lines) else ""
-                        _data0.append('  '*_level+_icon+_text)
-                    _data.append(_data0)
-                    _widgets.append(_child.widget(_il))
-                else:
-                    _data.append([TTkString(s) for s in _lines]+[TTkString()]*(_h-len(_lines)))
-                    _widgets.append(_child.widget(_il))
-
-            for _id in range(_h):
-                self._cache.append(TTkTreeWidget._Cache(
-                                        item  = _child,
-                                        level = _level,
-                                        data  = [ dt[_id] for dt in _data],
-                                        widgets = _widgets,
-                                        firstLine=_id==0))
-            if _child.isExpanded():
-                for _c in _child.children():
-                   _addToCache(_c, _level+1)
-        for c in self._rootItem.children():
-            _addToCache(c,0)
-        self._alignWidgets()
-        self.update()
-        self.viewChanged.emit()
 
     def paintEvent(self, canvas) -> None:
         style = self.currentStyle()
