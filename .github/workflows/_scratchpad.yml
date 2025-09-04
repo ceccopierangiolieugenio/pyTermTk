@@ -14,17 +14,32 @@ permissions:
   id-token: write
 
 jobs:
-  test:
-    # runs-on: ubuntu-latest
+  notify:
+    name: Notify ${{ matrix.name }} to the socials
     runs-on: self-hosted
-
+    strategy:
+      matrix:
+        name: [Test]
+        release-notes: ["#Test1\n\n##Test2\n\n###Test3\n\nContent!!!"]
+        version: ["0.0.1"]
     steps:
-      - run: echo Scratchpad
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        shell: bash
+        run:
+          pip install -e 'tools/ci[social]'
+      - name: Notify ${{ matrix.name }} on Discord
         env:
-          GH: ${{ toJson(github) }}
-          GHE: ${{ toJson(github.event) }}
-          GHEH: ${{ toJson(github.event.head_commit) }}
-          GHEHM: ${{ toJson(github.event.head_commit.modified) }}
-      # - uses: actions/checkout@v4
-      #   with:
-      #     ref: ${{ github.sha }}
+          RN: ${{ matrix.release-notes }}
+          MESSAGE: ${{ matrix.release-notes }}
+          DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
+          GH_DISCUSSION_TOKEN: ${{ secrets.GH_DISCUSSION_TOKEN }}
+        run: |
+          notify-discord ${{ matrix.name }} v${{ matrix.version }}
+          notify-gh-discussion ${{ matrix.name }} v${{ matrix.version }}

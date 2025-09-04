@@ -23,6 +23,7 @@
 
 import os, sys
 import requests
+import argparse
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(current_dir)
@@ -34,8 +35,7 @@ GITHUB_TOKEN = get_env_var('GH_DISCUSSION_TOKEN')
 REPO_OWNER = "ceccopierangiolieugenio"
 REPO_NAME = "pyTermTk"
 DICSUSSION_CATEGORY="announcements"
-DISCUSSION_TITLE = "Your Announcement Title"
-DISCUSSION_BODY = "This is the content of your announcement."
+DISCUSSION_BODY = get_env_var('RN')
 
 # === FUNCTIONS ===
 
@@ -107,13 +107,33 @@ def create_discussion(repo_id, category_id, title, body, token):
 
 # === MAIN EXECUTION ===
 
-try:
-    repo_id = get_repo_id(REPO_OWNER, REPO_NAME, GITHUB_TOKEN)
-    print(f"{repo_id=}")
-    category_id = get_category_id(repo_id, GITHUB_TOKEN)
-    print(f"{category_id=}")
-    discussion_url = create_discussion(repo_id, category_id, DISCUSSION_TITLE, DISCUSSION_BODY, GITHUB_TOKEN)
-    print(f"{discussion_url=}")
-    print(f"✅ Discussion created successfully: {discussion_url}")
-except Exception as e:
-    print(f"❌ Error: {e}")
+
+def main():
+    parser = argparse.ArgumentParser(description="Send a Discord notification.")
+    parser.add_argument("app", type=str, help="The application name.")
+    parser.add_argument("version", type=str, help="The application version.")
+    args = parser.parse_args()
+
+    data = get_social_data(args.app)
+    if not data:
+        raise ValueError(f"app: {args.app} is not recognised")
+
+    try:
+        repo_id = get_repo_id(REPO_OWNER, REPO_NAME, GITHUB_TOKEN)
+        print(f"{repo_id=}")
+        category_id = get_category_id(repo_id, GITHUB_TOKEN)
+        print(f"{category_id=}")
+        discussion_url = create_discussion(
+            repo_id, category_id,
+            f"{args.app} {args.version} Released!!!",
+            DISCUSSION_BODY, GITHUB_TOKEN)
+        print(f"{discussion_url=}")
+        print(f"✅ Discussion created successfully: {discussion_url}")
+    except Exception as e:
+        print(f"❌ Error: {e}")
+
+if __name__ == "__main__":
+    main()
+
+
+

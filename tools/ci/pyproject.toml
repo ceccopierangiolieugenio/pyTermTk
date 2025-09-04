@@ -22,6 +22,7 @@
 [project.scripts]
     release-helper = "ci_tools.release_helper:main"
     notify-discord = "ci_tools.social.notify_discord:main"
+    notify-gh-discussion = "ci_tools.social.notify_github_discussion:main"
 
 [tool.setuptools]
     packages = ["ci_tools"]
