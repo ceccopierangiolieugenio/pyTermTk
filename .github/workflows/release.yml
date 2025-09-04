@@ -282,10 +282,14 @@ jobs:
         env:
           RN: ${{ matrix.release-notes }}
           MESSAGE: ${{ matrix.release-notes }}
-          GITHUB_TOKEN: ${{ secrets.GH_PAT_TOKEN }}
           DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
-          GH_DISCUSSION_TOKEN: ${{ secrets.GH_DISCUSSION_TOKEN }}
         run: |
           notify-discord ${{ matrix.name }} v${{ matrix.version }}
+      - name: Notify ${{ matrix.name }} on Github Discussion
+        env:
+          RN: ${{ matrix.release-notes }}
+          MESSAGE: ${{ matrix.release-notes }}
+          GITHUB_TOKEN: ${{ secrets.GH_PAT_TOKEN }}
+          GH_DISCUSSION_TOKEN: ${{ secrets.GH_DISCUSSION_TOKEN }}
+        run: |
           notify-gh-discussion ${{ matrix.name }} v${{ matrix.version }}
-
