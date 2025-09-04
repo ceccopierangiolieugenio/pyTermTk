@@ -23,29 +23,21 @@
 
 import os, sys
 import requests
+import argparse
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(current_dir)
 from social_common import get_social_data, SocialData, get_env_var
 
-
-# === CONFIGURATION ===
-GITHUB_TOKEN = get_env_var('GH_DISCUSSION_TOKEN')
-REPO_OWNER = "ceccopierangiolieugenio"
-REPO_NAME = "pyTermTk"
-DICSUSSION_CATEGORY="announcements"
-DISCUSSION_TITLE = "Your Announcement Title"
-DISCUSSION_BODY = "This is the content of your announcement."
-
 # === FUNCTIONS ===
 
 def get_repo_id(owner, repo, token):
     query = f"""
-    query {{
-      repository(owner: "{owner}", name: "{repo}") {{
-        id
+      query {{
+        repository(owner: "{owner}", name: "{repo}") {{
+          id
+        }}
       }}
-    }}
     """
     headers = {
         "Authorization": f"Bearer {token}",
@@ -54,7 +46,7 @@ def get_repo_id(owner, repo, token):
     response = requests.post('https://api.github.com/graphql', json={'query': query}, headers=headers)
     return response.json()['data']['repository']['id']
 
-def get_category_id(repo_id, token):
+def get_category_id(repo_id, token, discussion_category):
     query = f"""
     query {{
       node(id: "{repo_id}") {{
@@ -76,7 +68,7 @@ def get_category_id(repo_id, token):
     response = requests.post('https://api.github.com/graphql', json={'query': query}, headers=headers)
     categories = response.json()['data']['node']['discussionCategories']['nodes']
     for category in categories:
-        if category['name'].lower() == DICSUSSION_CATEGORY:
+        if category['name'].lower() == discussion_category:
             return category['id']
     raise Exception("Announcements category not found")
 
@@ -107,13 +99,41 @@ def create_discussion(repo_id, category_id, title, body, token):
 
 # === MAIN EXECUTION ===
 
-try:
-    repo_id = get_repo_id(REPO_OWNER, REPO_NAME, GITHUB_TOKEN)
-    print(f"{repo_id=}")
-    category_id = get_category_id(repo_id, GITHUB_TOKEN)
-    print(f"{category_id=}")
-    discussion_url = create_discussion(repo_id, category_id, DISCUSSION_TITLE, DISCUSSION_BODY, GITHUB_TOKEN)
-    print(f"{discussion_url=}")
-    print(f"✅ Discussion created successfully: {discussion_url}")
-except Exception as e:
-    print(f"❌ Error: {e}")
+
+def main():
+    parser = argparse.ArgumentParser(description="Send a Discord notification.")
+    parser.add_argument("app", type=str, help="The application name.")
+    parser.add_argument("version", type=str, help="The application version.")
+    args = parser.parse_args()
+
+    # === CONFIGURATION ===
+    GITHUB_TOKEN = get_env_var('GITHUB_TOKEN')
+    GH_DISCUSSION_TOKEN = get_env_var('GH_DISCUSSION_TOKEN')
+    REPO_OWNER = "ceccopierangiolieugenio"
+    REPO_NAME = "pyTermTk"
+    DICSUSSION_CATEGORY="announcements"
+    DISCUSSION_BODY = get_env_var('RN')
+
+    data = get_social_data(args.app)
+    if not data:
+        raise ValueError(f"app: {args.app} is not recognised")
+
+    try:
+        repo_id = get_repo_id(REPO_OWNER, REPO_NAME, GITHUB_TOKEN)
+        print(f"{repo_id=}")
+        category_id = get_category_id(repo_id, GITHUB_TOKEN, DICSUSSION_CATEGORY)
+        print(f"{category_id=}")
+        discussion_url = create_discussion(
+            repo_id, category_id,
+            f"{args.app} {args.version} Released!!!",
+            DISCUSSION_BODY, GH_DISCUSSION_TOKEN)
+        print(f"{discussion_url=}")
+        print(f"✅ Discussion created successfully: {discussion_url}")
+    except Exception as e:
+        print(f"❌ Error: {e}")
+
+if __name__ == "__main__":
+    main()
+
+
+
