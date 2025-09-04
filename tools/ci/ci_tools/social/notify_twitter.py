@@ -32,23 +32,21 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(current_dir)
 from social_common import get_social_data, SocialData, get_env_var
 
-def send_twitter_message(version: str, data:SocialData):
+def send_twitter_message(version: str, data:SocialData, text:str):
     api_key = get_env_var("X_API_KEY")
     api_secret = get_env_var("X_API_SECRET")
     access_token = get_env_var("X_ACCESS_TOKEN")
     access_token_secret = get_env_var("X_ACCESS_TOKEN_SECRET")
 
-    message = get_env_var("MESSAGE")
-
     twitter = OAuth1Session(api_key, api_secret, access_token, access_token_secret)
 
-    payload = {"text": "Hello from OAuth 1.0a!"}
+    payload = {"text": text}
     response = twitter.post("https://api.twitter.com/2/tweets", json=payload)
 
     print(response.status_code)
     print(response.json())
 
-if __name__ == "__main__":
+def main():
     parser = argparse.ArgumentParser(description="Send a Twitter/X notification.")
     parser.add_argument("app", type=str, help="The application name.")
     parser.add_argument("version", type=str, help="The application version.")
@@ -58,4 +56,8 @@ if __name__ == "__main__":
     if not data:
         raise ValueError(f"app: {args.app} is not recognised")
 
-    send_twitter_message(args.version, data)
+    text = f"{args.app} v{args.version} Released\n\n{data.link}\n\n#pyTermTk #TUI #Python #Linux #terminal"
+    send_twitter_message(args.version, data, text)
+
+if __name__ == "__main__":
+    main()

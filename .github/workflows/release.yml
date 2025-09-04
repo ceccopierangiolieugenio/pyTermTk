@@ -299,3 +299,11 @@ jobs:
           BLUESKY_APP_IDENTIFIER: ${{ secrets.BLUESKY_APP_IDENTIFIER }}
         run: |
           notify-bluesky ${{ matrix.name }} v${{ matrix.version }}
+      - name: Notify ${{ matrix.name }} on Twitter
+        env:
+          X_API_KEY: ${{ secrets.X_API_KEY }}
+          X_API_SECRET: ${{ secrets.X_API_SECRET }}
+          X_ACCESS_TOKEN: ${{ secrets.X_ACCESS_TOKEN }}
+          X_ACCESS_TOKEN_SECRET: ${{ secrets.X_ACCESS_TOKEN_SECRET }}
+        run: |
+          notify-twitter ${{ matrix.name }} ${{ matrix.version }}

@@ -17,13 +17,15 @@
 [project.optional-dependencies]
     social = [
         'discord.py==2.5.2',
-        'requests==2.32.5'
+        'requests==2.32.5',
+        'requests_oauthlib==2.0.0'
     ]
 
 [project.scripts]
     release-helper = "ci_tools.release_helper:main"
     notify-discord = "ci_tools.social.notify_discord:main"
     notify-bluesky = "ci_tools.social.notify_bluesky:main"
+    notify-twitter = "ci_tools.social.notify_twitter:main"
     notify-gh-discussion = "ci_tools.social.notify_github_discussion:main"
 
 [tool.setuptools]
