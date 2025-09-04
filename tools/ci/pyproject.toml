@@ -23,6 +23,7 @@
 [project.scripts]
     release-helper = "ci_tools.release_helper:main"
     notify-discord = "ci_tools.social.notify_discord:main"
+    notify-bluesky = "ci_tools.social.notify_bluesky:main"
     notify-gh-discussion = "ci_tools.social.notify_github_discussion:main"
 
 [tool.setuptools]
