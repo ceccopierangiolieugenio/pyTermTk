@@ -18,6 +18,10 @@ on:
         description: The release message
         type: string
         default: pyTermTk released
+      github-discussion-message:
+        description: The release message
+        type: string
+        default: pyTermTk released
   workflow_call:
     inputs:
       app:
@@ -32,10 +36,14 @@ on:
         description: The release message
         type: string
         default: pyTermTk released
+      github-discussion-message:
+        description: The release message
+        type: string
+        default: pyTermTk released
 
 jobs:
   notify-discord:
-    # runs-on: ubuntu-latest
+    name: Notify Discord
     runs-on: self-hosted
     steps:
       - uses: actions/checkout@v4
@@ -53,6 +61,24 @@ jobs:
           DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
         run: |
           python tools/ci/social/notify_discord.py ${{ inputs.app }} ${{ inputs.version }}
+
+  notify-github-discussion:
+    name: Notify Github Discussion
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+      - name: Deploy Github Discussion
+        env:
+          DISCUSSION_BODY: ${{ inputs.github-discussion-message}}
+          GH_DISCUSSION_TOKEN: ${{ secrets.GH_PAT_TOKEN }}
+        run: |
+          export DISCUSSION_TITLE="${{ inputs.app }} ${{ inputs.version }} Released!!!"
+          python tools/ci/social/notify_github_discussion.py ${{ inputs.app }} ${{ inputs.version }}
 
 
 

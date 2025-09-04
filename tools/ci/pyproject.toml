@@ -11,7 +11,8 @@
     ]
     requires-python = ">=3.9"
     dependencies = [
-        'GitPython==3.1.44'
+        'GitPython==3.1.44',
+        'requests==2.32.5'
     ]
 
 [project.optional-dependencies]
