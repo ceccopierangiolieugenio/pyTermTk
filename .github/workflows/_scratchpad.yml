@@ -14,52 +14,17 @@ permissions:
   id-token: write
 
 jobs:
-  notify:
-    name: Notify ${{ matrix.name }} to the socials
+  test:
+    # runs-on: ubuntu-latest
     runs-on: self-hosted
-    strategy:
-      matrix:
-        name: [pyTermTk]
-        release-notes: ["#Test1 Notification\n\n##Test2\n\n###Test3\n\nContent!!!"]
-        version: ["0.46.0-a.0"]
+
     steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: ${{ github.sha }}
-      - name: Set up Python 3.11
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-      - name: Install dependencies
-        shell: bash
-        run:
-          pip install -e 'tools/ci[social]'
-      - name: Notify ${{ matrix.name }} on Discord
+      - run: echo Scratchpad
         env:
-          RN: ${{ matrix.release-notes }}
-          MESSAGE: ${{ matrix.release-notes }}
-          DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
-        run: |
-          notify-discord ${{ matrix.name }} v${{ matrix.version }}
-      - name: Notify ${{ matrix.name }} on Github Discussion
-        env:
-          RN: ${{ matrix.release-notes }}
-          MESSAGE: ${{ matrix.release-notes }}
-          GITHUB_TOKEN: ${{ secrets.GH_PAT_TOKEN }}
-          GH_DISCUSSION_TOKEN: ${{ secrets.GH_DISCUSSION_TOKEN }}
-        run: |
-          notify-gh-discussion ${{ matrix.name }} v${{ matrix.version }}
-      - name: Notify ${{ matrix.name }} on Bluesky
-        env:
-          BLUESKY_APP_PWD: ${{ secrets.BLUESKY_APP_PWD }}
-          BLUESKY_APP_IDENTIFIER: ${{ secrets.BLUESKY_APP_IDENTIFIER }}
-        run: |
-          notify-bluesky ${{ matrix.name }} v${{ matrix.version }}
-      - name: Notify ${{ matrix.name }} on Twitter
-        env:
-          X_API_KEY: ${{ secrets.X_API_KEY }}
-          X_API_SECRET: ${{ secrets.X_API_SECRET }}
-          X_ACCESS_TOKEN: ${{ secrets.X_ACCESS_TOKEN }}
-          X_ACCESS_TOKEN_SECRET: ${{ secrets.X_ACCESS_TOKEN_SECRET }}
-        run: |
-          notify-twitter ${{ matrix.name }} ${{ matrix.version }}
+          GH: ${{ toJson(github) }}
+          GHE: ${{ toJson(github.event) }}
+          GHEH: ${{ toJson(github.event.head_commit) }}
+          GHEHM: ${{ toJson(github.event.head_commit.modified) }}
+      # - uses: actions/checkout@v4
+      #   with:
+      #     ref: ${{ github.sha }}
