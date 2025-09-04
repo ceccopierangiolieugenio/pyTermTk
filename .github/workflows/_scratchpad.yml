@@ -19,8 +19,8 @@ jobs:
     runs-on: self-hosted
     strategy:
       matrix:
-        name: [Test]
-        release-notes: ["#Test1\n\n##Test2\n\n###Test3\n\nContent!!!"]
+        name: [pyTermTk]
+        release-notes: ["#Test1 Notification\n\n##Test2\n\n###Test3\n\nContent!!!"]
         version: ["0.0.1"]
     steps:
       - uses: actions/checkout@v4
@@ -41,5 +41,5 @@ jobs:
           DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
           GH_DISCUSSION_TOKEN: ${{ secrets.GH_DISCUSSION_TOKEN }}
         run: |
-          notify-discord ${{ matrix.name }} v${{ matrix.version }}
+          # notify-discord ${{ matrix.name }} v${{ matrix.version }}
           notify-gh-discussion ${{ matrix.name }} v${{ matrix.version }}
