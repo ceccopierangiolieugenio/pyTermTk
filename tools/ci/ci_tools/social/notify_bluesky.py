@@ -137,6 +137,7 @@ def main():
     print(auth_data)
     access_token = auth_data["accessJwt"]
     did = auth_data["did"]
+    print(f"::add-mask::{did}")
 
     # Step 2: Post a message
     headers = {
@@ -182,7 +183,9 @@ def main():
         }
     }
 
+    print('::group::Data')
     pprint(post_data)
+    print('::endgroup::')
 
     post_response = requests.post(
         "https://bsky.social/xrpc/com.atproto.repo.createRecord",

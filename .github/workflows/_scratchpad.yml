@@ -49,4 +49,4 @@ jobs:
           BLUESKY_APP_PWD: ${{ secrets.BLUESKY_APP_PWD }}
           BLUESKY_APP_IDENTIFIER: ${{ secrets.BLUESKY_APP_IDENTIFIER }}
         run: |
-          notify-bluesky ${{ matrix.name }} v${{ matrix.version }}
+          notify-bluesky ${{ matrix.name }} ${{ matrix.version }}
