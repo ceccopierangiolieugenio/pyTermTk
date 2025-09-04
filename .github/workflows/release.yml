@@ -283,5 +283,8 @@ jobs:
           RN: ${{ matrix.release-notes }}
           MESSAGE: ${{ matrix.release-notes }}
           DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
+          GH_DISCUSSION_TOKEN: ${{ secrets.GH_DISCUSSION_TOKEN }}
         run: |
           notify-discord ${{ matrix.name }} v${{ matrix.version }}
+          notify-gh-discussion ${{ matrix.name }} v${{ matrix.version }}
+
