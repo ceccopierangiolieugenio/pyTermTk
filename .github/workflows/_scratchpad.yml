@@ -21,7 +21,7 @@ jobs:
       matrix:
         name: [pyTermTk]
         release-notes: ["#Test1 Notification\n\n##Test2\n\n###Test3\n\nContent!!!"]
-        version: ["0.0.1"]
+        version: ["0.46.0-a.0"]
     steps:
       - uses: actions/checkout@v4
         with:

@@ -134,10 +134,10 @@ def main():
     )
 
     auth_data = auth_response.json()
-    print(auth_data)
     access_token = auth_data["accessJwt"]
     did = auth_data["did"]
     print(f"::add-mask::{did}")
+    print(auth_data)
 
     # Step 2: Post a message
     headers = {
