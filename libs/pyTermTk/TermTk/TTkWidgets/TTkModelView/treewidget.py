@@ -420,6 +420,7 @@ class TTkTreeWidget(TTkAbstractScrollView):
         self._rootItem.dataChanged.disconnect(self._refreshCache)
         self._rootItem.expandAll()
         self._rootItem.dataChanged.connect(self._refreshCache)
+        self._refreshCache()
 
     @pyTTkSlot()
     def collapseAll(self) -> None:
@@ -429,6 +430,7 @@ class TTkTreeWidget(TTkAbstractScrollView):
         self._rootItem.dataChanged.disconnect(self._refreshCache)
         self._rootItem.collapseAll()
         self._rootItem.dataChanged.connect(self._refreshCache)
+        self._refreshCache()
 
     def mouseDoubleClickEvent(self, evt:TTkMouseEvent) -> bool:
         x,y = evt.x, evt.y

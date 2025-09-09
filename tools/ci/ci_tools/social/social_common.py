@@ -36,21 +36,25 @@ _all_data:List[SocialData] = [
         SocialData(
             name='pytermtk',
             link='https://github.com/ceccopierangiolieugenio/pyTermTk',
+            image='',
             discord_channel_id=1379381341145268305,
         ),
         SocialData(
             name='ttkode',
             link='https://github.com/ceccopierangiolieugenio/pyTermTk/tree/main/apps/ttkode',
+            image='',
             discord_channel_id=1379381474783924295,
         ),
         SocialData(
             name='dumbpainttool',
             link='https://github.com/ceccopierangiolieugenio/pyTermTk/tree/main/apps/dumbPaintTool',
+            image='',
             discord_channel_id=1379381571412430931,
         ),
         SocialData(
             name='tlogg',
             link='https://github.com/ceccopierangiolieugenio/pyTermTk/tree/main/apps/tlogg',
+            image='',
             discord_channel_id=1379381593378000916,
         ),
 ]
