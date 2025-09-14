@@ -37,9 +37,14 @@ _icon:str = (
     "╔═╗\n"
     "🔎╝")
 
-ttkode.TTkodePluginActivity(
+ttkode.TTkodePlugin(
     name="Find Plugin",
-    activityName='Search',
-    widget=FindWidget(),
-    icon=ttk.TTkString(_icon)
+    widgets = [
+        ttkode.TTkodePluginWidgetActivity(
+            activityName='Search',
+            widget=FindWidget(),
+            icon=ttk.TTkString(_icon)
+        )
+    ]
+
     )

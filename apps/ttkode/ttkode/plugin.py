@@ -20,36 +20,43 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-__all__ = ['TTkodePlugin', 'TTkodePluginActivity']
+from __future__ import annotations
+
+__all__ = [
+    'TTkodePlugin',
+    'TTkodePluginWidget', 'TTkodePluginWidgetActivity', 'TTkodePluginWidgetPanel']
 
 from dataclasses import dataclass
 from typing import Callable, List, Optional, Union
-from enum import Enum
+from enum import IntEnum
 
 import TermTk as ttk
 
+@dataclass
+class TTkodePluginWidget():
+    widget:ttk.TTkWidget
+
+@dataclass
+class TTkodePluginWidgetActivity(TTkodePluginWidget):
+        activityName: str
+        icon:ttk.TTkString
+
+@dataclass
+class TTkodePluginWidgetPanel(TTkodePluginWidget):
+        panelName: str
+
 class TTkodePlugin():
-    instances: List = []
+    instances: List[TTkodePlugin] = []
     def __init__(
             self,
-            name   : str,
-            init   : Optional[Callable[[],None]] = None,
-            apply  : Optional[Callable[[],None]] = None,
-            run    : Optional[Callable[[],None]] = None ):
+            name    : str,
+            init    : Optional[Callable[[],None]] = None,
+            apply   : Optional[Callable[[],None]] = None,
+            run     : Optional[Callable[[],None]] = None,
+            widgets : List[TTkodePluginWidget] = []):
+        self.widgets = widgets
         self.name = name
         self.init = init
         self.apply = apply
         self.run = run
         self.instances.append(self)
-
-class TTkodePluginActivity(TTkodePlugin):
-    def __init__(
-            self,
-            activityName: str,
-            widget: ttk.TTkWidget,
-            icon:ttk.TTkString,
-            **kwargs):
-        self.activityName = activityName
-        self.widget = widget
-        self.icon = icon
-        super().__init__(**kwargs)

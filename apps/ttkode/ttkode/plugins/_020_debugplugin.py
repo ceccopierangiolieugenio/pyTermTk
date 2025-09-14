@@ -31,9 +31,13 @@ _icon:str = (
     " 🭑🬽\n"
     "🪲🭘")
 
-ttkode.TTkodePluginActivity(
+ttkode.TTkodePlugin(
     name="Debug Plugin",
-    activityName='Debug',
-    widget=ttk.TTkTestWidget(),
-    icon=ttk.TTkString(_icon)
-    )
+    widgets = [
+        ttkode.TTkodePluginWidgetActivity(
+            activityName='Debug',
+            widget=ttk.TTkTestWidget(),
+            icon=ttk.TTkString(_icon)
+        )
+    ]
+)

@@ -26,7 +26,7 @@ import os
 import importlib, pkgutil
 
 import TermTk as ttk
-from .plugin import TTkodePlugin, TTkodePluginActivity
+from .plugin import TTkodePlugin, TTkodePluginWidgetActivity, TTkodePluginWidgetPanel
 from .proxy import ttkodeProxy
 
 class TTkodeHelper():
@@ -64,11 +64,12 @@ class TTkodeHelper():
     @staticmethod
     def _runPlugins():
         for mod in TTkodePlugin.instances:
-            if isinstance(mod, TTkodePluginActivity):
-                ttkodeProxy.ttkode()._activityBar.addActivity(
-                    name=mod.activityName,
-                    icon=mod.icon,
-                    widget=mod.widget)
+            for _pluginWidget in mod.widgets:
+                if isinstance(_pluginWidget, TTkodePluginWidgetActivity):
+                    ttkodeProxy.ttkode()._activityBar.addActivity(
+                        name=_pluginWidget.activityName,
+                        icon=_pluginWidget.icon,
+                        widget=_pluginWidget.widget)
             if mod.apply is not None:
                 mod.apply()
 
