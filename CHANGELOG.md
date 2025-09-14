@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.46.1-a.0](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/pyTermTk-v0.46.0-a.0...pyTermTk-v0.46.1-a.0) (2025-09-14)
+
+
+### Chores
+
+* **tree:** update event triggered by expandAll and collapseAll ([e2c4ef5](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/e2c4ef5318f212853d7af8b51825a2d83fc40e5d))
+
 ## [0.46.0-a.0](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/pyTermTk-v0.45.0-a.0...pyTermTk-v0.46.0-a.0) (2025-09-01)
 
 
