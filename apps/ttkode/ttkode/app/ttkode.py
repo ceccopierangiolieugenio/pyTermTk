@@ -20,10 +20,14 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
+
 __all__ = ['TTKode', 'TTKodeWidget']
 
 import os
-from typing import List,Tuple,Optional,Any
+from dataclasses import dataclass
+from enum import IntEnum
+from typing import List,Tuple,Optional,Any,Dict
 
 import TermTk as ttk
 from TermTk.TTkWidgets.tabwidget import _TTkNewTabWidgetDragData
@@ -167,8 +171,68 @@ class _TextEdit(ttk.TTkTextEdit, TTKodeWidget):
         tedit.ensureCursorVisible()
         tedit.textCursor().setPosition(line=linenum,pos=0)
 
+class _Panel():
+    class Position(IntEnum):
+        BOTTOM = 0x01
+
+    class _PanelDef():
+        def __init__(
+                self,
+                position: _Panel.Position,
+                layout: ttk.TTkLayout,
+                menuBar: ttk.TTkMenuBarLayout,
+                widgets: List[ttk.TTkWidget] = []):
+            self.position = position
+            self.layout = layout
+            self.menuBar = menuBar
+            self.widgets = widgets
+
+    __slots__ = ('_panels')
+    _panels:Dict[_Panel.Position,_Panel._PanelDef]
+
+    def __init__(self):
+        self._panels = {}
+
+    def addPanel(
+            self,
+            position:_Panel.Position,
+            layout: ttk.TTkLayout,
+            menuBar: ttk.TTkMenuBarLayout):
+        if position in self._panels:
+            raise ValueError(f"Panel '{position.name}' already exists")
+        panel = _Panel._PanelDef(
+            position=position,
+            layout=layout,
+            menuBar=menuBar
+        )
+        self._panels[position] = panel
+
+    def addWidget(
+            self,
+            position:_Panel.Position,
+            widget: ttk.TTkWidget,
+            name: ttk.TTkString,
+            visible: bool=False):
+        if not (panel:=self._panels.get(position,None)):
+            raise ValueError(f"Panel '{position.name}' does not exists")
+        widget.setVisible(visible)
+
+        panel.layout.addWidget(widget)
+        panel.widgets.append(widget)
+        mb = panel.menuBar.addMenu(name, alignment=ttk.TTkK.LEFT_ALIGN)
+
+        @ttk.pyTTkSlot()
+        def _showBottomTab():
+            for _w in self._panels[self.Position.BOTTOM].widgets:
+                _w.hide()
+            widget.show()
+
+        mb.menuButtonClicked.connect(_showBottomTab)
+
+
 class TTKode(ttk.TTkGridLayout):
-    __slots__ = ('_kodeTab', '_activityBar', '_lastDoc')
+    __slots__ = ('_kodeTab', '_activityBar', '_panel', '_lastDoc')
+    _panel:_Panel
     _lastDoc:Optional[_TextDocument]
     def __init__(self, **kwargs):
         self._lastDoc = None
@@ -210,18 +274,27 @@ class TTKode(ttk.TTkGridLayout):
         appTemplate.setItem(bottomLayout, ttk.TTkAppTemplate.BOTTOM, size=3)
         appTemplate.setMenuBar(bottomMenuBar:=ttk.TTkMenuBarLayout(), ttk.TTkAppTemplate.BOTTOM)
 
-        bottomLayout.addWidget(_logViewer:=ttk.TTkLogViewer())
-        bottomLayout.addWidget(_terminal:=ttk.TTkTerminal(visible=False))
+        self._panel = _Panel()
+        self._panel.addPanel(
+            position=_Panel.Position.BOTTOM,
+            layout=bottomLayout,
+            menuBar=bottomMenuBar)
+
+        _logViewer=ttk.TTkLogViewer()
+        _terminal=ttk.TTkTerminal(visible=False)
+
         _th = ttk.TTkTerminalHelper(term=_terminal)
         _th.runShell()
-        @ttk.pyTTkSlot(ttk.TTkWidget)
-        def _showBottomTab(wid:ttk.TTkWidget):
-            _logViewer.hide()
-            _terminal.hide()
-            wid.show()
 
-        bottomMenuBar.addMenu("Logs", alignment=ttk.TTkK.LEFT_ALIGN).menuButtonClicked.connect(lambda : _showBottomTab(_logViewer))
-        bottomMenuBar.addMenu(" Terminal", alignment=ttk.TTkK.LEFT_ALIGN).menuButtonClicked.connect(lambda : _showBottomTab(_terminal))
+        self._panel.addWidget(
+            position=_Panel.Position.BOTTOM,
+            widget=_logViewer,
+            name="Logs",
+            visible=True)
+        self._panel.addWidget(
+            position=_Panel.Position.BOTTOM,
+            widget=_terminal,
+            name=" Terminal")
 
         fileTree.fileActivated.connect(lambda x: self._openFile(x.path()))
         self._kodeTab.tabAdded.connect(self._tabAdded)

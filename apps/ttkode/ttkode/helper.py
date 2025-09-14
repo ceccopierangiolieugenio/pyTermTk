@@ -70,6 +70,14 @@ class TTkodeHelper():
                         name=_pluginWidget.activityName,
                         icon=_pluginWidget.icon,
                         widget=_pluginWidget.widget)
+                if isinstance(_pluginWidget, TTkodePluginWidgetPanel):
+                    _panel = ttkodeProxy.ttkode()._panel
+                    _panel.addWidget(
+                        position=_panel.Position.BOTTOM,
+                        widget=_pluginWidget.widget,
+                        name=_pluginWidget.panelName
+                    )
+
             if mod.apply is not None:
                 mod.apply()
 
