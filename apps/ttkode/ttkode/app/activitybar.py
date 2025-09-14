@@ -62,7 +62,7 @@ class _ActivityWidget(ttk.TTkRadioButton):
         iconLine2 = self._icon[1].setColor(style['color'])
         canvas.drawTTkString(pos=(0,0),text=iconLine1)
         if self.isChecked():
-            canvas.drawTTkString(pos=(0,1),text=iconLine2.setColor(ttk.ttk.TTkColor.UNDERLINE))
+            canvas.drawTTkString(pos=(0,1),text=iconLine2.setColor(style['color']+ttk.ttk.TTkColor.UNDERLINE))
         else:
             canvas.drawTTkString(pos=(0,1),text=iconLine2)
 
