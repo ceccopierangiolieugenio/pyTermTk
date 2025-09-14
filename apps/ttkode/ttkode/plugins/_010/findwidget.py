@@ -257,6 +257,7 @@ class FindWidget(ttk.TTkContainer):
                         _file.write_text(_new_content)
             else:
                 ttk.TTkLog.debug(f"Discard")
+            self._search()
         messageBox.buttonSelected.connect(_cb)
         ttk.TTkHelper.overlay(None, messageBox, 5, 5, True)
 
