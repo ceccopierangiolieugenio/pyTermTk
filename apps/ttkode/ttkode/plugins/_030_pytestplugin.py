@@ -31,19 +31,21 @@ import TermTk as ttk
 
 import ttkode
 
-from _010.findwidget import FindWidget
-
 _icon:str = (
-    "╔═╗\n"
-    "🔎╝")
+    "╒╦╕\n"
+    "╶╨╴")
 
 ttkode.TTkodePlugin(
-    name="Find Plugin",
+    name="PyTest Plugin",
     widgets = [
         ttkode.TTkodePluginWidgetActivity(
-            activityName='Search',
-            widget=FindWidget(),
+            activityName='Testing',
+            widget=ttk.TTkTestWidget(),
             icon=ttk.TTkString(_icon)
+        ),
+        ttkode.TTkodePluginWidgetPanel(
+            panelName='Test Results',
+            widget=ttk.TTkTestWidget()
         )
     ]
 )
