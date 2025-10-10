@@ -22,6 +22,8 @@
 
 __all__ = ['TTkFileTree']
 
+from typing import List,Optional
+
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.string import TTkString
 from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
@@ -204,32 +206,46 @@ class TTkFileTree(TTkTree):
         :type  folder: :py:class:`TTkFileTreeWidgetItem`
         '''
         return self._fileTreeWidget.folderActivated
-    def setHeaderLabels(self, labels:TTkString) -> None:
+    def setHeaderLabels(self, labels:List[TTkString]) -> None:
         '''
         .. seealso:: this method is forwarded to :py:meth:`TTkFileTreeWidget.setHeaderLabels`
 
-        setHeaderLabels
+        Adds a column in the header for each item in the labels list, and sets the label for each column.
+
+        :param labels: the list of labels
+        :type labels: List[:py:class:`TTkString`]
         '''
         return self._fileTreeWidget.setHeaderLabels(labels=labels)
     def setColumnWidth(self, column:int, width: int) -> None:
         '''
         .. seealso:: this method is forwarded to :py:meth:`TTkFileTreeWidget.setColumnWidth`
 
-        setColumnWidth
+        Set the width of the column requested
+
+        :param column: the column position
+        :type column: int
+
+        :rtype: int
         '''
         return self._fileTreeWidget.setColumnWidth(column=column, width=width)
     def resizeColumnToContents(self, column:int) -> None:
         '''
         .. seealso:: this method is forwarded to :py:meth:`TTkFileTreeWidget.resizeColumnToContents`
 
-        resizeColumnToContents
+        rwsize the width of the column requestedto its content
+
+        :param column: the column position
+        :type column: int
         '''
         return self._fileTreeWidget.resizeColumnToContents(column=column)
-    def sortColumn(self):
+    def sortColumn(self) -> int:
         '''
         .. seealso:: this method is forwarded to :py:meth:`TTkFileTreeWidget.sortColumn`
 
         Returns the column used to sort the contents of the widget.
+        -1 in case no column sort is used
+
+        :rtype: int
         '''
         return self._fileTreeWidget.sortColumn()
     def sortItems(self, col:int, order:TTkK.SortOrder) -> None:
@@ -237,16 +253,21 @@ class TTkFileTree(TTkTree):
         .. seealso:: this method is forwarded to :py:meth:`TTkFileTreeWidget.sortItems`
 
         Sorts the items in the widget in the specified order by the values in the given column.
+
+        :param col: the column used as reference for the sorting
+        :type col: int
+        :param order: the sorting order
+        :type order: :py:class:`TTkK.SortOrder`
         '''
         return self._fileTreeWidget.sortItems(col=col, order=order)
-    def dragDropMode(self):
+    def dragDropMode(self) -> TTkK.DragDropMode:
         '''
         .. seealso:: this method is forwarded to :py:meth:`TTkFileTreeWidget.dragDropMode`
 
         dragDropMode
         '''
         return self._fileTreeWidget.dragDropMode()
-    def setDragDropMode(self, dndMode):
+    def setDragDropMode(self, dndMode:TTkK.DragDropMode):
         '''
         .. seealso:: this method is forwarded to :py:meth:`TTkFileTreeWidget.setDragDropMode`
 
@@ -258,7 +279,7 @@ class TTkFileTree(TTkTree):
         '''
         .. seealso:: this method is forwarded to :py:meth:`TTkFileTreeWidget.expandAll`
 
-        expandAll
+        Expands all expandable items.
         '''
         return self._fileTreeWidget.expandAll()
     @pyTTkSlot()
@@ -266,56 +287,90 @@ class TTkFileTree(TTkTree):
         '''
         .. seealso:: this method is forwarded to :py:meth:`TTkFileTreeWidget.collapseAll`
 
-        collapseAll
+        Collapse all collapsable items.
         '''
         return self._fileTreeWidget.collapseAll()
+    def invisibleRootItem(self) -> TTkTreeWidgetItem:
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkFileTreeWidget.invisibleRootItem`
+
+        Returns the tree widget's invisible root item.
+
+        The invisible root item provides access to the tree widget's top-level items through the :py:class:`TTkTreeWidgetItem` API,
+        making it possible to write functions that can treat top-level items and their children in a uniform way;
+        for example, recursive functions.
+
+        :return: the root Item
+        :rtype: :py:class:`TTkTreeWidgetItem`
+        '''
+        return self._fileTreeWidget.invisibleRootItem()
     def addTopLevelItem(self, item:TTkTreeWidgetItem) -> None:
         '''
         .. seealso:: this method is forwarded to :py:meth:`TTkFileTreeWidget.addTopLevelItem`
 
-        addTopLevelItem
+        Appends the item as a top-level item in the widget.
+
+        :param item: the item to be added.
+        :type item: :py:class:`TTkTreeWidgetItem`
         '''
         return self._fileTreeWidget.addTopLevelItem(item=item)
-    def addTopLevelItems(self, items:TTkTreeWidgetItem) -> None:
+    def addTopLevelItems(self, items:List[TTkTreeWidgetItem]) -> None:
         '''
         .. seealso:: this method is forwarded to :py:meth:`TTkFileTreeWidget.addTopLevelItems`
 
-        addTopLevelItems
+        Appends the list of items as a top-level items in the widget.
+
+        :param item: the item to be added.
+        :type item: List[:py:class:`TTkTreeWidgetItem`]
         '''
         return self._fileTreeWidget.addTopLevelItems(items=items)
-    def takeTopLevelItem(self, index) -> None:
+    def takeTopLevelItem(self, index:int) -> Optional[TTkTreeWidgetItem]:
         '''
         .. seealso:: this method is forwarded to :py:meth:`TTkFileTreeWidget.takeTopLevelItem`
 
-        takeTopLevelItem
+        Removes the top-level item at the given index in the tree and returns it, otherwise returns None;
+
+        :param index: the index of the item
+        :type index: int
+
+        :rtype: Optional[:py:class:`TTkTreeWidgetItem`]
         '''
         return self._fileTreeWidget.takeTopLevelItem(index=index)
-    def topLevelItem(self, index) -> TTkTreeWidgetItem:
+    def topLevelItem(self, index) -> Optional[TTkTreeWidgetItem]:
         '''
         .. seealso:: this method is forwarded to :py:meth:`TTkFileTreeWidget.topLevelItem`
 
-        topLevelItem
+        Returns the top level item at the given index, or None if the item does not exist.
+
+        :param index: the index of the item
+        :type index: int
+
+        :rtype: Optional[:py:class:`TTkTreeWidgetItem`]
         '''
         return self._fileTreeWidget.topLevelItem(index=index)
     def indexOfTopLevelItem(self, item:TTkTreeWidgetItem) -> int:
         '''
         .. seealso:: this method is forwarded to :py:meth:`TTkFileTreeWidget.indexOfTopLevelItem`
 
-        indexOfTopLevelItem
+        Returns the index of the given top-level item, or -1 if the item cannot be found.
+
+        :rtype: int
         '''
         return self._fileTreeWidget.indexOfTopLevelItem(item=item)
-    def selectedItems(self) -> list[TTkTreeWidgetItem]:
+    def selectedItems(self) -> List[TTkTreeWidgetItem]:
         '''
         .. seealso:: this method is forwarded to :py:meth:`TTkFileTreeWidget.selectedItems`
 
-        selectedItems
+        Returns a list of all selected non-hidden items.
+
+        :rtype: List[:py:class:`TTkTreeWidgetItem`]
         '''
         return self._fileTreeWidget.selectedItems()
     def clear(self) -> None:
         '''
         .. seealso:: this method is forwarded to :py:meth:`TTkFileTreeWidget.clear`
 
-        clear
+        Clears the tree widget by removing all of its items and selections.
         '''
         return self._fileTreeWidget.clear()
     def openPath(self, path):
