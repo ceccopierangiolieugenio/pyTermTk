@@ -238,6 +238,9 @@ class TTkTextDocument():
     def characterCount(self):
         return sum([len[x] for x in self._dataLines])+self.lineCount()
 
+    def clear(self):
+        self.setText(self._default_init_text)
+
     def setText(self, text:TTkStringType) -> None:
         remLines = len(self._dataLines)
         if not isinstance(text, str) and not isinstance(text,TTkString):
