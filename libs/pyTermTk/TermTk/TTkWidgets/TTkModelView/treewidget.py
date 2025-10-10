@@ -239,14 +239,14 @@ class TTkTreeWidget(TTkAbstractScrollView):
         items: List[TTkAbstractItemModel]
 
     def __init__(self, *,
-                 header=None,
-                 sortingEnabled=True,
+                 header:List[TTkString]=[],
+                 sortingEnabled:bool=True,
                  selectionMode:TTkK.SelectionMode=TTkK.SelectionMode.SingleSelection,
                  dragDropMode:TTkK.DragDropMode=TTkK.DragDropMode.NoDragDrop,
                  **kwargs) -> None:
         '''
         :param header: define the header labels of each column, defaults to []
-        :type header: list[TTkString], optional
+        :type header: List[:py:class:`TTkString`], optional
         :param sortingEnabled: enable the column sorting, defaults to False
         :type sortingEnabled: bool, optional
         :param selectionMode: This property controls whether the user can select one or many items, defaults to :py:class:`TTkK.SelectionMode.SingleSelection`.
@@ -297,8 +297,23 @@ class TTkTreeWidget(TTkAbstractScrollView):
         # TTkLog.debug(f"{w=} {h=}")
         return w,h
 
+    def invisibleRootItem(self) -> TTkTreeWidgetItem:
+        '''
+        Returns the tree widget's invisible root item.
+
+        The invisible root item provides access to the tree widget's top-level items through the :py:class:`TTkTreeWidgetItem` API,
+        making it possible to write functions that can treat top-level items and their children in a uniform way;
+        for example, recursive functions.
+
+        :return: the root Item
+        :rtype: :py:class:`TTkTreeWidgetItem`
+        '''
+        return self._rootItem
+
     def clear(self) -> None:
-        '''clear'''
+        '''
+        Clears the tree widget by removing all of its items and selections.
+        '''
         # Remove all the widgets
         if self._rootItem:
             self._rootItem.dataChanged.disconnect(self._refreshCache)
@@ -309,77 +324,153 @@ class TTkTreeWidget(TTkAbstractScrollView):
         self.update()
 
     def addTopLevelItem(self, item:TTkTreeWidgetItem) -> None:
-        '''addTopLevelItem'''
+        '''
+        Appends the item as a top-level item in the widget.
+
+        :param item: the item to be added.
+        :type item: :py:class:`TTkTreeWidgetItem`
+        '''
         self._rootItem.addChild(item)
         self.viewChanged.emit()
         self.update()
 
-    def addTopLevelItems(self, items:TTkTreeWidgetItem) -> None:
-        '''addTopLevelItems'''
+    def addTopLevelItems(self, items:List[TTkTreeWidgetItem]) -> None:
+        '''
+        Appends the list of items as a top-level items in the widget.
+
+        :param item: the item to be added.
+        :type item: List[:py:class:`TTkTreeWidgetItem`]
+        '''
         self._rootItem.addChildren(items)
         self.viewChanged.emit()
         self.update()
 
-    def takeTopLevelItem(self, index) -> None:
-        '''takeTopLevelItem'''
-        self._rootItem.takeChild(index)
+    def takeTopLevelItem(self, index:int) -> Optional[TTkTreeWidgetItem]:
+        '''
+        Removes the top-level item at the given index in the tree and returns it, otherwise returns None;
+
+        :param index: the index of the item
+        :type index: int
+
+        :rtype: Optional[:py:class:`TTkTreeWidgetItem`]
+        '''
+        ret = self._rootItem.takeChild(index)
         self.viewChanged.emit()
         self.update()
+        return ret
 
-    def topLevelItem(self, index) -> TTkTreeWidgetItem:
-        '''topLevelItem'''
+    def topLevelItem(self, index) -> Optional[TTkTreeWidgetItem]:
+        '''
+        Returns the top level item at the given index, or None if the item does not exist.
+
+        :param index: the index of the item
+        :type index: int
+
+        :rtype: Optional[:py:class:`TTkTreeWidgetItem`]
+        '''
         return self._rootItem.child(index)
 
     def indexOfTopLevelItem(self, item:TTkTreeWidgetItem) -> int:
-        '''indexOfTopLevelItem'''
+        '''
+        Returns the index of the given top-level item, or -1 if the item cannot be found.
+
+        :rtype: int
+        '''
         return self._rootItem.indexOfChild(item)
 
     def selectionMode(self) -> TTkK.SelectionMode:
-        '''selectionMode'''
+        '''
+        selectionMode
+
+        :rtype: :py:class:`TTkK.SelectionMode`
+        '''
         return self._selectionMode
 
     def setSelectionMode(self, mode:TTkK.SelectionMode) -> None:
-        '''setSelectionMode'''
+        '''
+        Sets the current selection model to the given selectionModel.
+
+        :param mode: the selection mode used in this tree
+        :type mode: :py:class:`TTkK.SelectionMode`
+        '''
         self._selectionMode = mode
 
-    def selectedItems(self) -> list[TTkTreeWidgetItem]:
-        '''selectedItems'''
+    def selectedItems(self) -> List[TTkTreeWidgetItem]:
+        '''
+        Returns a list of all selected non-hidden items.
+
+        :rtype: List[:py:class:`TTkTreeWidgetItem`]
+        '''
         if self._selected:
             return self._selected
         return None
 
-    def setHeaderLabels(self, labels:TTkString) -> None:
-        '''setHeaderLabels'''
+    def setHeaderLabels(self, labels:List[TTkString]) -> None:
+        '''
+        Adds a column in the header for each item in the labels list, and sets the label for each column.
+
+        :param labels: the list of labels
+        :type labels: List[:py:class:`TTkString`]
+        '''
         self._header = labels
         # Set 20 as default column size
         self._columnsPos = [20+x*20 for x in range(len(labels))]
         self.viewChanged.emit()
         self.update()
 
-    def dragDropMode(self):
+    def dragDropMode(self) -> TTkK.DragDropMode:
         '''dragDropMode'''
         return self._dndMode
 
-    def setDragDropMode(self, dndMode):
+    def setDragDropMode(self, dndMode:TTkK.DragDropMode):
         '''setDragDropMode'''
         self._dndMode = dndMode
 
     def isSortingEnabled(self) -> bool:
-        'isSortingEnabled'
+        '''
+        This property holds whether sorting is enabled
+
+        If this property is true, sorting is enabled for the tree;
+        if the property is false, sorting is not enabled.
+        The default value is false.
+
+        :rtype: bool
+        '''
         return self._sortingEnabled
 
-    def setSortingEnabled(self, enabled) -> None:
-        'setSortingEnabled'
+    def setSortingEnabled(self, enabled:bool) -> None:
+        '''
+        This property holds whether sorting is enabled
+
+        If this property is true, sorting is enabled for the tree;
+        if the property is false, sorting is not enabled.
+        The default value is false.
+
+        :param enabled: the sorting status
+        :type enabled: bool
+        '''
         if enabled != self._sortingEnabled:
             self._sortingEnabled = enabled
             self.update()
 
-    def sortColumn(self):
-        '''Returns the column used to sort the contents of the widget.'''
+    def sortColumn(self) -> int:
+        '''
+        Returns the column used to sort the contents of the widget.
+        -1 in case no column sort is used
+
+        :rtype: int
+        '''
         return self._sortColumn
 
     def sortItems(self, col:int, order:TTkK.SortOrder) -> None:
-        '''Sorts the items in the widget in the specified order by the values in the given column.'''
+        '''
+        Sorts the items in the widget in the specified order by the values in the given column.
+
+        :param col: the column used as reference for the sorting
+        :type col: int
+        :param order: the sorting order
+        :type order: :py:class:`TTkK.SortOrder`
+        '''
         if not self._sortingEnabled: return
         self._sortColumn = col
         self._sortOrder = order
@@ -389,14 +480,28 @@ class TTkTreeWidget(TTkAbstractScrollView):
         self._refreshCache()
 
     def columnWidth(self, column:int) -> int:
-        '''columnWidth'''
+        '''
+        This property hold the width of the column requested
+
+        :param column: the column position
+        :type column: int
+
+        :rtype: int
+        '''
         if column==0:
             return self._columnsPos[column]
         else:
             return self._columnsPos[column]-self._columnsPos[column-1]-1
 
     def setColumnWidth(self, column:int, width: int) -> None:
-        '''setColumnWidth'''
+        '''
+        Set the width of the column requested
+
+        :param column: the column position
+        :type column: int
+
+        :rtype: int
+        '''
         i = column
         newSize = ((1+self._columnsPos[i-1]) if i>0 else 0) + width
         oldSize = self._columnsPos[i]
@@ -407,14 +512,19 @@ class TTkTreeWidget(TTkAbstractScrollView):
         self.update()
 
     def resizeColumnToContents(self, column:int) -> None:
-        '''resizeColumnToContents'''
+        '''
+        rwsize the width of the column requestedto its content
+
+        :param column: the column position
+        :type column: int
+        '''
         _,oy = self.getViewOffsets()
         contentSize = self._rootItem._getColumnContentSize(column, oy)
         self.setColumnWidth(column, contentSize)
 
     @pyTTkSlot()
     def expandAll(self) -> None:
-        '''expandAll'''
+        '''Expands all expandable items.'''
         if not self._rootItem:
             return
         self._rootItem.dataChanged.disconnect(self._refreshCache)
@@ -424,7 +534,7 @@ class TTkTreeWidget(TTkAbstractScrollView):
 
     @pyTTkSlot()
     def collapseAll(self) -> None:
-        '''collapseAll'''
+        '''Collapse all collapsable items.'''
         if not self._rootItem:
             return
         self._rootItem.dataChanged.disconnect(self._refreshCache)

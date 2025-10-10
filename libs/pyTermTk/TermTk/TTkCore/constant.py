@@ -231,7 +231,7 @@ class TTkConstant:
         # InsertAlphabetically = 0x06
         # '''The string is inserted in the alphabetic order in the combobox.'''
 
-    class DragDropMode(int):
+    class DragDropMode(IntEnum):
         '''Specifies the Drag and Drop mode allowed by this widget
 
         .. autosummary::
