@@ -619,7 +619,9 @@ class TTkTextEditView(TTkAbstractScrollView):
 
             The undo/redo history is also cleared.
         '''
-        self.setText(TTkString())
+        self.viewMoveTo(0, 0)
+        self._textDocument.clear()
+        self._updateSize()
 
     def lineWrapMode(self) -> TTkK.LineWrapMode:
         '''
