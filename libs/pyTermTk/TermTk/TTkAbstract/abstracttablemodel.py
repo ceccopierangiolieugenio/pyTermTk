@@ -283,3 +283,143 @@ class TTkAbstractTableModel():
         :type order: :py:class:`TTkConstant.SortOrder`
         '''
         pass
+
+    def insertColumn(self, column:int) -> bool:
+        '''
+        Inserts a single column before the given column.
+
+        .. note:: This function calls the method :py:meth:`TTkAbstractTableModel.insertColumns`.
+
+        :param column: The column index.
+        :type column: int
+
+        :return: true if the column is inserted; otherwise returns false.
+        :rtype: bool
+        '''
+        return self.insertColumns(column=column, count=1)
+
+    def insertColumns(self, column:int, count:int) -> bool:
+        '''
+        On models that support this,
+        inserts <count> new columns into the model before the given column..
+
+        If column is 0, the columns are prepended to any existing columns.
+
+        If column is :py:meth:`TTkAbstractTableModel.columnCount`,
+        the columns are appended to any existing columns.
+
+        If you implement your own model,
+        you can reimplement this function if you want to support insertions.
+        Alternatively, you can provide your own API for altering the data.
+
+        .. note:: The base class implementation (:py:class:`TTkAbstractTableModel`) of this function does nothing and returns false.
+
+        :param column: The column index.
+        :type column: int
+        :param count: The number of columns to be inserted.
+        :type count: int
+
+        :return: true if the columns were successfully inserted; otherwise returns false.
+        :rtype: bool
+        '''
+        return False
+
+    def insertRow(self, row:int) -> bool:
+        '''
+        Inserts a single row before the given row.
+
+        .. note:: This function calls the method :py:meth:`TTkAbstractTableModel.insertRows`.
+
+        :param row: The row index.
+        :type row: int
+
+        :return: true if the row is inserted; otherwise returns false.
+        :rtype: bool
+        '''
+        return self.insertRows(row=row, count=1)
+
+    def insertRows(self, row:int, count:int) -> bool:
+        '''
+        On models that support this,
+        inserts count rows into the model before the given row.
+
+        If row is 0, the rows are prepended to any existing rows in the parent.
+
+        If row is :py:meth:`TTkAbstractTableModel.rowCount`,
+        the rows are appended to any existing rows in the parent.
+
+        If you implement your own model,
+        you can reimplement this function if you want to support insertions.
+        Alternatively, you can provide your own API for altering the data.
+
+        .. note:: The base class implementation (:py:class:`TTkAbstractTableModel`) of this function does nothing and returns false.
+
+        :param row: The row index.
+        :type row: int
+        :param count: The number of rows to be inserted.
+        :type count: int
+
+        :return: true if the rows were successfully inserted; otherwise returns false.
+        :rtype: bool
+        '''
+        return False
+
+    def removeColumn(self, column:int) -> bool:
+        '''
+        Removes the given column.
+
+        .. note:: This function calls the method :py:meth:`TTkAbstractTableModel.removeColumns`.
+
+        :param column: The column index.
+        :type column: int
+
+        :return: true if the column is removed; otherwise returns false.
+        :rtype: bool
+        '''
+        return self.removeColumns(column=column, count=1)
+
+    def removeColumns(self, column:int, count:int) -> bool:
+        '''
+        On models that support this,
+        removes count columns starting with the given column.
+
+        If you implement your own model,
+        you can reimplement this function if you want to support removing.
+        Alternatively, you can provide your own API for altering the data.
+
+        .. note:: The base class implementation (:py:class:`TTkAbstractTableModel`) of this function does nothing and returns false.
+
+        :return: true if the columns were successfully removed; otherwise returns false.
+        :rtype: bool
+        '''
+        return False
+
+    def removeRow(self, row:int) -> bool:
+        '''
+        Removes the given row.
+
+        .. note:: This function calls the method :py:meth:`TTkAbstractTableModel.removeRows`.
+
+        :param row: The row index.
+        :type row: int
+
+        :return: true if the row is removed; otherwise returns false.
+        :rtype: bool
+        '''
+        return self.removeRows(row=row, count=1)
+
+    def removeRows(self, row:int, count:int) -> bool:
+        '''
+        On models that support this,
+        removes count rows starting with the given row.
+
+        If you implement your own model,
+        you can reimplement this function if you want to support removing.
+        Alternatively, you can provide your own API for altering the data.
+
+        .. note:: The base class implementation (:py:class:`TTkAbstractTableModel`) of this function does nothing and returns false.
+
+        :return: true if the rows were successfully removed; otherwise returns false.
+        :rtype: bool
+        '''
+        return False
