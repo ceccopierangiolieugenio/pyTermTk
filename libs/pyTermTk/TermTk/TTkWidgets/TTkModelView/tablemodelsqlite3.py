@@ -218,11 +218,8 @@ class TTkTableModelSQLite3(TTkAbstractTableModel):
         try:
             with self._sqliteMutex:
                 # Create appropriate default values based on column types
-                placeholders = []
-                for col_type in self._columnTypes:
-                    placeholders.append(self._getDefaultValueForType(col_type))
-
-                placeholders_str = '('+', '.join(placeholders)+')'
+                placeholders = [self._getDefaultValueForType(_ct) for _ct in self._columnTypes]
+                placeholders_str = f"({', '.join(placeholders)})"
                 columns_str = ', '.join(self._columns)
 
                 # Insert the specified number of rows
