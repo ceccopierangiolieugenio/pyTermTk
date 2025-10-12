@@ -314,7 +314,7 @@ class TTkAbstractTableModel():
 
         .. note:: The base class implementation (:py:class:`TTkAbstractTableModel`) of this function does nothing and returns false.
 
-        :param column: The column index.
+        :param column: Starting position of columns to insert (0-based index).
         :type column: int
         :param count: The number of columns to be inserted.
         :type count: int
@@ -354,7 +354,7 @@ class TTkAbstractTableModel():
 
         .. note:: The base class implementation (:py:class:`TTkAbstractTableModel`) of this function does nothing and returns false.
 
-        :param row: The row index.
+        :param row: Starting position of rows to insert (0-based index)
         :type row: int
         :param count: The number of rows to be inserted.
         :type count: int
@@ -389,6 +389,11 @@ class TTkAbstractTableModel():
 
         .. note:: The base class implementation (:py:class:`TTkAbstractTableModel`) of this function does nothing and returns false.
 
+        :param column: Starting position of columns to remove (0-based index)
+        :type column: int
+        :param count: The number of columns to remove.
+        :type count: int
+
         :return: true if the columns were successfully removed; otherwise returns false.
         :rtype: bool
         '''
@@ -418,6 +423,11 @@ class TTkAbstractTableModel():
         Alternatively, you can provide your own API for altering the data.
 
         .. note:: The base class implementation (:py:class:`TTkAbstractTableModel`) of this function does nothing and returns false.
+
+        :param row: Starting position of rows to remove (0-based index)
+        :type row: int
+        :param count: The number of rows to remove.
+        :type count: int
 
         :return: true if the rows were successfully removed; otherwise returns false.
         :rtype: bool

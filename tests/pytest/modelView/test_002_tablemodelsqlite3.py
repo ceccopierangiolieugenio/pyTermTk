@@ -36,6 +36,8 @@ class TestTTkTableModelSQLite3:
     """Test cases for TTkTableModelSQLite3 class"""
 
     def setup_method(self):
+        ttk.TTkLog.use_default_stdout_logging()
+
         """Set up test database for each test"""
         # Create temporary database file
         self.temp_db = tempfile.NamedTemporaryFile(suffix='.db', delete=False)
@@ -288,6 +290,325 @@ class TestTTkTableModelSQLite3:
         assert model.columnCount() == 2  # name, price
         assert model.data(0, 0) == 'Laptop'
         assert model.data(0, 1) == 999.99
+
+    def test_insert_rows_single(self):
+        """Test inserting a single row to the database"""
+        model = ttk.TTkTableModelSQLite3(fileName=self.temp_db_path, table='users')
+
+        initial_count = model.rowCount()
+        assert initial_count == 4
+
+        # Insert one row at the end
+        result = model.insertRows(4, 1)
+        assert result == True
+        assert model.rowCount() == 5
+
+        # New row should have NULL values
+        assert model.data(4, 0) is ''  # name
+        assert model.data(4, 1) is 0  # age
+        assert model.data(4, 2) is ''  # role
+
+    def test_insert_rows_multiple(self):
+        """Test inserting multiple rows to the database"""
+        model = ttk.TTkTableModelSQLite3(fileName=self.temp_db_path, table='users')
+
+        initial_count = model.rowCount()
+
+        # Insert 3 rows at the end
+        result = model.insertRows(4, 3)
+        assert result == True
+        assert model.rowCount() == initial_count + 3
+
+    def test_insert_rows_at_middle(self):
+        """Test inserting rows at middle position"""
+        model = ttk.TTkTableModelSQLite3(fileName=self.temp_db_path, table='users')
+
+        # Insert row at position 2
+        result = model.insertRows(2, 1)
+        assert result == True
+        assert model.rowCount() == 5
+
+    def test_insert_rows_at_beginning(self):
+        """Test inserting rows at the beginning"""
+        model = ttk.TTkTableModelSQLite3(fileName=self.temp_db_path, table='users')
+
+        # Insert row at position 0
+        result = model.insertRows(0, 1)
+        assert result == True
+        assert model.rowCount() == 5
+
+    def test_insert_rows_invalid_position(self):
+        """Test inserting rows at invalid positions"""
+        model = ttk.TTkTableModelSQLite3(fileName=self.temp_db_path, table='users')
+
+        # Try to insert at negative position
+        result = model.insertRows(-1, 1)
+        assert result == False
+
+        # Try to insert at position beyond row count + 1
+        result = model.insertRows(10, 1)
+        assert result == False
+
+    def test_insert_rows_invalid_count(self):
+        """Test inserting invalid number of rows"""
+        model = ttk.TTkTableModelSQLite3(fileName=self.temp_db_path, table='users')
+
+        # Try to insert negative count
+        result = model.insertRows(0, -1)
+        assert result == False
+
+        # Try to insert zero rows
+        result = model.insertRows(0, 0)
+        assert result == False
+
+    def test_remove_rows_single(self):
+        """Test removing a single row from the database"""
+        model = ttk.TTkTableModelSQLite3(fileName=self.temp_db_path, table='users')
+
+        initial_count = model.rowCount()
+
+        # Remove first row (Alice)
+        result = model.removeRows(0, 1)
+        assert result == True
+        assert model.rowCount() == initial_count - 1
+
+    def test_remove_rows_multiple(self):
+        """Test removing multiple rows from the database"""
+        model = ttk.TTkTableModelSQLite3(fileName=self.temp_db_path, table='users')
+
+        initial_count = model.rowCount()
+
+        # Remove 2 rows starting from position 1
+        result = model.removeRows(1, 2)
+        assert result == True
+        assert model.rowCount() == initial_count - 2
+
+    def test_remove_rows_all(self):
+        """Test removing all rows from the database"""
+        model = ttk.TTkTableModelSQLite3(fileName=self.temp_db_path, table='users')
+
+        initial_count = model.rowCount()
+
+        # Remove all rows
+        result = model.removeRows(0, initial_count)
+        assert result == True
+        assert model.rowCount() == 0
+
+    def test_remove_rows_invalid_position(self):
+        """Test removing rows from invalid positions"""
+        model = ttk.TTkTableModelSQLite3(fileName=self.temp_db_path, table='users')
+
+        # Try to remove from negative position
+        result = model.removeRows(-1, 1)
+        assert result == False
+
+        # Try to remove from position beyond row count
+        result = model.removeRows(10, 1)
+        assert result == False
+
+    def test_remove_rows_invalid_count(self):
+        """Test removing invalid number of rows"""
+        model = ttk.TTkTableModelSQLite3(fileName=self.temp_db_path, table='users')
+
+        # Try to remove negative count
+        result = model.removeRows(0, -1)
+        assert result == False
+
+        # Try to remove zero rows
+        result = model.removeRows(0, 0)
+        assert result == False
+
+        # Try to remove more rows than available
+        result = model.removeRows(2, 10)
+        assert result == False
+
+    def test_insert_remove_rows_with_sorting(self):
+        """Test inserting/removing rows when table is sorted"""
+        model = ttk.TTkTableModelSQLite3(fileName=self.temp_db_path, table='users')
+
+        # Sort by name first
+        model.sort(0, ttk.TTkK.SortOrder.AscendingOrder)
+
+        initial_count = model.rowCount()
+
+        # Insert a row
+        result = model.insertRows(2, 1)
+        assert result == True
+        assert model.rowCount() == initial_count + 1
+
+        # Remove a row
+        result = model.removeRows(1, 1)
+        assert result == True
+        assert model.rowCount() == initial_count
+
+    def test_insert_rows_persistence(self):
+        """Test that inserted rows persist in the database"""
+        model = ttk.TTkTableModelSQLite3(fileName=self.temp_db_path, table='users')
+
+        # Insert a row and set some data
+        model.insertRows(4, 1)
+        model.setData(4, 0, 'Eve')
+        model.setData(4, 1, 32)
+        model.setData(4, 2, 'Tester')
+
+        # Create new model instance to test persistence
+        model2 = ttk.TTkTableModelSQLite3(fileName=self.temp_db_path, table='users')
+        assert model2.rowCount() == 5
+
+        # Verify Eve exists in the database
+        conn = sqlite3.connect(self.temp_db_path)
+        cur = conn.cursor()
+        res = cur.execute("SELECT name FROM users WHERE name = 'Eve'")
+        assert res.fetchone()[0] == 'Eve'
+        conn.close()
+
+    def test_remove_rows_persistence(self):
+        """Test that removed rows are actually deleted from database"""
+        model = ttk.TTkTableModelSQLite3(fileName=self.temp_db_path, table='users')
+
+        # Remember Alice's data before removal
+        alice_name = model.data(0, 0)
+        assert alice_name == 'Alice'
+
+        # Remove Alice (first row)
+        model.removeRows(0, 1)
+
+        # Create new model instance to test persistence
+        model2 = ttk.TTkTableModelSQLite3(fileName=self.temp_db_path, table='users')
+        assert model2.rowCount() == 3
+
+        # Verify Alice is deleted from database
+        conn = sqlite3.connect(self.temp_db_path)
+        cur = conn.cursor()
+        res = cur.execute("SELECT COUNT(*) FROM users WHERE name = 'Alice'")
+        assert res.fetchone()[0] == 0
+        conn.close()
+
+    def test_insert_rows_id_map_refresh(self):
+        """Test that inserting rows refreshes the ID map correctly"""
+        model = ttk.TTkTableModelSQLite3(fileName=self.temp_db_path, table='users')
+
+        # Sort by name to make ID mapping more complex
+        model.sort(0, ttk.TTkK.SortOrder.AscendingOrder)
+
+        # Insert rows
+        model.insertRows(2, 2)
+
+        # Verify we can still access all data without errors
+        for i in range(model.rowCount()):
+            for j in range(model.columnCount()):
+                data = model.data(i, j)  # Should not raise exception
+
+    def test_remove_rows_id_map_refresh(self):
+        """Test that removing rows refreshes the ID map correctly"""
+        model = ttk.TTkTableModelSQLite3(fileName=self.temp_db_path, table='users')
+
+        # Sort by name to make ID mapping more complex
+        model.sort(0, ttk.TTkK.SortOrder.AscendingOrder)
+
+        # Remove rows
+        model.removeRows(1, 1)
+
+        # Verify we can still access all remaining data without errors
+        for i in range(model.rowCount()):
+            for j in range(model.columnCount()):
+                data = model.data(i, j)  # Should not raise exception
+
+    def test_insert_rows_boundary_conditions(self):
+        """Test boundary conditions for insertRows"""
+        model = ttk.TTkTableModelSQLite3(fileName=self.temp_db_path, table='users')
+
+        # Insert at exact row count (valid)
+        result = model.insertRows(model.rowCount(), 1)
+        assert result == True
+
+        # Insert at row count + 1 (invalid)
+        result = model.insertRows(model.rowCount() + 1, 1)
+        assert result == False
+
+    def test_remove_rows_boundary_conditions(self):
+        """Test boundary conditions for removeRows"""
+        model = ttk.TTkTableModelSQLite3(fileName=self.temp_db_path, table='users')
+
+        row_count = model.rowCount()
+
+        # Remove exactly at boundary (valid)
+        result = model.removeRows(row_count - 1, 1)
+        assert result == True
+
+        # Try to remove from empty table (invalid)
+        if model.rowCount() == 0:
+            result = model.removeRows(0, 1)
+            assert result == False
+
+    def test_insert_remove_rows_combined(self):
+        """Test combined insert and remove operations"""
+        model = ttk.TTkTableModelSQLite3(fileName=self.temp_db_path, table='users')
+
+        initial_count = model.rowCount()
+
+        # Insert 2 rows
+        model.insertRows(2, 2)
+        assert model.rowCount() == initial_count + 2
+
+        # Remove 1 row
+        model.removeRows(3, 1)
+        assert model.rowCount() == initial_count + 1
+
+        # Insert 1 more row
+        model.insertRows(0, 1)
+        assert model.rowCount() == initial_count + 2
+
+        # Remove 3 rows
+        model.removeRows(0, 3)
+        assert model.rowCount() == initial_count - 1
+
+    def test_insert_rows_with_data_modification(self):
+        """Test inserting rows and then modifying their data"""
+        model = ttk.TTkTableModelSQLite3(fileName=self.temp_db_path, table='users')
+
+        # Insert a row
+        model.insertRows(4, 1)
+
+        # Set data for the new row
+        result1 = model.setData(4, 0, 'NewUser')
+        result2 = model.setData(4, 1, 40)
+        result3 = model.setData(4, 2, 'Analyst')
+
+        assert result1 == True
+        assert result2 == True
+        assert result3 == True
+
+        # Verify the data was set correctly
+        assert model.data(4, 0) == 'NewUser'
+        assert model.data(4, 1) == 40
+        assert model.data(4, 2) == 'Analyst'
+
+    def test_remove_rows_with_sorting_persistence(self):
+        """Test that removeRows works correctly with sorting and persists changes"""
+        model = ttk.TTkTableModelSQLite3(fileName=self.temp_db_path, table='users')
+
+        # Sort by age ascending: Alice(25), Diana(28), Bob(30), Charlie(35)
+        model.sort(1, ttk.TTkK.SortOrder.AscendingOrder)
+
+        # Verify sorted order
+        assert model.data(0, 0) == 'Alice'   # Age 25
+        assert model.data(1, 0) == 'Diana'   # Age 28
+
+        # Remove Diana (position 1 in sorted order)
+        result = model.removeRows(1, 1)
+        assert result == True
+        assert model.rowCount() == 3
+
+        # Bob should now be at position 1
+        assert model.data(1, 0) == 'Bob'     # Age 30
+
+        # Verify Diana is actually deleted from database
+        conn = sqlite3.connect(self.temp_db_path)
+        cur = conn.cursor()
+        res = cur.execute("SELECT COUNT(*) FROM users WHERE name = 'Diana'")
+        assert res.fetchone()[0] == 0
+        conn.close()
 
 
 def test_integration_with_table_widget():
