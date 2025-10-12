@@ -24,6 +24,7 @@ A hopefully fast and mesmerizingly advanced [text-based](https://en.wikipedia.or
 ```bash
 pip install ttkode
 ```
+
 # QuickRun
 ```bash
  $ ttkode -h
