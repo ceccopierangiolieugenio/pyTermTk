@@ -141,6 +141,6 @@ test: .venv
 	. .venv/bin/activate ; \
 	    flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics --exclude .venv,build,tmp,experiments ;
 	. .venv/bin/activate ; \
-        pytest tests/pytest/test_*
+        pytest tests/pytest
 	. .venv/bin/activate ; \
         pytest tests/pytest/run_*
