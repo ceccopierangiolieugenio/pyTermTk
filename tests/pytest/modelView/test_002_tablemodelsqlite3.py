@@ -610,6 +610,147 @@ class TestTTkTableModelSQLite3:
         assert res.fetchone()[0] == 0
         conn.close()
 
+    def test_insert_columns_not_supported(self):
+        """Test that insertColumns is not supported and returns False"""
+        model = ttk.TTkTableModelSQLite3(fileName=self.temp_db_path, table='users')
+
+        initial_column_count = model.columnCount()
+
+        # Try to insert columns (should not be supported)
+        result = model.insertColumns(1, 1)
+        assert result == False
+
+        # Column count should remain unchanged
+        assert model.columnCount() == initial_column_count
+
+        # Try inserting multiple columns
+        result = model.insertColumns(0, 2)
+        assert result == False
+        assert model.columnCount() == initial_column_count
+
+    def test_insert_columns_invalid_parameters(self):
+        """Test insertColumns with invalid parameters"""
+        model = ttk.TTkTableModelSQLite3(fileName=self.temp_db_path, table='users')
+
+        # Try with negative column position
+        result = model.insertColumns(-1, 1)
+        assert result == False
+
+        # Try with negative count
+        result = model.insertColumns(0, -1)
+        assert result == False
+
+        # Try with zero count
+        result = model.insertColumns(0, 0)
+        assert result == False
+
+    def test_remove_columns_not_supported(self):
+        """Test that removeColumns is not supported and returns False"""
+        model = ttk.TTkTableModelSQLite3(fileName=self.temp_db_path, table='users')
+
+        initial_column_count = model.columnCount()
+
+        # Try to remove columns (should not be supported)
+        result = model.removeColumns(1, 1)
+        assert result == False
+
+        # Column count should remain unchanged
+        assert model.columnCount() == initial_column_count
+
+        # Try removing multiple columns
+        result = model.removeColumns(0, 2)
+        assert result == False
+        assert model.columnCount() == initial_column_count
+
+    def test_remove_columns_invalid_parameters(self):
+        """Test removeColumns with invalid parameters"""
+        model = ttk.TTkTableModelSQLite3(fileName=self.temp_db_path, table='users')
+
+        # Try with negative column position
+        result = model.removeColumns(-1, 1)
+        assert result == False
+
+        # Try with negative count
+        result = model.removeColumns(0, -1)
+        assert result == False
+
+        # Try with zero count
+        result = model.removeColumns(0, 0)
+        assert result == False
+
+        # Try to remove more columns than available
+        result = model.removeColumns(0, 10)
+        assert result == False
+
+    def test_remove_columns_boundary_conditions(self):
+        """Test removeColumns boundary conditions"""
+        model = ttk.TTkTableModelSQLite3(fileName=self.temp_db_path, table='users')
+
+        column_count = model.columnCount()
+
+        # Try to remove from position equal to column count
+        result = model.removeColumns(column_count, 1)
+        assert result == False
+
+        # Try to remove from position beyond column count
+        result = model.removeColumns(column_count + 1, 1)
+        assert result == False
+
+    def test_insert_columns_boundary_conditions(self):
+        """Test insertColumns boundary conditions"""
+        model = ttk.TTkTableModelSQLite3(fileName=self.temp_db_path, table='users')
+
+        column_count = model.columnCount()
+
+        # Try to insert at position equal to column count
+        result = model.insertColumns(column_count, 1)
+        assert result == False
+
+        # Try to insert at position beyond column count
+        result = model.insertColumns(column_count + 1, 1)
+        assert result == False
+
+    def test_column_operations_with_sorting(self):
+        """Test that column operations don't affect sorting"""
+        model = ttk.TTkTableModelSQLite3(fileName=self.temp_db_path, table='users')
+
+        # Sort by name first
+        model.sort(0, ttk.TTkK.SortOrder.AscendingOrder)
+
+        # Verify sorting is working
+        assert model.data(0, 0) == 'Alice'
+
+        # Try column operations (should fail but not affect sorting)
+        model.insertColumns(1, 1)
+        model.removeColumns(1, 1)
+
+        # Sorting should still be intact
+        assert model.data(0, 0) == 'Alice'
+        assert model.data(1, 0) == 'Bob'
+
+    def test_column_operations_data_integrity(self):
+        """Test that failed column operations don't affect data integrity"""
+        model = ttk.TTkTableModelSQLite3(fileName=self.temp_db_path, table='users')
+
+        # Store original data
+        original_data = []
+        for i in range(model.rowCount()):
+            row_data = []
+            for j in range(model.columnCount()):
+                row_data.append(model.data(i, j))
+            original_data.append(row_data)
+
+        # Try various column operations (all should fail)
+        model.insertColumns(0, 1)
+        model.insertColumns(1, 2)
+        model.removeColumns(0, 1)
+        model.removeColumns(1, 1)
+
+        # Verify data is unchanged
+        for i in range(model.rowCount()):
+            for j in range(model.columnCount()):
+                assert model.data(i, j) == original_data[i][j]
+
 
 def test_integration_with_table_widget():
     """Integration test with TTkTable widget"""

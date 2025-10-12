@@ -266,3 +266,17 @@ class TTkTableModelSQLite3(TTkAbstractTableModel):
         except sqlite3.Error as e:
             TTkLog.error(f"Error adding rows: {e}")
             return False
+
+    def insertColumns(self, column:int, count:int) -> bool:
+        '''
+        .. attention:: The current implementation of :py:class:`TTkTableModelSQLite3` does not supports columns operations
+        '''
+        TTkLog.warn("The current implementation of ModelSQLite3 does not supports columns operations")
+        return False
+
+    def removeColumns(self, column:int, count:int) -> bool:
+        '''
+        .. attention:: The current implementation of :py:class:`TTkTableModelSQLite3` does not supports columns operations
+        '''
+        TTkLog.warn("The current implementation of ModelSQLite3 does not supports columns operations")
+        return False
