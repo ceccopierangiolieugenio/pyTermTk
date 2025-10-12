@@ -30,6 +30,7 @@ from typing import List
 class SocialData():
     name: str
     link: str
+    image: str
     discord_channel_id: int
 
 _all_data:List[SocialData] = [
