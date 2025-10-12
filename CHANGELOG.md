@@ -1,5 +1,23 @@
 # Changelog
 
+## [0.47.1-a.0](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/pyTermTk-v0.47.0-a.0...pyTermTk-v0.47.1-a.0) (2025-10-12)
+
+
+### Features
+
+* **TableModel:** support add/remove rows/columns ([#460](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/460)) ([8eb9770](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/8eb9770502ce87df59e469c69e062b4a5bde4724))
+* **TextEdit:** add clear method ([#458](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/458)) ([d75345b](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/d75345b997e449bf9ac397576afaf08443432448))
+
+
+### Chores
+
+* **tree:** update event triggered by expandAll and collapseAll ([e2c4ef5](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/e2c4ef5318f212853d7af8b51825a2d83fc40e5d))
+
+
+### Document Changes
+
+* **tree:** improved typings and docs ([#459](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/459)) ([c821413](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/c8214135d95e352323d2ae8caa665bfd233c47c2))
+
 ## [0.47.0-a.0](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/pyTermTk-v0.46.0-a.0...pyTermTk-v0.47.0-a.0) (2025-10-12)
 
 
@@ -190,7 +208,7 @@
 
 ### Chores
 
-* bump version ([9c2940a](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/9c2940a2703ba605e4d4ffbfe89e473d29043e75))
+* Bump version ([9c2940a](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/9c2940a2703ba605e4d4ffbfe89e473d29043e75))
 * merge main ([5a82301](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/5a82301291fe06e9c4d2a13911982b427c8a232e))
 
 ## [0.41.14-a.0](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/pyTermTk-v0.41.13-a.0...pyTermTk-v0.41.14-a.0) (2025-04-02)
