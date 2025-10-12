@@ -25,6 +25,8 @@ __all__=['TTkTableModelSQLite3']
 import sqlite3
 import threading
 
+from typing import Any
+
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkAbstract.abstracttablemodel import TTkAbstractTableModel, TTkModelIndex
@@ -102,28 +104,27 @@ class TTkTableModelSQLite3(TTkAbstractTableModel):
         self._sort = ''
         self._sortColumn = -1
 
-        self._sqliteMutex.acquire()
-        self._conn = conn = sqlite3.connect(fileName, check_same_thread=False)
-        self._cur  = cur  = self._conn.cursor()
+        with self._sqliteMutex:
+            self._conn = conn = sqlite3.connect(fileName, check_same_thread=False)
+            self._cur  = cur  = self._conn.cursor()
 
-        res = cur.execute(f"SELECT COUNT(*) FROM {table}")
-        self._count = res.fetchone()[0]
+            res = cur.execute(f"SELECT COUNT(*) FROM {table}")
+            self._count = res.fetchone()[0]
 
-        for row in cur.execute(f"PRAGMA table_info({table})"):
-            if row[-1] == 0:
-                self._columns.append(row[1])
-            if row[-1] == 1:
-                self._key = row[1]
+            for row in cur.execute(f"PRAGMA table_info({table})"):
+                if row[-1] == 0:
+                    self._columns.append(row[1])
+                if row[-1] == 1:
+                    self._key = row[1]
 
-        self._refreshIdMap()
-        self._sqliteMutex.release()
+            self._refreshIdMap()
 
         super().__init__()
 
     def _refreshIdMap(self):
         self._idMap = {
             _id : _rn
-            for _rn,_id in self._cur.execute(f"SELECT ROW_NUMBER() OVER ({self._sort}) RN, {self._key} from users")}
+            for _rn,_id in self._cur.execute(f"SELECT ROW_NUMBER() OVER ({self._sort}) RN, {self._key} from {self._table}")}
 
     def rowCount(self) -> int:
         return self._count
@@ -135,39 +136,36 @@ class TTkTableModelSQLite3(TTkAbstractTableModel):
         return self._idMap[key]
 
     def index(self, row:int, col:int) -> TTkModelIndex:
-        self._sqliteMutex.acquire()
-        res = self._cur.execute(
-            f"SELECT {self._key} FROM {self._table} "
-            f"{self._sort} "
-            f"LIMIT 1 OFFSET {row}")
-        key=res.fetchone()[0]
-        self._sqliteMutex.release()
-        return _TTkModelIndexSQLite3(col=col,rowId=key,sqModel=self)
+        with self._sqliteMutex:
+            res = self._cur.execute(
+                f"SELECT {self._key} FROM {self._table} "
+                f"{self._sort} "
+                f"LIMIT 1 OFFSET {row}")
+            key=res.fetchone()[0]
+            return _TTkModelIndexSQLite3(col=col,rowId=key,sqModel=self)
 
-    def data(self, row:int, col:int) -> None:
-        self._sqliteMutex.acquire()
-        res = self._cur.execute(
-            f"SELECT {self._columns[col]} FROM {self._table} "
-            f"{self._sort} "
-            f"LIMIT 1 OFFSET {row}")
-        self._sqliteMutex.release()
-        return res.fetchone()[0]
+    def data(self, row:int, col:int) -> Any:
+        with self._sqliteMutex:
+            res = self._cur.execute(
+                f"SELECT {self._columns[col]} FROM {self._table} "
+                f"{self._sort} "
+                f"LIMIT 1 OFFSET {row}")
+            return res.fetchone()[0]
 
     def setData(self, row:int, col:int, data:object) -> None:
-        self._sqliteMutex.acquire()
-        res = self._cur.execute(
-            f"SELECT {self._key} FROM {self._table} "
-            f"{self._sort} "
-            f"LIMIT 1 OFFSET {row}")
-        key=res.fetchone()[0]
-        res = self._cur.execute(
-            f"UPDATE {self._table} "
-            f"SET {self._columns[col]} = '{data}' "
-            f"WHERE {self._key} = {key} ")
-        self._conn.commit()
-        if col == self._sortColumn:
-            self._refreshIdMap()
-        self._sqliteMutex.releases()
+        with self._sqliteMutex:
+            res = self._cur.execute(
+                f"SELECT {self._key} FROM {self._table} "
+                f"{self._sort} "
+                f"LIMIT 1 OFFSET {row}")
+            key=res.fetchone()[0]
+            res = self._cur.execute(
+                f"UPDATE {self._table} "
+                f"SET {self._columns[col]} = '{data}' "
+                f"WHERE {self._key} = {key} ")
+            self._conn.commit()
+            if col == self._sortColumn:
+                self._refreshIdMap()
         return True
 
     def headerData(self, num:int, orientation:int):
@@ -191,6 +189,5 @@ class TTkTableModelSQLite3(TTkAbstractTableModel):
                 self._sort = f"ORDER BY {self._columns[column]} ASC"
             else:
                 self._sort = f"ORDER BY {self._columns[column]} DESC"
-        self._sqliteMutex.acquire()
-        self._refreshIdMap()
-        self._sqliteMutex.release()
+        with self._sqliteMutex:
+            self._refreshIdMap()
