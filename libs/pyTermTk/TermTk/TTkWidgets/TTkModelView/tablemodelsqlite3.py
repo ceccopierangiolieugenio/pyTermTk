@@ -194,33 +194,6 @@ class TTkTableModelSQLite3(TTkAbstractTableModel):
         with self._sqliteMutex:
             self._refreshIdMap()
 
-    def removeRows(self, row: int, count: int = 1) -> bool:
-        if row < 0 or count <= 0 or row >= self._count or row + count > self._count:
-            return False
-
-        try:
-            with self._sqliteMutex:
-                self._cur.execute(f"""
-                    DELETE FROM {self._table}
-                    WHERE {self._key} in (
-                        SELECT {self._key} from {self._table}
-                        {self._sort}
-                        LIMIT {count} OFFSET {row}
-                    )
-                """)
-                self._conn.commit()
-
-                # Update The rows Count
-                res = self._cur.execute(f"SELECT COUNT(*) FROM {self._table}")
-                self._count = res.fetchone()[0]
-
-                self._refreshIdMap()
-            return True
-
-        except sqlite3.Error as e:
-            TTkLog.error(f"Error removing rows: {e}")
-            return False
-
     def _getDefaultValueForType(self, sqlite_type: str) -> str:
         """Get appropriate default value based on SQLite column type"""
         sqlite_type = sqlite_type.upper()
@@ -265,6 +238,33 @@ class TTkTableModelSQLite3(TTkAbstractTableModel):
 
         except sqlite3.Error as e:
             TTkLog.error(f"Error adding rows: {e}")
+            return False
+
+    def removeRows(self, row: int, count: int = 1) -> bool:
+        if row < 0 or count <= 0 or row >= self._count or row + count > self._count:
+            return False
+
+        try:
+            with self._sqliteMutex:
+                self._cur.execute(f"""
+                    DELETE FROM {self._table}
+                    WHERE {self._key} in (
+                        SELECT {self._key} from {self._table}
+                        {self._sort}
+                        LIMIT {count} OFFSET {row}
+                    )
+                """)
+                self._conn.commit()
+
+                # Update The rows Count
+                res = self._cur.execute(f"SELECT COUNT(*) FROM {self._table}")
+                self._count = res.fetchone()[0]
+
+                self._refreshIdMap()
+            return True
+
+        except sqlite3.Error as e:
+            TTkLog.error(f"Error removing rows: {e}")
             return False
 
     def insertColumns(self, column:int, count:int) -> bool:
