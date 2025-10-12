@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-__version__:str = '0.46.0-a.0'
+__version__:str = '0.47.0-a.0'
 
 from .TTkCore        import *
 from .TTkTheme       import *
