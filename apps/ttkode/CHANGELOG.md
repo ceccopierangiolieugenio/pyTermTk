@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.5.1-a.2](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/ttkode-v0.5.0-a.2...ttkode-v0.5.1-a.2) (2025-10-12)
+
+
+### Chores
+
+* fix activity bar selected color ([e29a56d](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/e29a56d30c5f494b46ae6e0374a19801b1748d57))
+* prototyping pytest plugin ([b1815bc](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/b1815bcdf52a854318c489236f1ec5c4f2e6cbd6))
+* update search widget after replace ([4054530](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/40545301c1422288d7375f7598ddefb883d7fadc))
+
+
+### Refactors
+
+* **plugin:** include panels in the plugin engine ([641fa8b](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/641fa8bf467d26c1139ad85fa91e7f7c63113b35))
+* **plugin:** reorked the plugin standard implementation ([70cfcc2](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/70cfcc28b3be33cef3fc36e0660e5ac55cbd7460))
+
 ## [0.5.0-a.2](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/ttkode-v0.4.0-a.2...ttkode-v0.5.0-a.2) (2025-09-01)
 
 
