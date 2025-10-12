@@ -304,9 +304,9 @@ class TestTTkTableModelSQLite3:
         assert model.rowCount() == 5
 
         # New row should have NULL values
-        assert model.data(4, 0) is ''  # name
-        assert model.data(4, 1) is 0  # age
-        assert model.data(4, 2) is ''  # role
+        assert model.data(4, 0) == ''  # name
+        assert model.data(4, 1) == 0  # age
+        assert model.data(4, 2) == ''  # role
 
     def test_insert_rows_multiple(self):
         """Test inserting multiple rows to the database"""
