@@ -56,7 +56,7 @@ class TTkTableModelCSV(TTkTableModelList):
         :param fd: the FileDescriptor
         :type fd: io, optional
         '''
-        data, head, idx = [[]], [], []
+        data, head, idx = [['']], [], []
         if filename:
             with open(filename, "r") as fd:
                 data, head, idx = self._csvImport(fd)
@@ -67,7 +67,10 @@ class TTkTableModelCSV(TTkTableModelList):
     def _csvImport(self, fd) -> tuple[list,list,list[list]]:
         data, head, idx = [], [], []
         sniffer = csv.Sniffer()
-        has_header = sniffer.has_header(fd.read(2048))
+        try:
+            has_header = sniffer.has_header(fd.read(2048))
+        except:
+            has_header = False
         fd.seek(0)
         csvreader = csv.reader(fd)
         for row in csvreader:
@@ -76,12 +79,15 @@ class TTkTableModelCSV(TTkTableModelList):
             head = data.pop(0)
         # check if the first column include an index:
         if self._checkIndexColumn(data):
-            head.pop(0)
+            if head:
+                head.pop(0)
             for l in data:
                 idx.append(l.pop(0))
         return data, head, idx
 
     def _checkIndexColumn(self, data:list[list]) -> bool:
+        if not data:
+            return False
         if all(l[0].isdigit() for l in data):
             num = int(data[0][0])
             return all(num+i==int(l[0]) for i,l in enumerate(data))

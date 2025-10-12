@@ -25,6 +25,8 @@ __all__=['TTkTableModelSQLite3']
 import sqlite3
 import threading
 
+from typing import Any
+
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkAbstract.abstracttablemodel import TTkAbstractTableModel, TTkModelIndex
@@ -78,7 +80,7 @@ class TTkTableModelSQLite3(TTkAbstractTableModel):
 
     __slots__ = (
         '_conn', '_cur', '_table',
-        '_key', '_columns', '_count',
+        '_key', '_columns', '_columnTypes', '_count',
         '_sort', '_sortColumn',
         '_sqliteMutex',
         '_idMap')
@@ -98,32 +100,33 @@ class TTkTableModelSQLite3(TTkAbstractTableModel):
         self._sqliteMutex = threading.Lock()
         self._table = table
         self._columns = []
+        self._columnTypes = []  # Add this to store column types
         self._idMap = {}
         self._sort = ''
         self._sortColumn = -1
 
-        self._sqliteMutex.acquire()
-        self._conn = conn = sqlite3.connect(fileName, check_same_thread=False)
-        self._cur  = cur  = self._conn.cursor()
+        with self._sqliteMutex:
+            self._conn = conn = sqlite3.connect(fileName, check_same_thread=False)
+            self._cur  = cur  = self._conn.cursor()
 
-        res = cur.execute(f"SELECT COUNT(*) FROM {table}")
-        self._count = res.fetchone()[0]
+            res = cur.execute(f"SELECT COUNT(*) FROM {table}")
+            self._count = res.fetchone()[0]
 
-        for row in cur.execute(f"PRAGMA table_info({table})"):
-            if row[-1] == 0:
-                self._columns.append(row[1])
-            if row[-1] == 1:
-                self._key = row[1]
+            for row in cur.execute(f"PRAGMA table_info({table})"):
+                if row[-1] == 0:
+                    self._columns.append(row[1])      # column name
+                    self._columnTypes.append(row[2])  # column type
+                if row[-1] == 1:
+                    self._key = row[1]
 
-        self._refreshIdMap()
-        self._sqliteMutex.release()
+            self._refreshIdMap()
 
         super().__init__()
 
     def _refreshIdMap(self):
         self._idMap = {
             _id : _rn
-            for _rn,_id in self._cur.execute(f"SELECT ROW_NUMBER() OVER ({self._sort}) RN, {self._key} from users")}
+            for _rn,_id in self._cur.execute(f"SELECT ROW_NUMBER() OVER ({self._sort}) RN, {self._key} from {self._table}")}
 
     def rowCount(self) -> int:
         return self._count
@@ -135,39 +138,36 @@ class TTkTableModelSQLite3(TTkAbstractTableModel):
         return self._idMap[key]
 
     def index(self, row:int, col:int) -> TTkModelIndex:
-        self._sqliteMutex.acquire()
-        res = self._cur.execute(
-            f"SELECT {self._key} FROM {self._table} "
-            f"{self._sort} "
-            f"LIMIT 1 OFFSET {row}")
-        key=res.fetchone()[0]
-        self._sqliteMutex.release()
-        return _TTkModelIndexSQLite3(col=col,rowId=key,sqModel=self)
+        with self._sqliteMutex:
+            res = self._cur.execute(
+                f"SELECT {self._key} FROM {self._table} "
+                f"{self._sort} "
+                f"LIMIT 1 OFFSET {row}")
+            key=res.fetchone()[0]
+            return _TTkModelIndexSQLite3(col=col,rowId=key,sqModel=self)
 
-    def data(self, row:int, col:int) -> None:
-        self._sqliteMutex.acquire()
-        res = self._cur.execute(
-            f"SELECT {self._columns[col]} FROM {self._table} "
-            f"{self._sort} "
-            f"LIMIT 1 OFFSET {row}")
-        self._sqliteMutex.release()
-        return res.fetchone()[0]
+    def data(self, row:int, col:int) -> Any:
+        with self._sqliteMutex:
+            res = self._cur.execute(
+                f"SELECT {self._columns[col]} FROM {self._table} "
+                f"{self._sort} "
+                f"LIMIT 1 OFFSET {row}")
+            return res.fetchone()[0]
 
     def setData(self, row:int, col:int, data:object) -> None:
-        self._sqliteMutex.acquire()
-        res = self._cur.execute(
-            f"SELECT {self._key} FROM {self._table} "
-            f"{self._sort} "
-            f"LIMIT 1 OFFSET {row}")
-        key=res.fetchone()[0]
-        res = self._cur.execute(
-            f"UPDATE {self._table} "
-            f"SET {self._columns[col]} = '{data}' "
-            f"WHERE {self._key} = {key} ")
-        self._conn.commit()
-        if col == self._sortColumn:
-            self._refreshIdMap()
-        self._sqliteMutex.releases()
+        with self._sqliteMutex:
+            res = self._cur.execute(
+                f"SELECT {self._key} FROM {self._table} "
+                f"{self._sort} "
+                f"LIMIT 1 OFFSET {row}")
+            key=res.fetchone()[0]
+            res = self._cur.execute(
+                f"UPDATE {self._table} "
+                f"SET {self._columns[col]} = '{data}' "
+                f"WHERE {self._key} = {key} ")
+            self._conn.commit()
+            if col == self._sortColumn:
+                self._refreshIdMap()
         return True
 
     def headerData(self, num:int, orientation:int):
@@ -191,6 +191,89 @@ class TTkTableModelSQLite3(TTkAbstractTableModel):
                 self._sort = f"ORDER BY {self._columns[column]} ASC"
             else:
                 self._sort = f"ORDER BY {self._columns[column]} DESC"
-        self._sqliteMutex.acquire()
-        self._refreshIdMap()
-        self._sqliteMutex.release()
+        with self._sqliteMutex:
+            self._refreshIdMap()
+
+    def _getDefaultValueForType(self, sqlite_type: str) -> str:
+        """Get appropriate default value based on SQLite column type"""
+        sqlite_type = sqlite_type.upper()
+
+        if 'INT' in sqlite_type:
+            return '0'
+        elif 'REAL' in sqlite_type or 'FLOAT' in sqlite_type or 'DOUBLE' in sqlite_type:
+            return '0.0'
+        elif 'TEXT' in sqlite_type or 'CHAR' in sqlite_type or 'VARCHAR' in sqlite_type:
+            return "''"  # Empty string
+        elif 'BLOB' in sqlite_type:
+            return 'NULL'
+        elif 'BOOL' in sqlite_type:
+            return '0'  # False
+        else:
+            return 'NULL'  # Default fallback
+
+    def insertRows(self, row: int, count: int = 1) -> bool:
+        if row < 0 or count <= 0 or row > self._count:
+            return False
+
+        try:
+            with self._sqliteMutex:
+                # Create appropriate default values based on column types
+                placeholders = [self._getDefaultValueForType(_ct) for _ct in self._columnTypes]
+                placeholders_str = f"({', '.join(placeholders)})"
+                columns_str = ', '.join(self._columns)
+
+                # Insert the specified number of rows
+                self._cur.execute(f"""
+                    INSERT INTO {self._table} ({columns_str})
+                    VALUES {','.join([placeholders_str]*count)}
+                """)
+
+                self._conn.commit()
+                self._count += count
+                self._refreshIdMap()
+            return True
+
+        except sqlite3.Error as e:
+            TTkLog.error(f"Error adding rows: {e}")
+            return False
+
+    def removeRows(self, row: int, count: int = 1) -> bool:
+        if row < 0 or count <= 0 or row >= self._count or row + count > self._count:
+            return False
+
+        try:
+            with self._sqliteMutex:
+                self._cur.execute(f"""
+                    DELETE FROM {self._table}
+                    WHERE {self._key} in (
+                        SELECT {self._key} from {self._table}
+                        {self._sort}
+                        LIMIT {count} OFFSET {row}
+                    )
+                """)
+                self._conn.commit()
+
+                # Update The rows Count
+                res = self._cur.execute(f"SELECT COUNT(*) FROM {self._table}")
+                self._count = res.fetchone()[0]
+
+                self._refreshIdMap()
+            return True
+
+        except sqlite3.Error as e:
+            TTkLog.error(f"Error removing rows: {e}")
+            return False
+
+    def insertColumns(self, column:int, count:int) -> bool:
+        '''
+        .. attention:: The current implementation of :py:class:`TTkTableModelSQLite3` does not supports columns operations
+        '''
+        TTkLog.warn("The current implementation of ModelSQLite3 does not supports columns operations")
+        return False
+
+    def removeColumns(self, column:int, count:int) -> bool:
+        '''
+        .. attention:: The current implementation of :py:class:`TTkTableModelSQLite3` does not supports columns operations
+        '''
+        TTkLog.warn("The current implementation of ModelSQLite3 does not supports columns operations")
+        return False

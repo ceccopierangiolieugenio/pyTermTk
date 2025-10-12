@@ -75,5 +75,5 @@ jobs:
         wget -O tmp/test.input.001.bin https://github.com/ceccopierangiolieugenio/binaryRepo/raw/master/pyTermTk/tests/test.input.001.bin
         wget -O tmp/test.input.002.bin https://github.com/ceccopierangiolieugenio/binaryRepo/raw/master/pyTermTk/tests/test.input.002.bin
         wget -O tmp/test.input.003.bin https://github.com/ceccopierangiolieugenio/binaryRepo/raw/master/pyTermTk/tests/test.input.003.bin
-        pytest ${DDDD}/tests/pytest/test_*
+        pytest ${DDDD}/tests/pytest
         pytest ${DDDD}/tests/pytest/run_*
