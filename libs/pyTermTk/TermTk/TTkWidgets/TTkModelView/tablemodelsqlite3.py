@@ -231,11 +231,12 @@ class TTkTableModelSQLite3(TTkAbstractTableModel):
                 self._conn.commit()
                 self._count += count
                 self._refreshIdMap()
-            return True
-
         except sqlite3.Error as e:
             TTkLog.error(f"Error adding rows: {e}")
             return False
+        self.dataChanged.emit((row,0),(self._count - row, self.columnCount()))
+        self.modelChanged.emit()
+        return True
 
     def removeRows(self, row: int, count: int = 1) -> bool:
         if row < 0 or count <= 0 or row >= self._count or row + count > self._count:
@@ -258,11 +259,12 @@ class TTkTableModelSQLite3(TTkAbstractTableModel):
                 self._count = res.fetchone()[0]
 
                 self._refreshIdMap()
-            return True
-
         except sqlite3.Error as e:
             TTkLog.error(f"Error removing rows: {e}")
             return False
+        self.dataChanged.emit((row,0),(self._count - row, self.columnCount()))
+        self.modelChanged.emit()
+        return True
 
     def insertColumns(self, column:int, count:int) -> bool:
         '''

@@ -126,36 +126,33 @@ class TTkTableModelList(TTkAbstractTableModel):
                 self._data = sorted(self._dataOriginal, key=lambda x:str(x[column]), reverse=order==TTkK.SortOrder.DescendingOrder)
 
     def insertColumns(self, column:int, count:int) -> bool:
-        _rc = self.rowCount()
-        _cc = self.columnCount()
         for _l in self._data:
-            _l[column:column] = [None]*count
+            _l[column:column] = ['']*count
         # Signal: from (0, column) with size (all rows, all columns from insertion point)
-        self.dataChanged.emit((0,column),(_rc, _cc + count - column))
+        self.dataChanged.emit((0,column),(self.rowCount(), self.columnCount() - column))
+        self.modelChanged.emit()
         return True
 
     def insertRows(self, row:int, count:int) -> bool:
-        _rc = self.rowCount()
         _cc = self.columnCount()
-        rows = [[None]*_cc for _ in range(count)]
+        rows = [['']*_cc for _ in range(count)]
         self._data[row:row] = rows
         # Signal: from (row, 0) with size (all rows from insertion point, all columns)
-        self.dataChanged.emit((row,0),(_rc + count - row, _cc))
+        self.dataChanged.emit((row,0),(self.rowCount() - row, _cc))
+        self.modelChanged.emit()
         return True
 
     def removeColumns(self, column:int, count:int) -> bool:
-        _rc = self.rowCount()
-        _cc = self.columnCount()
         for _l in self._data:
             _l[column:column+count] = []
         # Signal: from (0, column) with size (all rows, all remaining columns from removal point)
-        self.dataChanged.emit((0,column),(_rc, _cc - count - column))
+        self.dataChanged.emit((0,column),(self.rowCount(), self.columnCount() - column))
+        self.modelChanged.emit()
         return True
 
     def removeRows(self, row:int, count:int) -> bool:
-        _rc = self.rowCount()
-        _cc = self.columnCount()
         self._data[row:row+count] = []
         # Signal: from (row, 0) with size (all remaining rows from removal point, all columns)
-        self.dataChanged.emit((row,0),(_rc - count - row, _cc))
+        self.dataChanged.emit((row,0),(self.rowCount() - row, self.columnCount()))
+        self.modelChanged.emit()
         return True

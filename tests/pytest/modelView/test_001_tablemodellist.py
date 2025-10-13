@@ -223,12 +223,12 @@ class TestTTkTableModelList:
         assert model.rowCount() == original_count + 2
 
         # Check that None values were inserted
-        assert model.data(1, 0) is None
-        assert model.data(1, 1) is None
-        assert model.data(1, 2) is None
-        assert model.data(2, 0) is None
-        assert model.data(2, 1) is None
-        assert model.data(2, 2) is None
+        assert model.data(1, 0) == ''
+        assert model.data(1, 1) == ''
+        assert model.data(1, 2) == ''
+        assert model.data(2, 0) == ''
+        assert model.data(2, 1) == ''
+        assert model.data(2, 2) == ''
 
         # Check that existing data was shifted
         assert model.data(3, 0) == 'Bob'  # Was at row 1, now at row 3
@@ -245,14 +245,14 @@ class TestTTkTableModelList:
         assert model.columnCount() == original_column_count + 2
 
         # Check that None values were inserted at the right position
-        assert model.data(0, 1) is None  # New column 1
-        assert model.data(0, 2) is None  # New column 2
+        assert model.data(0, 1) == ''  # New column 1
+        assert model.data(0, 2) == ''  # New column 2
         assert model.data(0, 3) == 25    # Original column 1 shifted to position 3
 
         # Check all rows have the new columns
         for row in range(model.rowCount()):
-            assert model.data(row, 1) is None
-            assert model.data(row, 2) is None
+            assert model.data(row, 1) == ''
+            assert model.data(row, 2) == ''
 
     def test_remove_columns(self):
         """Test removeColumns method"""

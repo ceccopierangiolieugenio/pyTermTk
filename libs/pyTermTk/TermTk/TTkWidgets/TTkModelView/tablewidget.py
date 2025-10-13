@@ -820,9 +820,11 @@ class TTkTableWidget(TTkAbstractScrollView):
         :param model:
         :type model: :py:class:`TTkAbstractTableModel`
         '''
+        self._tableModel.modelChanged.disconnect(self._refreshLayout)
         self._tableModel.dataChanged.disconnect(self.update)
         self._tableModel = model
         self._tableModel.dataChanged.connect(self.update)
+        self._tableModel.modelChanged.connect(self._refreshLayout)
         self._refreshLayout()
 
     def focusOutEvent(self) -> None:
