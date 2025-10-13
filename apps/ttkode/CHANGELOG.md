@@ -1,5 +1,26 @@
 # Changelog
 
+## [0.5.3-a.2](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/ttkode-v0.5.2-a.2...ttkode-v0.5.3-a.2) (2025-10-13)
+
+
+### Chores
+
+* bump version ([a083b24](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/a083b2487167121c81f7dfe25288a6fef7b002fc))
+* bump version ([62d17c5](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/62d17c51e6b06fa849410706e554d78fa72b0ce5))
+* fix activity bar selected color ([e29a56d](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/e29a56d30c5f494b46ae6e0374a19801b1748d57))
+* limit max find results to 1024 ([d54f4c1](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/d54f4c1e2e0475d12c02805c9b94d4e35b1e0bd7))
+* prototyping pytest plugin ([b1815bc](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/b1815bcdf52a854318c489236f1ec5c4f2e6cbd6))
+* release main ([#434](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/434)) ([63f2ceb](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/63f2cebbd0a1bd994a8a743399ef77dd5efe4bfb))
+* release main ([#456](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/456)) ([2b89b81](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/2b89b81cbbf69fddf5187424fcc820d3de59c7d7))
+* release main ([#461](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/461)) ([e063486](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/e0634867682021789c053afa23e8fc65256848bf))
+* update search widget after replace ([4054530](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/40545301c1422288d7375f7598ddefb883d7fadc))
+
+
+### Refactors
+
+* **plugin:** include panels in the plugin engine ([641fa8b](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/641fa8bf467d26c1139ad85fa91e7f7c63113b35))
+* **plugin:** reorked the plugin standard implementation ([70cfcc2](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/70cfcc28b3be33cef3fc36e0660e5ac55cbd7460))
+
 ## [0.5.2-a.2](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/ttkode-v0.5.1-a.2...ttkode-v0.5.2-a.2) (2025-10-12)
 
 
