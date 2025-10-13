@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.47.2-a.0](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/pyTermTk-v0.47.1-a.0...pyTermTk-v0.47.2-a.0) (2025-10-13)
+
+
+### Chores
+
+* **table:** fix modelChanged propagation ([5a95887](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/5a9588712d83b8529f2daad1a8d811ea410d26ec))
+
 ## [0.47.1-a.0](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/pyTermTk-v0.47.0-a.0...pyTermTk-v0.47.1-a.0) (2025-10-12)
 
 
