@@ -106,14 +106,17 @@ class TTk(TTkContainer):
         self._mouseCursor = None
         self._showMouseCursor = os.environ.get("TERMTK_MOUSE",mouseCursor)
         super().__init__(**kwargs)
+
+        # Register system event signals from main_thread
         TTkInput.inputEvent.connect(self._processInput)
         TTkInput.pasteEvent.connect(self._processPaste)
         TTkSignalDriver.sigStop.connect(self._SIGSTOP)
         TTkSignalDriver.sigCont.connect(self._SIGCONT)
         TTkSignalDriver.sigInt.connect( self._SIGINT)
+        TTkSignalDriver.init()
+
         self._drawMutex = threading.Lock()
         self._paintEvent = threading.Event()
-        self._paintEvent.set()
         self.setFocusPolicy(TTkK.ClickFocus)
         self.hide()
         w,h = TTkTerm.getTerminalSize()
@@ -127,6 +130,7 @@ class TTk(TTkContainer):
             self._showMouseCursor = True
 
         TTkHelper.registerRootWidget(self)
+        TTkTerm.registerResizeCb(self._win_resize_cb)
 
     frame = 0
     time = time.time()
@@ -140,12 +144,12 @@ class TTk(TTkContainer):
             self.time  = curtime
 
     def mainloop(self):
+        '''Enters the main event loop and waits until :meth:`~quit` is called or the main widget is destroyed.'''
         with ttk_capture_stderr():
             self._mainloop_1()
 
     def _mainloop_1(self):
         try:
-            '''Enters the main event loop and waits until :meth:`~quit` is called or the main widget is destroyed.'''
             TTkLog.debug( "" )
             TTkLog.debug( "         ████████╗            ████████╗    " )
             TTkLog.debug( "         ╚══██╔══╝            ╚══██╔══╝    " )
@@ -160,13 +164,7 @@ class TTk(TTkContainer):
             TTkLog.debug( "Starting Main Loop..." )
             TTkLog.debug(f"screen = ({TTkTerm.getTerminalSize()})")
 
-            # Register events
-            TTkSignalDriver.init()
-
-            TTkLog.debug("Signal Event Registered")
-
-            TTkTerm.registerResizeCb(self._win_resize_cb)
-
+            self._paintEvent.set()
             self._timer = TTkTimer()
             self._timer.timeout.connect(self._time_event)
             self._timer.start(0.1)
