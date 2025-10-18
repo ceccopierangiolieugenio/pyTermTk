@@ -1587,14 +1587,14 @@ class TTkTableWidget(TTkAbstractScrollView):
                 _cellsCache.append([row,col,xa,xb,ya,yb,cellColor])
 
         def _drawCellContent(_col,_row,_xa,_xb,_ya,_yb,_color):
-                txt = self._tableModel.ttkStringData(_row, _col)
+                _txt, _align = self._tableModel.displayData(_row, _col)
                 if _color != TTkColor.RST:
-                    txt = txt.completeColor(_color)
-                for i,line in enumerate(txt.split('\n')):
-                    y = i+_ya
-                    canvas.drawTTkString(pos=(_xa,y), text=line, width=_xb-_xa, color=_color)
-                    if y >= _yb-1: break
-                canvas.fill(pos=(_xa,y+1),size=(_xb-_xa,_yb-y-1),color=_color)
+                    _txt = _txt.completeColor(_color)
+                for _i,_line in enumerate(_txt.split('\n')):
+                    _y = _i+_ya
+                    canvas.drawTTkString(pos=(_xa,_y), text=_line, width=_xb-_xa, color=_color, alignment=_align)
+                    if _y >= _yb-1: break
+                canvas.fill(pos=(_xa,_y+1),size=(_xb-_xa,_yb-_y-1),color=_color)
 
         def _drawCellBottom(_col,_row,_xa,_xb,_ya,_yb,cellColor):
             if _yb>=h: return
