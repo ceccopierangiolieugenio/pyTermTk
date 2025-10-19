@@ -21,3 +21,21 @@
 # SOFTWARE.
 
 __all__ = []
+
+from datetime import date,time,datetime
+
+from TermTk import (
+    TTkContainer,
+    TTkGridLayout,
+    TTkSpinBox
+)
+
+class TTkTime(TTkContainer):
+    __slots__ = ('_time', '_handleSeconds')
+    _time:time
+    _handleSeconds:bool
+    def __init__(self, time:time, handleSeconds:bool=False):
+        self._time = time
+        self._handleSeconds = handleSeconds
+        _layout=TTkGridLayout()
+        super().__init__(layout=_layout)
