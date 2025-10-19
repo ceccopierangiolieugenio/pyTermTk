@@ -1592,7 +1592,9 @@ class TTkTableWidget(TTkAbstractScrollView):
                     _txt = _txt.completeColor(_color)
                 for _i,_line in enumerate(_txt.split('\n')):
                     _y = _i+_ya
-                    canvas.drawTTkString(pos=(_xa,_y), text=_line, width=_xb-_xa, color=_color, alignment=_align)
+                    _width=_xb-_xa
+                    _line = _line.align(width=_width, color=_color, alignment=_align)
+                    canvas.drawTTkString(pos=(_xa,_y), text=_line, width=_width, color=_color)
                     if _y >= _yb-1: break
                 canvas.fill(pos=(_xa,_y+1),size=(_xb-_xa,_yb-_y-1),color=_color)
 
