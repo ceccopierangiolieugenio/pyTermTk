@@ -31,6 +31,9 @@ import logging
 import contextlib
 from collections.abc import Callable, Set
 
+_STDERR_BK = sys.stderr
+_EXCEPT_BK = sys.excepthook
+
 class _TTkContext:
     __slots__ = ['file', 'line', 'function']
     def __init__(self, cf):
@@ -114,6 +117,36 @@ class TTkLog:
     def installMessageHandler(mh: Callable):
         TTkLog._messageHandler.append(mh)
 
+    @staticmethod
+    def setExceptionHandler(hook=None):
+        sys.excepthook = hook or TTkLog._main_exception
+        sys.unraisablehook = TTkLog._terminate_exception
+
+    @staticmethod
+    def _main_exception(exc):
+        TTkLog._print_traceback(exc)
+        raise exc
+
+    @staticmethod
+    def _thread_exception(exc):
+        TTkLog._print_traceback(exc)
+        sys.excepthook(*exc[:3])
+
+    @staticmethod
+    def _terminate_exception(exc):
+        TTkLog._print_traceback(exc)
+        def terminate():
+            sys.excepthook = sys.unraisablehook = None
+            raise SystemExit
+        sys.unraisablehook = terminate
+        raise SystemError from exc
+
+    @staticmethod
+    def _print_traceback(exc):
+        from TermTk.TTkCore.TTkTerm.term_base import TTkTermBase
+        TTkTermBase.printTraceback(exc)
+
+
 class TTkStderrHandler:
     def write(self, text):
         TTkLog.error(text)
@@ -128,13 +161,16 @@ class TTkStderrHandler:
 
 @contextlib.contextmanager
 def ttk_capture_stderr():
-    _stderr_bk = sys.stderr
     try:
         sys.stderr = TTkStderrHandler()
         yield
     except Exception as e:
-        sys.stderr = _stderr_bk
-        TTkLog.critical(f"Caught an exception: {e}")
-        print(f"Caught an exception: {e}",sys.stderr)
+        sys.stderr = _STDERR_BK
+        try: TTkLog.critical(f"Caught an exception: {e}")
+        except: pass
+        print("\033[?1049l"  # NORMAL_SCREEN
+              f"Caught an exception: {e}", sys.stderr)
+        raise e  # Traceback from main_exception handler
     finally:
-        sys.stderr = _stderr_bk
+        sys.stderr = _STDERR_BK
+        sys.excepthook = _EXCEPT_BK  # Traceback from caller

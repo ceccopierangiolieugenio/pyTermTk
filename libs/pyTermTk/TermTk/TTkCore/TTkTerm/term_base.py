@@ -148,6 +148,12 @@ class TTkTermBase():
         else:
             return f'\033]0;{tt}{txt}\a'
 
+    @staticmethod
+    def printTraceback(exc):
+        from traceback import format_exc
+        print(TTkTermBase.NORMAL_SCREEN + "\n\nTTk Termination!\n\n" + str(exc) + format_exc(), flush=True)
+        print(TTkTermBase.escTitle("TTk Termination!"))
+
     # NOTE: Due to "I have no idea how to do it in a better way",
     # those methods are supposed to be overwritten with the
     # compatible one in "term_unix.py" or "term_pyodide.py"
