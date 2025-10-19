@@ -22,7 +22,7 @@
 
 __all__ = ['TTkAbstractTableModel','TTkModelIndex']
 
-from typing import Tuple
+from typing import Tuple,Any
 
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.string import TTkString
@@ -217,6 +217,16 @@ class TTkAbstractTableModel():
         '''
         return False
 
+    @staticmethod
+    def _dataToTTkString(data:Any) -> TTkString:
+        """Convert arbitrary data to TTkString (passes through TTkString, wraps str, else str() coercion)."""
+        if isinstance(data,TTkString):
+            return data
+        elif isinstance(data,str):
+            return TTkString(data)
+        else:
+            return TTkString(str(data))
+
     def ttkStringData(self, row:int, col:int) -> TTkString:
         '''
         Returns the :py:class:`TTkString` reprsents the data stored in the row/column.
@@ -229,12 +239,7 @@ class TTkAbstractTableModel():
         :return: :py:class:`TTkString`
         '''
         data = self.data(row,col)
-        if isinstance(data,TTkString):
-            return data
-        elif type(data) == str:
-            return TTkString(data)
-        else:
-            return TTkString(str(data))
+        return TTkAbstractTableModel._dataToTTkString(data)
 
     def displayData(self, row:int, col:int) -> Tuple[TTkString, TTkK.Alignment]:
         '''
@@ -268,7 +273,7 @@ class TTkAbstractTableModel():
 
             def displayData(self, row: int, col: int) -> Tuple[TTkString, TTkK.Alignment]:
                 data = self.data(row, col)
-                
+
                 # Custom formatting based on column type
                 if isinstance(data, (int, float)):
                     # Right-align numeric data
@@ -281,7 +286,11 @@ class TTkAbstractTableModel():
                     # Default left-align for text
                     return self.ttkStringData(row, col), TTkK.Alignment.LEFT_ALIGN
         '''
-        return self.ttkStringData(row, col), TTkK.Alignment.LEFT_ALIGN
+        data = self.data(row,col)
+        retData =  TTkAbstractTableModel._dataToTTkString(data)
+        if isinstance(data, (int,float)):
+            return retData, TTkK.Alignment.RIGHT_ALIGN
+        return retData, TTkK.Alignment.LEFT_ALIGN
 
     def headerData(self, pos:int, orientation:TTkK.Direction) -> TTkString:
         '''
