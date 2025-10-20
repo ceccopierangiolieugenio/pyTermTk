@@ -14,6 +14,7 @@ from .about           import *
 from .button          import *
 from .checkbox        import *
 from .combobox        import *
+from .datetime        import *
 from .graph           import *
 from .image           import *
 from .label           import *
