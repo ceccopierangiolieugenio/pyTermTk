@@ -22,6 +22,8 @@
 
 __all__ = ['TTkAbstractTableModel','TTkModelIndex']
 
+from typing import Tuple,Any
+
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.string import TTkString
 from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
@@ -215,9 +217,19 @@ class TTkAbstractTableModel():
         '''
         return False
 
+    @staticmethod
+    def _dataToTTkString(data:Any) -> TTkString:
+        """Convert arbitrary data to TTkString (passes through TTkString, wraps str, else str() coercion)."""
+        if isinstance(data,TTkString):
+            return data
+        elif isinstance(data,str):
+            return TTkString(data)
+        else:
+            return TTkString(str(data))
+
     def ttkStringData(self, row:int, col:int) -> TTkString:
         '''
-        Returns the :py:class:`TTkString` reprsents the ddata stored in the row/column.
+        Returns the :py:class:`TTkString` reprsents the data stored in the row/column.
 
         :param row: the row position of the data
         :type row: int
@@ -227,12 +239,58 @@ class TTkAbstractTableModel():
         :return: :py:class:`TTkString`
         '''
         data = self.data(row,col)
-        if isinstance(data,TTkString):
-            return data
-        elif type(data) == str:
-            return TTkString(data)
-        else:
-            return TTkString(str(data))
+        return TTkAbstractTableModel._dataToTTkString(data)
+
+    def displayData(self, row:int, col:int) -> Tuple[TTkString, TTkK.Alignment]:
+        '''
+        Returns the display representation and alignment for the data stored at the specified row/column position.
+
+        This method provides the formatted text representation of the cell data along with its preferred alignment
+        for display purposes in table widgets. It combines the functionality of :meth:`ttkStringData` for text
+        formatting with alignment information for proper cell rendering.
+
+        The default implementation returns the :py:class:`TTkString` representation of the data with left alignment.
+        Subclasses can override this method to provide custom formatting and alignment based on data type,
+        column purpose, or other display requirements.
+
+        **Usage Examples:**
+
+        - Numeric columns might return right alignment for better visual presentation
+        - Boolean columns might return center alignment with custom symbols
+        - Date columns might return formatted date strings with specific alignment
+
+        :param row: The row position of the data (0-based index)
+        :type row: int
+        :param col: The column position of the data (0-based index)
+        :type col: int
+
+        :return: A tuple containing the formatted text and its preferred alignment
+        :rtype: Tuple[:py:class:`TTkString`, :py:class:`TTkK.Alignment`]
+
+        **Example Implementation:**
+
+        .. code-block:: python
+
+            def displayData(self, row: int, col: int) -> Tuple[TTkString, TTkK.Alignment]:
+                data = self.data(row, col)
+
+                # Custom formatting based on column type
+                if isinstance(data, (int, float)):
+                    # Right-align numeric data
+                    return TTkString(f"{data:,.2f}"), TTkK.Alignment.RIGHT_ALIGN
+                elif isinstance(data, bool):
+                    # Center-align boolean with custom symbols
+                    symbol = "✓" if data else "✗"
+                    return TTkString(symbol), TTkK.Alignment.CENTER_ALIGN
+                else:
+                    # Default left-align for text
+                    return self.ttkStringData(row, col), TTkK.Alignment.LEFT_ALIGN
+        '''
+        data = self.data(row,col)
+        retData =  TTkAbstractTableModel._dataToTTkString(data)
+        if isinstance(data, (int,float)):
+            return retData, TTkK.Alignment.RIGHT_ALIGN
+        return retData, TTkK.Alignment.LEFT_ALIGN
 
     def headerData(self, pos:int, orientation:TTkK.Direction) -> TTkString:
         '''

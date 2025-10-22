@@ -212,7 +212,7 @@ class TTkCanvas():
         self._set(y, x, char, color)
 
 
-    def drawTTkString(self, pos, text, width=None, color=TTkColor.RST, alignment=TTkK.NONE, forceColor=False):
+    def drawTTkString(self, pos, text:TTkString, width=None, color=TTkColor.RST, alignment=TTkK.NONE, forceColor=False):
         '''
             NOTE:
             drawText is one of the most abused functions,
