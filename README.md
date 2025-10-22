@@ -69,7 +69,10 @@ Unravel your inner artist with [The Terminal ASCII Photoshop](https://ceccopiera
 ```bash
 pip3 install --upgrade pyTermTk
 ```
-
+Install from the dev branch:
+```bash
+pip install --upgrade git+https://github.com/ceccopierangiolieugenio/pyTermTk.git#subdirectory=libs/pyTermTk
+```
 ## Quick Test/Try - no install required
 
 #### Clone
