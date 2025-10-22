@@ -24,7 +24,7 @@
 
 import sys, os, argparse, math, random
 
-sys.path.append(os.path.join(sys.path[0],'../..'))
+sys.path.append(os.path.join(sys.path[0],'../../libs/pyTermTk'))
 import TermTk as ttk
 
 zc1 = chr(0x07a6) # Zero width chars oަ

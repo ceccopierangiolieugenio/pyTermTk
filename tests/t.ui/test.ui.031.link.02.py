@@ -25,7 +25,7 @@
 import sys, os
 
 
-sys.path.append(os.path.join(sys.path[0],'../..'))
+sys.path.append(os.path.join(sys.path[0],'../../libs/pyTermTk'))
 from TermTk import TTkColor,TTkString
 
 text = 'Link1abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ Test ░▒▓█▁▂▃▄▅▆▇█ Color\nLink1abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ Test ░▒▓█▁▂▃▄▅▆▇█ Color'

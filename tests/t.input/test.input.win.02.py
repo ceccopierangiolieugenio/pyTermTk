@@ -24,7 +24,7 @@ import sys,os
 
 from ctypes import Structure, Union, byref, wintypes, windll
 
-sys.path.append(os.path.join(sys.path[0],'../..'))
+sys.path.append(os.path.join(sys.path[0],'../../libs/pyTermTk'))
 
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.TTkTerm.inputmouse import TTkMouseEvent

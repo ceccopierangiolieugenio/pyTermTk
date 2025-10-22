@@ -27,7 +27,7 @@ import os
 import sys
 import time
 
-sys.path.append(os.path.join(sys.path[0],'..'))
+sys.path.append(os.path.join(sys.path[0],'../libs/pyTermTk'))
 from TermTk import TTk, TTkGridLayout, TTkK, TTkWidget, TTkWindow, TTkColor, TTkRadioButton, TTkSpacer
 
 parser = argparse.ArgumentParser()
