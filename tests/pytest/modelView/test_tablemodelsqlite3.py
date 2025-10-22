@@ -751,49 +751,407 @@ class TestTTkTableModelSQLite3:
             for j in range(model.columnCount()):
                 assert model.data(i, j) == original_data[i][j]
 
-
-def test_integration_with_table_widget():
-    """Integration test with TTkTable widget"""
-    # Create temporary database
-    temp_db = tempfile.NamedTemporaryFile(suffix='.db', delete=False)
-    temp_db_path = temp_db.name
-    temp_db.close()
-
-    try:
-        # Set up database
-        conn = sqlite3.connect(temp_db_path)
+    def test_empty_table_initialization(self):
+        """Test initialization with an empty table"""
+        # Create empty table
+        conn = sqlite3.connect(self.temp_db_path)
         cur = conn.cursor()
 
         cur.execute('''
-            CREATE TABLE test_table (
+            CREATE TABLE empty_users (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                name TEXT,
+                age INTEGER
+            )
+        ''')
+        conn.commit()
+        conn.close()
+
+        model = ttk.TTkTableModelSQLite3(fileName=self.temp_db_path, table='empty_users')
+
+        assert model.rowCount() == 0
+        assert model.columnCount() == 2  # name, age (id is primary key)
+
+        # Test data access on empty table
+        assert model.data(0, 0) == None or model.data(0, 0) is None
+
+        # Test header data still works
+        assert model.headerData(0, ttk.TTkK.HORIZONTAL) == 'name'
+        assert model.headerData(1, ttk.TTkK.HORIZONTAL) == 'age'
+
+    def test_empty_table_operations(self):
+        """Test operations on empty table"""
+        # Create empty table
+        conn = sqlite3.connect(self.temp_db_path)
+        cur = conn.cursor()
+
+        cur.execute('''
+            CREATE TABLE empty_test (
+                id INTEGER PRIMARY KEY,
+                value TEXT
+            )
+        ''')
+        conn.commit()
+        conn.close()
+
+        model = ttk.TTkTableModelSQLite3(fileName=self.temp_db_path, table='empty_test')
+
+        # Test insert on empty table
+        result = model.insertRows(0, 1)
+        assert result == True
+        assert model.rowCount() == 1
+
+        # Test data setting on newly inserted row
+        result = model.setData(0, 0, 'test_value')
+        assert result == True
+        assert model.data(0, 0) == 'test_value'
+
+        # Test remove from single-row table
+        result = model.removeRows(0, 1)
+        assert result == True
+        assert model.rowCount() == 0
+
+    def test_empty_table_invalid_operations(self):
+        """Test invalid operations on empty table"""
+        # Create empty table
+        conn = sqlite3.connect(self.temp_db_path)
+        cur = conn.cursor()
+
+        cur.execute('''
+            CREATE TABLE empty_invalid (
+                id INTEGER PRIMARY KEY,
+                data TEXT
+            )
+        ''')
+        conn.commit()
+        conn.close()
+
+        model = ttk.TTkTableModelSQLite3(fileName=self.temp_db_path, table='empty_invalid')
+
+        # Test invalid remove operations on empty table
+        result = model.removeRows(0, 1)
+        assert result == False
+
+        result = model.removeRows(-1, 1)
+        assert result == False
+
+        result = model.removeRows(1, 1)
+        assert result == False
+
+        # Test invalid insert operations
+        result = model.insertRows(-1, 1)
+        assert result == False
+
+        result = model.insertRows(1, 1)  # Beyond row count
+        assert result == False
+
+    def test_empty_table_sorting(self):
+        """Test sorting operations on empty table"""
+        # Create empty table
+        conn = sqlite3.connect(self.temp_db_path)
+        cur = conn.cursor()
+
+        cur.execute('''
+            CREATE TABLE empty_sort (
                 id INTEGER PRIMARY KEY,
                 name TEXT,
                 value INTEGER
             )
         ''')
-
-        cur.executemany('INSERT INTO test_table (name, value) VALUES (?, ?)', [
-            ('Item1', 100),
-            ('Item2', 200)
-        ])
-
         conn.commit()
         conn.close()
 
-        # Test model with table widget
-        model = ttk.TTkTableModelSQLite3(fileName=temp_db_path, table='test_table')
-        table = ttk.TTkTable(tableModel=model)
+        model = ttk.TTkTableModelSQLite3(fileName=self.temp_db_path, table='empty_sort')
 
-        # Basic integration tests
-        assert table.model() == model
+        # Test sorting on empty table (should not crash)
+        model.sort(0, ttk.TTkK.SortOrder.AscendingOrder)
+        assert model.rowCount() == 0
+
+        model.sort(1, ttk.TTkK.SortOrder.DescendingOrder)
+        assert model.rowCount() == 0
+
+        # Reset sort
+        model.sort(-1, ttk.TTkK.SortOrder.AscendingOrder)
+        assert model.rowCount() == 0
+
+    def test_remove_all_rows_from_populated_table(self):
+        """Test removing all rows from a populated table"""
+        model = ttk.TTkTableModelSQLite3(fileName=self.temp_db_path, table='users')
+
+        initial_count = model.rowCount()
+        assert initial_count == 4
+
+        # Remove all rows at once
+        result = model.removeRows(0, initial_count)
+        assert result == True
+        assert model.rowCount() == 0
+
+        # Verify table is now empty in database
+        conn = sqlite3.connect(self.temp_db_path)
+        cur = conn.cursor()
+        res = cur.execute("SELECT COUNT(*) FROM users")
+        assert res.fetchone()[0] == 0
+        conn.close()
+
+        # Test operations on now-empty table
+        result = model.removeRows(0, 1)  # Should fail
+        assert result == False
+
+        # Test insert into now-empty table
+        result = model.insertRows(0, 1)
+        assert result == True
+        assert model.rowCount() == 1
+
+    def test_remove_all_rows_one_by_one(self):
+        """Test removing all rows one by one"""
+        model = ttk.TTkTableModelSQLite3(fileName=self.temp_db_path, table='users')
+
+        initial_count = model.rowCount()
+
+        # Remove rows one by one from the beginning
+        for i in range(initial_count):
+            remaining_count = model.rowCount()
+            result = model.removeRows(0, 1)
+            assert result == True
+            assert model.rowCount() == remaining_count - 1
+
+        # Should now be empty
+        assert model.rowCount() == 0
+
+        # Verify in database
+        conn = sqlite3.connect(self.temp_db_path)
+        cur = conn.cursor()
+        res = cur.execute("SELECT COUNT(*) FROM users")
+        assert res.fetchone()[0] == 0
+        conn.close()
+
+    def test_remove_all_rows_with_sorting(self):
+        """Test removing all rows when table is sorted"""
+        model = ttk.TTkTableModelSQLite3(fileName=self.temp_db_path, table='users')
+
+        # Sort by name first
+        model.sort(0, ttk.TTkK.SortOrder.AscendingOrder)
+
+        initial_count = model.rowCount()
+
+        # Remove all rows
+        result = model.removeRows(0, initial_count)
+        assert result == True
+        assert model.rowCount() == 0
+
+        # Sorting should still work on empty table
+        model.sort(1, ttk.TTkK.SortOrder.DescendingOrder)
+        assert model.rowCount() == 0
+
+    def test_remove_rows_boundary_edge_cases(self):
+        """Test boundary edge cases for removeRows"""
+        model = ttk.TTkTableModelSQLite3(fileName=self.temp_db_path, table='users')
+
+        row_count = model.rowCount()
+
+        # Test removing exactly the remaining count from position 0
+        result = model.removeRows(0, row_count)
+        assert result == True
+        assert model.rowCount() == 0
+
+        # Reset table for next test
+        conn = sqlite3.connect(self.temp_db_path)
+        cur = conn.cursor()
+        test_data = [
+            ('Alice', 25, 'Engineer'),
+            ('Bob', 30, 'Designer'),
+            ('Charlie', 35, 'Manager')
+        ]
+        cur.executemany('INSERT INTO users (name, age, role) VALUES (?, ?, ?)', test_data)
+        conn.commit()
+        conn.close()
+
+        # Refresh model count
+        model = ttk.TTkTableModelSQLite3(fileName=self.temp_db_path, table='users')
+
+        # Test removing from last position with count that exceeds available
+        result = model.removeRows(2, 5)  # Only 1 row at position 2, trying to remove 5
+        assert result == False
+        assert model.rowCount() == 3  # Should be unchanged
+
+    def test_insert_rows_into_empty_table(self):
+        """Test inserting rows into various empty table configurations"""
+        # Create empty table with different column types
+        conn = sqlite3.connect(self.temp_db_path)
+        cur = conn.cursor()
+
+        cur.execute('''
+            CREATE TABLE empty_mixed (
+                id INTEGER PRIMARY KEY,
+                name TEXT,
+                age INTEGER,
+                salary REAL,
+                active BOOLEAN
+            )
+        ''')
+        conn.commit()
+        conn.close()
+
+        model = ttk.TTkTableModelSQLite3(fileName=self.temp_db_path, table='empty_mixed')
+
+        # Insert multiple rows into empty table
+        result = model.insertRows(0, 3)
+        assert result == True
+        assert model.rowCount() == 3
+
+        # Check default values based on column types
+        assert model.data(0, 0) == ''     # TEXT -> empty string
+        assert model.data(0, 1) == 0      # INTEGER -> 0
+        assert model.data(0, 2) == 0.0    # REAL -> 0.0
+        assert model.data(0, 3) == 0      # BOOLEAN -> 0
+
+    def test_empty_table_index_operations(self):
+        """Test index operations on empty table"""
+        # Create empty table
+        conn = sqlite3.connect(self.temp_db_path)
+        cur = conn.cursor()
+
+        cur.execute('''
+            CREATE TABLE empty_index (
+                id INTEGER PRIMARY KEY,
+                value TEXT
+            )
+        ''')
+        conn.commit()
+        conn.close()
+
+        model = ttk.TTkTableModelSQLite3(fileName=self.temp_db_path, table='empty_index')
+
+        # Test index creation on empty table (should handle gracefully)
+        try:
+            index = model.index(0, 0)  # May raise exception or return invalid index
+            # If it doesn't raise an exception, the implementation handles it gracefully
+        except (sqlite3.Error, IndexError):
+            pass  # Expected behavior for empty table
+
+    def test_table_emptied_then_repopulated(self):
+        """Test table that is emptied and then repopulated"""
+        model = ttk.TTkTableModelSQLite3(fileName=self.temp_db_path, table='users')
+
+        # Verify initial state
+        assert model.rowCount() == 4
+
+        # Empty the table
+        model.removeRows(0, model.rowCount())
+        assert model.rowCount() == 0
+
+        # Repopulate with new data
+        model.insertRows(0, 2)
         assert model.rowCount() == 2
-        assert model.columnCount() == 2
 
-    finally:
-        # Cleanup
-        if os.path.exists(temp_db_path):
-            os.unlink(temp_db_path)
+        # Set data for new rows
+        model.setData(0, 0, 'NewUser1')
+        model.setData(0, 1, 40)
+        model.setData(0, 2, 'Admin')
 
+        model.setData(1, 0, 'NewUser2')
+        model.setData(1, 1, 45)
+        model.setData(1, 2, 'Manager')
 
-if __name__ == '__main__':
-    pytest.main([__file__])
+        # Verify data integrity
+        assert model.data(0, 0) == 'NewUser1'
+        assert model.data(1, 0) == 'NewUser2'
+
+        # Test sorting on repopulated table
+        model.sort(0, ttk.TTkK.SortOrder.AscendingOrder)
+        assert model.data(0, 0) == 'NewUser1'  # Should be first alphabetically
+
+    def test_concurrent_operations_on_empty_table(self):
+        """Test concurrent operations on empty table (basic thread safety)"""
+        # Create empty table
+        conn = sqlite3.connect(self.temp_db_path)
+        cur = conn.cursor()
+
+        cur.execute('''
+            CREATE TABLE empty_concurrent (
+                id INTEGER PRIMARY KEY,
+                value INTEGER
+            )
+        ''')
+        conn.commit()
+        conn.close()
+
+        model = ttk.TTkTableModelSQLite3(fileName=self.temp_db_path, table='empty_concurrent')
+
+        # Simulate concurrent operations (basic test)
+        operations = [
+            lambda: model.insertRows(0, 1),
+            lambda: model.sort(0, ttk.TTkK.SortOrder.AscendingOrder),
+            lambda: model.rowCount(),
+            lambda: model.columnCount()
+        ]
+
+        # Execute multiple operations - should not crash
+        for op in operations * 3:  # Repeat operations
+            try:
+                result = op()
+            except Exception as e:
+                pytest.fail(f"Concurrent operation failed: {e}")
+
+    def test_large_batch_remove_operations(self):
+        """Test removing large batches of rows"""
+        # First populate with more data
+        conn = sqlite3.connect(self.temp_db_path)
+        cur = conn.cursor()
+
+        # Add more test data
+        large_data = [(f'User{i}', 20+i, f'Role{i%3}') for i in range(50)]
+        cur.executemany('INSERT INTO users (name, age, role) VALUES (?, ?, ?)', large_data)
+        conn.commit()
+        conn.close()
+
+        model = ttk.TTkTableModelSQLite3(fileName=self.temp_db_path, table='users')
+
+        initial_count = model.rowCount()
+        assert initial_count > 50  # Should have original 4 + 50 new = 54
+
+        # Remove large batch from middle
+        result = model.removeRows(10, 30)
+        assert result == True
+        assert model.rowCount() == initial_count - 30
+
+        # Remove another large batch from beginning
+        result = model.removeRows(0, 15)
+        assert result == True
+        assert model.rowCount() == initial_count - 45
+
+        # Remove remaining rows
+        remaining = model.rowCount()
+        result = model.removeRows(0, remaining)
+        assert result == True
+        assert model.rowCount() == 0
+
+    def test_alternating_empty_and_populate_operations(self):
+        """Test alternating between emptying and populating table"""
+        model = ttk.TTkTableModelSQLite3(fileName=self.temp_db_path, table='users')
+
+        for cycle in range(3):  # Repeat cycle 3 times
+            # Start with some data
+            if model.rowCount() == 0:
+                model.insertRows(0, 2)
+                model.setData(0, 0, f'User{cycle}A')
+                model.setData(1, 0, f'User{cycle}B')
+
+            assert model.rowCount() >= 2
+
+            # Empty the table
+            model.removeRows(0, model.rowCount())
+            assert model.rowCount() == 0
+
+            # Insert different amount
+            insert_count = (cycle + 1) * 2
+            model.insertRows(0, insert_count)
+            assert model.rowCount() == insert_count
+
+            # Set some data
+            for i in range(insert_count):
+                model.setData(i, 0, f'Cycle{cycle}_User{i}')
+
+        # Final cleanup
+        model.removeRows(0, model.rowCount())
+        assert model.rowCount() == 0

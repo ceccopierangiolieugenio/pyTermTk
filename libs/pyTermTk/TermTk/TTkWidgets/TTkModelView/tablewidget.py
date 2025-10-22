@@ -83,7 +83,9 @@ class _ClipboardTable(TTkString):
     def data(self) -> list:
         return self._data
 
-    def _toTTkString(self) -> str:
+    def _toTTkString(self) -> TTkString:
+        if not self._data:
+            return TTkString()
         def _lineHeight(_line):
             return max(len(str(_item[2]).split('\n')) for _item in _line)
         ret  = []
@@ -446,11 +448,13 @@ class TTkTableWidget(TTkAbstractScrollView):
         data = self._clipboard.text()
         self.pasteEvent(data)
 
-    def pasteEvent(self, data:object):
+    def pasteEvent(self, data:object) -> bool:
         row,col = self._currentPos if self._currentPos else (0,0)
-        if isinstance(data,_ClipboardTable):
-            rows = self._tableModel.rowCount()
-            cols = self._tableModel.columnCount()
+        rows = self._tableModel.rowCount()
+        cols = self._tableModel.columnCount()
+        if not rows or not cols:
+            return
+        if isinstance(data,_ClipboardTable) and data.data():
             dataList = []
             linearData = [_item for _line in data.data() for _item in _line]
             minx,maxx = min(_a:=[_item[1] for _item in linearData]),max(_a)
@@ -561,8 +565,8 @@ class TTkTableWidget(TTkAbstractScrollView):
         self._snapshotId = 0
         rows = self._tableModel.rowCount()
         cols = self._tableModel.columnCount()
-        self._vHeaderSize = vhs = 1+max(len(self._tableModel.headerData(_p, TTkK.VERTICAL)) for _p in range(rows) )
-        self._hHeaderSize = hhs = 1
+        self._vHeaderSize = vhs = 0 if not rows else 1+max(len(self._tableModel.headerData(_p, TTkK.VERTICAL)) for _p in range(rows) )
+        self._hHeaderSize = hhs = 0 if not rows else 1
         self.setPadding(hhs,0,vhs,0)
         if self._showVSeparators:
             self._colsPos  = [(1+x)*11 for x in range(cols)]
@@ -583,8 +587,8 @@ class TTkTableWidget(TTkAbstractScrollView):
         showHH = self._horizontallHeader.isVisible()
         hhs = self._hHeaderSize if showHH else 0
         vhs = self._vHeaderSize if showVH else 0
-        w = vhs+self._colsPos[-1]+1
-        h = hhs+self._rowsPos[-1]+1
+        w = vhs+(self._colsPos[-1] if self._colsPos else 0)+1
+        h = hhs+(self._rowsPos[-1] if self._rowsPos else 0)+1
         return w,h
 
     def clearSelection(self) -> None:
@@ -846,6 +850,8 @@ class TTkTableWidget(TTkAbstractScrollView):
         :param width: its width
         :type width: int
         '''
+        if column < 0 or column >= len(self._colsPos):
+            return
         i = column
         prevPos = self._colsPos[i-1] if i>0 else -1
         if self._showVSeparators:
@@ -930,7 +936,7 @@ class TTkTableWidget(TTkAbstractScrollView):
             cola,colb = max(0,col-30), min(col+30,cols)
         else:
             cola,colb = 0,cols
-        return max(_hei(i) for i in range(cola,colb))
+        return 0 if cola>=colb else max(_hei(i) for i in range(cola,colb))
 
     @pyTTkSlot(int)
     def resizeRowToContents(self, row:int) -> None:
@@ -1512,6 +1518,8 @@ class TTkTableWidget(TTkAbstractScrollView):
 
         rows = self._tableModel.rowCount()
         cols = self._tableModel.columnCount()
+        if not rows or not cols:
+            return
         rp = self._rowsPos
         cp = self._colsPos
 

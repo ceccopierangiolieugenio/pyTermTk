@@ -183,7 +183,7 @@ class TTkAbstractTableModel():
         '''
         return _TTkModelIndexList(row,col,self)
 
-    def data(self, row:int, col:int) -> object:
+    def data(self, row:int, col:int) -> Any:
         '''
         Returns the data stored for the item referred to by the row/column.
 

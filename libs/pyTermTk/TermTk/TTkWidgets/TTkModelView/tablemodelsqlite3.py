@@ -143,7 +143,7 @@ class TTkTableModelSQLite3(TTkAbstractTableModel):
                 f"SELECT {self._key} FROM {self._table} "
                 f"{self._sort} "
                 f"LIMIT 1 OFFSET {row}")
-            key=res.fetchone()[0]
+            key = None if not (_fetch:=res.fetchone()) else _fetch[0]
             return _TTkModelIndexSQLite3(col=col,rowId=key,sqModel=self)
 
     def data(self, row:int, col:int) -> Any:
@@ -152,7 +152,7 @@ class TTkTableModelSQLite3(TTkAbstractTableModel):
                 f"SELECT {self._columns[col]} FROM {self._table} "
                 f"{self._sort} "
                 f"LIMIT 1 OFFSET {row}")
-            return res.fetchone()[0]
+            return None if not (_fetch:=res.fetchone()) else _fetch[0]
 
     def setData(self, row:int, col:int, data:object) -> None:
         with self._sqliteMutex:
