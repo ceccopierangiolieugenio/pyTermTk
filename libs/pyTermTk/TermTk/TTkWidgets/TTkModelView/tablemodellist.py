@@ -22,6 +22,8 @@
 
 __all__=['TTkTableModelList']
 
+from typing import Any
+
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkAbstract.abstracttablemodel import TTkAbstractTableModel, TTkModelIndex
 
@@ -68,7 +70,7 @@ class TTkTableModelList(TTkAbstractTableModel):
         :param indexes: the index labels, defaults to the line number.
         :type indexes: list[str], optional
         '''
-        self._data = self._dataOriginal = data if data else [['']]
+        self._data = self._dataOriginal = data if data else []
         self._hheader = header  if header  else []
         self._vheader = indexes if indexes else []
         super().__init__()
@@ -93,8 +95,12 @@ class TTkTableModelList(TTkAbstractTableModel):
                     rowId = self._data[row] ,
                     rowCb = lambda rid: self._data.index(rid) )
 
-    def data(self, row:int, col:int) -> None:
-        return self._data[row][col]
+    def data(self, row:int, col:int) -> Any:
+        if ( row < 0 or col <0 or
+             row >= len(self._data) or
+             col>=len(col_data:=self._data[row]) ):
+            return None
+        return col_data[col]
 
     def setData(self, row:int, col:int, data:object) -> None:
         self._data[row][col] = data
@@ -146,13 +152,13 @@ class TTkTableModelList(TTkAbstractTableModel):
         for _l in self._data:
             _l[column:column+count] = []
         # Signal: from (0, column) with size (all rows, all remaining columns from removal point)
-        self.dataChanged.emit((0,column),(self.rowCount(), self.columnCount() - column))
+        self.dataChanged.emit((0,column),(self.rowCount(), self.columnCount() - column + 1))
         self.modelChanged.emit()
         return True
 
     def removeRows(self, row:int, count:int) -> bool:
         self._data[row:row+count] = []
         # Signal: from (row, 0) with size (all remaining rows from removal point, all columns)
-        self.dataChanged.emit((row,0),(self.rowCount() - row, self.columnCount()))
+        self.dataChanged.emit((row,0),(self.rowCount() - row + 1, self.columnCount()))
         self.modelChanged.emit()
         return True

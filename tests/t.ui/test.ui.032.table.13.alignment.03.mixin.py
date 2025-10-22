@@ -47,7 +47,7 @@ args = parser.parse_args()
 fullScreen = not args.w
 mouseTrack = True
 
-class MyTableModel(ttk.TTkTableModelList):
+class MyTableMixin():
     def headerData(self, num, orientation):
         if orientation == ttk.TTkK.HORIZONTAL:
             if 0 == num%4:
@@ -61,15 +61,28 @@ class MyTableModel(ttk.TTkTableModelList):
         return super().headerData(num, orientation)
 
     def displayData(self:ttk.TTkTableModelList, row:int, col:int) -> Tuple[ttk.TTkString, ttk.TTkK.Alignment]:
+        data, legacy_align = super().displayData(row,col)
         if 0 == col%4:
-            return self.ttkStringData(row, col), ttk.TTkK.Alignment.LEFT_ALIGN
+            return data, ttk.TTkK.Alignment.LEFT_ALIGN
         if 1 == col%4:
-            return self.ttkStringData(row, col), ttk.TTkK.Alignment.CENTER_ALIGN
+            return data, ttk.TTkK.Alignment.CENTER_ALIGN
         if 2 == col%4:
-            return self.ttkStringData(row, col), ttk.TTkK.Alignment.RIGHT_ALIGN
+            return data, ttk.TTkK.Alignment.RIGHT_ALIGN
         if 3 == col%4:
-            return self.ttkStringData(row, col), ttk.TTkK.Alignment.JUSTIFY
-        return super().displayData(row,col)
+            return data, ttk.TTkK.Alignment.JUSTIFY
+        return data, legacy_align
+
+class MyTableModel(MyTableMixin, ttk.TTkTableModelList):
+    def flags(self, row: int, col: int) -> ttk.TTkConstant.ItemFlag:
+        if col==0:
+            return (
+                ttk.TTkK.ItemFlag.ItemIsEnabled  |
+                ttk.TTkK.ItemFlag.ItemIsSelectable )
+        if col==1:
+            return (
+                ttk.TTkK.ItemFlag.ItemIsEnabled  |
+                ttk.TTkK.ItemFlag.ItemIsEditable )
+        return super().flags(row, col)
 
 data_list1 = [[f"{y:03}\npippo\npeppo-ooo"]+[str(x) for x in range(10) ] for y in range(20)]
 data_list1[1][1] = "abc def ghi\ndef ghi\nghi\njkl - pippo"
