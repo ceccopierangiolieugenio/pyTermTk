@@ -236,7 +236,7 @@ class TTkTextDocument():
         return len(self._dataLines)
 
     def characterCount(self):
-        return sum([len[x] for x in self._dataLines])+self.lineCount()
+        return sum([len(x) for x in self._dataLines])+self.lineCount()
 
     def clear(self):
         self.setText(self._default_init_text)
