@@ -66,7 +66,7 @@ __check(){
             -e "drivers/unix_thread.py:import threading" \
             -e "drivers/unix_thread.py:import queue" \
             -e "drivers/unix.py:import sys, os, re" \
-            -e "drivers/unix.py:import signal" \
+            -e "drivers/unix.py:import atexit, signal" \
             -e "drivers/unix.py:from select import select" \
             -e "drivers/windows.py:import signal" \
             -e "drivers/windows.py:from ctypes import Structure, Union, byref, wintypes, windll" \
