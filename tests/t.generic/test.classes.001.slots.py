@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 # vim:ts=4:sw=4:fdm=indent:cc=79:
 
+import os, sys
+
+sys.path.append(os.path.join(sys.path[0],'../../libs/pyTermTk'))
 import TermTk
 
 def find_classes(cand_dict):

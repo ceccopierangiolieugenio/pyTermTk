@@ -26,7 +26,7 @@ import sys, os
 import logging
 import time
 
-sys.path.append(os.path.join(sys.path[0],'../..'))
+sys.path.append(os.path.join(sys.path[0],'../../libs/pyTermTk'))
 from TermTk import TTkLog, TTkTerm
 
 def message_handler(mode, context, message):
@@ -43,8 +43,8 @@ logging.basicConfig(level=logging.DEBUG,
                     format='%(levelname)s:(%(threadName)-9s) %(message)s',)
 TTkLog.installMessageHandler(message_handler)
 
-TTkTerm.init(mouse=False)
-
+TTkTerm.init()
+TTkTerm.setMouse(mouse=False)
 TTkTerm.push(
         TTkTerm.Cursor.moveTo(2,4) +
         "Test Text 3"

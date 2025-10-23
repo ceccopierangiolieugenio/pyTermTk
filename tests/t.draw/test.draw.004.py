@@ -26,7 +26,7 @@ import sys, os
 import logging
 import time
 
-sys.path.append(os.path.join(sys.path[0],'../..'))
+sys.path.append(os.path.join(sys.path[0],'../../libs/pyTermTk'))
 from TermTk import TTkLog
 from TermTk.TTkCore import TTkColor
 from TermTk.TTkCore import TTkHelper

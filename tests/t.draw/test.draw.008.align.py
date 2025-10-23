@@ -26,6 +26,9 @@
 # https://github.com/ceccopierangiolieugenio/pyTermTk/pull/70
 # from luchr https://github.com/luchr
 
+import sys, os
+
+sys.path.append(os.path.join(sys.path[0],'../../libs/pyTermTk'))
 import TermTk
 
 root = TermTk.TTk()  # in order to have TTkCfg.theme
