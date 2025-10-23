@@ -252,7 +252,7 @@ class TTkTableWidget(TTkAbstractScrollView):
                   '_sortingEnabled',
                   '_dataPadding',
                   '_internal',
-                  '_selected', '_selectedBase',
+                  '_selected',
                   '_hSeparatorSelected', '_vSeparatorSelected',
                   '_hoverPos', '_dragPos', '_currentPos',
                   '_sortColumn', '_sortOrder',
@@ -326,8 +326,7 @@ class TTkTableWidget(TTkAbstractScrollView):
         self._showVSeparators = vSeparator
         self._verticalHeader    = TTkHeaderView(visible=vHeader)
         self._horizontallHeader = TTkHeaderView(visible=hHeader)
-        self._selected = None
-        self._selectedBase = None
+        self._selected = []
         self._hoverPos = None
         self._dragPos = None
         self._currentPos = None
@@ -552,8 +551,6 @@ class TTkTableWidget(TTkAbstractScrollView):
 
     @pyTTkSlot()
     def _refreshLayout(self):
-        self._selected = None
-        self._selectedBase = None
         self._hoverPos = None
         self._dragPos = None
         self._currentPos = None
@@ -576,8 +573,6 @@ class TTkTableWidget(TTkAbstractScrollView):
             self._rowsPos     = [1+x*2  for x in range(rows)]
         else:
             self._rowsPos     = [1+x    for x in range(rows)]
-        # self._selectedBase = sb =  [False]*cols
-        # self._selected = [sb]*rows
         self.clearSelection()
         self.viewChanged.emit()
 
@@ -596,8 +591,8 @@ class TTkTableWidget(TTkAbstractScrollView):
         Deselects all selected items.
         The current index will not be changed.
         '''
-        rows = self._tableModel.rowCount()
-        cols = self._tableModel.columnCount()
+        rows = max(1,self._tableModel.rowCount())
+        cols = max(1,self._tableModel.columnCount())
         self._selected = [[False]*cols for _ in range(rows)]
         self.update()
 

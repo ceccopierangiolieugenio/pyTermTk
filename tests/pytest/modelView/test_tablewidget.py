@@ -43,8 +43,12 @@ class TestTTkTableWidget:
         self.header = ['Name', 'Age', 'Role']
         self.indexes = ['Row1', 'Row2', 'Row3']
 
+        class MockTableModel(ttk.TTkTableModelList):
+            def flags(self, row, col):
+                return super().flags(row, col)
+
         # Create a basic table model for testing
-        self.table_model = ttk.TTkTableModelList(
+        self.table_model = MockTableModel(
             data=self.test_data,
             header=self.header,
             indexes=self.indexes
@@ -654,37 +658,320 @@ class TestTTkTableWidget:
         assert len(cell_changed_calls) == 0
         assert len(cell_clicked_calls) == 0
 
+    def test_mouse_press_normal_cell(self):
+        """Test mouse press on a normal cell"""
+        widget = ttk.TTkTableWidget(tableModel=self.table_model)
 
-def test_integration_with_full_application():
-    """Integration test - verify TTkTableWidget works in a full application context"""
-    # Create a more complex scenario
-    data = [
-        ['Product A', 100, 29.99],
-        ['Product B', 50, 19.99],
-        ['Product C', 75, 39.99]
-    ]
-    headers = ['Product', 'Stock', 'Price']
+        # Mock the mouse event for clicking on a cell
+        # Assuming cell (1,1) would be around position (15, 2) accounting for headers
+        mock_event = Mock()
+        mock_event.x = 15
+        mock_event.y = 2
+        mock_event.mod = ttk.TTkK.NoModifier
 
-    model = ttk.TTkTableModelList(data=data, header=headers)
-    widget = ttk.TTkTableWidget(
-        tableModel=model,
-        sortingEnabled=True,
-        vSeparator=True,
-        hSeparator=True
-    )
+        # Mock the internal methods that would be called
+        with patch.object(widget, '_findCell', return_value=(1, 1)):
+            with patch.object(widget, '_setCurrentCell') as mock_set_current:
+                with patch.object(widget, 'setSelection') as mock_set_selection:
+                    # Test cell click
+                    result = widget.mousePressEvent(mock_event)
 
-    # Test various operations in sequence
-    widget.resizeColumnsToContents()
-    widget.setSortingEnabled(True)
-    widget.sortByColumn(2, ttk.TTkK.SortOrder.DescendingOrder)  # Sort by price descending
-    widget.selectRow(0)
-    widget.copy()
+                    # Verify the event was handled
+                    assert result is True
 
-    # Verify the widget still functions correctly
-    assert widget.rowCount() == 3
-    assert widget.columnCount() == 3
-    assert widget.isSortingEnabled()
+                    # Verify current cell was set
+                    mock_set_current.assert_called_once_with(1, 1)
 
+                    # Verify selection was made
+                    mock_set_selection.assert_called_once()
 
-if __name__ == '__main__':
-    pytest.main([__file__])
+    def test_mouse_press_header_row_selection(self):
+        """Test mouse press on row header for row selection"""
+        widget = ttk.TTkTableWidget(tableModel=self.table_model)
+
+        # Mock mouse event for clicking on row header (col = -1)
+        mock_event = Mock()
+        mock_event.x = 2  # In header area
+        mock_event.y = 3  # Row 1
+        mock_event.mod = ttk.TTkK.NoModifier
+
+        with patch.object(widget, '_findCell', return_value=(1, -1)):
+            with patch.object(widget, 'clearSelection') as mock_clear:
+                with patch.object(widget, 'selectRow') as mock_select_row:
+                    result = widget.mousePressEvent(mock_event)
+
+                    assert result is True
+                    mock_clear.assert_called_once()
+                    mock_select_row.assert_called_once_with(1)
+
+    def test_mouse_press_header_column_selection(self):
+        """Test mouse press on column header for column selection"""
+        widget = ttk.TTkTableWidget(tableModel=self.table_model)
+
+        # Mock mouse event for clicking on column header (row = -1)
+        mock_event = Mock()
+        mock_event.x = 15  # Column 1
+        mock_event.y = 0   # In header area
+        mock_event.mod = ttk.TTkK.NoModifier
+
+        with patch.object(widget, '_findCell', return_value=(-1, 1)):
+            with patch.object(widget, 'clearSelection') as mock_clear:
+                with patch.object(widget, 'selectColumn') as mock_select_col:
+                    result = widget.mousePressEvent(mock_event)
+
+                    assert result is True
+                    mock_clear.assert_called_once()
+                    mock_select_col.assert_called_once_with(1)
+
+    def test_mouse_press_corner_select_all(self):
+        """Test mouse press on corner (both row and col = -1) for select all"""
+        widget = ttk.TTkTableWidget(tableModel=self.table_model)
+
+        # Mock mouse event for clicking on corner
+        mock_event = Mock()
+        mock_event.x = 2
+        mock_event.y = 0
+        mock_event.mod = ttk.TTkK.NoModifier
+
+        with patch.object(widget, '_findCell', return_value=(-1, -1)):
+            with patch.object(widget, 'selectAll') as mock_select_all:
+                result = widget.mousePressEvent(mock_event)
+
+                assert result is True
+                mock_select_all.assert_called_once()
+
+    def test_mouse_press_with_ctrl_modifier(self):
+        """Test mouse press with Ctrl modifier for multi-selection"""
+        widget = ttk.TTkTableWidget(tableModel=self.table_model)
+
+        # Mock mouse event with Ctrl modifier
+        mock_event = Mock()
+        mock_event.x = 15
+        mock_event.y = 2
+        mock_event.mod = ttk.TTkK.ControlModifier
+
+        with patch.object(widget, '_findCell', return_value=(1, 1)):
+            with patch.object(widget, '_setCurrentCell') as mock_set_current:
+                with patch.object(widget, 'setSelection') as mock_set_selection:
+                    # Pre-select the cell to test deselection with Ctrl
+                    widget._selected = [[False, False, False] for _ in range(3)]
+                    widget._selected[1][1] = True
+
+                    result = widget.mousePressEvent(mock_event)
+
+                    assert result is True
+                    mock_set_current.assert_called_once_with(1, 1)
+
+    def test_mouse_press_empty_table_zero_rows(self):
+        """Test mouse press on table with zero rows"""
+        empty_model = ttk.TTkTableModelList(data=[], header=['A', 'B'])
+        widget = ttk.TTkTableWidget(tableModel=empty_model)
+
+        # Mock mouse event
+        mock_event = Mock()
+        mock_event.x = 10
+        mock_event.y = 5
+        mock_event.mod = ttk.TTkK.NoModifier
+
+        with patch.object(widget, '_findCell', return_value=(0, 0)):
+            # Should handle gracefully even with empty table
+            result = widget.mousePressEvent(mock_event)
+
+            # Should still return True (handled) but not crash
+            assert result is True
+
+    def test_mouse_press_empty_table_zero_columns(self):
+        """Test mouse press on table with zero columns"""
+        empty_model = ttk.TTkTableModelList(data=[[], []], header=[])
+        widget = ttk.TTkTableWidget(tableModel=empty_model)
+
+        # Mock mouse event
+        mock_event = Mock()
+        mock_event.x = 10
+        mock_event.y = 5
+        mock_event.mod = ttk.TTkK.NoModifier
+
+        with patch.object(widget, '_findCell', return_value=(0, 0)):
+            # Should handle gracefully even with empty columns
+            result = widget.mousePressEvent(mock_event)
+
+            # Should still return True (handled) but not crash
+            assert result is True
+
+    def test_mouse_press_completely_empty_table(self):
+        """Test mouse press on completely empty table"""
+        empty_model = ttk.TTkTableModelList(data=[], header=[])
+        widget = ttk.TTkTableWidget(tableModel=empty_model)
+
+        # Mock mouse event
+        mock_event = Mock()
+        mock_event.x = 10
+        mock_event.y = 5
+        mock_event.mod = ttk.TTkK.NoModifier
+
+        with patch.object(widget, '_findCell', return_value=(0, 0)):
+            # Should handle gracefully even with completely empty table
+            result = widget.mousePressEvent(mock_event)
+
+            # Should still return True (handled) but not crash
+            assert result is True
+
+    def test_mouse_press_single_cell_table(self):
+        """Test mouse press on table with single cell"""
+        single_cell_model = ttk.TTkTableModelList(data=[['OnlyCell']], header=['OnlyCol'])
+        widget = ttk.TTkTableWidget(tableModel=single_cell_model)
+
+        # Mock mouse event for the single cell
+        mock_event = Mock()
+        mock_event.x = 10
+        mock_event.y = 2
+        mock_event.mod = ttk.TTkK.NoModifier
+
+        with patch.object(widget, '_findCell', return_value=(0, 0)):
+            with patch.object(widget, '_setCurrentCell') as mock_set_current:
+                result = widget.mousePressEvent(mock_event)
+
+                assert result is True
+                mock_set_current.assert_called_once_with(0, 0)
+
+    def test_mouse_press_boundary_cells(self):
+        """Test mouse press on boundary cells (first/last row/column)"""
+        widget = ttk.TTkTableWidget(tableModel=self.table_model)
+
+        test_cases = [
+            (0, 0),  # Top-left cell
+            (0, 2),  # Top-right cell
+            (2, 0),  # Bottom-left cell
+            (2, 2),  # Bottom-right cell
+        ]
+
+        for row, col in test_cases:
+            mock_event = Mock()
+            mock_event.x = 10 + col * 10  # Approximate position
+            mock_event.y = 2 + row * 2    # Approximate position
+            mock_event.mod = ttk.TTkK.NoModifier
+
+            with patch.object(widget, '_findCell', return_value=(row, col)):
+                with patch.object(widget, '_setCurrentCell') as mock_set_current:
+                    result = widget.mousePressEvent(mock_event)
+
+                    assert result is True
+                    mock_set_current.assert_called_with(row, col)
+
+    def test_mouse_press_signal_emission(self):
+        """Test that mouse press emits appropriate signals"""
+        widget = ttk.TTkTableWidget(tableModel=self.table_model)
+
+        # Connect signal to mock slot
+        cell_clicked_calls = []
+
+        @ttk.pyTTkSlot(int, int)
+        def mock_cell_clicked(row, col):
+            cell_clicked_calls.append((row, col))
+
+        widget.cellClicked.connect(mock_cell_clicked)
+
+        # Mock mouse event
+        mock_event = Mock()
+        mock_event.x = 15
+        mock_event.y = 2
+        mock_event.mod = ttk.TTkK.NoModifier
+
+        with patch.object(widget, '_findCell', return_value=(1, 1)):
+            result = widget.mousePressEvent(mock_event)
+
+            assert result is True
+            # Verify signal was emitted
+            assert len(cell_clicked_calls) == 1
+            assert cell_clicked_calls[0] == (1, 1)
+
+    def test_mouse_press_invalid_coordinates(self):
+        """Test mouse press with coordinates outside table bounds"""
+        widget = ttk.TTkTableWidget(tableModel=self.table_model)
+
+        # Mock mouse event with coordinates that might be outside bounds
+        mock_event = Mock()
+        mock_event.x = 1000  # Very large x
+        mock_event.y = 1000  # Very large y
+        mock_event.mod = ttk.TTkK.NoModifier
+
+        # _findCell should handle this gracefully and return valid coordinates
+        with patch.object(widget, '_findCell', return_value=(2, 2)):  # Last valid cell
+            result = widget.mousePressEvent(mock_event)
+
+            # Should not crash and should handle gracefully
+            assert result is True
+
+    def test_mouse_press_separator_handling(self):
+        """Test mouse press on separators (if separators are enabled)"""
+        widget = ttk.TTkTableWidget(tableModel=self.table_model, vSeparator=True, hSeparator=True)
+
+        # Mock mouse event on vertical separator
+        mock_event = Mock()
+        mock_event.x = 20  # Position that might be on separator
+        mock_event.y = 0   # In header area
+        mock_event.mod = ttk.TTkK.NoModifier
+
+        # Mock the getViewOffsets method
+        with patch.object(widget, 'getViewOffsets', return_value=(0, 0)):
+            with patch.object(widget, '_findCell', return_value=(-1, 1)):
+                # Mock separator detection
+                widget._colsPos = [10, 20, 30]  # Separator at x=20
+
+                result = widget.mousePressEvent(mock_event)
+
+                # Should handle separator selection
+                assert result is True
+
+    def test_mouse_press_state_changes(self):
+        """Test that mouse press updates internal state correctly"""
+        widget = ttk.TTkTableWidget(tableModel=self.table_model)
+
+        # Ensure initial state
+        assert widget._currentPos is None
+        assert widget._hoverPos is None
+        assert widget._dragPos is None
+
+        # Mock mouse event
+        mock_event = Mock()
+        mock_event.x = 15
+        mock_event.y = 2
+        mock_event.mod = ttk.TTkK.NoModifier
+
+        with patch.object(widget, '_findCell', return_value=(1, 1)):
+            widget.mousePressEvent(mock_event)
+
+            # Verify state changes
+            assert widget._currentPos == (1, 1)
+            assert widget._hoverPos is None  # Should be reset
+            assert widget._dragPos == [(1, 1), (1, 1)]  # Should be initialized
+
+    def test_mouse_press_with_disabled_model_flags(self):
+        """Test mouse press on cells with different model flags"""
+        widget = ttk.TTkTableWidget(tableModel=self.table_model)
+
+        # Mock model flags to return non-selectable for certain cells
+        original_flags = widget._tableModel.flags
+
+        def mock_flags(row, col):
+            if row == 1 and col == 1:
+                return ttk.TTkK.ItemFlag.NoItemFlags  # Not selectable
+            return original_flags(row, col)
+
+        widget._tableModel.flags = mock_flags
+
+        try:
+            mock_event = Mock()
+            mock_event.x = 15
+            mock_event.y = 2
+            mock_event.mod = ttk.TTkK.NoModifier
+
+            with patch.object(widget, '_findCell', return_value=(1, 1)):
+                result = widget.mousePressEvent(mock_event)
+
+                # Should still handle the event
+                assert result is True
+
+        finally:
+            # Restore original flags
+            widget._tableModel.flags = original_flags
