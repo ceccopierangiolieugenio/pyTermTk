@@ -97,6 +97,9 @@ class TTk(TTkContainer):
         if ('TERMTK_FILE_LOG' in os.environ and (_logFile := os.environ['TERMTK_FILE_LOG'])):
             TTkLog.use_default_file_logging(_logFile)
 
+        TTkLog.setExceptionHandler()  # _main_exception
+        threading.excepthook = TTkLog._thread_exception
+
         self._timer = None
         self._title = title
         self._sigmask = sigmask
