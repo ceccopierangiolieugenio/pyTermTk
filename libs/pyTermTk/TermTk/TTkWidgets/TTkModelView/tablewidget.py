@@ -23,7 +23,7 @@
 
 __all__ = ['TTkTableWidget','TTkHeaderView']
 
-from typing import Optional
+from typing import Optional, List, Tuple, Callable, Iterator
 from dataclasses import dataclass
 
 from TermTk.TTkCore.log import TTkLog
@@ -104,6 +104,122 @@ class _ClipboardTable(TTkString):
                     retLines[r][col-minx] = TTkString(txt)
             ret += retLines
         return TTkString('\n').join(TTkString(' ').join(s.align(width=colSizes[c]) for c,s in enumerate(l)) for l in ret)
+
+class _SelectionProxy():
+    __slots__ = (
+        '_selected_2d_list',
+        '_cols','_rows',
+        '_flags')
+
+    _cols:int
+    _rows:int
+    _flags:Callable[[int,int],TTkK.ItemFlag]
+    _selected_2d_list:List[List[bool]]
+
+    def __init__(self):
+        self._cols = 0
+        self._rows = 0
+        self._flags = lambda x,y : TTkK.ItemFlag.NoItemFlags
+        self._selected_2d_list = []
+
+    def updateModel(self, cols:int, rows:int, flags:Callable[[int,int],TTkK.ItemFlag]) -> None:
+        self._flags = flags
+        self.resize(cols=cols, rows=rows)
+
+    def resize(self, cols:int, rows:int) -> None:
+        if cols < 0:
+            raise ValueError(f"unexpected negative value {cols=}")
+        if rows < 0:
+            raise ValueError(f"unexpected negative value {rows=}")
+        self._rows = rows
+        self._cols = cols
+        self.clear()
+
+    def clear(self) -> None:
+        rows = self._rows
+        cols = self._cols
+        if not cols or not rows:
+            self._selected_2d_list = []
+        self._selected_2d_list = [[False]*cols for _ in range(rows)]
+
+    def clearSelection(self) -> None:
+        self.clear()
+
+    def selectAll(self) -> None:
+        rows = self._rows
+        cols = self._cols
+        self._selected_2d_list = [[False]*cols for _ in range(rows)]
+
+    def selectRow(self, row:int) -> None:
+        if row < 0 or row >= self._rows:
+            return
+        cmp = TTkK.ItemFlag.ItemIsSelectable
+        flagFunc = self._flags
+        self._selected_2d_list[row] = [cmp==(cmp&flagFunc(row=row,col=col)) for col in range(self._cols)]
+
+    def selectColumn(self, col:int) -> None:
+        if col < 0 or col >= self._cols:
+            return
+        cmp = TTkK.ItemFlag.ItemIsSelectable
+        flagFunc = self._flags
+        for row,line in enumerate(self._selected_2d_list):
+            line[col] = cmp==(cmp&flagFunc(row=row,col=col))
+
+    def unselectRow(self, row:int) -> None:
+        if row < 0 or row >= self._rows:
+            return
+        self._selected_2d_list[row] = [False]*self._cols
+
+    def unselectColumn(self, col:int) -> None:
+        if col < 0 or col >= self._cols:
+            return
+        for line in self._selected_2d_list:
+            line[col] = False
+
+    def setSelection(self, pos:tuple[int,int], size:tuple[int,int], flags:TTkK.TTkItemSelectionModel) -> None:
+        x,y = pos
+        w,h = size
+
+        cols = self._cols
+        flagFunc = self._flags
+        cmp = TTkK.ItemFlag.ItemIsSelectable
+
+        if flags & (TTkK.TTkItemSelectionModel.Clear|TTkK.TTkItemSelectionModel.Deselect):
+            selection = [[False]*w for _ in range(h)]
+        elif flags & TTkK.TTkItemSelectionModel.Select:
+            selection = [[cmp==(cmp&flagFunc(col=_x,row=_y)) for _x in range(x,x+w)] for _y in range(y,y+h)]
+
+        for line,subst in zip(self._selected_2d_list[y:y+h],selection):
+            w=min(w,cols-x)
+            line[x:x+w]=subst[:w]
+
+    def isRowSelected(self, row:int) -> bool:
+        if row < 0 or row >= self._rows:
+            return False
+        flagFunc = self._flags
+        cmp = TTkK.ItemFlag.ItemIsSelectable
+        return all(_sel for i,_sel in enumerate(self._selected_2d_list[row]) if flagFunc(row,i)&cmp)
+
+    def isColSelected(self, col:int) -> None:
+        if col < 0 or col >= self._cols:
+            return False
+        flagFunc = self._flags
+        cmp = TTkK.ItemFlag.ItemIsSelectable
+        return all(_sel[col] for i,_sel in enumerate(self._selected_2d_list) if flagFunc(i,col)&cmp)
+
+    def isCellSelected(self, col:int, row:int) -> None:
+        if col < 0 or col >= self._cols:
+            return False
+        if row < 0 or row >= self._rows:
+            return False
+        return self._selected_2d_list[row][col]
+
+    def iterateSelected(self) -> Iterator[Tuple[int,int]]:
+        for row,line in enumerate(self._selected_2d_list):
+            for col,value in enumerate(line):
+                if value:
+                    yield (row,col)
+
 
 class TTkTableWidget(TTkAbstractScrollView):
     '''
@@ -252,7 +368,7 @@ class TTkTableWidget(TTkAbstractScrollView):
                   '_sortingEnabled',
                   '_dataPadding',
                   '_internal',
-                  '_selected',
+                  '_select_proxy',
                   '_hSeparatorSelected', '_vSeparatorSelected',
                   '_hoverPos', '_dragPos', '_currentPos',
                   '_sortColumn', '_sortOrder',
@@ -265,6 +381,8 @@ class TTkTableWidget(TTkAbstractScrollView):
                   '_cellEntered', # '_cellPressed',
                   '_currentCellChanged',
                   )
+
+    _select_proxy:_SelectionProxy
 
     def __init__(self, *,
                  tableModel:Optional[TTkAbstractTableModel]=None,
@@ -326,7 +444,7 @@ class TTkTableWidget(TTkAbstractScrollView):
         self._showVSeparators = vSeparator
         self._verticalHeader    = TTkHeaderView(visible=vHeader)
         self._horizontallHeader = TTkHeaderView(visible=hHeader)
-        self._selected = []
+        self._select_proxy = _SelectionProxy()
         self._hoverPos = None
         self._dragPos = None
         self._currentPos = None
@@ -411,20 +529,13 @@ class TTkTableWidget(TTkAbstractScrollView):
         '''
         Copies any selected cells to the clipboard.
         '''
-        data = []
-        for row,line in enumerate(self._selected):
-            dataLine = []
-            for col,x in enumerate(line):
-                if x:
-                    dataLine.append((row,col,self._tableModel.data(row,col)))
-            if dataLine:
-                data.append(dataLine)
+        data = [(row,col,self._tableModel.data(row,col)) for row,col in self._select_proxy.iterateSelected()]
         clip = _ClipboardTable(data)
         # str(clip)
         self._clipboard.setText(clip)
 
     def _cleanSelectedContent(self):
-        selected = [(_r,_c) for _r,_l in enumerate(self._selected) for _c,_v in enumerate(_l) if _v]
+        selected = [(row,col) for row,col in self._select_proxy.iterateSelected()]
         mods = []
         for _row,_col in selected:
             mods.append((_row,_col,''))
@@ -562,6 +673,7 @@ class TTkTableWidget(TTkAbstractScrollView):
         self._snapshotId = 0
         rows = self._tableModel.rowCount()
         cols = self._tableModel.columnCount()
+        self._select_proxy.updateModel(rows=rows, cols=cols, flags=self._tableModel.flags)
         self._vHeaderSize = vhs = 0 if not rows else 1+max(len(self._tableModel.headerData(_p, TTkK.VERTICAL)) for _p in range(rows) )
         self._hHeaderSize = hhs = 0 if not rows else 1
         self.setPadding(hhs,0,vhs,0)
@@ -573,6 +685,7 @@ class TTkTableWidget(TTkAbstractScrollView):
             self._rowsPos     = [1+x*2  for x in range(rows)]
         else:
             self._rowsPos     = [1+x    for x in range(rows)]
+        #TODO: remove
         self.clearSelection()
         self.viewChanged.emit()
 
@@ -591,9 +704,7 @@ class TTkTableWidget(TTkAbstractScrollView):
         Deselects all selected items.
         The current index will not be changed.
         '''
-        rows = max(1,self._tableModel.rowCount())
-        cols = max(1,self._tableModel.columnCount())
-        self._selected = [[False]*cols for _ in range(rows)]
+        self._select_proxy.clear()
         self.update()
 
     def selectAll(self) -> None:
@@ -601,11 +712,7 @@ class TTkTableWidget(TTkAbstractScrollView):
         Selects all items in the view.
         This function will use the selection behavior set on the view when selecting.
         '''
-        rows = self._tableModel.rowCount()
-        cols = self._tableModel.columnCount()
-        flagFunc = self._tableModel.flags
-        cmp = TTkK.ItemFlag.ItemIsSelectable
-        self._selected = [[cmp==(cmp&flagFunc(_r,_c)) for _c in range(cols)] for _r in range(rows)]
+        self._select_proxy.selectAll()
         self.update()
 
     def setSelection(self, pos:tuple[int,int], size:tuple[int,int], flags:TTkK.TTkItemSelectionModel) -> None:
@@ -619,18 +726,7 @@ class TTkTableWidget(TTkAbstractScrollView):
         :param flags: the selection model used (i.e. :py:class:`TTkItemSelectionModel.Select`)
         :type flags: :py:class:`TTkItemSelectionModel`
         '''
-        x,y = pos
-        w,h = size
-        rows = self._tableModel.rowCount()
-        cols = self._tableModel.columnCount()
-        flagFunc = self._tableModel.flags
-        cmp = TTkK.ItemFlag.ItemIsSelectable
-        if flags & (TTkK.TTkItemSelectionModel.Clear|TTkK.TTkItemSelectionModel.Deselect):
-            for line in self._selected[y:y+h]:
-                line[x:x+w]=[False]*w
-        elif flags & TTkK.TTkItemSelectionModel.Select:
-            for _r, line in enumerate(self._selected[y:y+h],y):
-                line[x:x+w]=[cmp==(cmp&flagFunc(_r,_c)) for _c in range(x,min(x+w,cols))]
+        self._select_proxy.setSelection(pos=pos, size=size, flags=flags)
         self.update()
 
     def selectRow(self, row:int) -> None:
@@ -640,10 +736,7 @@ class TTkTableWidget(TTkAbstractScrollView):
         :param row: the row to be selected
         :type row: int
         '''
-        cols = self._tableModel.columnCount()
-        cmp = TTkK.ItemFlag.ItemIsSelectable
-        flagFunc = self._tableModel.flags
-        self._selected[row] = [cmp==(cmp&flagFunc(row,col)) for col in range(cols)]
+        self._select_proxy.selectRow(row=row)
         self.update()
 
     def selectColumn(self, col:int) -> None:
@@ -653,10 +746,7 @@ class TTkTableWidget(TTkAbstractScrollView):
         :param col: the column to be selected
         :type col: int
         '''
-        cmp = TTkK.ItemFlag.ItemIsSelectable
-        flagFunc = self._tableModel.flags
-        for row,line in enumerate(self._selected):
-            line[col] = cmp==(cmp&flagFunc(row,col))
+        self._select_proxy.selectColumn(col=col)
         self.update()
 
     def unselectRow(self, row:int) -> None:
@@ -666,19 +756,17 @@ class TTkTableWidget(TTkAbstractScrollView):
         :param row: the row to be unselected
         :type row: int
         '''
-        cols = self._tableModel.columnCount()
-        self._selected[row] = [False]*cols
+        self._select_proxy.unselectRow(row=row)
         self.update()
 
-    def unselectColumn(self, column:int) -> None:
+    def unselectColumn(self, col:int) -> None:
         '''
         Unselects the given column in the table view
 
         :param column: the column to be unselected
         :type column: int
         '''
-        for line in self._selected:
-            line[column] = False
+        self._select_proxy.unselectColumn(col=col)
         self.update()
 
     @pyTTkSlot()
@@ -1348,23 +1436,17 @@ class TTkTableWidget(TTkAbstractScrollView):
             self.selectAll()
         elif col==-1:
             # Row select
-            flagFunc = self._tableModel.flags
-            cmp = TTkK.ItemFlag.ItemIsSelectable
-            state = all(_sel for i,_sel in enumerate(self._selected[row]) if flagFunc(row,i)&cmp)
             if not _ctrl:
                 self.clearSelection()
-            if state:
+            if self._select_proxy.isRowSelected(row=row):
                 self.unselectRow(row)
             else:
                 self.selectRow(row)
         elif row==-1:
             # Col select
-            flagFunc = self._tableModel.flags
-            cmp = TTkK.ItemFlag.ItemIsSelectable
-            state = all(_sel[col] for i,_sel in enumerate(self._selected) if flagFunc(i,col)&cmp)
             if not _ctrl:
                 self.clearSelection()
-            if state:
+            if self._select_proxy.isColSelected(col=col):
                 self.unselectColumn(col)
             else:
                 self.selectColumn(col)
@@ -1373,8 +1455,15 @@ class TTkTableWidget(TTkAbstractScrollView):
             self.cellClicked.emit(row,col)
             # self.cellPressed.emit(row,col)
             self._setCurrentCell(row,col)
-            self.setSelection(pos   = (col,row), size = (1,1),
-                              flags = TTkK.TTkItemSelectionModel.Clear if (self._selected[row][col] and  _ctrl) else TTkK.TTkItemSelectionModel.Select)
+            self.setSelection(
+                pos = (col,row),
+                size = (1,1),
+                flags = (
+                    TTkK.TTkItemSelectionModel.Clear
+                    if (self._select_proxy.isColSelected(col=col) and  _ctrl)
+                    else TTkK.TTkItemSelectionModel.Select
+                )
+            )
         self._hoverPos = None
         self.update()
         return True
@@ -1439,7 +1528,7 @@ class TTkTableWidget(TTkAbstractScrollView):
             if evt.mod==TTkK.ControlModifier:
                 # Pick the status to be applied to the selection if CTRL is Pressed
                 # In case of line/row selection I choose the element 0 of that line
-                state = self._selected[max(0,rowa)][max(0,cola)]
+                state = self._select_proxy.isCellSelected(row=max(0,rowa), col=max(0,cola))
             else:
                 # Clear the selection if no ctrl has been pressed
                 self.clearSelection()
@@ -1584,7 +1673,7 @@ class TTkTableWidget(TTkAbstractScrollView):
                 cellColor = (
                     currentColor if self._currentPos == (row,col) else
                     hoverColor if self._hoverPos in [(row,col),(-1,col),(row,-1),(-1,-1)] else
-                    selectedColor if self._selected[row][col] else
+                    selectedColor if self._select_proxy.isCellSelected(row=row, col=col) else
                     rowColor )
                 _colorCache2d[row-rowa][col-cola] = cellColor
                 _cellsCache.append([row,col,xa,xb,ya,yb,cellColor])
@@ -1607,8 +1696,8 @@ class TTkTableWidget(TTkAbstractScrollView):
                 _belowColor:TTkColor = _colorCache2d[_row+1-rowa][_col-cola]
 
                 # force black border if there are selections
-                _sa = self._selected[_row  ][_col  ]
-                _sb = self._selected[_row+1][_col  ]
+                _sa = self._select_proxy.isCellSelected(row=_row  , col=_col)
+                _sb = self._select_proxy.isCellSelected(row=_row+1, col=_col)
                 if (showHS and showVS) and _sa and not _sb:
                     _bgA:TTkColor = cellColor.background()
                     _bgB:TTkColor = TTkColor.RST
@@ -1632,7 +1721,7 @@ class TTkTableWidget(TTkAbstractScrollView):
                     _char='▀'
                     _color=_bgB + _bgA.invertFgBg()
             else:
-                if self._selected[_row  ][_col  ]:
+                if self._select_proxy.isCellSelected(row=_row, col=_col):
                     _char='▀'
                     _color=selectedColorInv
                 elif cellColor.hasBackground():
@@ -1649,8 +1738,8 @@ class TTkTableWidget(TTkAbstractScrollView):
                 _rightColor:TTkColor = _colorCache2d[_row-rowa][_col+1-cola]
 
                 # force black border if there are selections
-                _sa = self._selected[_row  ][_col  ]
-                _sc = self._selected[_row  ][_col+1]
+                _sa = self._select_proxy.isCellSelected(row=_row, col=_col  )
+                _sc = self._select_proxy.isCellSelected(row=_row, col=_col+1)
                 if (showHS and showVS) and _sa and not _sc:
                     _bgA:TTkColor = cellColor.background()
                     _bgC:TTkColor = TTkColor.RST
@@ -1674,7 +1763,7 @@ class TTkTableWidget(TTkAbstractScrollView):
                     _char='▌'
                     _color=_bgC + _bgA.invertFgBg()
             else:
-                if self._selected[_row  ][_col  ]:
+                if self._select_proxy.isCellSelected(row=_row, col=_col):
                     _char='▌'
                     _color=selectedColorInv
                 elif cellColor.hasBackground():
@@ -1702,10 +1791,10 @@ class TTkTableWidget(TTkAbstractScrollView):
             if _row<rows-1 and _col<cols-1:
                 # Check if there are selected cells:
                 chId = (
-                    0x01 * self._selected[_row  ][_col  ] +
-                    0x02 * self._selected[_row  ][_col+1] +
-                    0x04 * self._selected[_row+1][_col  ] +
-                    0x08 * self._selected[_row+1][_col+1] )
+                    0x01 * self._select_proxy.isCellSelected(row=_row  , col=_col  ) +
+                    0x02 * self._select_proxy.isCellSelected(row=_row  , col=_col+1) +
+                    0x04 * self._select_proxy.isCellSelected(row=_row+1, col=_col  ) +
+                    0x08 * self._select_proxy.isCellSelected(row=_row+1, col=_col+1) )
                 if chId==0x00 or chId==0x0F:
                     _belowColor:TTkColor = _colorCache2d[_row+1-rowa][_col-cola]
                     _bgA:TTkColor = cellColor.background()
@@ -1729,8 +1818,8 @@ class TTkTableWidget(TTkAbstractScrollView):
 
             elif _col<cols-1:
                 chId = (
-                    0x01 * self._selected[row  ][col  ] +
-                    0x02 * self._selected[row  ][col+1] )
+                    0x01 * self._select_proxy.isCellSelected(row=row, col=col  ) +
+                    0x02 * self._select_proxy.isCellSelected(row=row, col=col+1) )
                 if chId:
                     _char = _charList[chId]
                     _color=selectedColorInv
@@ -1742,8 +1831,8 @@ class TTkTableWidget(TTkAbstractScrollView):
                     _color = lineColor
             elif _row<rows-1:
                 chId = (
-                    (0x01) * self._selected[row  ][col  ] +
-                    (0x04) * self._selected[row+1][col  ] )
+                    (0x01) * self._select_proxy.isCellSelected(row=row  , col=col  ) +
+                    (0x04) * self._select_proxy.isCellSelected(row=row+1, col=col  ) )
                 _belowColor:TTkColor = _colorCache2d[_row+1-rowa][_col-cola]
                 _bgA:TTkColor = cellColor.background()
                 _bgB:TTkColor = _belowColor.background()
@@ -1765,7 +1854,7 @@ class TTkTableWidget(TTkAbstractScrollView):
                     _color=_bgB + _bgA.invertFgBg()
             else:
                 chId = (
-                    (0x01) * self._selected[row  ][col  ] )
+                    (0x01) * self._select_proxy.isCellSelected(row=row, col=col) )
                 if chId:
                     _char = _charList[chId]
                     _color=selectedColorInv
