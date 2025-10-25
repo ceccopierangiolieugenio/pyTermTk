@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.48.0-a.0](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/pyTermTk-v0.47.2-a.0...pyTermTk-v0.48.0-a.0) (2025-10-25)
+
+
+### Fixes
+
+* **textdocument:** TypeError exception in characterCount() method ([#477](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/477)) ([8b01817](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/8b018170248e3578a18c9bb4ddf32250c785d969))
+* **TTktable:** crash for empty tables ([#481](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/481)) ([33256b6](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/33256b61d8c320f1ef5e5718bf31f4c4cf3e9786))
+* **TTkTable:** crash on selectable for empty tables ([#484](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/484)) ([c653b74](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/c653b747e519ef9a6ae54e52c2c55bd4f6745e43))
+
+
+### Features
+
+* **TableModel:** add displayData method to allow cell text alignment  ([#474](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/474)) ([dddfc58](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/dddfc58d3067e58429a930b7cd2cda797cf44184))
+* **TTkTable:** add selection proxy ([#488](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/488)) ([d94b513](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/d94b5136340593fb63ef438940b9684b048a04f4))
+
 ## [0.47.2-a.0](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/pyTermTk-v0.47.1-a.0...pyTermTk-v0.47.2-a.0) (2025-10-13)
 
 
