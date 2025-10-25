@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.42.0-a.54](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/ttkDesigner-v0.41.4-a.54...ttkDesigner-v0.42.0-a.54) (2025-10-25)
+
+
+### Features
+
+* **TTkTable:** add selection proxy ([#488](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/488)) ([d94b513](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/d94b5136340593fb63ef438940b9684b048a04f4))
+
 ## [0.41.4-a.54](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/ttkDesigner-v0.41.3-a.54...ttkDesigner-v0.41.4-a.54) (2025-04-03)
 
 

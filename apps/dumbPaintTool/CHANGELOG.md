@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.42.0-a.54](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/theDumbPaintTool-v0.41.9-a.54...theDumbPaintTool-v0.42.0-a.54) (2025-10-25)
+
+
+### Fixes
+
+* **libs:** update sys.path to run test apps directly from the repo ([#482](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/482)) ([321b9a0](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/321b9a0b56024601ac5aff47b688456f9a0bfec8))
+
+
+### Features
+
+* **TTkTable:** add selection proxy ([#488](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/488)) ([d94b513](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/d94b5136340593fb63ef438940b9684b048a04f4))
+
 ## [0.41.9-a.54](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/theDumbPaintTool-v0.41.8-a.54...theDumbPaintTool-v0.41.9-a.54) (2025-04-04)
 
 
