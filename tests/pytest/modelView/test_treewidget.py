@@ -38,7 +38,7 @@ class TestTTkTreeWidgetEmpty:
         """Test selectedItems with empty tree"""
         tree = TTkTreeWidget()
         selected = tree.selectedItems()
-        assert selected is None
+        assert selected == []
 
     def test_empty_tree_mouse_press(self):
         """Test mouse press on empty tree"""
