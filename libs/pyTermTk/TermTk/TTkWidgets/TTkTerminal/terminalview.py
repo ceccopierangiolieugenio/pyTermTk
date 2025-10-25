@@ -244,7 +244,7 @@ class TTkTerminalView(TTkAbstractScrollView, _TTkTerminal_CSI_DEC):
         self._screen_alt.resize(w,h)
         self._screen_normal.resize(w,h)
 
-        self.setFocusPolicy(TTkK.ClickFocus + TTkK.TabFocus)
+        self.setFocusPolicy(TTkK.ClickFocus | TTkK.TabFocus)
         self.enableWidgetCursor()
         self.viewChanged.connect(self._viewChangedHandler)
         self._screen_normal.bufferedLinesChanged.connect(self._screenChanged)

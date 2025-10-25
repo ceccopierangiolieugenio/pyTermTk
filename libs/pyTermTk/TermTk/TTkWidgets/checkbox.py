@@ -127,7 +127,7 @@ class TTkCheckbox(TTkWidget):
 
         self.setMinimumSize(3 + len(self._text), 1)
         self.setMaximumHeight(1)
-        self.setFocusPolicy(TTkK.ClickFocus + TTkK.TabFocus)
+        self.setFocusPolicy(TTkK.ClickFocus | TTkK.TabFocus)
 
     def text(self) -> TTkString:
         ''' This property holds the text shown on the checkhox

@@ -172,7 +172,7 @@ class _SubMenuAreaWidget(ttk.TTkAbstractScrollView):
         super().__init__(**kwargs)
         self.layout().addWidget(self._btnAddSpacer)
         self.layout().addWidget(self._btnAddMenu  )
-        self.setFocusPolicy(ttk.TTkK.ClickFocus + ttk.TTkK.TabFocus)
+        self.setFocusPolicy(ttk.TTkK.ClickFocus | ttk.TTkK.TabFocus)
         self.viewChanged.connect(self._viewChangedHandler)
         self._btnAddSpacer.clicked.connect(self.addSpacer)
         self._btnAddMenu.clicked.connect(self.addMenu)

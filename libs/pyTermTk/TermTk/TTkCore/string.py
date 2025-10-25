@@ -602,7 +602,7 @@ class TTkString():
     def getIndexes(self, char):
         return [i for i,c in enumerate(self._text) if c==char]
 
-    def join(self, strings:Union[List[TTkString],List[str]]) -> TTkString:
+    def join(self, strings:Union[GeneratorType[TTkStringType,None,None],List[TTkStringType]]) -> TTkString:
         ''' Join the input strings using the current as separator
 
         :param strings: the list of strings to be joined

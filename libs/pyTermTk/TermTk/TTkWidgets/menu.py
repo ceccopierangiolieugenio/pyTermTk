@@ -248,7 +248,7 @@ class _TTkMenuAreaWidget(TTkAbstractScrollView):
         self._minWidth = 0
         self._caller = caller
         super().__init__(**kwargs)
-        self.setFocusPolicy(TTkK.ClickFocus + TTkK.TabFocus)
+        self.setFocusPolicy(TTkK.ClickFocus | TTkK.TabFocus)
         self.viewChanged.connect(self._viewChangedHandler)
 
     def _resizeEvent(self):

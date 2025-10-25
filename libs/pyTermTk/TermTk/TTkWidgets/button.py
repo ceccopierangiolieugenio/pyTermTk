@@ -151,7 +151,7 @@ class TTkButton(TTkWidget):
                 if 'maxHeight' not in kwargs:
                     self.setMaximumHeight(len(self._text))
 
-        self.setFocusPolicy(TTkK.ClickFocus + TTkK.TabFocus)
+        self.setFocusPolicy(TTkK.ClickFocus | TTkK.TabFocus)
 
     def border(self) -> bool:
         ''' This property holds whether the button has a border
