@@ -346,16 +346,16 @@ class TTkTable(TTkAbstractScrollArea):
         :type row: int
         '''
         return self._tableView.unselectRow(row=row)
-    def unselectColumn(self, column:int) -> None:
+    def unselectColumn(self, col:int) -> None:
         '''
         .. seealso:: this method is forwarded to :py:meth:`TTkTableWidget.unselectColumn`
 
         Unselects the given column in the table view
 
-        :param column: the column to be unselected
-        :type column: int
+        :param col: the column to be unselected
+        :type col: int
         '''
-        return self._tableView.unselectColumn(column=column)
+        return self._tableView.unselectColumn(col=col)
     def rowCount(self) -> int:
         '''
         .. seealso:: this method is forwarded to :py:meth:`TTkTableWidget.rowCount`

@@ -793,8 +793,8 @@ class TTkTableWidget(TTkAbstractScrollView):
         '''
         Unselects the given column in the table view
 
-        :param column: the column to be unselected
-        :type column: int
+        :param col: the column to be unselected
+        :type col: int
         '''
         self._select_proxy.unselectColumn(col=col)
         self.update()
