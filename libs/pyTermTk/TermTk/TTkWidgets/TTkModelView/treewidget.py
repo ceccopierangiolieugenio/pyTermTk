@@ -57,6 +57,8 @@ class _RootWidgetItem(TTkTreeWidgetItem):
         if offset < 0x200:
             offset = 0x200
         limited_page = self._get_page_root(offset-0x200,0x400)
+        if not limited_page:
+            return 0
         if column==0:
             size = max(max(_l+_i.icon(column).termWidth()+_t.termWidth() for _t in _i.data(column).split('\n')) for _l,_y,_i in limited_page if not _y)
         else:
@@ -269,13 +271,12 @@ class TTkTreeWidget(TTkAbstractScrollView):
         self._selected = []
         self._selectedId = None
         self._separatorSelected = None
-        self._header = header if header else []
-        self._columnsPos = []
         self._sortingEnabled=sortingEnabled
         self._sortColumn = -1
         self._sortOrder = TTkK.AscendingOrder
         self._rootItem = _RootWidgetItem()
         super().__init__(**kwargs)
+        self.setHeaderLabels(header)
         self.setMinimumHeight(1)
         self.setFocusPolicy(TTkK.ClickFocus)
         self.clear()

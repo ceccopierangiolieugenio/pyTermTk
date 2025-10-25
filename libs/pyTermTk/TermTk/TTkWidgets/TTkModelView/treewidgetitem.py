@@ -482,8 +482,6 @@ class TTkTreeWidgetItem(TTkAbstractItemModel):
             return self._children.indexOfChild(child)
         except ValueError:
             return -1
-        finally:
-            return -1
 
     def icon(self, col:int) -> TTkString:
         if col >= len(self._icon):
