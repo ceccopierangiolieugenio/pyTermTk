@@ -188,10 +188,10 @@ class _TTkTreeChildren(TTkAbstractItemModel):
     def children(self) -> List[TTkTreeWidgetItem]:
         return self._children
 
-    def indexOfChild(self, child:TTkTreeWidgetItem) -> Optional[int]:
+    def indexOfChild(self, child:TTkTreeWidgetItem) -> int:
         if child in self._children:
             return self._children.index(child)
-        return None
+        return -1
 
     def expandAll(self) -> None:
         for child in self._children:

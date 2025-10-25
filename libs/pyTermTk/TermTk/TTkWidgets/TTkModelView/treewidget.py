@@ -43,7 +43,7 @@ from dataclasses import dataclass
 class _RootWidgetItem(TTkTreeWidgetItem):
     __slots__ = ('_widgets_buffer','_widgets_buffer_check')
 
-    _widgets_buffer:List[int]
+    _widgets_buffer:List[tuple[int, int, TTkTreeWidgetItem]]
     _widgets_buffer_check:int
 
     def __init__(self):
@@ -222,7 +222,7 @@ class TTkTreeWidget(TTkAbstractScrollView):
                     'separatorColor': TTkColor.fg("#888888")},
             }
 
-    __slots__ = ( '_rootItem', '_cache',
+    __slots__ = ( '_rootItem',
                   '_header', '_columnsPos',
                   '_selectionMode',
                   '_selectedId', '_selected', '_separatorSelected',
@@ -234,11 +234,12 @@ class TTkTreeWidget(TTkAbstractScrollView):
 
     _selected:List[TTkTreeWidgetItem]
     _rootItem:_RootWidgetItem
+    _separatorSelected:Optional[int]
 
     @dataclass(frozen=True)
     class _DropTreeData:
         widget: TTkAbstractScrollView
-        items: List[TTkAbstractItemModel]
+        items: List[TTkTreeWidgetItem]
 
     def __init__(self, *,
                  header:List[TTkString]=[],
@@ -263,9 +264,6 @@ class TTkTreeWidget(TTkAbstractScrollView):
         self._itemDoubleClicked = pyTTkSignal(TTkTreeWidgetItem, int)
         self._itemExpanded      = pyTTkSignal(TTkTreeWidgetItem)
         self._itemCollapsed     = pyTTkSignal(TTkTreeWidgetItem)
-
-        self._cache = []
-
         self._selectionMode = selectionMode
         self._dndMode = dragDropMode
         self._selected = []
@@ -404,7 +402,7 @@ class TTkTreeWidget(TTkAbstractScrollView):
         '''
         if self._selected:
             return self._selected
-        return None
+        return []
 
     def setHeaderLabels(self, labels:List[TTkString]) -> None:
         '''
@@ -602,7 +600,7 @@ class TTkTreeWidget(TTkAbstractScrollView):
                     break
                 elif x < c:
                     # I-th header selected
-                    order = not self._sortOrder if self._sortColumn == i else TTkK.AscendingOrder
+                    order = TTkK.SortOrder.invert(self._sortOrder) if self._sortColumn == i else TTkK.AscendingOrder
                     self.sortItems(i, order)
                     break
             return True
@@ -644,6 +642,7 @@ class TTkTreeWidget(TTkAbstractScrollView):
             self.itemClicked.emit(item, col)
             self.update()
             return True
+        return True
 
     def mouseDragEvent(self, evt:TTkMouseEvent) -> bool:
         #    columnPos       (Selected = 2)
