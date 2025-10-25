@@ -56,18 +56,18 @@ class _TTkHueCanvas(TTkWidget):
         self._selected = -1
         self.setFocusPolicy(TTkK.ClickFocus)
 
-
     def resizeEvent(self, width: int, height: int) -> None:
         self._selected = -1
 
     def mousePressEvent(self, evt:TTkMouseEvent) -> bool:
-        self._selected = evt.x
-        if evt.x < len(self._hueList):
+        if evt.x != self._selected:
+            self._selected = evt.x
             self.colorPicked.emit(self._hueList[evt.x])
-        self.update()
+            self.update()
         return True
 
     def mouseDragEvent(self, evt:TTkMouseEvent) -> bool:
+        evt.x = max(0, min(evt.x, self.width()-1))
         return self.mousePressEvent(evt)
 
     def paintEvent(self, canvas: TTkCanvas) -> None:
