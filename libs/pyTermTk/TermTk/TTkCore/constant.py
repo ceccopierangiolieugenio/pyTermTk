@@ -20,6 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
+
 __all__ = ['TTkConstant', 'TTkK']
 
 from enum import IntEnum, Flag
@@ -273,6 +275,12 @@ class TTkConstant:
         '''The items are sorted ascending e.g. starts with 'AAA' ends with 'ZZZ' in Latin-1 locales'''
         DescendingOrder = 0x01
         '''The items are sorted descending e.g. starts with 'ZZZ' ends with 'AAA' in Latin-1 locales'''
+
+        def invert(order:TTkConstant.SortOrder) -> TTkConstant.SortOrder:
+            if order == TTkConstant.SortOrder.AscendingOrder:
+                return TTkConstant.SortOrder.AscendingOrder
+            else:
+                return TTkConstant.SortOrder.DescendingOrder
 
     AscendingOrder  = SortOrder.AscendingOrder
     DescendingOrder = SortOrder.DescendingOrder

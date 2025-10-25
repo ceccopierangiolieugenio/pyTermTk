@@ -39,7 +39,7 @@ splitter = ttk.TTkSplitter(parent=root)
 splitter.addWidget(fileTree:=ttk.TTkFileTree(path='tmp'), 15)
 splitter.addWidget(mainSplitter := ttk.TTkSplitter(orientation=ttk.TTkK.VERTICAL))
 mainSplitter.addWidget(sa := ttk.TTkScrollArea())
-mainSplitter.addWidget(controlsWidget := ttk.TTkWidget(layout=ttk.TTkGridLayout()),6)
+mainSplitter.addWidget(controlsWidget := ttk.TTkContainer(layout=ttk.TTkGridLayout()),6)
 mainSplitter.addWidget(te := ttk.TTkTextEdit(lineNumber=True))
 mainSplitter.addWidget(ttk.TTkLogViewer(),6)
 
