@@ -61,7 +61,7 @@ class TestWid(ttk.TTkWidget):
         self.setDefaultSize(kwargs, 10, 10)
         super().__init__(*args, **kwargs)
         self._b = ttk.pyTTkSignal(bool)
-        self.setFocusPolicy(ttk.TTkK.ClickFocus + ttk.TTkK.TabFocus)
+        self.setFocusPolicy(ttk.TTkK.ClickFocus | ttk.TTkK.TabFocus)
 
     def mousePressEvent(self, evt):
         # TTkLog.debug(f"{self._text} Test Mouse {evt}")

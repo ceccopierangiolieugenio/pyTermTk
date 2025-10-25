@@ -352,7 +352,7 @@ class TTkComboBox(TTkContainer):
             self.setFocusPolicy(TTkK.ClickFocus)
         else:
             self._lineEdit.hide()
-            self.setFocusPolicy(TTkK.ClickFocus + TTkK.TabFocus)
+            self.setFocusPolicy(TTkK.ClickFocus | TTkK.TabFocus)
 
     @pyTTkSlot(str)
     def _callback(self, label:TTkString) -> None:

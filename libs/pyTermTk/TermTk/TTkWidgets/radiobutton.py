@@ -105,7 +105,7 @@ class TTkRadioButton(TTkWidget):
 
         self.setMinimumSize(3 + len(self._text), 1)
         self.setMaximumHeight(1)
-        self.setFocusPolicy(TTkK.ClickFocus + TTkK.TabFocus)
+        self.setFocusPolicy(TTkK.ClickFocus | TTkK.TabFocus)
 
         if self._radiogroup not in TTkRadioButton._radioLists:
             TTkRadioButton._radioLists[self._radiogroup] = [self]

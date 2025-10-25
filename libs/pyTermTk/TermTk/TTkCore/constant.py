@@ -22,7 +22,7 @@
 
 __all__ = ['TTkConstant', 'TTkK']
 
-from enum import IntEnum
+from enum import IntEnum, Flag
 
 class TTkConstant:
     '''Class container of all the constants used in :mod:`~TermTk`'''
@@ -58,7 +58,7 @@ class TTkConstant:
         ColorModifier = 0x08
         '''The :py:class:`TTkColor` include a color modifier based on :py:class:`TTkColorModifier`'''
 
-    class FocusPolicy(IntEnum):
+    class FocusPolicy(Flag):
         '''
         This Class type defines the various policies a widget
         can have with respect to acquiring keyboard focus.
@@ -149,7 +149,7 @@ class TTkConstant:
     QUIT_EVENT   = 0x08
     TIME_EVENT   = 0x10
 
-    class Direction(int):
+    class Direction(IntEnum):
         '''This class type is used to describe the direction
 
         .. autosummary::
@@ -477,7 +477,7 @@ class TTkConstant:
         AcceptSave	= 1
         '''Save'''
 
-    class TTkItemSelectionModel(int):
+    class TTkItemSelectionModel(Flag):
         '''These values describes the way the selection model will be updated.
 
         .. autosummary::

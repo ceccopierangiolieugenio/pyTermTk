@@ -28,7 +28,7 @@ from unittest.mock import Mock, MagicMock, patch
 
 sys.path.append(os.path.join(sys.path[0],'../../../libs/pyTermTk'))
 import TermTk as ttk
-
+from TermTk.TTkWidgets.TTkModelView.tablewidget import _DragPosType
 
 class TestTTkTableWidget:
     """Test cases for TTkTableWidget class"""
@@ -944,7 +944,7 @@ class TestTTkTableWidget:
             # Verify state changes
             assert widget._currentPos == (1, 1)
             assert widget._hoverPos is None  # Should be reset
-            assert widget._dragPos == [(1, 1), (1, 1)]  # Should be initialized
+            assert widget._dragPos == _DragPosType(fr=(1, 1), to=(1, 1))  # Should be initialized
 
     def test_mouse_press_with_disabled_model_flags(self):
         """Test mouse press on cells with different model flags"""
