@@ -60,7 +60,7 @@ class _TTkToolTipDisplayWidget(TTkWidget):
             canvas.drawTTkString(pos=(1,i), text=s)
 
 class TTkToolTip():
-    toolTipTimer:TTkTimer = TTkTimer()
+    toolTipTimer:TTkTimer = TTkTimer(name='ToolTip')
     toolTip:TTkString = TTkString()
 
     @pyTTkSlot()

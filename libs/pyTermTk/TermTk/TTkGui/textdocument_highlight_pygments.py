@@ -141,7 +141,7 @@ class TextDocumentHighlight(TTkTextDocument):
         # self._formatter = _TTkFormatter(style='dracula')
         self._formatter = _TTkFormatter(style='gruvbox-dark')
         super().__init__(**kwargs)
-        self._timerRefresh = TTkTimer()
+        self._timerRefresh = TTkTimer(name='Text Highlight Refresh')
         self._timerRefresh.timeout.connect(self._refreshEvent)
         self._changedContent = (0,0,len(self._dataLines))
         self._refreshContent = (0,TextDocumentHighlight._linesRefreshed)

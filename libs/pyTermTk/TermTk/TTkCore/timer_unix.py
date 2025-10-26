@@ -22,6 +22,8 @@
 
 __all__ = ['TTkTimer']
 
+from typing import Optional
+
 import threading
 
 from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
@@ -31,13 +33,13 @@ class TTkTimer(threading.Thread):
     __slots__ = (
         'timeout', '_delay',
         '_timer', '_quit', '_start')
-    def __init__(self):
+    def __init__(self, name:Optional[str]=None):
         self.timeout = pyTTkSignal()
         self._delay = 0
         self._quit  = threading.Event()
         self._start = threading.Event()
         self._timer = threading.Event()
-        super().__init__()
+        super().__init__(name=name)
         TTkHelper.quitEvent.connect(self.quit)
 
     def quit(self):

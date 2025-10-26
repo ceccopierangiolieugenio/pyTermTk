@@ -167,7 +167,7 @@ class TTk(TTkContainer):
 
             TTkTerm.registerResizeCb(self._win_resize_cb)
 
-            self._timer = TTkTimer()
+            self._timer = TTkTimer(name='TTk (Draw)')
             self._timer.timeout.connect(self._time_event)
             self._timer.start(0.1)
             self.show()

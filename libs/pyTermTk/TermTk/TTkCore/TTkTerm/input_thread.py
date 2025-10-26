@@ -60,7 +60,7 @@ class TTkInput:
     @staticmethod
     def init(mouse:bool=False, directMouse:bool=False) -> None:
         TTkInput._readInput = TTkInputDriver()
-        TTkInput._inputThread = threading.Thread(target=TTkInput._run)
+        TTkInput._inputThread = threading.Thread(name='TTkInput', target=TTkInput._run)
         TTkInput._inputQueue = queue.Queue()
         TTkTerm.setMouse(mouse, directMouse)
 
