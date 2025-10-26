@@ -31,13 +31,15 @@ class TTkTimer(threading.Thread):
     __slots__ = (
         'timeout', '_delay',
         '_timer', '_quit', '_start')
-    def __init__(self):
+    def __init__(self, name:str=''):
         self.timeout = pyTTkSignal()
         self._delay = 0
         self._quit  = threading.Event()
         self._start = threading.Event()
         self._timer = threading.Event()
         super().__init__()
+        if name:
+            self.name = name
         TTkHelper.quitEvent.connect(self.quit)
 
     def quit(self):

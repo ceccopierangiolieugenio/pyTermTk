@@ -37,7 +37,7 @@ class TTkTimer():
         '_delay', '_delayLock', '_quit',
         '_stopTime')
 
-    def __init__(self):
+    def __init__(self, name:str=''):
         # Define Signals
         self.timeout = pyTTkSignal()
         self._running = True

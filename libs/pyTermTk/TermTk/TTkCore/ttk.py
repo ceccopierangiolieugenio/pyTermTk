@@ -140,10 +140,10 @@ class TTk(TTkContainer):
             self.time  = curtime
 
     def mainloop(self):
-        with ttk_capture_stderr():
-            self._mainloop_1()
+        self.ttk_init()
+        self.ttk_run()
 
-    def _mainloop_1(self):
+    def ttk_init(self):
         try:
             '''Enters the main event loop and waits until :meth:`~quit` is called or the main widget is destroyed.'''
             TTkLog.debug( "" )
@@ -166,8 +166,19 @@ class TTk(TTkContainer):
             TTkLog.debug("Signal Event Registered")
 
             TTkTerm.registerResizeCb(self._win_resize_cb)
+        except:
+            if platform.system() != 'Emscripten':
+                TTkSignalDriver.exit()
+                self.quit()
+                TTkTerm.exit()
 
-            self._timer = TTkTimer()
+    def ttk_run(self) -> None:
+        with ttk_capture_stderr():
+            self._mainloop_1()
+
+    def _mainloop_1(self):
+        try:
+            self._timer = TTkTimer(name='TTk_Screen')
             self._timer.timeout.connect(self._time_event)
             self._timer.start(0.1)
             self.show()
