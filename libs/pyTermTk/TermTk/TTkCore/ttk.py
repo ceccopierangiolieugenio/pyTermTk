@@ -174,9 +174,9 @@ class TTk(TTkContainer):
 
     def ttk_run(self) -> None:
         with ttk_capture_stderr():
-            self._mainloop_1()
+            self.ttk_run_main()
 
-    def _mainloop_1(self):
+    def ttk_run_main(self):
         try:
             self._timer = TTkTimer(name='TTk_Screen')
             self._timer.timeout.connect(self._time_event)
