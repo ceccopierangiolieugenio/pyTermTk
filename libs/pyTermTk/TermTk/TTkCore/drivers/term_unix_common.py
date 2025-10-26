@@ -22,8 +22,7 @@
 
 __all__ = ['_TTkTerm']
 
-import sys, os, signal
-from threading import Thread, Lock
+import sys, os, signal, threading
 
 try: import termios
 except Exception as e:
@@ -32,6 +31,9 @@ except Exception as e:
 
 from ..TTkTerm.term_base import TTkTermBase
 from TermTk.TTkCore.log import TTkLog
+
+TTkLog.setExceptionHandler()  # _main_exception
+threading.excepthook = TTkLog._thread_exception
 
 class _TTkTerm(TTkTermBase):
     _sigWinChCb = None
@@ -66,11 +68,14 @@ class _TTkTerm(TTkTermBase):
     def _push(*args):
         try:
             sys.stdout.write(str(*args))
-            sys.stdout.flush()
         except BlockingIOError as e:
             TTkLog.fatal(f"{e=} {e.characters_written=}")
         except Exception as e:
-            TTkLog.fatal(e)
+            try: TTkLog.fatal(e)
+            except: pass
+            raise e  # main_exception
+        finally:
+            sys.stdout.flush()
     TTkTermBase.push = _push
 
     @staticmethod
@@ -106,7 +111,7 @@ class _TTkTerm(TTkTermBase):
            print(f'ERROR: {e}')
     TTkTermBase.getTerminalSize = _getTerminalSize
 
-    _sigWinChMutex = Lock()
+    _sigWinChMutex = threading.Lock()
 
     @staticmethod
     def _sigWinChThreaded():
@@ -119,7 +124,7 @@ class _TTkTerm(TTkTermBase):
 
     @staticmethod
     def _sigWinCh(signum, frame):
-        Thread(target=_TTkTerm._sigWinChThreaded).start()
+        threading.Thread(target=_TTkTerm._sigWinChThreaded).start()
 
     @staticmethod
     def _registerResizeCb(callback):
