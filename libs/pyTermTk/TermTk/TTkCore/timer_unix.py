@@ -37,7 +37,10 @@ class TTkTimer(threading.Thread):
         )
     _delay:float
     _excepthook:Optional[Callable[[Exception],None]]
-    def __init__(self, name:Optional[str]=None, excepthook:Optional[Callable[[Exception],None]]=None):
+    def __init__(
+            self,
+            name:Optional[str]=None,
+            excepthook:Optional[Callable[[Exception],None]]=None):
         self._excepthook = excepthook
         self.timeout = pyTTkSignal()
         self._delay = 0
