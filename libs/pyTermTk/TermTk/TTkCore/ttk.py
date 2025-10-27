@@ -114,8 +114,8 @@ class TTk(TTkContainer):
         '_drawMutex',
         '_paintEvent',
         '_lastMultiTap',
-        'paintExecuted',
-        '_exceptions')
+        '_exceptions',
+        'paintExecuted')
 
     _timer:TTkTimer
     _exceptions:List[Exception]
