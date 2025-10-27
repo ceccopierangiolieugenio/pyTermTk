@@ -93,6 +93,11 @@ class TTkHelper:
         TTkHelper._rootWidget = widget
         TTkHelper._rootCanvas.enableDoubleBuffer()
 
+    @staticmethod
+    def cleanRootWidget() -> None:
+        TTkHelper._rootCanvas = None
+        TTkHelper._rootWidget = None
+
     quitEvent: pyTTkSignal = pyTTkSignal()
 
     @staticmethod

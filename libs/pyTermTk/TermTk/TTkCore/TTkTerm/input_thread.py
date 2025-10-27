@@ -27,6 +27,8 @@ from time import time
 
 import threading, queue
 
+from typing import Optional
+
 from ..drivers import TTkInputDriver
 
 from TermTk.TTkCore.log import TTkLog
@@ -40,10 +42,11 @@ from TermTk.TTkCore.TTkTerm.inputmouse import TTkMouseEvent
 class TTkInput:
     inputEvent = pyTTkSignal(TTkKeyEvent, TTkMouseEvent)
     pasteEvent = pyTTkSignal(str)
+    exceptionRaised = pyTTkSignal(Exception)
     _pasteBuffer = ""
     _bracketedPaste = False
     _readInput = None
-    _inputThread = None
+    _inputThread:Optional[threading.Thread] = None
     _inputQueue = None
     _leftLastTime = 0
     _midLastTime = 0
@@ -69,6 +72,8 @@ class TTkInput:
         TTkTerm.setMouse(False, False)
         if TTkInput._readInput:
             TTkInput._readInput.close()
+        if TTkInput._inputThread and TTkInput._inputThread.is_alive():
+            TTkInput._inputThread.join()
 
     @staticmethod
     def stop() -> None:
@@ -106,9 +111,13 @@ class TTkInput:
 
     @staticmethod
     def _run():
-        for stdinRead in TTkInput._readInput.read():
-            outq = TTkInput.key_process(stdinRead)
-            TTkInput._inputQueue.put(outq)
+        try:
+            for stdinRead in TTkInput._readInput.read():
+                outq = TTkInput.key_process(stdinRead)
+                TTkInput._inputQueue.put(outq)
+        except Exception as e:
+            TTkInput._inputQueue.put(None)
+            TTkInput.exceptionRaised.emit(e)
         TTkInput._inputQueue.put(None)
 
     @staticmethod

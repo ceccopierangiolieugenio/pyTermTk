@@ -133,14 +133,14 @@ test: .venv
 	#   tests/pytest/test_001_demo.py -r test.input.bin
 	# Play the test stream
 	#   tests/pytest/test_001_demo.py -p test.input.bin
-	mkdir -p tmp
-	wget -O tmp/test.input.001.bin https://github.com/ceccopierangiolieugenio/binaryRepo/raw/master/pyTermTk/tests/test.input.001.bin
-	wget -O tmp/test.input.002.bin https://github.com/ceccopierangiolieugenio/binaryRepo/raw/master/pyTermTk/tests/test.input.002.bin
-	wget -O tmp/test.input.003.bin https://github.com/ceccopierangiolieugenio/binaryRepo/raw/master/pyTermTk/tests/test.input.003.bin
 	tools/check.import.sh
 	. .venv/bin/activate ; \
 	    flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics --exclude .venv,build,tmp,experiments ;
 	. .venv/bin/activate ; \
         pytest tests/pytest
+	mkdir -p tmp
+	wget -O tmp/test.input.001.bin https://github.com/ceccopierangiolieugenio/binaryRepo/raw/master/pyTermTk/tests/test.input.001.bin
+	wget -O tmp/test.input.002.bin https://github.com/ceccopierangiolieugenio/binaryRepo/raw/master/pyTermTk/tests/test.input.002.bin
+	wget -O tmp/test.input.003.bin https://github.com/ceccopierangiolieugenio/binaryRepo/raw/master/pyTermTk/tests/test.input.003.bin
 	. .venv/bin/activate ; \
         pytest tests/pytest/run_*

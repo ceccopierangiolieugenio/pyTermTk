@@ -22,7 +22,7 @@
 
 __all__ = ['TTkTimer']
 
-from typing import Optional
+from typing import Optional,Callable
 
 import threading
 
@@ -32,8 +32,13 @@ from TermTk.TTkCore.helper import TTkHelper
 class TTkTimer(threading.Thread):
     __slots__ = (
         'timeout', '_delay',
-        '_timer', '_quit', '_start')
-    def __init__(self, name:Optional[str]=None):
+        '_timer', '_quit', '_start',
+        '_excepthook'
+        )
+    _delay:float
+    _excepthook:Optional[Callable[[Exception],None]]
+    def __init__(self, name:Optional[str]=None, excepthook:Optional[Callable[[Exception],None]]=None):
+        self._excepthook = excepthook
         self.timeout = pyTTkSignal()
         self._delay = 0
         self._quit  = threading.Event()
@@ -50,14 +55,21 @@ class TTkTimer(threading.Thread):
         self._start.set()
 
     def run(self):
-        while not self._quit.is_set():
-            self._start.wait()
-            self._start.clear()
-            if not self._timer.wait(self._delay):
-                self.timeout.emit()
+        try:
+            while not self._quit.is_set():
+                self._start.wait()
+                self._start.clear()
+                if not self._timer.wait(self._delay):
+                    self.timeout.emit()
+        except Exception as e:
+            TTkHelper.quitEvent.disconnect(self.quit)
+            if self._excepthook:
+                self._excepthook(e)
+            else:
+                raise e
 
     @pyTTkSlot(float)
-    def start(self, sec=0.0):
+    def start(self, sec:float=0.0):
         self._delay = sec
         self._timer.set()
         self._timer.clear()
@@ -68,4 +80,3 @@ class TTkTimer(threading.Thread):
     @pyTTkSlot()
     def stop(self):
         self._timer.set()
-
