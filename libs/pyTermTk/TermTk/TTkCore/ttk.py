@@ -23,7 +23,6 @@
 __all__ = ['TTk']
 
 import os
-import sys
 import signal
 import time
 import threading
