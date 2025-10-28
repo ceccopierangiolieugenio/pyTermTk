@@ -35,6 +35,7 @@ class mock_signal():
     @staticmethod
     def clear():
         pass
+
 class Mock_TTkInput():
     exceptionRaised = mock_signal
     inputEvent = mock_signal
