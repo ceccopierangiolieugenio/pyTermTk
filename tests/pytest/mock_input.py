@@ -22,7 +22,19 @@
 
 # Thanks to: https://stackoverflow.com/questions/43162722/mocking-a-module-import-in-pytest
 
+class mock_signal():
+    @staticmethod
+    def connect(*args,**argv):
+        pass
+    @staticmethod
+    def disconnect(*args,**argv):
+        pass
+    @staticmethod
+    def emit(*args,**argv):
+        pass
 class Mock_TTkInput():
+    exceptionRaised = mock_signal
+
     @staticmethod
     def init(mouse, directMouse):pass
     @staticmethod
@@ -39,13 +51,23 @@ class Mock_TTkInput():
     def start(): pass
 
     class inputEvent():
+        @staticmethod
         def connect(*args):
             pass
+        @staticmethod
+        def disconnect(*args):
+            pass
+        @staticmethod
         def clear():
             pass
 
     class pasteEvent():
+        @staticmethod
         def connect(*args):
             pass
+        @staticmethod
+        def disconnect(*args):
+            pass
+        @staticmethod
         def clear():
             pass
