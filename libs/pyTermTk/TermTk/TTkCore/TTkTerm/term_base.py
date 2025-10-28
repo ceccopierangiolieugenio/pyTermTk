@@ -163,4 +163,4 @@ class TTkTermBase():
     getTerminalSize  = lambda *args: (80,24)
     registerResizeCb:Callable[[Callable[[int,int],None]],None] = lambda w,h: None
     getStdErr:Callable[[None],TextIO] = lambda : TextIO()
-    setStdErr:Callable[[TextIO],TextIO] = lambda tio: tio
+    setStdErr:Callable[[TextIO],None] = lambda tio: None

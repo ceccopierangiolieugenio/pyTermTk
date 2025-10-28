@@ -133,9 +133,7 @@ class _TTkTerm(TTkTermBase):
 
     @staticmethod
     def _setStdErr(ioRedirect:TextIO) -> TextIO:
-        ret = sys.stderr
         sys.stderr = ioRedirect
-        return ret
     TTkTermBase.setStdErr = _setStdErr
 
     @staticmethod
