@@ -77,14 +77,3 @@ buildSandbox: www
 	find ../../tutorial -name '*.py' -o -name '*.json' | sed 's,.*/tutorial/,tutorial/,' | sort | xargs tar cvzf bin/tutorial.tgz -C ../..
 	find ../../demo/paint.py ../../demo/ttkode.py ../../demo/demo.py ../../demo/showcase/*.* | sed 's,.*/demo/,demo/,' | sort | xargs tar cvzf bin/demo.tgz -C ../..
 	find ../../tests/ansi.images.json ../../tests/t.ui/*.* | sed 's,.*/tests/,tests/,' | sort | xargs tar cvzf bin/tests.tgz -C ../..
-
-buildTestSandbox: www
-	rm -rf bin
-	mkdir -p bin
-
-	$( cd ../../ ; tools/prepareBuild.sh release ; )
-
-	find ../../TermTk/  -name "*.py" | sort | xargs tar cvzf bin/TermTk.tgz
-	find ../../tutorial -name "*.py" | sort | xargs tar cvzf bin/tutorial.tgz
-	find ../../demo/paint.py ../../demo/ttkode.py ../../demo/demo.py ../../demo/showcase/*.* | sort | xargs tar cvzf bin/demo.tgz
-	find ../../tests/ansi.images.json ../../tests/t.ui/*.* | sort | xargs tar cvzf bin/tests.tgz
