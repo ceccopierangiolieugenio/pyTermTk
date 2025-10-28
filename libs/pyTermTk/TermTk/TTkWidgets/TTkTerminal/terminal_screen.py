@@ -1,4 +1,4 @@
-    # MIT License
+1    # MIT License
     #
     # Copyright (c) 2023 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
     #
@@ -25,6 +25,8 @@ __all__ = []
 import collections
 import unicodedata
 from dataclasses import dataclass
+
+from typing import List
 
 from TermTk.TTkCore.canvas import TTkCanvas
 
@@ -252,6 +254,23 @@ class _TTkTerminalScreen(_TTkTerminalScreen_CSI, _TTkTerminalScreen_C1):
         # pos  = getPosFromX(linne,x)
         # Convert x/y in line/pos
         self._selectCursor.select(x,y,moveAnchor)
+
+    def getBuffer(self) -> List[TTkString]:
+        w,h = self._canvas.size()
+        ret:List[TTkString] = list(self._bufferedLines)
+        for y in range(h):
+            nl = self._canvasNewLine[y]
+            ls = self._canvasLineSize[y]
+            data = self._canvas._data[y][:ls]
+            colors = self._canvas._colors[y][:ls]
+            line = TTkString._importString1("".join(data),colors)
+            if nl and ret:
+                ret[-1] += line
+            else:
+                ret.append(line)
+        while ret and not len(ret[-1]):
+            ret.pop()
+        return ret
 
     def getSelected(self):
         if not self._selectCursor.hasSelection():
