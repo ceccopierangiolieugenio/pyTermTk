@@ -178,11 +178,11 @@ class TTk(TTkContainer):
             self.frame = 0
             self.time  = curtime
 
-    def mainloop(self):
+    def mainloop(self) -> None:
         with _ttk_capture_stderr():
-            self._mainloop_1()
+            self._mainloop()
 
-    def _mainloop_1(self):
+    def _mainloop(self) -> None:
         try:
             '''Enters the main event loop and waits until :meth:`~quit` is called or the main widget is destroyed.'''
             TTkLog.debug( "" )
@@ -253,9 +253,9 @@ class TTk(TTkContainer):
         self._exceptions.append(e)
 
     def _quit_timer(self) -> None:
-            self._timer.timeout.disconnect(self._time_event)
-            self._timer.quit()
-            self._paintEvent.set()
+        self._timer.timeout.disconnect(self._time_event)
+        self._timer.quit()
+        self._paintEvent.set()
 
     def _mouseCursorPaintChildCanvas(self) -> None:
         super().paintChildCanvas()
