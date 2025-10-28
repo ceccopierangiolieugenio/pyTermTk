@@ -260,12 +260,12 @@ class TTk(TTkContainer):
         # responsible of collecting the mouse/keyboard/paste events
         # any failure in this loop should clean the environment and
         # quit the app, I ensure in this routine to stop
-        # The '_timer' thread and te 'input' thread
+        # The '_timer' thread and te 'TTkInput' thread
         # This will results in the mainloop proceed and run the
         # 'finally:' block
         self._quit_timer()
         TTkInput.inputEvent.clear()
-        TTkInput.close()
+        TTkInput.close() # Shoul close it and wait for join
         self._timer.join()
         # The exception will be raised in the main loop
         # Once it is ensured that the env is clean
