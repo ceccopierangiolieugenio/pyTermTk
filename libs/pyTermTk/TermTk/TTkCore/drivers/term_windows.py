@@ -25,6 +25,8 @@ __all__ = ['TTkTerm']
 import sys, os
 from threading import Thread, Lock
 
+from typing import TextIO
+
 from ..TTkTerm.term_base import TTkTermBase
 from TermTk.TTkCore.log import TTkLog
 from .windows import *
@@ -72,3 +74,13 @@ class TTkTerm(TTkTermBase):
         TTkTerm._sigWinChCb = callback
         TTkInputDriver.windowResized.connect(TTkTerm._sigWinCh)
     TTkTermBase.registerResizeCb = _registerResizeCb
+
+    @staticmethod
+    def _setStdErr(ioRedirect:TextIO) -> None:
+        sys.stderr = ioRedirect
+    TTkTermBase.setStdErr = _setStdErr
+
+    @staticmethod
+    def _getStdErr() -> TextIO:
+        return sys.stderr
+    TTkTermBase.getStdErr = _getStdErr

@@ -479,7 +479,7 @@ class TTkTabBar(TTkContainer):
         self.tabBarClicked     = pyTTkSignal(int)
         self.tabCloseRequested = pyTTkSignal(int)
 
-        self.setFocusPolicy(TTkK.ClickFocus + TTkK.TabFocus)
+        self.setFocusPolicy(TTkK.ClickFocus | TTkK.TabFocus)
 
     def mergeStyle(self, style):
         super().mergeStyle(style)

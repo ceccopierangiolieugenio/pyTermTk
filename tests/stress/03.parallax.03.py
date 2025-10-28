@@ -25,7 +25,7 @@
 import sys, os
 import time, math
 
-sys.path.append(os.path.join(sys.path[0],'../..'))
+sys.path.append(os.path.join(sys.path[0],'../../libs/pyTermTk'))
 import TermTk as ttk
 
 HouseBG_1_1 = ttk.TTkUtil.base64_deflate_2_obj(

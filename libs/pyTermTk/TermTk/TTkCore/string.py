@@ -355,9 +355,13 @@ class TTkString():
                 ret._text   = " "    *p1 + self._text   + " "    *p2
                 ret._colors = [color]*p1 + self._colors + [color]*p2
             elif alignment == TTkK.JUSTIFY:
-                # TODO: Text Justification
-                ret._text   = self._text   + " "    *pad
-                ret._colors = self._colors + [color]*pad
+                if not (_slices := [_t for _t in self.split(" ") if _t._text]) or len(_slices) < 2:
+                    return self
+                _avg_spaces = width - sum(_slice.termWidth() for _slice in _slices)
+                _avg_space = _avg_spaces // (len(_slices)-1)
+                _left_part = TTkString(' '*_avg_space).join(_slices[:-1])
+                _last_space = width - _left_part.termWidth() - _slices[-1].termWidth()
+                return _left_part + TTkString(' '*_last_space) + _slices[-1]
         elif self._hasSpecialWidth is not None:
             # Trim the string to a fixed size taking care of the variable width unicode chars
             rt = ""
@@ -598,7 +602,7 @@ class TTkString():
     def getIndexes(self, char):
         return [i for i,c in enumerate(self._text) if c==char]
 
-    def join(self, strings:Union[List[TTkString],List[str]]) -> TTkString:
+    def join(self, strings:Union[GeneratorType[TTkStringType,None,None],List[TTkStringType]]) -> TTkString:
         ''' Join the input strings using the current as separator
 
         :param strings: the list of strings to be joined

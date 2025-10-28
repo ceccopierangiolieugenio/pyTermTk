@@ -397,7 +397,7 @@ def _insertRows():
 @ttk.pyTTkSlot()
 def _deleteRows():
     _model = table.model()
-    _model.removeRows(5,5)
+    _model.removeRows(0,5)
 
 @ttk.pyTTkSlot()
 def _insertCols():
@@ -407,7 +407,7 @@ def _insertCols():
 @ttk.pyTTkSlot()
 def _deleteCols():
     _model = table.model()
-    _model.removeColumns(5,5)
+    _model.removeColumns(0,5)
 
 btn_ins_row.clicked.connect(_insertRows)
 btn_del_row.clicked.connect(_deleteRows)

@@ -25,7 +25,7 @@
 import sys, os
 import gc, weakref, time
 
-sys.path.append(os.path.join(sys.path[0],'../..'))
+sys.path.append(os.path.join(sys.path[0],'../../libs/pyTermTk'))
 sys.path.append(os.path.join(sys.path[0],'.'))
 import TermTk as ttk
 

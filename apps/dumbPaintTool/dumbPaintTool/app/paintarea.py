@@ -57,7 +57,7 @@ class PaintArea(ttk.TTkAbstractScrollView):
         super().__init__(*args, **kwargs)
         self.setTrans(ttk.TTkColor.bg('#FF00FF'))
         self.resizeCanvas(*glbls.documentSize)
-        self.setFocusPolicy(ttk.TTkK.ClickFocus + ttk.TTkK.TabFocus)
+        self.setFocusPolicy(ttk.TTkK.ClickFocus | ttk.TTkK.TabFocus)
 
         glbls.brush.toolTypeChanged.connect(self.setTool)
         glbls.brush.areaChanged.connect(    self.setAreaBrush)

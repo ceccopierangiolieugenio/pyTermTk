@@ -22,7 +22,10 @@
 
 __all__ = ['TTkTerminal']
 
+from typing import List
+
 from TermTk.TTkCore.constant import TTkK
+from TermTk.TTkCore.string import TTkString
 from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
 from TermTk.TTkAbstract.abstractscrollarea import TTkAbstractScrollArea, _ForwardData
 from TermTk.TTkWidgets.TTkTerminal.terminalview import TTkTerminalView
@@ -40,7 +43,7 @@ class TTkTerminal(TTkAbstractScrollArea):
             'bell', 'titleChanged', 'terminalClosed', 'textSelected',
             'termData', 'termResized'],
         methods=[# Forwarded Methods From TTkTreeWidget
-            'termWrite', 'termSize']
+            'termWrite', 'termSize', 'getBuffer']
     )
 
     __slots__ = ('_terminalView')
@@ -145,4 +148,18 @@ class TTkTerminal(TTkAbstractScrollArea):
         :rtype: tuple
         '''
         return self._terminalView.termSize()
+    def getBuffer(self) -> List[TTkString]:
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkTerminalView.getBuffer`
+
+        Get the terminal buffer contents.
+
+        This method returns the complete terminal buffer, including both the
+        scrollback buffer (buffered lines) and the currently visible screen content.
+
+        :return: A list of TTkString objects representing all lines in the terminal buffer.
+                 The list includes the scrollback history followed by the visible screen lines.
+        :rtype: List[TTkString]
+        '''
+        return self._terminalView.getBuffer()
     #--FORWARD-AUTOGEN-END--#

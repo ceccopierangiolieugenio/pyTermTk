@@ -12,6 +12,7 @@ www:
 		www/w2ui
 
 	wget  -P www/pyodide/   https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/sandbox/www/pyodide/pyodide.js
+	wget  -P www/pyodide/   https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/sandbox/www/pyodide/pyodide-lock.json
 	wget  -P www/pyodide/   https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/sandbox/www/pyodide/python_stdlib.zip
 	wget  -P www/pyodide/   https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/sandbox/www/pyodide/pyodide.asm.js
 	# wget  -P www/pyodide/   https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/sandbox/www/pyodide/repodata.json
@@ -29,13 +30,13 @@ www:
 	wget  -P www/fontawesome/   https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/sandbox/www/fontawesome/regular.min.css
 	wget  -P www/fontawesome/   https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/sandbox/www/fontawesome/fontawesome.min.css
 
-	# wget  -P www/webfonts/      https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/sandbox/www/webfonts/fa-regular-400.woff2
+	wget  -P www/webfonts/      https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/sandbox/www/webfonts/fa-regular-400.woff2
 	# wget  -P www/fonts/nerdfonts/     https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/sandbox/www/nerdfonts/HurmitNerdFontMono-Regular.otf
 	wget  -P www/fonts/nerdfonts/     https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/sandbox/www/fonts/nerdfonts/DejaVuSansMNerdFont-Regular.ttf
 
-
 	wget  -P www/w2ui/   https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/sandbox/www/w2ui/w2ui-2.0.min.js
 	wget  -P www/w2ui/   https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/sandbox/www/w2ui/w2ui-2.0.min.css
+	wget  -P www/w2ui/   https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/sandbox/www/w2ui/w2ui.es6.min.js
 
 	wget  -P www/codemirror/   https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/sandbox/www/codemirror/codemirror.js
 	wget  -P www/codemirror/   https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/sandbox/www/codemirror/codemirror.css
@@ -72,18 +73,7 @@ buildSandbox: www
 
 	$( cd ../../ ; tools/prepareBuild.sh release ; )
 
-	find ../../tmp/TermTk/  -name "*.py" | sed 's,.*tmp/,,' | sort | xargs tar cvzf bin/TermTk.tgz -C ../../tmp
-	find ../../tutorial -name '*.py' -o -name '*.json' | sort | xargs tar cvzf bin/tutorial.tgz
-	find ../../demo/paint.py ../../demo/ttkode.py ../../demo/demo.py ../../demo/showcase/*.* | sort | xargs tar cvzf bin/demo.tgz
-	find ../../tests/ansi.images.json ../../tests/t.ui/*.* | sort | xargs tar cvzf bin/tests.tgz
-
-buildTestSandbox: www
-	rm -rf bin
-	mkdir -p bin
-
-	$( cd ../../ ; tools/prepareBuild.sh release ; )
-
-	find ../../TermTk/  -name "*.py" | sort | xargs tar cvzf bin/TermTk.tgz
-	find ../../tutorial -name "*.py" | sort | xargs tar cvzf bin/tutorial.tgz
-	find ../../demo/paint.py ../../demo/ttkode.py ../../demo/demo.py ../../demo/showcase/*.* | sort | xargs tar cvzf bin/demo.tgz
-	find ../../tests/ansi.images.json ../../tests/t.ui/*.* | sort | xargs tar cvzf bin/tests.tgz
+	find ../../libs/pyTermTk/TermTk  -name "*.py" | sed 's,.*/pyTermTk/,,' | sort | xargs tar cvzf bin/TermTk.tgz -C ../../libs/pyTermTk
+	find ../../tutorial -name '*.py' -o -name '*.json' | sed 's,.*/tutorial/,tutorial/,' | sort | xargs tar cvzf bin/tutorial.tgz -C ../..
+	find ../../demo/paint.py ../../demo/ttkode.py ../../demo/demo.py ../../demo/showcase/*.* | sed 's,.*/demo/,demo/,' | sort | xargs tar cvzf bin/demo.tgz -C ../..
+	find ../../tests/ansi.images.json ../../tests/t.ui/*.* | sed 's,.*/tests/,tests/,' | sort | xargs tar cvzf bin/tests.tgz -C ../..

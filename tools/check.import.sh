@@ -26,11 +26,12 @@ __check(){
             -e "timer.py:import importlib" \
             -e "timer_unix.py:import threading" \
             -e "timer_pyodide.py:import pyodideProxy" \
-            -e "ttk.py:import signal" \
+            -e "ttk.py:import io" \
             -e "ttk.py:import time" \
-            -e "ttk.py:import queue" \
-            -e "ttk.py:import threading" \
+            -e "ttk.py:import signal" \
             -e "ttk.py:import platform" \
+            -e "ttk.py:import threading" \
+            -e "ttk.py:import contextlib" \
             -e "clipboard.py:import importlib.util" \
             -e "filebuffer.py:import threading" \
             -e "texedit.py:from math import log10, floor" \
@@ -47,6 +48,7 @@ __check(){
             -e "savetools.py:import json" \
             -e "TTkCore/constant.py:from enum import IntEnum" |
         grep -v \
+            -e "TTkTerm/term_base.py:from enum import Flag" \
             -e "TTkTerm/input_mono.py:from time import time" \
             -e "TTkTerm/input_mono.py:import platform" \
             -e "TTkTerm/input_mono.py:from ..drivers import TTkInputDriver" \
@@ -61,10 +63,10 @@ __check(){
             -e "TTkGui/textdocument_highlight_pygments.py:from pygments" |
         grep -v \
             -e "TTkTerm/term.py:from ..drivers import *" \
-            -e "drivers/unix_thread.py:import sys, os" \
-            -e "drivers/unix_thread.py:from select import select" \
-            -e "drivers/unix_thread.py:import threading" \
-            -e "drivers/unix_thread.py:import queue" \
+            -e "drivers/_unused_.unix_thread.py:import sys, os" \
+            -e "drivers/_unused_.unix_thread.py:from select import select" \
+            -e "drivers/_unused_.unix_thread.py:import threading" \
+            -e "drivers/_unused_.unix_thread.py:import queue" \
             -e "drivers/unix.py:import sys, os, re" \
             -e "drivers/unix.py:import atexit, signal" \
             -e "drivers/unix.py:from select import select" \

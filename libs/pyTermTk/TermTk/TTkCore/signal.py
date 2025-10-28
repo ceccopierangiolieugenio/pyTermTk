@@ -81,7 +81,7 @@ else:
         loop.close()
 
     def _run_coroutines(coros):
-        Thread(target=_async_runner, args=(coros,)).start()
+        Thread(name='AsyncSignal', target=_async_runner, args=(coros,)).start()
 
 def _check_types(slot_type, signal_type):
     ''' Comparing the signal and slot types

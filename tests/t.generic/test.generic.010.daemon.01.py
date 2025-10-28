@@ -31,12 +31,14 @@ def task():
         print(f"{i=}",flush=True)
         time.sleep(0.1)
 
-process = multiprocessing.Process(target=task, daemon=True)
-process.start()
 
-time.sleep(10)
+if __name__ == '__main__':
+    process = multiprocessing.Process(target=task, daemon=True)
+    process.start()
 
-print(f"Main Process exit...")
+    time.sleep(10)
+
+    print(f"Main Process exit...")
 
 
 

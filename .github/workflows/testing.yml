@@ -12,12 +12,14 @@ on:
 
 jobs:
   test-autogen:
+    name: Test AutoGen Code
     runs-on: self-hosted
     steps:
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.sha }}
-      - run: |
+      - name: Check Autogen Code is up to dated
+        run: |
           PYTHONPATH=libs/pyTermTk tools/autogenForwarded.py --apply
           if [[ $(git status --porcelain) ]] ; then
             git diff
@@ -29,14 +31,15 @@ jobs:
             echo "✅   - Release Clean"
           fi
 
-  build:
+  test-pyTermTk:
+    name: Test pyTermTk
     # runs-on: ubuntu-latest
     runs-on: self-hosted
 
     strategy:
       fail-fast: false
       matrix:
-        python-version: ['3.9', '3.10', '3.11', '3.12']
+        python-version: ['3.9', '3.10', '3.11', '3.12', '3.13', '3.14']
 
     steps:
     - uses: actions/checkout@v3
@@ -64,7 +67,12 @@ jobs:
         # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
         # flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
 
-    - name: Test with pytest
+    - name: pytest
+      run: |
+        DDDD=$(pwd)
+        pytest ${DDDD}/tests/pytest
+
+    - name: Dumb Smoke Test
       run: |
         # To fix a folder permissin issue let's try to run the test from /tmp
         DDDD=$(pwd)
@@ -75,5 +83,4 @@ jobs:
         wget -O tmp/test.input.001.bin https://github.com/ceccopierangiolieugenio/binaryRepo/raw/master/pyTermTk/tests/test.input.001.bin
         wget -O tmp/test.input.002.bin https://github.com/ceccopierangiolieugenio/binaryRepo/raw/master/pyTermTk/tests/test.input.002.bin
         wget -O tmp/test.input.003.bin https://github.com/ceccopierangiolieugenio/binaryRepo/raw/master/pyTermTk/tests/test.input.003.bin
-        pytest ${DDDD}/tests/pytest
         pytest ${DDDD}/tests/pytest/run_*

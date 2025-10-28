@@ -21,51 +21,36 @@
 # SOFTWARE.
 
 import sys, os, io
-import logging
 import pytest
-from typing import Union, Optional
 
 sys.path.append(os.path.join(sys.path[0],'../../libs/pyTermTk'))
 
 import TermTk as ttk
 
 
-class FakeStderr():
+@pytest.fixture(autouse=True)
+def reset_fake_stderr():
+    """Reset FakeStderr before each test"""
+    FakeStderr.value = []
+    yield
+    FakeStderr.value = []
+
+
+class FakeStderr:
     value = []
+
 
 def message_handler(mode, context, message):
     FakeStderr.value.append(message)
     msgType = "NONE"
-    if   mode == ttk.TTkLog.InfoMsg:     msgType = "[INFO]"
-    elif mode == ttk.TTkLog.WarningMsg:  msgType = "[WARNING]"
-    elif mode == ttk.TTkLog.CriticalMsg: msgType = "[CRITICAL]"
-    elif mode == ttk.TTkLog.FatalMsg:    msgType = "[FATAL]"
-    elif mode == ttk.TTkLog.ErrorMsg:    msgType = "[ERROR]"
+    if mode == ttk.TTkLog.InfoMsg:
+        msgType = "[INFO]"
+    elif mode == ttk.TTkLog.WarningMsg:
+        msgType = "[WARNING]"
+    elif mode == ttk.TTkLog.CriticalMsg:
+        msgType = "[CRITICAL]"
+    elif mode == ttk.TTkLog.FatalMsg:
+        msgType = "[FATAL]"
+    elif mode == ttk.TTkLog.ErrorMsg:
+        msgType = "[ERROR]"
     print(f"{msgType} {context.file} {message}")
-
-def test_stderr_01():
-    ttk.TTkLog.installMessageHandler(message_handler)
-
-    print('Test',file=sys.stderr)
-    with ttk.ttk_capture_stderr():
-        print('XXXXX Test',file=sys.stderr)
-        with open('pippo','r') as f:
-            f.read()
-        raise ValueError('YYYYY Test')
-    print('After Test')
-
-def test_ttk_capture_stderr():
-    ttk.TTkLog.installMessageHandler(message_handler)
-    with ttk.ttk_capture_stderr() as fake_stderr:
-        print("This is an error message", file=sys.stderr)
-    output = FakeStderr.value
-    assert "This is an error message" in output
-
-def test_ttk_capture_stderr_exception_handling():
-    ttk.TTkLog.installMessageHandler(message_handler)
-    with ttk.ttk_capture_stderr() as fake_stderr:
-        raise ValueError("Test exception")
-    # After the exception, sys.stderr should be restored
-    output = FakeStderr.value
-    assert any("Test exception" in _o for _o in output)
-    assert isinstance(sys.stderr, io.TextIOWrapper) or sys.stderr is sys.__stderr__

@@ -20,9 +20,11 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
+
 __all__ = ['TTkConstant', 'TTkK']
 
-from enum import IntEnum
+from enum import IntEnum, Flag
 
 class TTkConstant:
     '''Class container of all the constants used in :mod:`~TermTk`'''
@@ -58,7 +60,7 @@ class TTkConstant:
         ColorModifier = 0x08
         '''The :py:class:`TTkColor` include a color modifier based on :py:class:`TTkColorModifier`'''
 
-    class FocusPolicy(IntEnum):
+    class FocusPolicy(Flag):
         '''
         This Class type defines the various policies a widget
         can have with respect to acquiring keyboard focus.
@@ -149,7 +151,7 @@ class TTkConstant:
     QUIT_EVENT   = 0x08
     TIME_EVENT   = 0x10
 
-    class Direction(int):
+    class Direction(IntEnum):
         '''This class type is used to describe the direction
 
         .. autosummary::
@@ -273,6 +275,12 @@ class TTkConstant:
         '''The items are sorted ascending e.g. starts with 'AAA' ends with 'ZZZ' in Latin-1 locales'''
         DescendingOrder = 0x01
         '''The items are sorted descending e.g. starts with 'ZZZ' ends with 'AAA' in Latin-1 locales'''
+
+        def invert(order:TTkConstant.SortOrder) -> TTkConstant.SortOrder:
+            if order == TTkConstant.SortOrder.AscendingOrder:
+                return TTkConstant.SortOrder.AscendingOrder
+            else:
+                return TTkConstant.SortOrder.DescendingOrder
 
     AscendingOrder  = SortOrder.AscendingOrder
     DescendingOrder = SortOrder.DescendingOrder
@@ -477,7 +485,7 @@ class TTkConstant:
         AcceptSave	= 1
         '''Save'''
 
-    class TTkItemSelectionModel(int):
+    class TTkItemSelectionModel(Flag):
         '''These values describes the way the selection model will be updated.
 
         .. autosummary::

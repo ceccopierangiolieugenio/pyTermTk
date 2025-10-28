@@ -141,8 +141,8 @@ class TTkTerminalHelper():
 
             self._quit_pipe = os.pipe()
 
-            threading.Thread(target=self.loop).start()
-            threading.Thread(target=lambda pid=self._pid:os.waitpid(pid,0)).start()
+            threading.Thread(name='TerminalHelper', target=self.loop).start()
+            threading.Thread(name='TerminalHelper (waitpid)', target=lambda pid=self._pid:os.waitpid(pid,0)).start()
 
             if self._term:
                 self.resize(*self._term.termSize())

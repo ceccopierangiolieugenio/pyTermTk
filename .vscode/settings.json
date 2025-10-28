@@ -6,9 +6,10 @@
     "python.testing.unittestEnabled": false,
     "python.testing.pytestEnabled": true,
     "mypy-type-checker.args": [
-        "--config-file=pyproject.toml"
+        "--config-file=libs/pyTermTk/pyproject.toml"
     ],
     "python.analysis.extraPaths": [
-        "./libs/pyTermTk",
+        "libs/pyTermTk",
+        "apps/",
     ]
 }

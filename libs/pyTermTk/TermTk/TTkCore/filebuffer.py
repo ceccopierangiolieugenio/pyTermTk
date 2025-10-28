@@ -74,7 +74,7 @@ class TTkFileBuffer():
         self._buffer = [None]*self._numW
         self._pages = [None]
         self._fd = open(self._filename, 'r', errors='replace', newline='\n')
-        threading.Thread(target=self.createIndex).start()
+        threading.Thread(name='TTkFileBuffer', target=self.createIndex).start()
 
     def __del__(self):
         self._fd.close()

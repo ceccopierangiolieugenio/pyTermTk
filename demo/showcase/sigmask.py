@@ -26,7 +26,7 @@ import os
 import sys
 import argparse
 
-sys.path.append(os.path.join(sys.path[0],'../..'))
+sys.path.append(os.path.join(sys.path[0],'../../libs/pyTermTk'))
 import TermTk as ttk
 
 def demoSigmask(root=None):

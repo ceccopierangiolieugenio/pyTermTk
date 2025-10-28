@@ -22,7 +22,7 @@
 
 __all__ = ['TTkDrag', 'TTkDnDEvent', 'TTkDnD']
 
-from typing import Any
+from typing import Any, Union
 
 from TermTk.TTkCore.helper    import TTkHelper
 from TermTk.TTkCore.canvas    import TTkCanvas
@@ -149,7 +149,7 @@ class TTkDrag(TTkDnD):
         super().__init__(**kwargs)
 
     # def setPixmap(self, pixmap:TTkWidget|TTkCanvas) -> None:
-    def setPixmap(self, pixmap:TTkWidget) -> None:
+    def setPixmap(self, pixmap:Union[TTkWidget,TTkCanvas]) -> None:
         '''
         Sets the pixmap used to represent the data in a drag and drop operation.
         If a :py:class:`TTkWidget` is provided as pixmap, its default rendering will be used in the pixmap :py:class:`TTkCanvas`.

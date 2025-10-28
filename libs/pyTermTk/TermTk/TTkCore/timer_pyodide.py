@@ -22,6 +22,8 @@
 
 __all__ = ['TTkTimer']
 
+from typing import Optional,Callable
+
 from TermTk.TTkCore.helper import TTkHelper
 from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
 
@@ -37,7 +39,10 @@ class TTkTimer():
         '_delay', '_delayLock', '_quit',
         '_stopTime')
 
-    def __init__(self):
+    def __init__(
+            self,
+            name:Optional[str]=None,
+            excepthook:Optional[Callable[[Exception],None]]=None):
         # Define Signals
         self.timeout = pyTTkSignal()
         self._running = True
@@ -79,3 +84,6 @@ class TTkTimer():
         if self._timer:
             pyodideProxy.stopTimeout(self._timer)
             self._timer = None
+
+    def join(self) -> None:
+        pass

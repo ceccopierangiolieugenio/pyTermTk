@@ -25,7 +25,7 @@
 import os
 import sys
 
-sys.path.append(os.path.join(sys.path[0],'../..'))
+sys.path.append(os.path.join(sys.path[0],'../../libs/pyTermTk'))
 import TermTk as ttk
 
 def main():
@@ -38,7 +38,7 @@ def main():
     te1 = ttk.TTkTextEdit(parent=win1, readOnly=False, lineNumber=True)
     te2 = ttk.TTkTextEdit(parent=win2, readOnly=False, lineNumber=True)
 
-    with open(os.path.join(os.path.dirname(os.path.abspath(__file__)),'textedit.ANSI.txt')) as f:
+    with open(os.path.join(os.path.dirname(os.path.abspath(__file__)),'..','textedit.ANSI.txt')) as f:
         te1.append(f.read())
 
     btn1 = ttk.TTkButton(parent=root, pos=(0,0), border=True, text="Txt  to Te2")

@@ -25,7 +25,7 @@
 import sys, os
 
 sys.path.append(os.path.join(sys.path[0],'../../tmp'))
-sys.path.append(os.path.join(sys.path[0],'../..'))
+sys.path.append(os.path.join(sys.path[0],'../../libs/pyTermTk'))
 import TermTk as ttk
 
 # Testing Window with a checkbox to enable/disable any control button

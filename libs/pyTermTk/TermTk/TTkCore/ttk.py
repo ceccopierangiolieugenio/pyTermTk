@@ -23,10 +23,14 @@
 __all__ = ['TTk']
 
 import os
+import io
 import signal
 import time
 import threading
 import platform
+import contextlib
+
+from typing import Optional, Callable, List
 
 from TermTk.TTkCore.drivers import TTkSignalDriver
 from TermTk.TTkCore.TTkTerm.input import TTkInput
@@ -35,7 +39,7 @@ from TermTk.TTkCore.TTkTerm.inputmouse import TTkMouseEvent
 from TermTk.TTkCore.TTkTerm.term import TTkTerm
 from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
 from TermTk.TTkCore.constant import TTkK
-from TermTk.TTkCore.log import TTkLog, ttk_capture_stderr
+from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.cfg import TTkCfg, TTkGlbl
 from TermTk.TTkCore.helper import TTkHelper
 from TermTk.TTkCore.timer import TTkTimer
@@ -44,6 +48,33 @@ from TermTk.TTkCore.shortcut import TTkShortcut
 from TermTk.TTkWidgets.about import TTkAbout
 from TermTk.TTkWidgets.widget import TTkWidget
 from TermTk.TTkWidgets.container import TTkContainer
+
+
+class _TTkStderrHandler(io.TextIOBase):
+    def write(self, text):
+        TTkLog.error(text)
+        return len(text)
+
+    def flush(self):
+        pass
+
+    def getvalue(self):
+        raise NotImplementedError()
+
+
+@contextlib.contextmanager
+def _ttk_capture_stderr():
+    _stderr_bk =  TTkTerm.getStdErr()
+    try:
+        TTkTerm.setStdErr(_TTkStderrHandler())
+        yield
+    except Exception as e:
+        TTkTerm.setStdErr(_stderr_bk)
+        TTkHelper.quit()
+        raise e
+    finally:
+        TTkTerm.setStdErr(_stderr_bk)
+
 
 class _MouseCursor():
     __slots__ = ('_cursor','_color', '_pos', 'updated')
@@ -73,6 +104,7 @@ class _MouseCursor():
             self._pos = (mevt.x, mevt.y)
             self.updated.emit()
 
+
 class TTk(TTkContainer):
     __slots__ = (
         '_termMouse', '_termDirectMouse',
@@ -82,11 +114,15 @@ class TTk(TTkContainer):
         '_drawMutex',
         '_paintEvent',
         '_lastMultiTap',
+        '_exceptions',
         'paintExecuted')
+
+    _timer:TTkTimer
+    _exceptions:List[Exception]
 
     def __init__(self, *,
                  title:str='TermTk',
-                 sigmask:TTkTerm.Sigmask=TTkK.NONE,
+                 sigmask:TTkTerm.Sigmask=TTkTerm.Sigmask.NONE,
                  mouseTrack:bool=False,
                  mouseCursor:bool=False,
                  **kwargs) -> None:
@@ -97,7 +133,8 @@ class TTk(TTkContainer):
         if ('TERMTK_FILE_LOG' in os.environ and (_logFile := os.environ['TERMTK_FILE_LOG'])):
             TTkLog.use_default_file_logging(_logFile)
 
-        self._timer = None
+        self._timer = TTkTimer(name='TTk (Draw)', excepthook=self._timer_exception_hook)
+        self._exceptions = []
         self._title = title
         self._sigmask = sigmask
         self.paintExecuted = pyTTkSignal()
@@ -107,9 +144,10 @@ class TTk(TTkContainer):
         self._showMouseCursor = os.environ.get("TERMTK_MOUSE",mouseCursor)
         super().__init__(**kwargs)
 
-        # Register system event signals from main_thread
         TTkInput.inputEvent.connect(self._processInput)
         TTkInput.pasteEvent.connect(self._processPaste)
+        TTkInput.exceptionRaised.connect(self._input_exception_hook)
+
         TTkSignalDriver.sigStop.connect(self._SIGSTOP)
         TTkSignalDriver.sigCont.connect(self._SIGCONT)
         TTkSignalDriver.sigInt.connect( self._SIGINT)
@@ -143,13 +181,13 @@ class TTk(TTkContainer):
             self.frame = 0
             self.time  = curtime
 
-    def mainloop(self):
-        '''Enters the main event loop and waits until :meth:`~quit` is called or the main widget is destroyed.'''
-        with ttk_capture_stderr():
-            self._mainloop_1()
+    def mainloop(self) -> None:
+        with _ttk_capture_stderr():
+            self._mainloop()
 
-    def _mainloop_1(self):
+    def _mainloop(self) -> None:
         try:
+            '''Enters the main event loop and waits until :meth:`~quit` is called or the main widget is destroyed.'''
             TTkLog.debug( "" )
             TTkLog.debug( "         ████████╗            ████████╗    " )
             TTkLog.debug( "         ╚══██╔══╝            ╚══██╔══╝    " )
@@ -165,7 +203,6 @@ class TTk(TTkContainer):
             TTkLog.debug(f"screen = ({TTkTerm.getTerminalSize()})")
 
             self._paintEvent.set()
-            self._timer = TTkTimer()
             self._timer.timeout.connect(self._time_event)
             self._timer.start(0.1)
             self.show()
@@ -184,29 +221,65 @@ class TTk(TTkContainer):
                 self._mouseCursor.updated.connect(self.update)
                 self.paintChildCanvas = self._mouseCursorPaintChildCanvas
 
-            self._mainLoop_2()
+            if platform.system() != 'Emscripten':
+                TTkInput.start()
         finally:
             if platform.system() != 'Emscripten':
                 TTkHelper.quitEvent.emit()
-                if self._timer:
-                    self._timer.timeout.disconnect(self._time_event)
-                    self._timer.quit()
-                    self._paintEvent.set()
-                    # self._timer.join()
+                self._quit_timer()
+                self._timer.join()
                 self.quit()
                 TTkTerm.exit()
+                for e in self._exceptions:
+                    raise e
+
+    @pyTTkSlot(Exception)
+    def _timer_exception_hook(self, e:Exception) -> None:
+        # This exception is raised during the '_timer' thread
+        # responsible of the drawing routine
+        # any failure in this loop should clean the environment and
+        # quit the app, I ensure in this routine to stop
+        # The '_timer' thread and te 'TTkInput' thread
+        # This will results in the mainloop proceed and run the
+        # 'finally:' block
+        self._quit_timer()
+        TTkInput.inputEvent.clear()
+        TTkInput.close() # Shoul close it and wait for join
+        # The exception will be raised in the main loop
+        # Once it is ensured that the env is clean
+        # And the terminal goes back to its original state
+        self._exceptions.append(e)
+
+    @pyTTkSlot(Exception)
+    def _input_exception_hook(self, e:Exception) -> None:
+        # This exception is raised during the 'TTkInput' thread
+        # responsible of collecting the mouse/keyboard/paste events
+        # any failure in this loop should clean the environment and
+        # quit the app, I ensure in this routine to stop
+        # The '_timer' thread and te 'TTkInput' thread
+        # This will results in the mainloop proceed and run the
+        # 'finally:' block
+        self._quit_timer()
+        TTkInput.inputEvent.clear()
+        TTkInput.close() # Shoul close it and wait for join
+        self._timer.join()
+        # The exception will be raised in the main loop
+        # Once it is ensured that the env is clean
+        # And the terminal goes back to its original state
+        self._exceptions.append(e)
+
+    def _quit_timer(self) -> None:
+        self._timer.timeout.disconnect(self._time_event)
+        self._timer.quit()
+        self._paintEvent.set()
 
     def _mouseCursorPaintChildCanvas(self) -> None:
         super().paintChildCanvas()
-        ch = self._mouseCursor._cursor
-        pos = self._mouseCursor._pos
-        color = self._mouseCursor._color
-        self.getCanvas().drawChar(char=ch, pos=pos, color=color)
-
-    def _mainLoop_2(self):
-        if platform.system() == 'Emscripten':
-            return
-        TTkInput.start()
+        if self._mouseCursor:
+            ch = self._mouseCursor._cursor
+            pos = self._mouseCursor._pos
+            color = self._mouseCursor._color
+            self.getCanvas().drawChar(char=ch, pos=pos, color=color)
 
     @pyTTkSlot(str)
     def _processPaste(self, txt:str):
@@ -216,12 +289,11 @@ class TTk(TTkContainer):
 
     @pyTTkSlot(TTkKeyEvent, TTkMouseEvent)
     def _processInput(self, kevt, mevt):
-        self._drawMutex.acquire()
-        if kevt is not None:
-            self._key_event(kevt)
-        if mevt is not None:
-            self._mouse_event(mevt)
-        self._drawMutex.release()
+        with self._drawMutex:
+            if kevt is not None:
+                self._key_event(kevt)
+            if mevt is not None:
+                self._mouse_event(mevt)
 
     def _mouse_event(self, mevt):
         # Upload the global mouse position
@@ -307,21 +379,19 @@ class TTk(TTkContainer):
         self._paintEvent.clear()
 
         w,h = TTkTerm.getTerminalSize()
-        self._drawMutex.acquire()
-        self.setGeometry(0,0,w,h)
-        self._fps()
-        TTkHelper.paintAll()
-        self.paintExecuted.emit()
-        self._drawMutex.release()
+        with self._drawMutex:
+            self.setGeometry(0,0,w,h)
+            self._fps()
+            TTkHelper.paintAll()
+            self.paintExecuted.emit()
         self._timer.start(1/TTkCfg.maxFps)
 
     def _win_resize_cb(self, width, height):
         TTkGlbl.term_w = int(width)
         TTkGlbl.term_h = int(height)
-        self._drawMutex.acquire()
-        self.setGeometry(0,0,TTkGlbl.term_w,TTkGlbl.term_h)
-        TTkHelper.rePaintAll()
-        self._drawMutex.release()
+        with self._drawMutex:
+            self.setGeometry(0,0,TTkGlbl.term_w,TTkGlbl.term_h)
+            TTkHelper.rePaintAll()
         TTkLog.info(f"Resize: w:{TTkGlbl.term_w}, h:{TTkGlbl.term_h}")
 
     @pyTTkSlot()
@@ -345,8 +415,13 @@ class TTk(TTkContainer):
     @pyTTkSlot()
     def _quit(self):
         '''Tells the application to exit with a return code.'''
-        if self._timer:
-            self._timer.timeout.disconnect(self._time_event)
+        TTkHelper.cleanRootWidget()
+        TTkInput.inputEvent.disconnect(self._processInput)
+        TTkInput.pasteEvent.disconnect(self._processPaste)
+        TTkSignalDriver.sigStop.disconnect(self._SIGSTOP)
+        TTkSignalDriver.sigCont.disconnect(self._SIGCONT)
+        TTkSignalDriver.sigInt.disconnect( self._SIGINT)
+        self._quit_timer()
         TTkInput.inputEvent.clear()
         TTkInput.close()
 

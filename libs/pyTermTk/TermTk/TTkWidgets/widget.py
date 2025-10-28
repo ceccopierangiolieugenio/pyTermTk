@@ -418,7 +418,7 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
         self.resize(width, height)
         self.move(x, y)
 
-    def pasteEvent(self, txt:str) -> None:
+    def pasteEvent(self, txt:str) -> bool:
         '''
         Callback triggered when a paste event is forwarded to this widget.
 
@@ -426,8 +426,11 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
 
         :param txt: the paste object
         :type txt: str
+
+        :return: the state of the paste operation
+        :rtype: bool
         '''
-        pass
+        return False
 
     def _mouseEventParseChildren(self, evt:TTkMouseEvent) -> bool:
         return False

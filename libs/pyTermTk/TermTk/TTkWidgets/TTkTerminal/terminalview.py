@@ -24,6 +24,8 @@ __all__ = ['TTkTerminalView']
 
 import re
 
+from typing import List
+
 from dataclasses import dataclass
 
 from TermTk.TTkCore.canvas import TTkCanvas
@@ -244,7 +246,7 @@ class TTkTerminalView(TTkAbstractScrollView, _TTkTerminal_CSI_DEC):
         self._screen_alt.resize(w,h)
         self._screen_normal.resize(w,h)
 
-        self.setFocusPolicy(TTkK.ClickFocus + TTkK.TabFocus)
+        self.setFocusPolicy(TTkK.ClickFocus | TTkK.TabFocus)
         self.enableWidgetCursor()
         self.viewChanged.connect(self._viewChangedHandler)
         self._screen_normal.bufferedLinesChanged.connect(self._screenChanged)
@@ -308,6 +310,19 @@ class TTkTerminalView(TTkAbstractScrollView, _TTkTerminal_CSI_DEC):
         '''
         if data:
             self._termLoop.send(data)
+
+    def getBuffer(self) -> List[TTkString]:
+        '''
+        Get the terminal buffer contents.
+
+        This method returns the complete terminal buffer, including both the
+        scrollback buffer (buffered lines) and the currently visible screen content.
+
+        :return: A list of TTkString objects representing all lines in the terminal buffer.
+                 The list includes the scrollback history followed by the visible screen lines.
+        :rtype: List[TTkString]
+        '''
+        return self._screen_current.getBuffer()
 
     def _loopGenerator(self):
         def _checkSize():

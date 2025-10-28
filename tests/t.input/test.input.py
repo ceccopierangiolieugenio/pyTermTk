@@ -25,7 +25,7 @@
 import sys, os
 import logging
 
-sys.path.append(os.path.join(sys.path[0],'../..'))
+sys.path.append(os.path.join(sys.path[0],'../../libs/pyTermTk'))
 from TermTk import TTkLog, TTkK, TTkTerm, TTkInput
 
 def message_handler(mode, context, message):
