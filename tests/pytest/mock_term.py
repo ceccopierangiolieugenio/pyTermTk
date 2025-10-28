@@ -23,6 +23,7 @@
 # Thanks to: https://stackoverflow.com/questions/43162722/mocking-a-module-import-in-pytest
 
 import sys
+from enum import Flag
 
 class Mock_TTkTerm():
     CLEAR         = None
@@ -63,11 +64,13 @@ class Mock_TTkTerm():
         @staticmethod
         def hide(): pass
 
-    class Sigmask():
+    class Sigmask(Flag):
+        NONE   = 0x0000
         CTRL_C = 0x0001
         CTRL_S = 0x0002
         CTRL_Z = 0x0004
         CTRL_Q = 0x0008
+        CTRL_Y = 0x0010
 
     @staticmethod
     def push(*args):
@@ -83,3 +86,9 @@ class Mock_TTkTerm():
     @staticmethod
     def getTerminalSize():
         return 250,70
+    @staticmethod
+    def getStdErr():
+        return sys.stderr
+    @staticmethod
+    def setStdErr(err):
+        sys.stderr = err

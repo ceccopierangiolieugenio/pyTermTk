@@ -25,6 +25,8 @@ __all__ = ['_TTkTerm']
 import sys, os, signal
 from threading import Thread, Lock
 
+from typing import Callable, TextIO
+
 try: import termios
 except Exception as e:
     print(f'ERROR: {e}')
@@ -122,9 +124,19 @@ class _TTkTerm(TTkTermBase):
         Thread(target=_TTkTerm._sigWinChThreaded).start()
 
     @staticmethod
-    def _registerResizeCb(callback):
+    def _registerResizeCb(callback:Callable[[int,int],None]) -> None:
         _TTkTerm._sigWinChCb = callback
         # Dummy call to retrieve the terminal size
         _TTkTerm._sigWinCh(signal.SIGWINCH, None)
         signal.signal(signal.SIGWINCH, _TTkTerm._sigWinCh)
     TTkTermBase.registerResizeCb = _registerResizeCb
+
+    @staticmethod
+    def _setStdErr(ioRedirect:TextIO) -> None:
+        sys.stderr = ioRedirect
+    TTkTermBase.setStdErr = _setStdErr
+
+    @staticmethod
+    def _getStdErr() -> TextIO:
+        return sys.stderr
+    TTkTermBase.getStdErr = _getStdErr

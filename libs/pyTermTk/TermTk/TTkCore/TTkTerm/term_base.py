@@ -23,6 +23,8 @@
 __all__ = ['TTkTermBase']
 
 import os
+from enum import Flag
+from typing import Callable, TextIO
 
 class TTkTermBase():
     '''TTkTermBase'''
@@ -79,7 +81,8 @@ class TTkTermBase():
         def hide():
             TTkTermBase.push(TTkTermBase.Cursor.HIDE)
 
-    class Sigmask():
+    class Sigmask(Flag):
+        NONE   = 0x0000
         CTRL_C = 0x0001
         CTRL_S = 0x0002
         CTRL_Z = 0x0004
@@ -158,4 +161,6 @@ class TTkTermBase():
     setEcho    = lambda *args: None
     CRNL       = lambda *args: None
     getTerminalSize  = lambda *args: (80,24)
-    registerResizeCb = lambda *args: None
+    registerResizeCb:Callable[[Callable[[int,int],None]],None] = lambda w,h: None
+    getStdErr:Callable[[None],TextIO] = lambda : TextIO()
+    setStdErr:Callable[[TextIO],None] = lambda tio: None
