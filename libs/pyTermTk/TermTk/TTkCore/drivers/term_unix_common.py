@@ -132,7 +132,7 @@ class _TTkTerm(TTkTermBase):
     TTkTermBase.registerResizeCb = _registerResizeCb
 
     @staticmethod
-    def _setStdErr(ioRedirect:TextIO) -> TextIO:
+    def _setStdErr(ioRedirect:TextIO) -> None:
         sys.stderr = ioRedirect
     TTkTermBase.setStdErr = _setStdErr
 
