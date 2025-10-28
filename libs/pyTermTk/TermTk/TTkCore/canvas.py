@@ -22,6 +22,8 @@
 
 __all__ = ['TTkCanvas']
 
+from typing import Tuple
+
 from TermTk.TTkCore.TTkTerm.term import TTkTerm
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.log import TTkLog
@@ -90,7 +92,7 @@ class TTkCanvas():
         self._height = h
         self._width  = w
 
-    def size(self):
+    def size(self) -> Tuple[int,int]:
         return (self._width, self._height)
 
     def resize(self, w, h):
