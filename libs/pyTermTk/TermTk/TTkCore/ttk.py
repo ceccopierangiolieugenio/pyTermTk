@@ -239,17 +239,37 @@ class TTk(TTkContainer):
 
     @pyTTkSlot(Exception)
     def _timer_exception_hook(self, e:Exception) -> None:
+        # This exception is raised during the '_timer' thread
+        # responsible of the drawing routine
+        # any failure in this loop should clean the environment and
+        # quit the app, I ensure in this routine to stop
+        # The '_timer' thread and te 'TTkInput' thread
+        # This will results in the mainloop proceed and run the
+        # 'finally:' block
         self._quit_timer()
         TTkInput.inputEvent.clear()
-        TTkInput.close()
+        TTkInput.close() # Shoul close it and wait for join
+        # The exception will be raised in the main loop
+        # Once it is ensured that the env is clean
+        # And the terminal goes back to its original state
         self._exceptions.append(e)
 
     @pyTTkSlot(Exception)
     def _input_exception_hook(self, e:Exception) -> None:
+        # This exception is raised during the 'TTkInput' thread
+        # responsible of collecting the mouse/keyboard/paste events
+        # any failure in this loop should clean the environment and
+        # quit the app, I ensure in this routine to stop
+        # The '_timer' thread and te 'input' thread
+        # This will results in the mainloop proceed and run the
+        # 'finally:' block
         self._quit_timer()
         TTkInput.inputEvent.clear()
         TTkInput.close()
         self._timer.join()
+        # The exception will be raised in the main loop
+        # Once it is ensured that the env is clean
+        # And the terminal goes back to its original state
         self._exceptions.append(e)
 
     def _quit_timer(self) -> None:
