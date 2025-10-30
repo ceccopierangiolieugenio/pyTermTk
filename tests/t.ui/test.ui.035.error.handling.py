@@ -23,6 +23,8 @@
 
 import sys, os
 import threading
+import multiprocessing
+import time
 
 sys.path.append(os.path.join(sys.path[0],'../../libs/pyTermTk'))
 import TermTk as ttk
@@ -43,28 +45,46 @@ class Fail(ttk.TTkWidget):
         if Fail.fail_state:
             raise Exception('Fail FAIL!!!')
         canvas.fill(color=ttk.TTkColor.BG_RED)
-        canvas.drawText(text='X', pos=(2,1))
+        canvas.drawText(text='💀 Draw', pos=(2,1))
+
+def _multiprocess_task():
+    process = multiprocessing.current_process()
+    print(f"Task: {process.daemon=}", file=sys.stderr)
+    for i in range(100):
+        ttk.TTkLog.warn(f"{i=}")
+        print(f"{i=}",flush=True, file=sys.stderr)
+        time.sleep(0.3)
 
 timer = ttk.TTkTimer()
 timer.timeout.connect(_raise)
+
+context = multiprocessing.get_context(method="spawn")
+ctx = context.Process(target=_multiprocess_task, daemon=True)
 
 root = ttk.TTk()
 
 # simulate error
 
 # Fail in the main Thread
-ttk.TTkButton(parent=root,text=' X ',border=True).clicked.connect(_raise)
+ttk.TTkButton(parent=root,pos=(0,0),text='💀 Main',border=True).clicked.connect(_raise)
 # Fail in the draw Thread
-Fail(parent=root,pos=(0,3), size=(5,3))
+Fail(parent=root,pos=(9,0), size=(10,3))
 # Generic Failure on a generic thread
-ttk.TTkButton(parent=root,pos=(0,6),text=' X ',border=True).clicked.connect(lambda:threading.Thread(target=_raise).start())
+ttk.TTkButton(parent=root,pos=(19,0),text='💀 a Thread',border=True).clicked.connect(lambda:threading.Thread(target=_raise).start())
 # Generic Failure on a TTkTimer
-ttk.TTkButton(parent=root,pos=(0,9),text=' X ',border=True).clicked.connect(lambda:timer.start())
+ttk.TTkButton(parent=root,pos=(32,0),text='💀 a TTkTimer',border=True).clicked.connect(lambda:timer.start())
 
 # Generic Quit
-ttk.TTkButton(parent=root,pos=(0,13),text=' X ',border=True).clicked.connect(root.quit)
-ttk.TTkButton(parent=root,pos=(0,16),text=' X ',border=True).clicked.connect(ttk.TTkHelper.quit)
+ttk.TTkButton(parent=root,pos=(50,0),text='root.Quit',border=True).clicked.connect(root.quit)
+ttk.TTkButton(parent=root,pos=(61,0),text='helper.Quit',border=True).clicked.connect(ttk.TTkHelper.quit)
 
-win=ttk.TTkWindow(parent=root, pos=(5,0), size=(100,30), border=True, layout=ttk.TTkGridLayout())
+# Test Multiprocessing
+ttk.TTkButton(parent=root,pos=(75,0),text='multiprocess',border=True).clicked.connect(ctx.start)
+
+win=ttk.TTkWindow(parent=root, pos=(0,3), size=(100,30), border=True, layout=ttk.TTkGridLayout())
 ttk.TTkLogViewer(parent=win)
-root.mainloop()
+
+if __name__ == '__main__':
+    root.mainloop()
+    if ctx.is_alive():
+        ctx.join()
