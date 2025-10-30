@@ -14,7 +14,7 @@ from .about           import *
 from .button          import *
 from .checkbox        import *
 from .combobox        import *
-from .datetime        import *
+from .datetime_time   import *
 from .graph           import *
 from .image           import *
 from .label           import *
@@ -32,6 +32,7 @@ from .spinbox         import *
 from .tabwidget       import *
 from .kodetab         import *
 from .texedit         import *
+from .datetime_time        import *
 from .TTkModelView    import *
 from .TTkPickers      import *
 from .TTkTerminal     import *

@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-__all__ = ['TTkTime']
+__all__ = ['TTkDate']
 
 from enum import IntEnum,Enum,auto
 from dataclasses import dataclass
@@ -49,16 +49,16 @@ class _TTkTimeWidgetState():
     selected:_FieldSelected=_FieldSelected.NONE
     secondDigit:bool = False
 
-class TTkTime(TTkContainer):
+class TTkDate(TTkContainer):
 
     classStyle = {
-                'default':     {'color':          TTkColor.fgbg("#888888","#222222"),
-                                'colorSeparator': TTkColor.fgbg("#CCCC00","#222222"),
-                                'selectedColor':  TTkColor.fgbg("#ffffff","#008844")},
+                'default':     {'color':          TTkColor.fgbg("#888888","#222222")+TTkColor.UNDERLINE,
+                                'colorSeparator': TTkColor.fgbg("#CCCC00","#222222")+TTkColor.UNDERLINE,
+                                'selectedColor':  TTkColor.fgbg("#ffffff","#008844")+TTkColor.UNDERLINE},
                 'disabled':    {'color':          TTkColor.fg(  "#444444")+TTkColor.UNDERLINE,
                                 'colorSeparator': TTkColor.fgbg("#666666","#222222")+TTkColor.UNDERLINE,
-                                'selectedColor':  TTkColor.fgbg("#888888","#444444")},
-                'focus':       {'color':          TTkColor.fgbg("#666666","#000044")+TTkColor.UNDERLINE}
+                                'selectedColor':  TTkColor.fgbg("#888888","#444444")+TTkColor.UNDERLINE},
+                'focus':       {'color':          TTkColor.fgbg("#AAAAAA","#000066")+TTkColor.UNDERLINE}
             }
 
     __slots__ = ('_time', '_handleSeconds', '_state')
@@ -74,7 +74,7 @@ class TTkTime(TTkContainer):
         self._handleSeconds = handleSeconds
         _layout=TTkLayout()
         super().__init__(**kwargs|{'layout':_layout, 'size':(18,1)})
-        self.setFocusPolicy(TTkK.ClickFocus + TTkK.TabFocus)
+        self.setFocusPolicy(TTkK.ClickFocus | TTkK.TabFocus)
 
         # sb_hour = TTkSpinBox(parent=self, pos=( 0,0), size=(4,1), value=time.hour   , maximum=24, minimum=1)
         # sb_min  = TTkSpinBox(parent=self, pos=( 7,0), size=(4,1), value=time.minute , maximum=60, minimum=1)
@@ -105,6 +105,12 @@ class TTkTime(TTkContainer):
             return
         uni = delta + self._time.hour * 3600 + self._time.minute * 60 + self._time.second
         self._setUni(uni=uni)
+
+    def focusOutEvent(self):
+        self._state.selected = _FieldSelected.NONE
+        self._state.secondDigit = False
+        self.update
+        return super().focusOutEvent()
 
     def mousePressEvent(self, evt:TTkMouseEvent) -> bool:
         self._state.secondDigit = False
