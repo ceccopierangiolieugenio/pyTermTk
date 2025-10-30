@@ -26,7 +26,6 @@ import os
 import io
 import signal
 import time
-import queue
 import threading
 import platform
 import contextlib
