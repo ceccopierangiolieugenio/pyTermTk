@@ -26,11 +26,11 @@ __check(){
             -e "timer.py:import importlib" \
             -e "timer_unix.py:import threading" \
             -e "timer_pyodide.py:import pyodideProxy" \
-            -e "ttk.py:import signal" \
+            -e "ttk.py:import io" \
             -e "ttk.py:import time" \
-            -e "ttk.py:import queue" \
-            -e "ttk.py:import threading" \
+            -e "ttk.py:import signal" \
             -e "ttk.py:import platform" \
+            -e "ttk.py:import threading" \
             -e "ttk.py:import contextlib" \
             -e "clipboard.py:import importlib.util" \
             -e "filebuffer.py:import threading" \

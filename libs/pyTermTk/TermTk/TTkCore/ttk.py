@@ -23,13 +23,14 @@
 __all__ = ['TTk']
 
 import os
+import io
 import signal
 import time
 import threading
 import platform
 import contextlib
 
-from typing import Optional, Callable, TextIO, List
+from typing import Optional, Callable, List
 
 from TermTk.TTkCore.drivers import TTkSignalDriver
 from TermTk.TTkCore.TTkTerm.input import TTkInput
@@ -49,7 +50,7 @@ from TermTk.TTkWidgets.widget import TTkWidget
 from TermTk.TTkWidgets.container import TTkContainer
 
 
-class _TTkStderrHandler(TextIO):
+class _TTkStderrHandler(io.TextIOBase):
     def write(self, text):
         TTkLog.error(text)
         return len(text)
