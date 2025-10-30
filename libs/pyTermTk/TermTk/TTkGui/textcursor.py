@@ -331,6 +331,8 @@ class TTkTextCursor():
         def moveEnd(cID,p,_):
             l = self._document._dataLines[-1]
             self.setPosition(len(self._document._dataLines)-1, len(l), moveMode, cID=cID)
+        def moveStart(cID,_p,_n):
+            self.setPosition(0, 0, moveMode, cID=cID)
 
         op = {
                 TTkTextCursor.Right : moveRight,
@@ -340,6 +342,7 @@ class TTkTextCursor():
                 TTkTextCursor.EndOfLine  : moveEndOfLine,
                 TTkTextCursor.StartOfLine: moveHome,
                 TTkTextCursor.End: moveEnd,
+                TTkTextCursor.Start: moveStart,
             }.get(operation,lambda _:_)
 
         for _ in range(n):
