@@ -1,5 +1,32 @@
 # Changelog
 
+## [0.48.0-a.0](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/pyTermTk-v0.47.2-a.0...pyTermTk-v0.48.0-a.0) (2025-10-31)
+
+
+### Fixes
+
+* **colorpicker:** IndexError on drag hue index out of range ([#489](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/489)) ([4e94422](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/4e94422256498c23a4ce3b687eb82809c4ef515e))
+* **textdocument:** TypeError exception in characterCount() method ([#477](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/477)) ([8b01817](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/8b018170248e3578a18c9bb4ddf32250c785d969))
+* **TTktable:** crash for empty tables ([#481](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/481)) ([33256b6](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/33256b61d8c320f1ef5e5718bf31f4c4cf3e9786))
+* **TTkTable:** crash on selectable for empty tables ([#484](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/484)) ([c653b74](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/c653b747e519ef9a6ae54e52c2c55bd4f6745e43))
+* **TTkTree:** crash on empty tree ([#490](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/490)) ([8007710](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/8007710116a3ebce88d1bfc43195933960683d7d))
+
+
+### Features
+
+* **TableModel:** add displayData method to allow cell text alignment  ([#474](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/474)) ([dddfc58](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/dddfc58d3067e58429a930b7cd2cda797cf44184))
+* **textcursor:** Move to the start of the document ([#500](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/500)) ([70ddd9a](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/70ddd9a1bce201c61cbf2ea063a8a28d89372f10))
+* **TTkTable:** add selection proxy ([#488](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/488)) ([d94b513](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/d94b5136340593fb63ef438940b9684b048a04f4))
+* **TTkTerminal:** add getBuffer ([#496](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/496)) ([997d0f6](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/997d0f6d7278ba6e09777bbfdd45ba8e359d33ef))
+
+
+### Chores
+
+* fix typo in terminal screen ([b262f80](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/b262f80d871e986fa9f8d4c86c80144e371b66cf))
+* improve the error handling and the quit routine ([#494](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/494)) ([d644604](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/d644604e377cd15ae420fa3e05758eff84922270))
+* **TTkTimer:** add thread name ([8148cf0](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/8148cf0a76c0d73db4a68c4c62fe289bd01d3315))
+* use TextIOBase for the stderr handler ([#499](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/499)) ([26b127f](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/26b127fe4cfcdd6c13d63b639013884f96a69e49))
+
 ## [0.47.2-a.0](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/pyTermTk-v0.47.1-a.0...pyTermTk-v0.47.2-a.0) (2025-10-13)
 
 
