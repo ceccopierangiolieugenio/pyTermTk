@@ -47,13 +47,19 @@ class _FieldSelected(IntEnum):
 @dataclass
 class _TTkTimeWidgetState():
     selected:_FieldSelected=_FieldSelected.NONE
+    hovered:_FieldSelected=_FieldSelected.NONE
     secondDigit:bool = False
+    def reset(self) -> None:
+        self.selected = _FieldSelected.NONE
+        self.hovered = _FieldSelected.NONE
+        self.secondDigit = False
 
 class TTkTime(TTkContainer):
 
     classStyle = {
                 'default':     {'color':          TTkColor.fgbg("#888888","#222222")+TTkColor.UNDERLINE,
                                 'colorSeparator': TTkColor.fgbg("#CCCC00","#222222")+TTkColor.UNDERLINE,
+                                'hoverColor':     TTkColor.fgbg("#ffffff","#00AA66")+TTkColor.UNDERLINE,
                                 'selectedColor':  TTkColor.fgbg("#ffffff","#008844")+TTkColor.UNDERLINE},
                 'disabled':    {'color':          TTkColor.fg(  "#444444")+TTkColor.UNDERLINE,
                                 'colorSeparator': TTkColor.fgbg("#666666","#222222")+TTkColor.UNDERLINE,
@@ -107,13 +113,12 @@ class TTkTime(TTkContainer):
         self._setUni(uni=uni)
 
     def focusOutEvent(self):
-        self._state.selected = _FieldSelected.NONE
-        self._state.secondDigit = False
+        self._state.reset()
         self.update
         return super().focusOutEvent()
 
     def mousePressEvent(self, evt:TTkMouseEvent) -> bool:
-        self._state.secondDigit = False
+        self._state.reset()
         self._state.selected = TTkTime._getFieldFromPos(evt.x, evt.y)
         self.update()
         return True
@@ -122,6 +127,7 @@ class TTkTime(TTkContainer):
         selected = self._state.selected
         if evt.type == TTkK.SpecialKey:
             self._state.secondDigit = False
+            self._state.selected = selected
 
             # Tab, Right, Left
             # Switch between digits
@@ -215,6 +221,15 @@ class TTkTime(TTkContainer):
             return True
         return False
 
+    def mouseMoveEvent(self, evt:TTkMouseEvent) -> bool:
+        self._state.hovered = TTkTime._getFieldFromPos(evt.x, evt.y)
+        self.update()
+        return True
+
+    def leaveEvent(self, evt:TTkMouseEvent) -> bool:
+        self._state.hovered = _FieldSelected.NONE
+        self.update()
+        return True
 
     def wheelEvent(self, evt:TTkMouseEvent) -> bool:
         self._state.secondDigit = False
@@ -238,11 +253,12 @@ class TTkTime(TTkContainer):
 
         color       = style['color']
         colorSep    = style['colorSeparator']
+        hoverColor  = style['hoverColor']
         selectColor = style['selectedColor']
 
-        hours   = TTkString(f"{self._time.hour:>2}",   color=selectColor if self._state.selected == _FieldSelected.HOURS   else color)
-        min     = TTkString(f"{self._time.minute:02}", color=selectColor if self._state.selected == _FieldSelected.MINUTES else color)
-        seconds = TTkString(f"{self._time.second:02}", color=selectColor if self._state.selected == _FieldSelected.SECONDS else color)
+        hours   = TTkString(f"{self._time.hour:>2}",   color=hoverColor if self._state.hovered == _FieldSelected.HOURS   else selectColor if self._state.selected == _FieldSelected.HOURS   else color)
+        min     = TTkString(f"{self._time.minute:02}", color=hoverColor if self._state.hovered == _FieldSelected.MINUTES else selectColor if self._state.selected == _FieldSelected.MINUTES else color)
+        seconds = TTkString(f"{self._time.second:02}", color=hoverColor if self._state.hovered == _FieldSelected.SECONDS else selectColor if self._state.selected == _FieldSelected.SECONDS else color)
         sep = TTkString(":", colorSep)
         canvas.drawTTkString(pos=(0,0), text=hours+sep+min+sep+seconds)
         # a = f"{hours:>5}"
