@@ -30,12 +30,25 @@ import TermTk as ttk
 
 ttk.TTkLog.use_default_file_logging()
 
-root = ttk.TTk()
-winLog = ttk.TTkWindow(parent=root, pos=(20,5), size=(80,30), layout=ttk.TTkGridLayout())
+root = ttk.TTk(mouseTrack=True)
+winLog = ttk.TTkWindow(parent=root, pos=(20,1), size=(80,30), layout=ttk.TTkGridLayout())
 ttk.TTkLogViewer(parent=winLog)
 
-win = ttk.TTkWindow(parent=root, pos=(0,0), size=(40,30))
-ttk.TTkTime(time=time(hour=3,minute=30),  parent=win, pos=(0,0))
-ttk.TTkTime(time=time(hour=13,minute=30), parent=win, pos=(0,1))
+win = ttk.TTkWindow(parent=root, pos=(0,0), size=(35,14))
+
+testTime1=time(hour=3,minute=30)
+testTime2=time(hour=13,minute=30)
+timeWidget1 = ttk.TTkTime(parent=win, pos=(1,0), time=testTime1)
+timeWidget2 = ttk.TTkTime(parent=win, pos=(1,2), time=testTime2)
+
+timeLabel1 = ttk.TTkLabel(parent=win, pos=(1,4), text=str(testTime1))
+timeLabel2 = ttk.TTkLabel(parent=win, pos=(1,6), text=str(testTime2))
+timeWidget1.timeChanged.connect(lambda _t:timeLabel1.setText(str(_t)))
+timeWidget2.timeChanged.connect(lambda _t:timeLabel2.setText(str(_t)))
+
+testDate = date(year=1980, month=12, day=25)
+dateWidget = ttk.TTkDateForm(parent=win, pos=(12,0), date=testDate)
+dateLabel = ttk.TTkLabel(parent=win, pos=(1,8), text=str(testDate))
+dateWidget.dateChanged.connect(lambda _d: dateLabel.setText(str(_d)))
 
 root.mainloop()

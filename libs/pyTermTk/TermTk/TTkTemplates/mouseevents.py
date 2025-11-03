@@ -127,7 +127,15 @@ class TMouseEvents():
         '''
         This event handler, can be reimplemented in a subclass to receive mouse enter events for the widget.
 
-        .. note:: Reimplement this function to handle this event
+        .. note::
+
+            This handler reimplementation require the `super()` method to be called.
+
+            .. code:: python
+
+                def enterEvent(self, evt):
+                    TTkLog.debug('Enter Event')
+                    return super().enterEvent(evt)
 
         :param evt: The mouse event
         :type evt: :py:class:`TTkMouseEvent`
@@ -141,7 +149,15 @@ class TMouseEvents():
         '''
         This event handler, can be reimplemented in a subclass to receive mouse leave events for the widget.
 
-        .. note:: Reimplement this function to handle this event
+        .. note::
+
+            This handler reimplementation require the `super()` method to be called.
+
+            .. code:: python
+
+                def leaveEvent(self, evt):
+                    TTkLog.debug('Leave Event')
+                    return super().leaveEvent(evt)
 
         :param evt: The mouse event
         :type evt: :py:class:`TTkMouseEvent`

@@ -32,9 +32,12 @@ from .spinbox         import *
 from .tabwidget       import *
 from .kodetab         import *
 from .texedit         import *
-from .datetime_time        import *
 from .TTkModelView    import *
 from .TTkPickers      import *
 from .TTkTerminal     import *
+
+from .datetime_time      import *
+from .datetime_date      import *
+from .datetime_date_form import *
 
 from .Fancy           import *

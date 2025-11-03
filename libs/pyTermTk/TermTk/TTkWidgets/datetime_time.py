@@ -29,6 +29,7 @@ import datetime
 from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkCore.string import TTkString
 from TermTk.TTkCore.constant import TTkK
+from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
 from TermTk.TTkCore.TTkTerm.inputkey import TTkKeyEvent
 from TermTk.TTkCore.TTkTerm.inputmouse import TTkMouseEvent
 from TermTk.TTkLayouts import TTkGridLayout, TTkLayout
@@ -49,7 +50,7 @@ class _TTkTimeWidgetState():
     selected:_FieldSelected=_FieldSelected.NONE
     hovered:_FieldSelected=_FieldSelected.NONE
     secondDigit:bool = False
-    def reset(self) -> None:
+    def clear(self) -> None:
         self.selected = _FieldSelected.NONE
         self.hovered = _FieldSelected.NONE
         self.secondDigit = False
@@ -61,25 +62,28 @@ class TTkTime(TTkContainer):
                                 'colorSeparator': TTkColor.fgbg("#CCCC00","#222222")+TTkColor.UNDERLINE,
                                 'hoverColor':     TTkColor.fgbg("#ffffff","#00AA66")+TTkColor.UNDERLINE,
                                 'selectedColor':  TTkColor.fgbg("#ffffff","#008844")+TTkColor.UNDERLINE},
+                'hover':       {'color':          TTkColor.fgbg("#AAAAAA","#000066")+TTkColor.UNDERLINE},
                 'disabled':    {'color':          TTkColor.fg(  "#444444")+TTkColor.UNDERLINE,
                                 'colorSeparator': TTkColor.fgbg("#666666","#222222")+TTkColor.UNDERLINE,
                                 'selectedColor':  TTkColor.fgbg("#888888","#444444")+TTkColor.UNDERLINE},
-                'focus':       {'color':          TTkColor.fgbg("#AAAAAA","#000066")+TTkColor.UNDERLINE}
+                'focus':       {'color':          TTkColor.fgbg("#888888","#000066")+TTkColor.UNDERLINE}
             }
 
-    __slots__ = ('_time', '_handleSeconds', '_state')
+    __slots__ = ('_time', '_handleSeconds', '_state', 'timeChanged')
     _time:datetime.time
     _handleSeconds:bool
     _state:_TTkTimeWidgetState
+    timeChanged:pyTTkSignal
     def __init__(self, *,
                  time:datetime.time,
                  handleSeconds:bool=False,
                  **kwargs) -> None:
+        self.timeChanged = pyTTkSignal(datetime.time)
         self._time = time
         self._state = _TTkTimeWidgetState()
         self._handleSeconds = handleSeconds
         _layout=TTkLayout()
-        super().__init__(**kwargs|{'layout':_layout, 'size':(18,1)})
+        super().__init__(**kwargs|{'layout':_layout, 'size':(8,1)})
         self.setFocusPolicy(TTkK.ClickFocus | TTkK.TabFocus)
 
         # sb_hour = TTkSpinBox(parent=self, pos=( 0,0), size=(4,1), value=time.hour   , maximum=24, minimum=1)
@@ -100,10 +104,11 @@ class TTkTime(TTkContainer):
 
     def _setUni(self, uni:int) -> None:
         uni = max(0,min(24*3600-1,uni))
-        self._time = datetime.time(
+        self.setTime(time=datetime.time(
             hour=uni//3600,
             minute=(uni//60)%60,
             second=uni%60)
+        )
         self.update()
 
     def _addDelta(self, delta:int) -> None:
@@ -112,13 +117,20 @@ class TTkTime(TTkContainer):
         uni = delta + self._time.hour * 3600 + self._time.minute * 60 + self._time.second
         self._setUni(uni=uni)
 
+    def time(self) -> datetime.time:
+        return self._time
+
+    def setTime(self, time:datetime.time) -> None:
+        if time != self._time:
+            self._time = time
+            self.timeChanged.emit(time)
+
     def focusOutEvent(self):
-        self._state.reset()
-        self.update
+        self._state.clear()
         return super().focusOutEvent()
 
     def mousePressEvent(self, evt:TTkMouseEvent) -> bool:
-        self._state.reset()
+        self._state.clear()
         self._state.selected = TTkTime._getFieldFromPos(evt.x, evt.y)
         self.update()
         return True
@@ -192,7 +204,7 @@ class TTkTime(TTkContainer):
                     m = 0
                 elif selected == _FieldSelected.SECONDS:
                     s = 0
-                self._time = datetime.time(hour=h,minute=m,second=s)
+                self.setTime(time=datetime.time(hour=h,minute=m,second=s))
                 self.update()
                 return True
 
@@ -216,7 +228,7 @@ class TTkTime(TTkContainer):
                 elif selected == _FieldSelected.SECONDS:
                     s = (value + s*10) if secondDigit else value
                     s = max(0,min(59,s))
-                self._time = datetime.time(hour=h,minute=m,second=s)
+                self.setTime(time=datetime.time(hour=h,minute=m,second=s))
                 self.update()
             return True
         return False
@@ -229,7 +241,8 @@ class TTkTime(TTkContainer):
     def leaveEvent(self, evt:TTkMouseEvent) -> bool:
         self._state.hovered = _FieldSelected.NONE
         self.update()
-        return True
+        super().leaveEvent(evt)
+
 
     def wheelEvent(self, evt:TTkMouseEvent) -> bool:
         self._state.secondDigit = False
