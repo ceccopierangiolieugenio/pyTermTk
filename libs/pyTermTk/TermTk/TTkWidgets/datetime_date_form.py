@@ -685,7 +685,7 @@ class TTkDateForm(TTkContainer):
 
     An interactive calendar widget for date selection.
 
-    Combines year/month selectors with a calendar grid for intuitive date picking.
+    Combines year/month selectors with a calendar grid for intuitive date picking. (`demo <https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/sandbox/sandbox.html?filePath=demo/showcase/datetime.py>`__)
 
     ::
 

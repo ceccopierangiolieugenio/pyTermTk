@@ -47,7 +47,7 @@ class TTkDateTime(TTkContainer):
     A composite widget for displaying and editing date and time values.
 
     Combines :class:`~TermTk.TTkWidgets.datetime_date.TTkDate` and :class:`~TermTk.TTkWidgets.datetime_time.TTkTime` widgets
-    into a single datetime editor.
+    into a single datetime editor. (`demo <https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/sandbox/sandbox.html?filePath=demo/showcase/datetime.py>`__)
 
     ::
 

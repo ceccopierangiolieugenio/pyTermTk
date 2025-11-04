@@ -60,7 +60,7 @@ class _TTkTimeWidgetState():
 class TTkTime(TTkWidget):
     ''' TTkTime:
 
-    A widget for displaying and editing times.
+    A widget for displaying and editing times. (`demo <https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/sandbox/sandbox.html?filePath=demo/showcase/datetime.py>`__)
 
     ::
 
