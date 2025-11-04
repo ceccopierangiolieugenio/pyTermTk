@@ -238,7 +238,8 @@ class TTkDate(TTkWidget):
                 if selected == _FieldSelected.YEARS:
                     if not digit:
                         _y = 0
-                    _y += value*(10**(3-digit))
+                    _mask = {0:10000,1:1000,2:100}.get(digit,10)
+                    _y += value*(10**(3-digit)) - (_y%_mask)
                     _y = max(1900,min(2100,_y))
                     self._state.digit = (digit+1)%4
                 elif selected == _FieldSelected.MONTHS:
