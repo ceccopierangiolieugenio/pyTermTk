@@ -101,7 +101,7 @@ class _TTkDateWidgetState():
 
     _current_month_index:int
 
-    _month_calendar:List[List[datetime.datetime]]
+    _month_calendar:List[List[datetime.date]]
 
     _first_month_day:int
     _last_month_day:int
@@ -109,9 +109,6 @@ class _TTkDateWidgetState():
     _hovered:Optional[datetime.date]
     _highlighted:datetime.date
     _selected:Optional[datetime.date]
-
-    _selected:_FieldSelected
-    _secondDigit:bool
 
     def __init__(self, date:datetime.date):
         '''
@@ -332,7 +329,7 @@ class _TTkBaseMonthYear(TTkWidget):
         x,y = evt.x,evt.y
         w = self.width()
         if y != 0:
-            return
+            return True
         if 0 <= x <= 1:
             self._goto_prev()
         elif w-2 <= x <= w-1 :
@@ -345,13 +342,14 @@ class _TTkBaseMonthYear(TTkWidget):
         self._hoverState = _FieldSelected.NONE
         self.update()
         super().leaveEvent(evt)
+        return True
 
     def mouseMoveEvent(self, evt:TTkMouseEvent) -> bool:
         x,y = evt.x,evt.y
         w = self.width()
         self._hoverState = _FieldSelected.NONE
         if y != 0:
-            return
+            return True
         if 0 <= x <= 1:
             self._hoverState = _FieldSelected.HOVER_LEFT
         elif w-2 <= x <= w-1 :
@@ -642,6 +640,7 @@ class _TTkDateCal(TTkWidget):
     def leaveEvent(self, evt:TTkMouseEvent) -> bool:
         self._state.clearHover()
         super().leaveEvent(evt)
+        return True
 
     def paintEvent(self, canvas):
         #     October 2025

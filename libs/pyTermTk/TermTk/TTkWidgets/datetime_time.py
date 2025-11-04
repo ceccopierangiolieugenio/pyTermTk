@@ -219,7 +219,7 @@ class TTkTime(TTkWidget):
                      _FieldSelected.HOURS   : (True,  _FieldSelected.MINUTES),
                      _FieldSelected.MINUTES : (True,  _FieldSelected.SECONDS),
                      _FieldSelected.SECONDS : (False, _FieldSelected.NONE   ),
-                 }.get(selected)
+                 }.get(selected, (False, _FieldSelected.NONE))
                  self.update()
                  return ret
             if ( evt.key == TTkK.Key_Left or
@@ -229,7 +229,7 @@ class TTkTime(TTkWidget):
                      _FieldSelected.SECONDS : (True,  _FieldSelected.MINUTES),
                      _FieldSelected.MINUTES : (True,  _FieldSelected.HOURS  ),
                      _FieldSelected.HOURS   : (False, _FieldSelected.NONE   ),
-                 }.get(selected)
+                 }.get(selected, (False, _FieldSelected.NONE))
                  self.update()
                  return ret
 
@@ -296,6 +296,7 @@ class TTkTime(TTkWidget):
         self._state.hovered = _FieldSelected.NONE
         self.update()
         super().leaveEvent(evt)
+        return True
 
 
     def wheelEvent(self, evt:TTkMouseEvent) -> bool:

@@ -233,7 +233,7 @@ class TTkDate(TTkWidget):
                      _FieldSelected.MONTHS: (True,  _FieldSelected.DAYS  ),
                      _FieldSelected.DAYS  : (True,  _FieldSelected.CAL   ),
                      _FieldSelected.CAL   : (False, _FieldSelected.NONE  ),
-                 }.get(selected)
+                 }.get(selected, (False, _FieldSelected.NONE))
                  self.update()
                  return ret
             if ( evt.key == TTkK.Key_Left or
@@ -244,7 +244,7 @@ class TTkDate(TTkWidget):
                      _FieldSelected.DAYS  : (True,  _FieldSelected.MONTHS),
                      _FieldSelected.MONTHS: (True,  _FieldSelected.YEARS ),
                      _FieldSelected.YEARS : (False, _FieldSelected.NONE  ),
-                 }.get(selected)
+                 }.get(selected, (False, _FieldSelected.NONE))
                  self.update()
                  return ret
 

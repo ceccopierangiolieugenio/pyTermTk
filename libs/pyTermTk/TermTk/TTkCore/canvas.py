@@ -298,7 +298,6 @@ class TTkCanvas():
         x,y = pos
         w,h = size
         if w < 4: return
-        gg = TTkCfg.theme.grid[grid]
 
         if text.termWidth() > w-4:
             text = text.substring(to=w-4)
@@ -307,12 +306,12 @@ class TTkCanvas():
         elif align == TTkK.LEFT_ALIGN:
             l=1
         else:
-            l = w-2-text.termWidth()
+            l = w-3-text.termWidth()
         l+=x
         r = l+text.termWidth()+1
 
-        self._set(y,l, gg[0x0B], color)
-        self._set(y,r, gg[0x08], color)
+        self._set(y,l, '╸', color)
+        self._set(y,r, '╺', color)
         self.drawText(pos=(l+1,y),text=text,color=colorText)
 
 
