@@ -45,6 +45,7 @@ from TermTk.TTkWidgets.resizableframe import TTkResizableFrame
 
 
 class _FieldSelected(IntEnum):
+    '''Internal enum for tracking which field is selected in the date form.'''
     NONE = auto()
 
     MONTH = auto()
@@ -63,6 +64,11 @@ class _FieldSelected(IntEnum):
 
 
 class _TTkDateWidgetState():
+    '''Internal state management class for the date form widget.
+
+    Manages the current date, calendar view, selection states, and emits signals
+    when the date or highlighted date changes.
+    '''
     __slots__ = (
         '_calendar',
         '_date',
@@ -75,6 +81,21 @@ class _TTkDateWidgetState():
     )
 
     dateChanged:pyTTkSignal
+    '''
+    This signal is emitted whenever the selected date changes.
+
+    :param date: The new selected date
+    :type date: :py:class:`datetime.date`
+    '''
+
+    highlightedChanged:pyTTkSignal
+    '''
+    This signal is emitted whenever the highlighted date changes (keyboard navigation).
+
+    :param date: The new highlighted date
+    :type date: :py:class:`datetime.date`
+    '''
+
     _date:datetime.date
     _calendar:calendar.TextCalendar
 
@@ -93,6 +114,12 @@ class _TTkDateWidgetState():
     _secondDigit:bool
 
     def __init__(self, date:datetime.date):
+        '''
+        Initializes the date widget state.
+
+        :param date: The initial date to display
+        :type date: :py:class:`datetime.date`
+        '''
         self.dateChanged = pyTTkSignal(datetime.date)
         self.highlightedChanged = pyTTkSignal(datetime.date)
         self._current_month_index = 0
@@ -102,33 +129,75 @@ class _TTkDateWidgetState():
         self.setDate(date)
 
     def _getMonthIndex(self, date: datetime.date) -> int:
-        """Returns unique month index: year*12 + month-1"""
+        '''
+        Returns unique month index for efficient month comparisons.
+
+        :param date: The date to convert
+        :type date: :py:class:`datetime.date`
+        :return: Unique month index (year*12 + month-1)
+        :rtype: int
+        '''
         return date.year * 12 + date.month - 1
 
     def _yearMonthFromMonthIndex(self, month_index: int) -> Tuple[int,int]:
-        """Convert month index back to a date (1st of that month)"""
+        '''
+        Converts month index back to year and month components.
+
+        :param month_index: The month index to convert
+        :type month_index: int
+        :return: Tuple of (year, month)
+        :rtype: tuple[int, int]
+        '''
         year = month_index // 12
         month = (month_index % 12) + 1
         return year,month
 
     def _dateFromMonthIndex(self, month_index: int) -> datetime.date:
-        """Convert month index back to a date (1st of that month)"""
+        '''
+        Converts month index back to a date (1st of that month).
+
+        :param month_index: The month index to convert
+        :type month_index: int
+        :return: Date representing the 1st day of the month
+        :rtype: :py:class:`datetime.date`
+        '''
         year,month = self._yearMonthFromMonthIndex(month_index)
         return datetime.date(year, month, 1)
 
     def splitDate(self) -> Tuple[int,int,int]:
+        '''
+        Splits the current date into year, month, and day components.
+
+        :return: Tuple of (year, month, day)
+        :rtype: tuple[int, int, int]
+        '''
         year =  self._date.year
         month = self._date.month
         day =   self._date.day
         return (year,month,day)
 
     def setDate(self, date:datetime.date) -> None:
+        '''
+        Sets the current date and updates the calendar view.
+
+        :param date: The new date to set
+        :type date: :py:class:`datetime.date`
+        '''
         self._date = date
         self._selected = date
         self.setHighlightedDate(date)
         self.dateChanged.emit(date)
 
     def setHighlightedDate(self, date:datetime.date) -> None:
+        '''
+        Sets the highlighted date and rebuilds the calendar if the month changed.
+
+        The calendar view is rebuilt with 6 weeks (including partial weeks from
+        previous/next months) to ensure consistent display.
+
+        :param date: The date to highlight
+        :type date: :py:class:`datetime.date`
+        '''
         self._highlighted = date
         current_month_index = self._getMonthIndex(date)
         if self._current_month_index == current_month_index:
@@ -169,9 +238,11 @@ class _TTkDateWidgetState():
         self.highlightedChanged.emit(date)
 
     def clearHover(self):
+        '''Clears the hover state.'''
         self._hovered=None
 
     def clearSelected(self):
+        '''Clears the selected state.'''
         self._selected=None
 
 
@@ -186,6 +257,11 @@ _month_to_str_slim = {
 }
 
 class _TTkBaseMonthYear(TTkWidget):
+    '''Base class for month and year selector widgets.
+
+    Provides common navigation controls (previous/next arrows) and
+    chooser overlay functionality.
+    '''
     classStyle = {
                 'default':     {'color':            TTkColor.fgbg("#888888","#222222"),
                                 'color2':           TTkColor.fgbg("#888888","#222222"),
@@ -208,6 +284,12 @@ class _TTkBaseMonthYear(TTkWidget):
     def __init__(self, *,
                  state: _TTkDateWidgetState,
                  **kwargs) -> None:
+        '''
+        Initializes the base month/year selector widget.
+
+        :param state: Shared state object for date management
+        :type state: :py:class:`_TTkDateWidgetState`
+        '''
         self._state = state
         self._hoverState = _FieldSelected.NONE
         super().__init__(**kwargs)
@@ -216,15 +298,34 @@ class _TTkBaseMonthYear(TTkWidget):
         self._state.highlightedChanged.connect(self.update)
 
     def _show_chooser(self) -> None:
+        '''
+        Shows the selection overlay (list of years/months).
+        Must be implemented by subclasses.
+        '''
         raise NotImplementedError()
 
     def _goto_next(self) -> None:
+        '''
+        Navigates to the next period (year/month).
+        Must be implemented by subclasses.
+        '''
         raise NotImplementedError()
 
     def _goto_prev(self) -> None:
+        '''
+        Navigates to the previous period (year/month).
+        Must be implemented by subclasses.
+        '''
         raise NotImplementedError()
 
     def data(self) -> str:
+        '''
+        Returns the display text for the current value.
+        Must be implemented by subclasses.
+
+        :return: String representation of current value
+        :rtype: str
+        '''
         raise NotImplementedError()
 
     def mousePressEvent(self, evt:TTkMouseEvent) -> bool:
@@ -297,13 +398,30 @@ class _TTkBaseMonthYear(TTkWidget):
 
 
 class _TTkDateYear(_TTkBaseMonthYear):
+    '''Year selector widget with navigation and list chooser.
+
+    Displays the current year with arrow controls and opens a scrollable
+    list of years (1900-2100) when activated.
+    '''
     def __init__(self, **kwargs) -> None:
+        '''
+        Initializes the year selector widget.
+
+        :param kwargs: Keyword arguments including state and widget parameters
+        '''
         super().__init__(**kwargs|{'size':(8,1)})
 
     def data(self) -> str:
+        '''
+        Returns the current year as a string.
+
+        :return: The year value
+        :rtype: str
+        '''
         return str(self._state._highlighted.year)
 
     def _show_chooser(self) -> None:
+        '''Shows an overlay list for selecting a year from 1900 to 2100.'''
         year=self._state._date.year
         _frame = TTkResizableFrame(size=(7,12), border=True, layout=TTkGridLayout())
         _list = TTkList(parent=_frame, showSearch=False, size=(5,10))
@@ -328,24 +446,43 @@ class _TTkDateYear(_TTkBaseMonthYear):
         TTkHelper.overlay(self, _frame, 1, -1)
 
     def _goto_next(self) -> None:
+        '''Advances the date by one year.'''
         ordinal = self._state._date.toordinal()
         days_in_month = 365 # 366 if calendar.isleap(month) else 365
         self._state.setDate(datetime.date.fromordinal(max(1,ordinal+days_in_month)))
 
     def _goto_prev(self) -> None:
+        '''Moves the date back by one year.'''
         ordinal = self._state._date.toordinal()
         days_in_month = 365 # 366 if calendar.isleap(month) else 365
         self._state.setDate(datetime.date.fromordinal(max(1,ordinal-days_in_month)))
 
 
 class _TTkDateMonth(_TTkBaseMonthYear):
+    '''Month selector widget with navigation and list chooser.
+
+    Displays the current month (abbreviated name) with arrow controls
+    and opens a scrollable list of month names when activated.
+    '''
     def __init__(self, **kwargs) -> None:
+        '''
+        Initializes the month selector widget.
+
+        :param kwargs: Keyword arguments including state and widget parameters
+        '''
         super().__init__(**kwargs|{'size':(7,1)})
 
     def data(self) -> str:
+        '''
+        Returns the current month as an abbreviated string.
+
+        :return: Three-letter month abbreviation (e.g., "Jan", "Feb")
+        :rtype: str
+        '''
         return _month_to_str_slim.get(self._state._highlighted.month, 'XXX')
 
     def _show_chooser(self) -> None:
+        '''Shows an overlay list for selecting a month.'''
         month=self._state._date.month
         _frame = TTkResizableFrame(size=(7,12), border=True, layout=TTkGridLayout())
         _list = TTkList(parent=_frame, showSearch=False, size=(5,10))
@@ -370,6 +507,7 @@ class _TTkDateMonth(_TTkBaseMonthYear):
         TTkHelper.overlay(self, _frame, 1, -1)
 
     def _goto_next(self) -> None:
+        '''Advances the date by one month.'''
         year = self._state._date.year
         month = self._state._date.month
         days_in_month = calendar.monthrange(year, month)[1]
@@ -377,6 +515,7 @@ class _TTkDateMonth(_TTkBaseMonthYear):
         self._state.setDate(datetime.date.fromordinal(max(1,ordinal+days_in_month)))
 
     def _goto_prev(self) -> None:
+        '''Moves the date back by one month.'''
         year = self._state._date.year
         month = max(1,min(12,self._state._date.month-1))
         days_in_month = calendar.monthrange(year, month)[1]
@@ -385,6 +524,21 @@ class _TTkDateMonth(_TTkBaseMonthYear):
 
 
 class _TTkDateCal(TTkWidget):
+    '''Calendar grid widget for date selection.
+
+    Displays a 6-week calendar grid with keyboard and mouse navigation.
+    Shows the current month with days from adjacent months in a different color.
+
+    ::
+
+        Su Mo Tu We Th Fr Sa
+        26 27 28 29 30 31  1
+         2  3  4  5  6  7  8
+         9 10 11 12 13 14 15
+        16 17 18 19 20 21 22
+        23 24 25 26 27 28 29
+        30  1  2  3  4  5  6
+    '''
     classStyle = {
                 'default':     {'color':            TTkColor.fgbg("#888888","#222222")+TTkColor.UNDERLINE,
                                 'color2':           TTkColor.fgbg("#888888","#222222"),
@@ -406,6 +560,12 @@ class _TTkDateCal(TTkWidget):
     def __init__(self, *,
                  state: _TTkDateWidgetState,
                  **kwargs) -> None:
+        '''
+        Initializes the calendar widget.
+
+        :param state: Shared state object for date management
+        :type state: :py:class:`_TTkDateWidgetState`
+        '''
         self._state = state
         super().__init__(**kwargs|{'size':(20,6)})
         self.setFocusPolicy(TTkK.ClickFocus | TTkK.TabFocus)
@@ -445,6 +605,16 @@ class _TTkDateCal(TTkWidget):
         return False
 
     def _getDayFromPos(self, x:int, y:int) -> Optional[datetime.date]:
+        '''
+        Gets the date corresponding to a calendar grid position.
+
+        :param x: Horizontal position in the widget
+        :type x: int
+        :param y: Vertical position in the widget
+        :type y: int
+        :return: The date at that position, or None if invalid
+        :rtype: :py:class:`datetime.date` or None
+        '''
         month_calendar = self._state._month_calendar
         col = x//3
         row = y
@@ -472,9 +642,6 @@ class _TTkDateCal(TTkWidget):
     def leaveEvent(self, evt:TTkMouseEvent) -> bool:
         self._state.clearHover()
         super().leaveEvent(evt)
-
-    # def wheelEvent(self, evt:TTkMouseEvent) -> bool:
-    #     return True
 
     def paintEvent(self, canvas):
         #     October 2025
@@ -515,6 +682,36 @@ class _TTkDateCal(TTkWidget):
 
 
 class TTkDateForm(TTkContainer):
+    ''' TTkDateForm:
+
+    An interactive calendar widget for date selection.
+
+    Combines year/month selectors with a calendar grid for intuitive date picking.
+
+    ::
+
+          ◀┥2025┝▶  ◀┥Nov┝▶
+        Su Mo Tu We Th Fr Sa
+        26 27 28 29 30 31  1
+         2  3  4  5  6  7  8
+         9 10 11 12 13 14 15
+        16 17 18 19 20 21 22
+        23 24 25 26 27 28 29
+        30  1  2  3  4  5  6
+
+    .. code:: python
+
+        import TermTk as ttk
+
+        root = ttk.TTk(mouseTrack=True)
+
+        ttk.TTkDateForm(parent=root) # Defaults to the current date
+
+        root.mainloop()
+
+    :param date: The initial date to display, defaults to today
+    :type date: :py:class:`datetime.date`, optional
+    '''
 
     classStyle = {
                 'default':     {'color':          TTkColor.fgbg("#888888","#222222")+TTkColor.UNDERLINE,
@@ -533,6 +730,13 @@ class TTkDateForm(TTkContainer):
         'dateChanged')
 
     dateChanged:pyTTkSignal
+    '''
+    This signal is emitted whenever the selected date changes.
+
+    :param date: The newly selected date
+    :type date: :py:class:`datetime.date`
+    '''
+
     _calWidget:_TTkDateCal
     _yearWidget:_TTkDateYear
     _monthWidget:_TTkDateMonth
@@ -541,6 +745,12 @@ class TTkDateForm(TTkContainer):
     def __init__(self, *,
                  date:Optional[datetime.date]=None,
                  **kwargs) -> None:
+        '''
+        Initializes the TTkDateForm widget.
+
+        :param date: The initial date to display. If None, the current date is used.
+        :type date: :py:class:`datetime.date`, optional
+        '''
         if not date:
             date = datetime.date.today()
         self._state = _TTkDateWidgetState(date=date)
@@ -554,10 +764,22 @@ class TTkDateForm(TTkContainer):
         self._monthWidget = _TTkDateMonth(parent=self, pos=(12,0), state=self._state)
 
     def date(self) -> datetime.date:
+        '''
+        Returns the currently selected date.
+
+        :return: The current date
+        :rtype: :py:class:`datetime.date`
+        '''
         return self._state._date
 
     @pyTTkSlot(datetime.date)
     def setDate(self, date:datetime.date) -> None:
+        '''
+        Sets the currently selected date.
+
+        :param date: The new date to set
+        :type date: :py:class:`datetime.date`
+        '''
         if date != self._state._date:
             self._state.setDate(date=date)
 

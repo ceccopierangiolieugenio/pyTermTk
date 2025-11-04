@@ -58,6 +58,25 @@ class _TTkTimeWidgetState():
         self.secondDigit = False
 
 class TTkTime(TTkWidget):
+    ''' TTkTime:
+
+    A widget for displaying and editing times.
+
+    ::
+
+        12:30:45
+
+    .. code:: python
+
+        import TermTk as ttk
+
+        root = ttk.TTk(mouseTrack=True)
+
+        ttk.TTkTime(parent=root) # Defaults to the current time
+
+        root.mainloop()
+
+    '''
 
     classStyle = {
                 'default':     {'color':          TTkColor.fgbg("#888888","#222222")+TTkColor.UNDERLINE,
@@ -71,21 +90,33 @@ class TTkTime(TTkWidget):
                 'focus':       {'color':          TTkColor.fgbg("#888888","#000066")+TTkColor.UNDERLINE}
             }
 
-    __slots__ = ('_time', '_handleSeconds', '_state', 'timeChanged')
+    __slots__ = ('_time', '_state', 'timeChanged')
     _time:datetime.time
-    _handleSeconds:bool
     _state:_TTkTimeWidgetState
+
     timeChanged:pyTTkSignal
+    '''
+    This signal is emitted whenever the time changes.
+
+    :param time: The new time
+    :type time: :py:class:`datetime.time`
+
+    '''
     def __init__(self, *,
                  time:Optional[datetime.time] = None,
-                 handleSeconds:bool=False,
+                 # handleSeconds:bool=False,
                  **kwargs) -> None:
+        '''
+        Initializes the TTkTime widget.
+
+        :param time: The initial time to display. If None, the current time is used.
+        :type time: :class:`datetime.time`, optional
+        '''
         if not time:
             time = datetime.datetime.now().time().replace(microsecond=0)
         self.timeChanged = pyTTkSignal(datetime.time)
         self._time = time
         self._state = _TTkTimeWidgetState()
-        self._handleSeconds = handleSeconds
         _layout=TTkLayout()
         super().__init__(**kwargs|{'layout':_layout, 'size':(8,1)})
         self.setFocusPolicy(TTkK.ClickFocus | TTkK.TabFocus)
@@ -96,6 +127,16 @@ class TTkTime(TTkWidget):
 
     @staticmethod
     def _getFieldFromPos(x:int,y:int) -> _FieldSelected:
+        '''
+        Determines which time field is at a given coordinate.
+
+        :param x: The horizontal position.
+        :type x: int
+        :param y: The vertical position.
+        :type y: int
+        :return: The field selected.
+        :rtype: :py:class:`_FieldSelected`
+        '''
         if y != 0:
             return _FieldSelected.NONE
         if 0 <= x < 2:
@@ -107,6 +148,12 @@ class TTkTime(TTkWidget):
         return _FieldSelected.NONE
 
     def _setUni(self, uni:int) -> None:
+        '''
+        Sets the time based on the total number of seconds from midnight.
+
+        :param uni: The total seconds from midnight.
+        :type uni: int
+        '''
         uni = max(0,min(24*3600-1,uni))
         self.setTime(time=datetime.time(
             hour=uni//3600,
@@ -115,15 +162,33 @@ class TTkTime(TTkWidget):
         )
 
     def _addDelta(self, delta:int) -> None:
+        '''
+        Adds a delta (in seconds) to the current time.
+
+        :param delta: The number of seconds to add (can be negative).
+        :type delta: int
+        '''
         if not delta:
             return
         uni = delta + self._time.hour * 3600 + self._time.minute * 60 + self._time.second
         self._setUni(uni=uni)
 
     def time(self) -> datetime.time:
+        '''
+        Returns the current time of the widget.
+
+        :return: The current time.
+        :rtype: :py:class:`datetime.time`
+        '''
         return self._time
 
     def setTime(self, time:datetime.time) -> None:
+        '''
+        Sets the current time of the widget.
+
+        :param time: The new time to set.
+        :type time: :py:class:`datetime.time`
+        '''
         if time != self._time:
             self._time = time
             self.timeChanged.emit(time)
@@ -263,4 +328,3 @@ class TTkTime(TTkWidget):
         seconds = TTkString(f"{self._time.second:02}", color=hoverColor if self._state.hovered == _FieldSelected.SECONDS else selectColor if self._state.selected == _FieldSelected.SECONDS else color)
         sep = TTkString(":", colorSep)
         canvas.drawTTkString(pos=(0,0), text=hours+sep+min+sep+seconds)
-        # a = f"{hours:>5}"
