@@ -61,6 +61,25 @@ class _TTkTimeWidgetState():
         self.digit = 0
 
 class TTkDate(TTkWidget):
+    ''' TTkDate:
+
+    A widget for displaying and editing dates.
+
+    ::
+
+        2025/11/04 📅
+
+    .. code:: python
+
+        import TermTk as ttk
+
+        root = ttk.TTk(mouseTrack=True)
+
+        ttk.TTkDate(parent=root) # Defaults to the current date
+
+        root.mainloop()
+
+    '''
 
     classStyle = {
                 'default':     {'color':          TTkColor.fgbg("#888888","#222222")+TTkColor.UNDERLINE,
@@ -77,15 +96,28 @@ class TTkDate(TTkWidget):
     __slots__ = (
         '_date',
         '_maxOrdinal', '_minOrdinal',
-        '_handleSeconds', '_state', 'timeChanged')
+        '_state', 'dateChanged')
     _date:datetime.date
-    _handleSeconds:bool
     _state:_TTkTimeWidgetState
+
     dateChanged:pyTTkSignal
+    '''
+    This signal is emitted whenever the date changes.
+
+    :param date: The new date
+    :type date: :py:class:`datetime.date`
+    '''
+
     def __init__(self, *,
                  date:Optional[datetime.date]=None,
                  handleSeconds:bool=False,
                  **kwargs) -> None:
+        '''
+        Initializes the TTkDate widget.
+
+        :param date: The initial date to display. If None, the current date is used.
+        :type date: :py:class:`datetime.date`, optional
+        '''
         if not date:
             date = datetime.date.today()
         self.dateChanged = pyTTkSignal(datetime.date)
@@ -93,13 +125,22 @@ class TTkDate(TTkWidget):
         self._maxOrdinal = datetime.date(year=2100,month=12,day=31).toordinal()
         self._minOrdinal = datetime.date(year=1900, month=1, day=1).toordinal()
         self._state = _TTkTimeWidgetState()
-        self._handleSeconds = handleSeconds
         _layout=TTkLayout()
         super().__init__(**kwargs|{'layout':_layout, 'size':(13,1)})
         self.setFocusPolicy(TTkK.ClickFocus | TTkK.TabFocus)
 
     @staticmethod
     def _getFieldFromPos(x:int,y:int) -> _FieldSelected:
+        '''
+        Determines which date field is at a given coordinate.
+
+        :param x: The horizontal position.
+        :type x: int
+        :param y: The vertical position.
+        :type y: int
+        :return: The field selected.
+        :rtype: :py:class:`_FieldSelected`
+        '''
         if y != 0:
             return _FieldSelected.NONE
         if 0 <= x < 4:
@@ -113,6 +154,12 @@ class TTkDate(TTkWidget):
         return _FieldSelected.NONE
 
     def _addDelta(self, delta:int) -> None:
+        '''
+        Adds a delta (in days) to the current date, respecting the min/max ordinal bounds.
+
+        :param delta: The number of days to add (can be negative).
+        :type delta: int
+        '''
         if not delta:
             return
         ordinal = self._date.toordinal() + delta
@@ -120,6 +167,9 @@ class TTkDate(TTkWidget):
         self.setDate(date=datetime.date.fromordinal(ordinal))
 
     def _showForm(self) -> None:
+        '''
+        Shows the calendar form as an overlay for date selection.
+        '''
         _frame = TTkResizableFrame(size=(22,10), border=True, layout=TTkGridLayout())
         _form = TTkDateForm(parent=_frame, date=self._date)
         _form.setFocus()
@@ -135,9 +185,21 @@ class TTkDate(TTkWidget):
         TTkHelper.overlay(self, _frame, 0, -3)
 
     def date(self) -> datetime.date:
+        '''
+        Returns the current date of the widget.
+
+        :return: The current date.
+        :rtype: :py:class:`datetime.date`
+        '''
         return self._date
 
     def setDate(self, date:datetime.date) -> None:
+        '''
+        Sets the current date of the widget.
+
+        :param date: The new date to set.
+        :type date: :py:class:`datetime.date`
+        '''
         if date != self._date:
             self._date = date
             self.dateChanged.emit(date)
@@ -265,6 +327,7 @@ class TTkDate(TTkWidget):
         self._state.hovered = _FieldSelected.NONE
         self.update()
         super().leaveEvent(evt)
+        return True
 
 
     def wheelEvent(self, evt:TTkMouseEvent) -> bool:

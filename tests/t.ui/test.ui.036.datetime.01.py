@@ -28,8 +28,6 @@ from datetime import time,date,datetime
 sys.path.append(os.path.join(sys.path[0],'../../libs/pyTermTk'))
 import TermTk as ttk
 
-ttk.TTkLog.use_default_file_logging()
-
 root = ttk.TTk(mouseTrack=True)
 winLog = ttk.TTkWindow(parent=root, pos=(20,1), size=(80,30), layout=ttk.TTkGridLayout())
 ttk.TTkLogViewer(parent=winLog)
