@@ -38,6 +38,7 @@ from .TTkTerminal     import *
 
 from .datetime_time      import *
 from .datetime_date      import *
+from .datetime_datetime  import *
 from .datetime_date_form import *
 
 from .Fancy           import *

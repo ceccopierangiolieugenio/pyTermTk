@@ -756,9 +756,8 @@ class TTkDateForm(TTkContainer):
         self._state = _TTkDateWidgetState(date=date)
         self._state.highlightedChanged.connect(self.update)
         self.dateChanged = self._state.dateChanged
-        _layout=TTkLayout()
         size = (20,8)
-        super().__init__(**kwargs|{'layout':_layout, 'size':size, 'minSize':size})
+        super().__init__(**kwargs|{'size':size, 'minSize':size})
         self._calWidget = _TTkDateCal(parent=self, pos=(0,2), state=self._state)
         self._yearWidget = _TTkDateYear(parent=self, pos=(2,0), state=self._state)
         self._monthWidget = _TTkDateMonth(parent=self, pos=(12,0), state=self._state)
