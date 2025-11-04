@@ -37,12 +37,11 @@ ttk.TTkLogViewer(parent=winLog)
 win = ttk.TTkWindow(parent=root, pos=(0,0), size=(35,14))
 
 testTime1=time(hour=3,minute=30)
-testTime2=time(hour=13,minute=30)
 timeWidget1 = ttk.TTkTime(parent=win, pos=(1,0), time=testTime1)
-timeWidget2 = ttk.TTkTime(parent=win, pos=(1,2), time=testTime2)
+timeWidget2 = ttk.TTkTime(parent=win, pos=(1,2))
 
 timeLabel1 = ttk.TTkLabel(parent=win, pos=(1,4), text=str(testTime1))
-timeLabel2 = ttk.TTkLabel(parent=win, pos=(1,6), text=str(testTime2))
+timeLabel2 = ttk.TTkLabel(parent=win, pos=(1,6), text=str(timeWidget2.time()))
 timeWidget1.timeChanged.connect(lambda _t:timeLabel1.setText(str(_t)))
 timeWidget2.timeChanged.connect(lambda _t:timeLabel2.setText(str(_t)))
 

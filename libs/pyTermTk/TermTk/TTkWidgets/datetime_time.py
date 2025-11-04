@@ -26,6 +26,8 @@ from enum import IntEnum,Enum,auto
 from dataclasses import dataclass
 import datetime
 
+from typing import Optional
+
 from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkCore.string import TTkString
 from TermTk.TTkCore.constant import TTkK
@@ -55,7 +57,7 @@ class _TTkTimeWidgetState():
         self.hovered = _FieldSelected.NONE
         self.secondDigit = False
 
-class TTkTime(TTkContainer):
+class TTkTime(TTkWidget):
 
     classStyle = {
                 'default':     {'color':          TTkColor.fgbg("#888888","#222222")+TTkColor.UNDERLINE,
@@ -75,9 +77,11 @@ class TTkTime(TTkContainer):
     _state:_TTkTimeWidgetState
     timeChanged:pyTTkSignal
     def __init__(self, *,
-                 time:datetime.time,
+                 time:Optional[datetime.time] = None,
                  handleSeconds:bool=False,
                  **kwargs) -> None:
+        if not time:
+            time = datetime.datetime.now().time().replace(microsecond=0)
         self.timeChanged = pyTTkSignal(datetime.time)
         self._time = time
         self._state = _TTkTimeWidgetState()
@@ -109,7 +113,6 @@ class TTkTime(TTkContainer):
             minute=(uni//60)%60,
             second=uni%60)
         )
-        self.update()
 
     def _addDelta(self, delta:int) -> None:
         if not delta:
@@ -124,6 +127,7 @@ class TTkTime(TTkContainer):
         if time != self._time:
             self._time = time
             self.timeChanged.emit(time)
+            self.update()
 
     def focusOutEvent(self):
         self._state.clear()
@@ -143,41 +147,26 @@ class TTkTime(TTkContainer):
 
             # Tab, Right, Left
             # Switch between digits
-            if ( evt.key in (TTkK.Key_Tab, TTkK.Key_Right)):
-                 if selected == _FieldSelected.NONE:
-                    self._state.selected = _FieldSelected.HOURS
-                    self.update()
-                    return True
-                 if selected == _FieldSelected.HOURS:
-                    self._state.selected = _FieldSelected.MINUTES
-                    self.update()
-                    return True
-                 if selected == _FieldSelected.MINUTES:
-                    self._state.selected = _FieldSelected.SECONDS
-                    self.update()
-                    return True
-                 if selected == _FieldSelected.SECONDS:
-                    self._state.selected = _FieldSelected.NONE
-                    self.update()
-                    return False
+            if ( evt.key == TTkK.Key_Right or
+                 (evt.key == TTkK.Key_Tab and evt.mod != TTkK.ShiftModifier)):
+                 ret, self._state.selected = {
+                     _FieldSelected.NONE    : (True,  _FieldSelected.HOURS  ),
+                     _FieldSelected.HOURS   : (True,  _FieldSelected.MINUTES),
+                     _FieldSelected.MINUTES : (True,  _FieldSelected.SECONDS),
+                     _FieldSelected.SECONDS : (False, _FieldSelected.NONE   ),
+                 }.get(selected)
+                 self.update()
+                 return ret
             if ( evt.key == TTkK.Key_Left or
                  (evt.key == TTkK.Key_Tab and evt.mod == TTkK.ShiftModifier)):
-                 if selected == _FieldSelected.HOURS:
-                    self._state.selected = _FieldSelected.NONE
-                    self.update()
-                    return False
-                 if selected == _FieldSelected.MINUTES:
-                    self._state.selected = _FieldSelected.HOURS
-                    self.update()
-                    return True
-                 if selected == _FieldSelected.SECONDS:
-                    self._state.selected = _FieldSelected.MINUTES
-                    self.update()
-                    return True
-                 if selected == _FieldSelected.NONE:
-                    self._state.selected = _FieldSelected.SECONDS
-                    self.update()
-                    return True
+                 ret, self._state.selected = {
+                     _FieldSelected.NONE    : (True,  _FieldSelected.SECONDS),
+                     _FieldSelected.SECONDS : (True,  _FieldSelected.MINUTES),
+                     _FieldSelected.MINUTES : (True,  _FieldSelected.HOURS  ),
+                     _FieldSelected.HOURS   : (False, _FieldSelected.NONE   ),
+                 }.get(selected)
+                 self.update()
+                 return ret
 
             delta = 0
             if selected == _FieldSelected.HOURS:

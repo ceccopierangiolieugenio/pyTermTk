@@ -268,6 +268,8 @@ class _TTkBaseMonthYear(TTkWidget):
                 self._goto_next()
             elif evt.key == TTkK.Key_Down:
                 self._goto_prev()
+            else:
+                return False
             return True
         elif( evt.type == TTkK.Character and
               evt.key in (' 1234567890')):
