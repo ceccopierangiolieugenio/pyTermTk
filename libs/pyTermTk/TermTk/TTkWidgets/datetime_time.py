@@ -59,7 +59,7 @@ class TTkTime(TTkContainer):
 
     classStyle = {
                 'default':     {'color':          TTkColor.fgbg("#888888","#222222")+TTkColor.UNDERLINE,
-                                'colorSeparator': TTkColor.fgbg("#CCCC00","#222222")+TTkColor.UNDERLINE,
+                                'colorSeparator': TTkColor.fgbg("#CCCC00","#222222"),
                                 'hoverColor':     TTkColor.fgbg("#ffffff","#00AA66")+TTkColor.UNDERLINE,
                                 'selectedColor':  TTkColor.fgbg("#ffffff","#008844")+TTkColor.UNDERLINE},
                 'hover':       {'color':          TTkColor.fgbg("#AAAAAA","#000066")+TTkColor.UNDERLINE},

@@ -187,17 +187,17 @@ _month_to_str_slim = {
 
 class _TTkBaseMonthYear(TTkWidget):
     classStyle = {
-                'default':     {'color':            TTkColor.fgbg("#888888","#222222")+TTkColor.UNDERLINE,
+                'default':     {'color':            TTkColor.fgbg("#888888","#222222"),
                                 'color2':           TTkColor.fgbg("#888888","#222222"),
-                                'colorSeparator':   TTkColor.fgbg("#CCCC00","#222222")+TTkColor.UNDERLINE,
-                                'hoverColor':       TTkColor.fgbg("#ffffff","#00AA66")+TTkColor.UNDERLINE,
-                                'highlightedColor': TTkColor.fgbg("#ffffff","#00AA88")+TTkColor.UNDERLINE,
-                                'selectedColor':    TTkColor.fgbg("#ffffff","#008844")+TTkColor.UNDERLINE},
-                'hover':       {'color':            TTkColor.fgbg("#AAAAAA","#000066")+TTkColor.UNDERLINE},
-                'disabled':    {'color':            TTkColor.fg(  "#444444")+TTkColor.UNDERLINE,
-                                'colorSeparator':   TTkColor.fgbg("#666666","#222222")+TTkColor.UNDERLINE,
-                                'selectedColor':    TTkColor.fgbg("#888888","#444444")+TTkColor.UNDERLINE},
-                'focus':       {'color':            TTkColor.fgbg("#888888","#000066")+TTkColor.UNDERLINE}
+                                'colorSeparator':   TTkColor.fgbg("#CCCC00","#222222"),
+                                'hoverColor':       TTkColor.fgbg("#ffffff","#00AA66"),
+                                'highlightedColor': TTkColor.fgbg("#ffffff","#00AA88"),
+                                'selectedColor':    TTkColor.fgbg("#ffffff","#008844")},
+                'hover':       {'color':            TTkColor.fgbg("#AAAAAA","#000066")},
+                'disabled':    {'color':            TTkColor.fg(  "#444444"),
+                                'colorSeparator':   TTkColor.fgbg("#666666","#222222"),
+                                'selectedColor':    TTkColor.fgbg("#888888","#444444")},
+                'focus':       {'color':            TTkColor.fgbg("#888888","#000066")}
             }
 
     __slots__ = ('_state', '_hoverState')
@@ -211,8 +211,9 @@ class _TTkBaseMonthYear(TTkWidget):
         self._state = state
         self._hoverState = _FieldSelected.NONE
         super().__init__(**kwargs)
-        self._state.highlightedChanged.connect(self.update)
         self.setFocusPolicy(TTkK.ClickFocus | TTkK.TabFocus)
+        self._state.dateChanged.connect(self.update)
+        self._state.highlightedChanged.connect(self.update)
 
     def _show_chooser(self) -> None:
         raise NotImplementedError()
@@ -405,8 +406,9 @@ class _TTkDateCal(TTkWidget):
                  **kwargs) -> None:
         self._state = state
         super().__init__(**kwargs|{'size':(20,6)})
-        self._state.highlightedChanged.connect(self.update)
         self.setFocusPolicy(TTkK.ClickFocus | TTkK.TabFocus)
+        self._state.dateChanged.connect(self.update)
+        self._state.highlightedChanged.connect(self.update)
 
     def focusOutEvent(self):
         self._state.clearHover()
@@ -535,13 +537,16 @@ class TTkDateForm(TTkContainer):
     _state:_TTkDateWidgetState
 
     def __init__(self, *,
-                 date:datetime.date,
+                 date:Optional[datetime.date]=None,
                  **kwargs) -> None:
+        if not date:
+            date = datetime.date.today()
         self._state = _TTkDateWidgetState(date=date)
         self._state.highlightedChanged.connect(self.update)
         self.dateChanged = self._state.dateChanged
         _layout=TTkLayout()
-        super().__init__(**kwargs|{'layout':_layout, 'size':(20,8)})
+        size = (20,8)
+        super().__init__(**kwargs|{'layout':_layout, 'size':size, 'minSize':size})
         self._calWidget = _TTkDateCal(parent=self, pos=(0,2), state=self._state)
         self._yearWidget = _TTkDateYear(parent=self, pos=(2,0), state=self._state)
         self._monthWidget = _TTkDateMonth(parent=self, pos=(12,0), state=self._state)
@@ -549,6 +554,7 @@ class TTkDateForm(TTkContainer):
     def date(self) -> datetime.date:
         return self._state._date
 
+    @pyTTkSlot(datetime.date)
     def setDate(self, date:datetime.date) -> None:
         if date != self._state._date:
             self._state.setDate(date=date)

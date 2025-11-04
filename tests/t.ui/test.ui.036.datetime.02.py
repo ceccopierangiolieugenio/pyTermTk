@@ -34,7 +34,8 @@ root = ttk.TTk(mouseTrack=True)
 winLog = ttk.TTkWindow(parent=root, pos=(20,1), size=(80,30), layout=ttk.TTkGridLayout())
 ttk.TTkLogViewer(parent=winLog)
 
-win = ttk.TTkWindow(parent=root, pos=(0,0), size=(35,14))
+win = ttk.TTkWindow(parent=root, pos=(0,0), size=(57,14))
+win2 = ttk.TTkWindow(parent=root, pos=(60,0), size=(22,12), layout=ttk.TTkGridLayout())
 
 testTime1=time(hour=3,minute=30)
 testTime2=time(hour=13,minute=30)
@@ -48,8 +49,12 @@ timeWidget2.timeChanged.connect(lambda _t:timeLabel2.setText(str(_t)))
 
 testDate = date(year=1980, month=12, day=25)
 dateWidget1 = ttk.TTkDateForm(parent=win, pos=(12,0), date=testDate)
-
+dateWidget2 = ttk.TTkDateForm(parent=win, pos=(34,0))
+dateWidget3 = ttk.TTkDateForm(parent=win2, date=testDate.replace(year=2000))
 dateLabel = ttk.TTkLabel(parent=win, pos=(1,8), text=str(testDate))
 dateWidget1.dateChanged.connect(lambda _d: dateLabel.setText(str(_d)))
+dateWidget1.dateChanged.connect(dateWidget2.setDate)
+dateWidget2.dateChanged.connect(dateWidget1.setDate)
+dateWidget3.dateChanged.connect(dateWidget2.setDate)
 
 root.mainloop()
