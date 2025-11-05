@@ -179,8 +179,8 @@ class TTkString():
     def __gt__(self, other): return self._text >  other._text if issubclass(type(other),TTkString) else self._text >  other
     def __ge__(self, other): return self._text >= other._text if issubclass(type(other),TTkString) else self._text >= other
 
-    def sameAs(self, other:TTkString) -> bool:
-        if not issubclass(type(other),TTkString): return False
+    def sameAs(self, other:TTkStringType) -> bool:
+        if not isinstance(other,TTkString): return False
         return (
             self==other and
             len(self._colors) == len(other._colors) and
@@ -602,7 +602,7 @@ class TTkString():
     def getIndexes(self, char):
         return [i for i,c in enumerate(self._text) if c==char]
 
-    def join(self, strings:Union[GeneratorType[TTkStringType,None,None],List[TTkStringType]]) -> TTkString:
+    def join(self, strings:Union[GeneratorType[TTkStringType,None,None],List[TTkStringType],List[TTkString],List[str]]) -> TTkString:
         ''' Join the input strings using the current as separator
 
         :param strings: the list of strings to be joined
@@ -638,7 +638,7 @@ class TTkString():
             sum(unicodedata.category(ch) in ('Me','Mn') for ch in txt) )
 
     @staticmethod
-    def _getLenTextWoZero(txt:str):
+    def _getLenTextWoZero(txt:str) -> int:
         return ( len(txt) -
             sum(unicodedata.category(ch) in ('Me','Mn') for ch in txt) )
 

@@ -24,7 +24,7 @@ __all__ = ['TTkButton']
 
 from TermTk.TTkCore.cfg import TTkCfg
 from TermTk.TTkCore.constant import TTkK
-from TermTk.TTkCore.string import TTkString
+from TermTk.TTkCore.string import TTkString, TTkStringType
 from TermTk.TTkCore.signal import pyTTkSignal
 from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkCore.canvas import TTkCanvas
@@ -102,7 +102,7 @@ class TTkButton(TTkWidget):
         'clicked', 'toggled'
         )
     def __init__(self, *,
-                 text:TTkString="",
+                 text:TTkStringType="",
                  border:bool=False,
                  checked:bool=False,
                  checkable:bool=False,
@@ -119,7 +119,10 @@ class TTkButton(TTkWidget):
         :param bool checkable: define if the button is checkable, defaults to "False"
         :type checkable: bool, optional
         '''
-        self._text = TTkString(text).split('\n')
+        if isinstance(text, TTkString):
+            self._text = text.split('\n')
+        else:
+            self._text = TTkString(text).split('\n')
         textWidth = max(t.termWidth() for t in self._text)
         self._border = border
         if self._border:

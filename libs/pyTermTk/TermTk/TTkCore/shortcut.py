@@ -20,7 +20,11 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
+
 __all__ = ['TTkShortcut']
+
+from typing import TYPE_CHECKING,Dict,List,Union,Optional
 
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.constant import TTkK
@@ -28,13 +32,15 @@ from TermTk.TTkCore.helper import TTkHelper
 from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
 from TermTk.TTkCore.TTkTerm.inputkey import TTkKeyEvent
 
-class TTkStandardKey():
+if TYPE_CHECKING:
+    from TermTk.TTkWidgets.widget import TTkWidget
+
+class _TTkStandardKey():
     pass
 
-class TTkKeySequence():
+class _TTkKeySequence():
     __slots__ = ('_key')
     def __init__(self, key:int):
-        self._key = key
         mod = (
             ( TTkK.ControlModifier if key & TTkK.CTRL  else 0 ) |
             ( TTkK.AltModifier     if key & TTkK.ALT   else 0 ) |
@@ -47,27 +53,27 @@ class TTkKeySequence():
         else:
             self._key = TTkKeyEvent(mod=mod, code="", type=TTkK.Character,  key=chr(key) )
 
-
-
     def __hash__(self) -> int:
         return self._key.__hash__()
 
-    def __eq__(self, __value: object) -> bool:
-        pass
 
 class TTkShortcut():
     '''TTkShortcut'''
-    _shortcuts = {}
+    _shortcuts:Dict[TTkKeyEvent,List[TTkShortcut]] = {}
     __slots__ = (
-        '_key', '_parent', '_shortcutContext',
+        '_parent', '_shortcutContext',
         # Signals
         'activated')
     def __init__(self,
-                 key:int, parent=None,
+                 key:Union[int,TTkKeyEvent], parent:Optional['TTkWidget']=None,
                  shortcutContext: TTkK.ShortcutContext = TTkK.ShortcutContext.WindowShortcut):
         if type(key) == int:
-            key = TTkKeySequence(key)._key
-        self._key = key
+            key = _TTkKeySequence(key)._key
+        elif isinstance(key, TTkKeyEvent):
+            key = key
+        else:
+            raise TypeError(f"{key=} is not int or TTkKeyEvent")
+
         self._parent = parent
         self._shortcutContext = shortcutContext
         # Signals
@@ -77,24 +83,17 @@ class TTkShortcut():
         TTkShortcut._shortcuts[key].append(self)
 
     @staticmethod
-    def processKey(key, focusWidget):
-        # TTkLog.debug(f"{str(key)=}")
-        # for k in TTkShortcut._shortcuts:
-        #     TTkLog.debug(f"{str(k)=} - {key==k=}")
-        if key in TTkShortcut._shortcuts:
-            for sc in TTkShortcut._shortcuts[key]:
-                # if sc._parent:
-                #     TTkLog.debug(f"{focusWidget=} {sc._parent=} {sc._parent._parent=}")
-                # else:
-                #     TTkLog.debug(f"{focusWidget=} {sc._parent=}")
-                if ( (   sc._shortcutContext == TTkK.WidgetShortcut
-                       and focusWidget == sc._parent )
-                  or ( sc._shortcutContext == TTkK.WidgetWithChildrenShortcut
-                        and (  focusWidget == sc._parent
-                            or TTkHelper.isParent(sc._parent,focusWidget) ) )
-                  or ( sc._shortcutContext == TTkK.WindowShortcut )
-                  or ( sc._shortcutContext == TTkK.ApplicationShortcut )):
-                    if sc.activated._connected_slots:
-                        sc.activated.emit()
-                        return True
+    def processKey(key:TTkKeyEvent, focusWidget:'TTkWidget') -> bool:
+        for sc in TTkShortcut._shortcuts.get(key,[]):
+            if (   ( sc._shortcutContext == TTkK.WidgetShortcut
+                     and focusWidget == sc._parent )
+                or ( sc._shortcutContext == TTkK.WidgetWithChildrenShortcut
+                     and sc._parent
+                     and ( focusWidget == sc._parent
+                           or TTkHelper.isParent(sc._parent,focusWidget) ) )
+                or ( sc._shortcutContext == TTkK.WindowShortcut )
+                or ( sc._shortcutContext == TTkK.ApplicationShortcut )):
+                if sc.activated._connected_slots:
+                    sc.activated.emit()
+                    return True
         return False

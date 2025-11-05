@@ -223,12 +223,12 @@ class TTkTextEditView(TTkAbstractScrollView):
 
         __slots__ = ('_format', '_color', '_cursor')
         def __init__(self,
+                     cursor:TTkTextCursor,
                      format:TTkK.SelectionFormat=TTkK.NONE,
-                     color:TTkColor=TTkColor.RST,
-                     cursor:Optional[TTkTextCursor]=None) -> None:
+                     color:TTkColor=TTkColor.RST) -> None:
             self._color = color
             self._format = format
-            self._cursor = cursor if cursor else TTkTextCursor()
+            self._cursor = cursor
 
         def color(self) -> TTkColor:
              '''

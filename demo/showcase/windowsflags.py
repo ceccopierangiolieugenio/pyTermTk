@@ -69,7 +69,7 @@ def demoWindowsFlags(root=None):
                     flags = ttk.TTkK.WindowFlag.WindowMaximizeButtonHint | ttk.TTkK.WindowFlag.WindowCloseButtonHint)
     # Disable all the control buttons
     WindowFlagsTest(parent=frame, pos = (4,4), size=(40,8), title="Test Window 3",
-                    flags = ttk.TTkK.NONE)
+                    flags = ttk.TTkK.WindowFlag.NONE)
     # Enable only the Max and Min Buttons
     WindowFlagsTest(parent=frame, pos = (6,6), size=(40,8), title="Test Window 4",
                     flags = ttk.TTkK.WindowFlag.WindowMinMaxButtonsHint)

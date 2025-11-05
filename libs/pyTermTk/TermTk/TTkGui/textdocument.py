@@ -316,7 +316,7 @@ class TTkTextDocument():
         self.undoAvailable.emit(self.isUndoAvailable())
         self.redoAvailable.emit(self.isRedoAvailable())
 
-    def find(self, exp:TTkStringType) -> TTkTextCursor:
+    def find(self, exp:TTkStringType) -> Optional[TTkTextCursor]:
         for i,line in enumerate(self._dataLines):
             if -1 != (pos := line.find(str(exp))):
                 from .textcursor import TTkTextCursor

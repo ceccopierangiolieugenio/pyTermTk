@@ -24,7 +24,7 @@ __all__ = ['TTkTime']
 
 from enum import IntEnum,auto
 from dataclasses import dataclass
-import datetime
+import datetime as dt
 
 from typing import Optional
 
@@ -57,7 +57,7 @@ class _TTkTimeWidgetState():
 class TTkTime(TTkWidget):
     ''' TTkTime:
 
-    A widget for displaying and editing times. (`demo <https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/sandbox/sandbox.html?filePath=demo/showcase/datetime.py>`__)
+    A widget for displaying and editing times. (`demo <https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/sandbox/sandbox.html?filePath=demo/showcase/date_time.py>`__)
 
     ::
 
@@ -88,7 +88,7 @@ class TTkTime(TTkWidget):
             }
 
     __slots__ = ('_time', '_state', 'timeChanged')
-    _time:datetime.time
+    _time:dt.time
     _state:_TTkTimeWidgetState
 
     timeChanged:pyTTkSignal
@@ -100,7 +100,7 @@ class TTkTime(TTkWidget):
 
     '''
     def __init__(self, *,
-                 time:Optional[datetime.time] = None,
+                 time:Optional[dt.time] = None,
                  # handleSeconds:bool=False,
                  **kwargs) -> None:
         '''
@@ -110,8 +110,8 @@ class TTkTime(TTkWidget):
         :type time: :class:`datetime.time`, optional
         '''
         if not time:
-            time = datetime.datetime.now().time().replace(microsecond=0)
-        self.timeChanged = pyTTkSignal(datetime.time)
+            time = dt.datetime.now().time().replace(microsecond=0)
+        self.timeChanged = pyTTkSignal(dt.time)
         self._time = time
         self._state = _TTkTimeWidgetState()
         super().__init__(**kwargs|{'size':(8,1)})
@@ -151,7 +151,7 @@ class TTkTime(TTkWidget):
         :type uni: int
         '''
         uni = max(0,min(24*3600-1,uni))
-        self.setTime(time=datetime.time(
+        self.setTime(time=dt.time(
             hour=uni//3600,
             minute=(uni//60)%60,
             second=uni%60)
@@ -169,7 +169,7 @@ class TTkTime(TTkWidget):
         uni = delta + self._time.hour * 3600 + self._time.minute * 60 + self._time.second
         self._setUni(uni=uni)
 
-    def time(self) -> datetime.time:
+    def time(self) -> dt.time:
         '''
         Returns the current time of the widget.
 
@@ -178,7 +178,7 @@ class TTkTime(TTkWidget):
         '''
         return self._time
 
-    def setTime(self, time:datetime.time) -> None:
+    def setTime(self, time:dt.time) -> None:
         '''
         Sets the current time of the widget.
 
@@ -254,7 +254,7 @@ class TTkTime(TTkWidget):
                     m = 0
                 elif selected == _FieldSelected.SECONDS:
                     s = 0
-                self.setTime(time=datetime.time(hour=h,minute=m,second=s))
+                self.setTime(time=dt.time(hour=h,minute=m,second=s))
                 self.update()
                 return True
 
@@ -278,7 +278,7 @@ class TTkTime(TTkWidget):
                 elif selected == _FieldSelected.SECONDS:
                     s = (value + s*10) if secondDigit else value
                     s = max(0,min(59,s))
-                self.setTime(time=datetime.time(hour=h,minute=m,second=s))
+                self.setTime(time=dt.time(hour=h,minute=m,second=s))
                 self.update()
             return True
         return False

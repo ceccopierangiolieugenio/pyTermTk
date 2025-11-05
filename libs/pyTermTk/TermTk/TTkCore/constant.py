@@ -565,7 +565,7 @@ class TTkConstant:
     LayoutItem = LayoutItemTypes.LayoutItem
     WidgetItem = LayoutItemTypes.WidgetItem
 
-    class WindowFlag(int):
+    class WindowFlag(Flag):
         '''
         Those flags are used to enable customization of the window controls.
 
@@ -576,6 +576,8 @@ class TTkConstant:
           WindowMinMaxButtonsHint
           WindowCloseButtonHint
         '''
+        NONE = 0
+        '''Empty flag'''
         # FramelessWindowHint         = 0x00000800
         # ''' Produces a borderless window.'''
         # CustomizeWindowHint         = 0x02000000
@@ -676,7 +678,7 @@ class TTkConstant:
     CTRL  = KeyModifier.CTRL
     ALT   = KeyModifier.ALT
 
-    class ShortcutContext(int):
+    class ShortcutContext(IntEnum):
         '''
         For a :py:class:`TTkShortcut` event to occur,
         the shortcut's key sequence must be entered by the user in a context where the shortcut is active.

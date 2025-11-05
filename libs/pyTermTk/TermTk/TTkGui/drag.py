@@ -157,12 +157,12 @@ class TTkDrag(TTkDnD):
         :param pixmap: the pixmap
         :type  pixmap: :py:class:`TTkWidget` or :py:class:`TTkCanvas`
         '''
-        if issubclass(type(pixmap),TTkWidget):
+        if isinstance(pixmap, TTkWidget):
             canvas = pixmap.getCanvas()
             canvas.updateSize()
             pixmap.paintEvent(canvas)
             pixmap = canvas
-        if type(pixmap) is TTkCanvas:
+        if isinstance(pixmap, TTkCanvas):
             pixmap.updateSize()
             self._pixmap.setPixmap(pixmap, self._hotSpot)
 
