@@ -16,8 +16,7 @@
 
 [![pypi_version](https://img.shields.io/badge/Twitter-pyTermTk-blue?logo=x&logoColor=blue)](https://twitter.com/hashtag/pyTermTk?src=hashtag_click&f=live)
 [![Static Badge](https://img.shields.io/badge/BlyeSky-pyTermTk-blue?logo=bluesky&logoColor=blue)](https://bsky.app/profile/piercecco.bsky.social)
-[![Static Badge](https://img.shields.io/badge/Discord-pyTermTk-8A2BE2?logo=discord&logoColor=blue)](https://discord.gg/7E5DZdbw)
-
+[![Static Badge](https://img.shields.io/badge/Discord-pyTermTk-8A2BE2?logo=discord&logoColor=blue)](https://discord.gg/bqcSZvup)
 
 ## [pyTermTk](https://github.com/ceccopierangiolieugenio/pyTermTk)
 
