@@ -638,7 +638,7 @@ class TTkString():
             sum(unicodedata.category(ch) in ('Me','Mn') for ch in txt) )
 
     @staticmethod
-    def _getLenTextWoZero(txt:str):
+    def _getLenTextWoZero(txt:str) -> int:
         return ( len(txt) -
             sum(unicodedata.category(ch) in ('Me','Mn') for ch in txt) )
 
