@@ -104,7 +104,7 @@ class TTkMenuBarLayout(TTkHBoxLayout):
         text, shortcuts = text.extractShortcuts()
         button = TTkMenuBarButton(text=text, data=data, checkable=checkable, checked=checked)
         for ch in shortcuts:
-            shortcut = TTkShortcut(key=TTkK.CTRL | ord(ch.upper()))
+            shortcut = TTkShortcut(evt=TTkK.CTRL | ord(ch.upper()))
             shortcut.activated.connect(button.shortcutEvent)
         self._mbItems(alignment).addWidget(button)
         self._buttons.append(button)

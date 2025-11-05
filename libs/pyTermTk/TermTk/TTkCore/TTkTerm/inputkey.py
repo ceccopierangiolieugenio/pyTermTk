@@ -22,6 +22,8 @@
 
 __all__ = ['TTkKeyEvent']
 
+from typing import Union
+
 from TermTk.TTkCore.constant import TTkK
 
 class TTkKeyEvent:
@@ -60,7 +62,7 @@ class TTkKeyEvent:
 
     '''
     __slots__ = ('type', 'key', 'code', 'mod')
-    def __init__(self, type:int, key: str, code: str, mod: int):
+    def __init__(self, type:int, key: Union[str,int], code: str, mod: int):
         self.type = type
         self.key = key
         self.mod = mod

@@ -676,7 +676,7 @@ class TTkConstant:
     CTRL  = KeyModifier.CTRL
     ALT   = KeyModifier.ALT
 
-    class ShortcutContext(int):
+    class ShortcutContext(IntEnum):
         '''
         For a :py:class:`TTkShortcut` event to occur,
         the shortcut's key sequence must be entered by the user in a context where the shortcut is active.
