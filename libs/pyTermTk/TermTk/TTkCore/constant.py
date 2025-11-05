@@ -129,13 +129,16 @@ class TTkConstant:
     # ContiguousSelection = SelectionMode.ContiguousSelection
     MultiSelection      = SelectionMode.MultiSelection
 
-    class SelectionFormat(int):
+    class SelectionFormat(IntEnum):
         '''
         Selection properties
 
         .. autosummary::
+          NONE
           FullWidthSelection
         '''
+        NONE = 0
+        '''Default value'''
         FullWidthSelection = 0x06000
         '''When set on the characterFormat of a selection, the whole width of the text will be shown selected.'''
 
