@@ -22,7 +22,7 @@
 
 __all__ = ['TTkDate']
 
-from enum import IntEnum,Enum,auto
+from enum import IntEnum,auto
 from dataclasses import dataclass
 import datetime
 import calendar
@@ -35,11 +35,9 @@ from TermTk.TTkCore.helper import TTkHelper
 from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
 from TermTk.TTkCore.TTkTerm.inputkey import TTkKeyEvent
 from TermTk.TTkCore.TTkTerm.inputmouse import TTkMouseEvent
-from TermTk.TTkLayouts import TTkGridLayout, TTkLayout
+from TermTk.TTkLayouts import TTkGridLayout
 from TermTk.TTkWidgets.widget import TTkWidget
 from TermTk.TTkWidgets.datetime_date_form import TTkDateForm
-from TermTk.TTkWidgets.container import TTkContainer
-from TermTk.TTkWidgets.spinbox import TTkSpinBox
 from TermTk.TTkWidgets.resizableframe import TTkResizableFrame
 
 class _FieldSelected(IntEnum):
@@ -125,8 +123,7 @@ class TTkDate(TTkWidget):
         self._maxOrdinal = datetime.date(year=2100,month=12,day=31).toordinal()
         self._minOrdinal = datetime.date(year=1900, month=1, day=1).toordinal()
         self._state = _TTkTimeWidgetState()
-        _layout=TTkLayout()
-        super().__init__(**kwargs|{'layout':_layout, 'size':(13,1)})
+        super().__init__(**kwargs|{'size':(13,1)})
         self.setFocusPolicy(TTkK.ClickFocus | TTkK.TabFocus)
 
     @staticmethod

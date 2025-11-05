@@ -22,22 +22,12 @@
 
 __all__ = ['TTkDateTime']
 
-from enum import IntEnum,Enum,auto
-from dataclasses import dataclass
 import datetime as dt
 
 from typing import Optional
 
-from TermTk.TTkCore.color import TTkColor
-from TermTk.TTkCore.string import TTkString
-from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
-from TermTk.TTkCore.TTkTerm.inputkey import TTkKeyEvent
-from TermTk.TTkCore.TTkTerm.inputmouse import TTkMouseEvent
-from TermTk.TTkLayouts import TTkGridLayout, TTkLayout
-from TermTk.TTkWidgets.widget import TTkWidget
 from TermTk.TTkWidgets.container import TTkContainer
-from TermTk.TTkWidgets.spinbox import TTkSpinBox
 from TermTk.TTkWidgets.datetime_date import TTkDate
 from TermTk.TTkWidgets.datetime_time import TTkTime
 
@@ -98,9 +88,8 @@ class TTkDateTime(TTkContainer):
         if not datetime:
             datetime = dt.datetime.now().replace(microsecond=0)
         self._datetime = datetime
-        _layout=TTkLayout()
         size = (13+1+8,1)
-        super().__init__(**kwargs|{'layout':_layout, 'size':size, 'minSize':size})
+        super().__init__(**kwargs|{'size':size, 'minSize':size})
         self._dateWidget = TTkDate(parent=self, pos=( 0,0), date=datetime.date())
         self._timeWidget = TTkTime(parent=self, pos=(14,0), time=datetime.time())
         self._dateWidget.dateChanged.connect(self._somethingChanged)

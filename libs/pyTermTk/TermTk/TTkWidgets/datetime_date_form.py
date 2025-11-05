@@ -22,7 +22,7 @@
 
 __all__ = ['TTkDateForm']
 
-from enum import IntEnum,Enum,auto
+from enum import IntEnum,auto
 from dataclasses import dataclass
 import datetime
 import calendar
@@ -36,10 +36,9 @@ from TermTk.TTkCore.helper import TTkHelper
 from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
 from TermTk.TTkCore.TTkTerm.inputkey import TTkKeyEvent
 from TermTk.TTkCore.TTkTerm.inputmouse import TTkMouseEvent
-from TermTk.TTkLayouts import TTkGridLayout, TTkLayout
+from TermTk.TTkLayouts import TTkGridLayout
 from TermTk.TTkWidgets.widget import TTkWidget
 from TermTk.TTkWidgets.container import TTkContainer
-from TermTk.TTkWidgets.spinbox import TTkSpinBox
 from TermTk.TTkWidgets.list_ import TTkList
 from TermTk.TTkWidgets.resizableframe import TTkResizableFrame
 

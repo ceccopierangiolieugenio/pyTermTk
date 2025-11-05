@@ -22,7 +22,7 @@
 
 __all__ = ['TTkTime']
 
-from enum import IntEnum,Enum,auto
+from enum import IntEnum,auto
 from dataclasses import dataclass
 import datetime
 
@@ -34,10 +34,7 @@ from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
 from TermTk.TTkCore.TTkTerm.inputkey import TTkKeyEvent
 from TermTk.TTkCore.TTkTerm.inputmouse import TTkMouseEvent
-from TermTk.TTkLayouts import TTkGridLayout, TTkLayout
 from TermTk.TTkWidgets.widget import TTkWidget
-from TermTk.TTkWidgets.container import TTkContainer
-from TermTk.TTkWidgets.spinbox import TTkSpinBox
 
 
 class _FieldSelected(IntEnum):
@@ -117,8 +114,7 @@ class TTkTime(TTkWidget):
         self.timeChanged = pyTTkSignal(datetime.time)
         self._time = time
         self._state = _TTkTimeWidgetState()
-        _layout=TTkLayout()
-        super().__init__(**kwargs|{'layout':_layout, 'size':(8,1)})
+        super().__init__(**kwargs|{'size':(8,1)})
         self.setFocusPolicy(TTkK.ClickFocus | TTkK.TabFocus)
 
         # sb_hour = TTkSpinBox(parent=self, pos=( 0,0), size=(4,1), value=time.hour   , maximum=24, minimum=1)

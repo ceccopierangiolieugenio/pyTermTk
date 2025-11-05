@@ -122,11 +122,11 @@ __check(){
             -e "TTkModelView/tablemodelsqlite3.py:import sqlite3" \
             -e "TTkModelView/tablemodelsqlite3.py:import threading" |
         grep -v \
-            -e "TTkWidgets/datetime_date.py:from enum import IntEnum,Enum,auto" \
+            -e "TTkWidgets/datetime_date.py:from enum import IntEnum,auto" \
             -e "TTkWidgets/datetime_date.py:import calendar" \
-            -e "TTkWidgets/datetime_time.py:from enum import IntEnum,Enum,auto" \
-            -e "TTkWidgets/datetime_datetime.py:from enum import IntEnum,Enum,auto" \
-            -e "TTkWidgets/datetime_date_form.py:from enum import IntEnum,Enum,auto" \
+            -e "TTkWidgets/datetime_time.py:from enum import IntEnum,auto" \
+            -e "TTkWidgets/datetime_datetime.py:from enum import IntEnum,auto" \
+            -e "TTkWidgets/datetime_date_form.py:from enum import IntEnum,auto" \
             -e "TTkWidgets/datetime_date_form.py:import calendar"
 } ;
 
