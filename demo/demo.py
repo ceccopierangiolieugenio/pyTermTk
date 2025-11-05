@@ -54,6 +54,7 @@ from  showcase.dragndrop     import demoDnD
 from  showcase.dndtabs       import demoDnDTabs
 from  showcase.sigmask       import demoSigmask
 from  showcase.apptemplate   import demoAppTemplate
+from  showcase.datetime      import demoDateTimePicker
 
 def stupidPythonHighlighter(txt):
     def _colorize(regex, txt, color):
@@ -181,9 +182,10 @@ def demoShowcase(root=None, border=True):
 
     listMenu.addItem(f"Pickers")
     tabPickers = ttk.TTkTabWidget(parent=mainFrame, border=False, visible=False)
-    tabPickers.addTab(demoFilePicker(),  " File Picker ",  'showcase/filepicker.py')
-    tabPickers.addTab(demoColorPicker(), " Color Picker ", 'showcase/colorpicker.py')
-    tabPickers.addTab(demoTextPicker(), " Text Picker ",  'showcase/textpicker.py')
+    tabPickers.addTab(demoFilePicker(),     " File Picker ",     'showcase/filepicker.py')
+    tabPickers.addTab(demoColorPicker(),    " Color Picker ",    'showcase/colorpicker.py')
+    tabPickers.addTab(demoTextPicker(),     " Text Picker ",     'showcase/textpicker.py')
+    tabPickers.addTab(demoDateTimePicker(), " DateTime Picker ", 'showcase/datetime.py')
     tabPickers.addMenu("sources", ttk.TTkK.RIGHT, tabPickers).menuButtonClicked.connect(lambda _menuButton : showSource(_menuButton.data().currentData()))
 
     listMenu.addItem(f"Graphs")

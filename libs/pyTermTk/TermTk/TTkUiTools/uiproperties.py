@@ -61,6 +61,7 @@ from .properties.filetree import *
 # Pickers
 from .properties.colorpicker import *
 from .properties.filepicker import *
+from .properties.datetime import *
 
 # Layouts
 from .properties.layout import *
@@ -87,6 +88,10 @@ TTkUiProperties = {
     # Pickers
         TTkColorButtonPicker.__name__ : TTkColorButtonPickerProperties,
         TTkFileButtonPicker.__name__  : TTkFileButtonPickerProperties,
+        TTkTime.__name__      : TTkTimeProperties,
+        TTkDate.__name__      : TTkDateProperties,
+        TTkDateTime.__name__  : TTkDateTimeProperties,
+        TTkDateForm.__name__  : TTkDateFormProperties,
     # Layouts
         TTkLayout.__name__   : TTkLayoutProperties,
     # Models

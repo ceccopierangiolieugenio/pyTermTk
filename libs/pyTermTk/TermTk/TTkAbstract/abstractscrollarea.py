@@ -167,7 +167,7 @@ class TTkAbstractScrollArea(TTkContainer):
             self._horizontalScrollBarPolicy = policy
             self._viewportChanged()
 
-    def viewport(self):
+    def viewport(self) -> TTkAbstractScrollViewInterface:
         return self._viewport
 
     def update(self, repaint=True, updateLayout=False, updateParent=False):
