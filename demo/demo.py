@@ -54,7 +54,7 @@ from  showcase.dragndrop     import demoDnD
 from  showcase.dndtabs       import demoDnDTabs
 from  showcase.sigmask       import demoSigmask
 from  showcase.apptemplate   import demoAppTemplate
-from  showcase.datetime      import demoDateTimePicker
+from  showcase.date_time     import demoDateTimePicker
 
 def stupidPythonHighlighter(txt):
     def _colorize(regex, txt, color):
@@ -185,7 +185,7 @@ def demoShowcase(root=None, border=True):
     tabPickers.addTab(demoFilePicker(),     " File Picker ",     'showcase/filepicker.py')
     tabPickers.addTab(demoColorPicker(),    " Color Picker ",    'showcase/colorpicker.py')
     tabPickers.addTab(demoTextPicker(),     " Text Picker ",     'showcase/textpicker.py')
-    tabPickers.addTab(demoDateTimePicker(), " DateTime Picker ", 'showcase/datetime.py')
+    tabPickers.addTab(demoDateTimePicker(), " DateTime Picker ", 'showcase/date_time.py')
     tabPickers.addMenu("sources", ttk.TTkK.RIGHT, tabPickers).menuButtonClicked.connect(lambda _menuButton : showSource(_menuButton.data().currentData()))
 
     listMenu.addItem(f"Graphs")
@@ -243,7 +243,7 @@ def main():
 
     root = ttk.TTk(title="pyTermTk Demo", mouseTrack=mouseTrack)
     if windowed:
-        winTabbed1 = ttk.TTkWindow(parent=root,pos=(0,0), size=(120,40), title="pyTermTk Showcase", border=True, layout=ttk.TTkGridLayout(), flags=ttk.TTkK.NONE)
+        winTabbed1 = ttk.TTkWindow(parent=root,pos=(0,0), size=(120,40), title="pyTermTk Showcase", border=True, layout=ttk.TTkGridLayout(), flags=ttk.TTkK.WindowFlag.NONE)
         border = True
     else:
         root.setLayout(ttk.TTkGridLayout())

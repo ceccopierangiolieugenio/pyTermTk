@@ -179,8 +179,8 @@ class TTkString():
     def __gt__(self, other): return self._text >  other._text if issubclass(type(other),TTkString) else self._text >  other
     def __ge__(self, other): return self._text >= other._text if issubclass(type(other),TTkString) else self._text >= other
 
-    def sameAs(self, other:TTkString) -> bool:
-        if not issubclass(type(other),TTkString): return False
+    def sameAs(self, other:TTkStringType) -> bool:
+        if not isinstance(other,TTkString): return False
         return (
             self==other and
             len(self._colors) == len(other._colors) and

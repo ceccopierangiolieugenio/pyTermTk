@@ -22,6 +22,8 @@
 
 __all__ = ['TTkLabel']
 
+from typing import Optional
+
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkCore.canvas import TTkCanvas
@@ -39,11 +41,11 @@ class TTkLabel(TTkWidget):
 
     __slots__ = ('_text', '_alignment')
     def __init__(self, *,
-                 text:TTkString="",
-                 color:TTkColor=None,
+                 text:TTkStringType="",
+                 color:Optional[TTkColor]=None,
                  alignment:TTkK.Alignment=TTkK.LEFT_ALIGN,
                  **kwargs) -> None:
-        if issubclass(type(text), TTkString):
+        if isinstance(text, TTkString):
             self._text = text.split('\n')
         else:
             self._text = TTkString(text).split('\n')

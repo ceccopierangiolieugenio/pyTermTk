@@ -68,12 +68,15 @@ class TTkWindow(TTkResizableFrame):
             '_btnClose', '_btnMax', '_btnMin', '_btnReduce',
             '_flags', '_winTopLayout',
             '_maxBk', '_redBk' )
+
+    _flags:TTkK.WindowFlag
+
     def __init__(self, *,
                  flags:TTkK.WindowFlag=TTkK.WindowFlag.WindowCloseButtonHint,
                  **kwargs) -> None:
         self._winTopLayout = TTkGridLayout()
-        self._flags = TTkK.NONE
         self._mouseDelta = (0,0)
+        self._flags = TTkK.WindowFlag.NONE
         self._draggable = False
         super().__init__(**kwargs)
         # This is a little hack used in TTKWindow to define the placement of the TOP menubar inside TTKFrame
@@ -146,11 +149,11 @@ class TTkWindow(TTkResizableFrame):
         pl.addWidget(mb)
         self.hide()
 
-    def windowFlag(self):
+    def windowFlag(self) -> TTkK.WindowFlag:
         '''windowFlag'''
         return self._flags
 
-    def setWindowFlag(self, flag):
+    def setWindowFlag(self, flag:TTkK.WindowFlag):
         '''setWindowFlag'''
         if self._flags == flag: return
         self._flags = flag

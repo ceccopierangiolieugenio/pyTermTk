@@ -22,6 +22,8 @@
 
 __all__ = ['TTkTextWrap']
 
+from typing import Optional
+
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.signal import pyTTkSignal
 from TermTk.TTkCore.string import TTkString
@@ -35,7 +37,7 @@ class TTkTextWrap():
         # Signals
         'wrapChanged'
         )
-    def __init__(self, document:TTkTextDocument=None) -> None:
+    def __init__(self, document:Optional[TTkTextDocument]=None) -> None:
         # signals
         self.wrapChanged = pyTTkSignal()
 
@@ -78,33 +80,33 @@ class TTkTextWrap():
     def rewrap(self):
         self._lines = []
         if not self._enable:
-            def _process(i,l):
-                self._lines.append((i,(0,len(l)+1)))
+            def _process(_i:int, _l:TTkString):
+                self._lines.append((_i,(0,len(_l)+1)))
         else:
             if not (w := self._wrapWidth):
                 return
 
-            def _process(i,l:TTkString):
+            def _process(_i:int, _l:TTkString):
                 fr = 0
                 to = 0
-                if not len(l): # if the line is empty append it
-                    self._lines.append((i,(0,0)))
+                if not len(_l): # if the line is empty append it
+                    self._lines.append((_i,(0,0)))
                     return
-                while len(l):
-                    fl = l.tab2spaces(self._tabSpaces)
+                while len(_l):
+                    fl = _l.tab2spaces(self._tabSpaces)
                     if fl.termWidth() <= w:
-                        self._lines.append((i,(fr,fr+len(l)+1)))
-                        l=[]
+                        self._lines.append((_i,(fr,fr+len(_l)+1)))
+                        return
                     else:
-                        to = max(1,l.tabCharPos(w,self._tabSpaces))
+                        to = max(1,_l.tabCharPos(w,self._tabSpaces))
                         if self._wordWrapMode == TTkK.WordWrap: # Find the index of the first white space
-                            s = str(l)
+                            s = str(_l)
                             newTo = to
                             while newTo and ( s[newTo] != ' ' and s[newTo] != '\t' ): newTo-=1
                             if newTo: to = newTo
 
-                        self._lines.append((i,(fr,fr+to)))
-                        l = l.substring(to)
+                        self._lines.append((_i,(fr,fr+to)))
+                        _l = _l.substring(to)
                         fr += to
         for i,l in enumerate(self._textDocument._dataLines):
             _process(i,l)

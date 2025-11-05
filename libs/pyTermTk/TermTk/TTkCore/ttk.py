@@ -119,6 +119,7 @@ class TTk(TTkContainer):
 
     _timer:TTkTimer
     _exceptions:List[Exception]
+    _mouseCursor:Optional[_MouseCursor]
 
     def __init__(self, *,
                  title:str='TermTk',
@@ -223,7 +224,6 @@ class TTk(TTkContainer):
             if self._showMouseCursor:
                 self._mouseCursor = _MouseCursor()
                 self._mouseCursor.updated.connect(self.update)
-                self.paintChildCanvas = self._mouseCursorPaintChildCanvas
 
             if platform.system() != 'Emscripten':
                 TTkInput.start()
@@ -278,7 +278,7 @@ class TTk(TTkContainer):
         self._timer.quit()
         self._paintEvent.set()
 
-    def _mouseCursorPaintChildCanvas(self) -> None:
+    def paintChildCanvas(self) -> None:
         super().paintChildCanvas()
         if self._mouseCursor:
             ch = self._mouseCursor._cursor
