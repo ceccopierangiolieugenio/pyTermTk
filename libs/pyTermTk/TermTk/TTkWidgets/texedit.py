@@ -120,6 +120,8 @@ class TTkTextEditRuler(TTkAbstractScrollView):
         self._wrapChanged()
 
     def setTextWrap(self, tw:TTkTextWrap) -> None:
+        if self._textWrap:
+            self._textWrap.wrapChanged.disconnect(self._wrapChanged)
         self._textWrap = tw
         tw.wrapChanged.connect(self._wrapChanged)
         self._wrapChanged()
@@ -511,6 +513,7 @@ class TTkTextEditView(TTkAbstractScrollView):
         self._textDocument = document
         self._textCursor = TTkTextCursor(document=self._textDocument)
         self._textWrap = TTkTextWrap(document=self._textDocument)
+        self._textWrap.wrapChanged.connect(self.update)
         self._textDocument.contentsChanged.connect(self._documentChanged)
         self._textDocument.cursorPositionChanged.connect(self._cursorPositionChanged)
         self._textDocument.undoAvailable.connect(self._undoAvailable)
@@ -531,8 +534,6 @@ class TTkTextEditView(TTkAbstractScrollView):
         self._textDocument.formatChanged.disconnect(self.update)
         self._textWrap.wrapChanged.disconnect(self.update)
         self._setDocument(document)
-        # Trigger an update when the rewrap happen
-        self._textWrap.wrapChanged.connect(self.update)
 
     # forward textWrap Methods
     def wrapWidth(self, *args, **kwargs) -> None:
