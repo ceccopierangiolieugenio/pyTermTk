@@ -65,22 +65,22 @@ class TTkShortcut():
         # Signals
         'activated')
     def __init__(self,
-                 evt:Union[int,TTkKeyEvent], parent:Optional['TTkWidget']=None,
+                 key:Union[int,TTkKeyEvent], parent:Optional['TTkWidget']=None,
                  shortcutContext: TTkK.ShortcutContext = TTkK.ShortcutContext.WindowShortcut):
-        if type(evt) == int:
-            evt = _TTkKeySequence(evt)._key
-        elif isinstance(evt, TTkKeyEvent):
-            evt = evt
+        if type(key) == int:
+            key = _TTkKeySequence(key)._key
+        elif isinstance(key, TTkKeyEvent):
+            key = key
         else:
-            raise TypeError(f"{evt=} is not int or TTkKeyEvent")
+            raise TypeError(f"{key=} is not int or TTkKeyEvent")
 
         self._parent = parent
         self._shortcutContext = shortcutContext
         # Signals
         self.activated = pyTTkSignal()
-        if evt not in TTkShortcut._shortcuts:
-            TTkShortcut._shortcuts[evt] = []
-        TTkShortcut._shortcuts[evt].append(self)
+        if key not in TTkShortcut._shortcuts:
+            TTkShortcut._shortcuts[key] = []
+        TTkShortcut._shortcuts[key].append(self)
 
     @staticmethod
     def processKey(key:TTkKeyEvent, focusWidget:'TTkWidget') -> bool:
