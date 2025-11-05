@@ -22,7 +22,7 @@
 
 __all__ = ['TTkTextEditView', 'TTkTextEdit', 'TTkTextEditRuler']
 
-from typing import List,Optional,Union,Dict,Any
+from typing import List,Optional,Union,Dict,Any,TypeAlias
 
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.cfg import TTkCfg
@@ -226,7 +226,7 @@ class TTkTextEditView(TTkAbstractScrollView):
         __slots__ = ('_format', '_color', '_cursor')
         def __init__(self,
                      cursor:TTkTextCursor,
-                     format:TTkK.SelectionFormat=TTkK.NONE,
+                     format:TTkK.SelectionFormat=TTkK.SelectionFormat.NONE,
                      color:TTkColor=TTkColor.RST) -> None:
             self._color = color
             self._format = format
@@ -889,7 +889,7 @@ class TTkTextEditView(TTkAbstractScrollView):
         self.update()
         return True
 
-    def pasteEvent(self, txt:TTkStringType) -> None:
+    def pasteEvent(self, txt:TTkStringType) -> bool:
         txt = TTkString(txt)
         if not self._multiLine:
             txt = TTkString().join(txt.split('\n'))
@@ -904,6 +904,7 @@ class TTkTextEditView(TTkAbstractScrollView):
         self._scrolToInclude(cx,cy)
         self._pushCursor()
         self.update()
+        return True
 
     def keyEvent(self, evt: TTkKeyEvent) -> bool:
         if self._readOnly:
@@ -1026,9 +1027,9 @@ class TTkTextEditView(TTkAbstractScrollView):
             return True
         else: # Input char
             if self._replace:
-                self._textCursor.replaceText(evt.key, moveCursor=True)
+                self._textCursor.replaceText(str(evt.key), moveCursor=True)
             else:
-                self._textCursor.insertText(evt.key, moveCursor=True)
+                self._textCursor.insertText(str(evt.key), moveCursor=True)
             # Scroll to align to the cursor
             p = self._textCursor.position()
             cx, cy = self._textWrap.dataToScreenPosition(p.line, p.pos)
@@ -1087,7 +1088,7 @@ class TTkTextEdit(TTkAbstractScrollArea):
 
     ''' + (TTkTextEditView.__doc__ if TTkTextEditView.__doc__ else '')
 
-    ExtraSelection = TTkTextEditView.ExtraSelection
+    ExtraSelection: TypeAlias = TTkTextEditView.ExtraSelection
 
     _ttk_forward:_ForwardData = _ForwardData(
         forwardClass=TTkTextEditView ,
