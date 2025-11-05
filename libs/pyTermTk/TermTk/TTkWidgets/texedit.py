@@ -22,7 +22,7 @@
 
 __all__ = ['TTkTextEditView', 'TTkTextEdit', 'TTkTextEditRuler']
 
-from typing import List,Optional,Union,Dict,Any,TypeAlias
+from typing import List,Optional,Union,Dict,Any,TYPE_CHECKING
 
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.cfg import TTkCfg
@@ -1088,7 +1088,12 @@ class TTkTextEdit(TTkAbstractScrollArea):
 
     ''' + (TTkTextEditView.__doc__ if TTkTextEditView.__doc__ else '')
 
-    ExtraSelection: TypeAlias = TTkTextEditView.ExtraSelection
+    if TYPE_CHECKING:
+        from typing import TypeAlias
+        ExtraSelection: TypeAlias = TTkTextEditView.ExtraSelection
+    else:
+        # TODO: remove this once Python 3.9 will disappear from the world
+        ExtraSelection = TTkTextEditView.ExtraSelection
 
     _ttk_forward:_ForwardData = _ForwardData(
         forwardClass=TTkTextEditView ,
