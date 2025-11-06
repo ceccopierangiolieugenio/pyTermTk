@@ -102,6 +102,9 @@ Pickers
 
 .. image:: https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/images/pyTermTk.Widgets.MessageBox.gif
 
+* Date and Time  :py:class:`TTkDate`, :py:class:`TTkTime`, :py:class:`TTkDateTime`, :py:class:`TTkDateForm`
+
+.. image:: https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/images/pyTermTk.Widgets.DateTime.gif
 
 .. _widgets-layout:
 
