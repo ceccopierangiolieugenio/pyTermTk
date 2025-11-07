@@ -155,7 +155,6 @@ class TTkMenuButton(TTkWidget):
         :param text:
         :type text: :py:class:`TTkString`
         '''
-        if self._text == text: return
         self._text = TTkString(text)
         self.textChanged.emit(self._text)
         self.update()
