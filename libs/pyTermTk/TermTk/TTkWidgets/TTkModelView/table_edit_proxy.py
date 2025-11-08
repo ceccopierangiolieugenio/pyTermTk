@@ -26,7 +26,7 @@ __all__ = ['TTkTableProxyEdit', 'TTkTableEditLeaving', 'TTkTableProxyEditWidget'
 
 from dataclasses import dataclass
 from enum import Enum, auto
-from typing import TYPE_CHECKING, Protocol, Union, Tuple, Type, List, Optional, Any
+from typing import Union, Tuple, Type, List, Optional, Any
 
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.string import TTkString, TTkStringType
@@ -37,11 +37,6 @@ from TermTk.TTkWidgets.widget import TTkWidget
 from TermTk.TTkWidgets.texedit import TTkTextEdit, TTkTextEditView
 from TermTk.TTkWidgets.spinbox import TTkSpinBox
 from TermTk.TTkWidgets.TTkPickers.textpicker import TTkTextPicker
-
-from TermTk.TTkGui.textcursor import TTkTextCursor
-
-if TYPE_CHECKING:
-    from TermTk.TTkWidgets.TTkModelView.tablewidget import TTkTableWidget
 
 class TTkTableEditLeaving(Enum):
     ''' Enum indicating the direction the user is leaving the table cell editor
