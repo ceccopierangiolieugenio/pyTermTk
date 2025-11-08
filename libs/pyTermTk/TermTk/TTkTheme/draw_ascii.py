@@ -85,8 +85,8 @@ class TTkTheme():
     combobox = {'( )','(x)'}
     checkbox = {'[ ]','[x]','[/]'}
 
-    hscroll = ('<','-','X','>')
-    vscroll = ('^','|','X','v')
+    hscroll = ('<','-','+','>')
+    vscroll = ('^','|','+','v')
 
     tree = (' ','+','-',' ',
             '|','|','v','^',)

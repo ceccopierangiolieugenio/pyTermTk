@@ -381,20 +381,20 @@ class TTkCanvas():
             for ix in vlines:
                 self._set(y+iy, x+ix, gg[0x0A], color)
 
-    def drawScroll(self, pos, size, slider, orientation, color=TTkColor.RST):
+    def drawScroll(self, pos, size, slider, orientation, color=TTkColor.RST, borderColor=TTkColor.RST):
         if not self._visible: return
         x,y = pos
         f,t = slider # slider from-to position
         if orientation == TTkK.HORIZONTAL:
             for i in range(x+1,x+size-1): # H line
-                self._set(y,x+i, TTkCfg.theme.hscroll[1], color)
+                self._set(y,x+i, TTkCfg.theme.hscroll[1], borderColor)
             for i in range(f,t): # Slider
                 self._set(y,x+i, TTkCfg.theme.hscroll[2], color)
             self._set(y,x, TTkCfg.theme.hscroll[0], color)        # Left Arrow
             self._set(y,x+size-1, TTkCfg.theme.hscroll[3], color) # Right Arrow
         else:
             for i in range(y+1,y+size-1): # V line
-                self._set(y+i,x, TTkCfg.theme.vscroll[1], color)
+                self._set(y+i,x, TTkCfg.theme.vscroll[1], borderColor)
             for i in range(f,t): # Slider
                 self._set(y+i,x, TTkCfg.theme.vscroll[2], color)
             self._set(y,x, TTkCfg.theme.vscroll[0], color)        # Up Arrow
