@@ -138,8 +138,8 @@ class TTkTheme():
         └─┘    ╘═╛    ╚═╝    └─┘
     '''
 
-    combobox = {'◯','◉'}
-    checkbox = {'□','▣','◪'}
+    radiobox = ('◯','◉')
+    checkbox = ('□','▣','◪')
 
     hscroll = ('◀','┄','▓','▶')
     vscroll = ('▲','┊','▓','▼')

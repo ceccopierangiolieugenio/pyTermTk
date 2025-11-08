@@ -210,9 +210,10 @@ class TTkCheckbox(TTkWidget):
         canvas.drawText(pos=(0,0), color=borderColor ,text="[ ]")
         canvas.drawText(pos=(3,0), color=textColor ,text=self._text)
         text = {
-            TTkK.Checked :   "X",
-            TTkK.Unchecked : " ",
-            TTkK.PartiallyChecked: "/"}.get(self._checkStatus, " ")
+            TTkK.Unchecked :       TTkCfg.theme.checkbox[0],  # ' ' or '□'
+            TTkK.Checked :         TTkCfg.theme.checkbox[1],  # 'X' or '▣'
+            TTkK.PartiallyChecked: TTkCfg.theme.checkbox[2]   # '/' or '◪'
+        }.get(self._checkStatus, TTkCfg.theme.checkbox[0])
         canvas.drawText(pos=(1,0), color=xColor ,text=text)
 
     def _pressEvent(self) -> bool:

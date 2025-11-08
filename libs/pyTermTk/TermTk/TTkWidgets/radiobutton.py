@@ -183,9 +183,9 @@ class TTkRadioButton(TTkWidget):
         canvas.drawText(pos=(0,0), color=borderColor ,text="( )")
         canvas.drawText(pos=(3,0), color=textColor ,text=self._text)
         if self._checked:
-            canvas.drawText(pos=(1,0), color=xColor ,text="X")
+            canvas.drawText(pos=(1,0), color=xColor ,text=TTkCfg.theme.radiobox[1])  # 'X' or '◉'
         else:
-            canvas.drawText(pos=(1,0), color=xColor ,text=" ")
+            canvas.drawText(pos=(1,0), color=xColor ,text=TTkCfg.theme.radiobox[0])  # ' ' or '◯'
 
     def _checkEvent(self):
         # Uncheck the radio already checked;
