@@ -84,12 +84,7 @@ class TTkScrollBar(TTkWidget):
 
         TTkWidget.__init__(self, **kwargs)
 
-        if self._orientation == TTkK.VERTICAL:
-            self.setMaximumWidth(1)
-            self.setMinimumSize(1,3)
-        else:
-            self.setMaximumHeight(1)
-            self.setMinimumSize(3,1)
+        self.setMinimumSize(1,1)
         self.setFocusPolicy(TTkK.ClickFocus)
 
     def orientation(self):
@@ -181,7 +176,7 @@ class TTkScrollBar(TTkWidget):
 
         size2 = size-2
         asciiStep = self._screenScroller[1] - self._screenScroller[0]
-        asciiDrawingSize = size2 - asciiStep
+        asciiDrawingSize = max(1, size2 - asciiStep)
 
         a =  aa * (self._maximum - self._minimum) // asciiDrawingSize
 
