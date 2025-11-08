@@ -44,6 +44,8 @@ class TTkTheme():
     box       = draw_utf8.TTkTheme.box
     grid      = draw_utf8.TTkTheme.grid
     buttonBox = draw_utf8.TTkTheme.buttonBox
+    radiobox  = draw_utf8.TTkTheme.radiobox
+    checkbox  = draw_utf8.TTkTheme.checkbox
     hscroll   = draw_utf8.TTkTheme.hscroll
     vscroll   = draw_utf8.TTkTheme.vscroll
     tree      = draw_utf8.TTkTheme.tree
@@ -79,6 +81,8 @@ class TTkTheme():
         TTkTheme.box       = theme['draw'].TTkTheme.box
         TTkTheme.grid      = theme['draw'].TTkTheme.grid
         TTkTheme.buttonBox = theme['draw'].TTkTheme.buttonBox
+        TTkTheme.radiobox  = theme['draw'].TTkTheme.radiobox
+        TTkTheme.checkbox  = theme['draw'].TTkTheme.checkbox
         TTkTheme.hscroll   = theme['draw'].TTkTheme.hscroll
         TTkTheme.vscroll   = theme['draw'].TTkTheme.vscroll
         TTkTheme.tree      = theme['draw'].TTkTheme.tree
