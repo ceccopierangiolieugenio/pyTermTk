@@ -85,21 +85,37 @@ class TTkTableProxyEditWidget(TTkWidget):
     '''
 
     @staticmethod
-    def editWidgetFactory( data:object) -> TTkTableProxyEditWidget:
+    def editWidgetFactory(data: object) -> TTkTableProxyEditWidget:
+        ''' Factory method to create an editor widget from data
+
+        :param data: The initial data value for the editor
+        :type data: object
+        :return: A new editor widget instance
+        :rtype: TTkTableProxyEditWidget
+        :raises NotImplementedError: Must be implemented by subclasses
+        '''
         raise NotImplementedError()
+
     def getCellData(self) -> object:
+        ''' Get the current data value from the editor
+
+        :return: The current cell data
+        :rtype: object
+        :raises NotImplementedError: Must be implemented by subclasses
+        '''
         raise NotImplementedError()
-    # def setCellData(self, data:object) -> None:
-    #     raise NotImplementedError()
+
     def proxyDispose(self) -> None:
+        ''' Clean up the editor widget and disconnect signals
+        '''
         self.leavingTriggered.clear()
         self.dataChanged.clear()
         self.close()
 
 class _TextEditViewProxy(TTkTextEditView, TTkTableProxyEditWidget):
-    ''' Text editor for table cells
+    ''' Text editor view for table cells
 
-    Extends :py:class:`~TermTk.TTkWidgets.texedit.TTkTextEdit` with table-specific signals
+    Extends :py:class:`TTkTextEditView` with table-specific signals
     for navigation and data change notification.
     '''
     __slots__ = ('leavingTriggered', 'dataChanged')
@@ -112,7 +128,7 @@ class _TextEditViewProxy(TTkTextEditView, TTkTableProxyEditWidget):
     :type direction: TTkTableEditLeaving
     '''
 
-    setDataChanged: pyTTkSignal
+    dataChanged: pyTTkSignal
     '''
     This signal is emitted when the text content changes
 
@@ -121,20 +137,31 @@ class _TextEditViewProxy(TTkTextEditView, TTkTableProxyEditWidget):
     '''
 
     def __init__(self, **kwargs):
+        ''' Initialize the text edit view proxy
+
+        :param kwargs: Additional keyword arguments passed to parent
+        :type kwargs: dict
+        '''
         self.leavingTriggered = pyTTkSignal(TTkTableEditLeaving)
         self.dataChanged = pyTTkSignal(object)
         super().__init__(**kwargs)
         self.textChanged.connect(self._emitDataChanged)
 
-    def keyEvent(self, evt:TTkKeyEvent) -> bool:
-        if ( evt.type == TTkK.SpecialKey):
+    def keyEvent(self, evt: TTkKeyEvent) -> bool:
+        ''' Handle keyboard events for navigation and data entry
+
+        :param evt: The keyboard event
+        :type evt: TTkKeyEvent
+        :return: True if event was handled, False otherwise
+        :rtype: bool
+        '''
+        if (evt.type == TTkK.SpecialKey):
             _cur = self.textCursor()
             _doc = self.document()
             _line = _cur.anchor().line
             _pos  = _cur.anchor().pos
             _lineCount = _doc.lineCount()
-            # _lineLen
-            if evt.mod==TTkK.NoModifier:
+            if evt.mod == TTkK.NoModifier:
                 if evt.key == TTkK.Key_Enter:
                     self.leavingTriggered.emit(TTkTableEditLeaving.BOTTOM)
                     return True
@@ -151,12 +178,12 @@ class _TextEditViewProxy(TTkTextEditView, TTkTableProxyEditWidget):
                         self.leavingTriggered.emit(TTkTableEditLeaving.LEFT)
                         return True
                 elif evt.key == TTkK.Key_Right:
-                    if _lineCount == 1 and _pos==len(_doc.toPlainText()):
+                    if _lineCount == 1 and _pos == len(_doc.toPlainText()):
                         self.leavingTriggered.emit(TTkTableEditLeaving.RIGHT)
                         return True
-            elif ( evt.type == TTkK.SpecialKey and
-                    evt.mod==TTkK.ControlModifier|TTkK.AltModifier and
-                    evt.key == TTkK.Key_M ):
+            elif (evt.type == TTkK.SpecialKey and
+                  evt.mod == TTkK.ControlModifier | TTkK.AltModifier and
+                  evt.key == TTkK.Key_M):
                 evt.mod = TTkK.NoModifier
                 evt.key = TTkK.Key_Enter
         return super().keyEvent(evt)
@@ -172,7 +199,7 @@ class _TextEditViewProxy(TTkTextEditView, TTkTableProxyEditWidget):
 class _TextEditProxy(TTkTextEdit, TTkTableProxyEditWidget):
     ''' Text editor for table cells
 
-    Extends :py:class:`~TermTk.TTkWidgets.texedit.TTkTextEdit` with table-specific signals
+    Extends :py:class:`TTkTextEdit` with table-specific signals
     for navigation and data change notification.
     '''
     __slots__ = ('leavingTriggered', 'dataChanged')
@@ -185,7 +212,7 @@ class _TextEditProxy(TTkTextEdit, TTkTableProxyEditWidget):
     :type direction: TTkTableEditLeaving
     '''
 
-    setDataChanged: pyTTkSignal
+    dataChanged: pyTTkSignal
     '''
     This signal is emitted when the text content changes
 
@@ -194,33 +221,48 @@ class _TextEditProxy(TTkTextEdit, TTkTableProxyEditWidget):
     '''
 
     def __init__(self, **kwargs):
+        ''' Initialize the text edit proxy
+
+        :param kwargs: Additional keyword arguments passed to parent
+        :type kwargs: dict
+        '''
         self.leavingTriggered = pyTTkSignal(TTkTableEditLeaving)
         self.dataChanged = pyTTkSignal(object)
         tew = _TextEditViewProxy()
-        super().__init__(**kwargs|{'textEditView':tew})
+        super().__init__(**kwargs | {'textEditView': tew})
         tew.leavingTriggered.connect(self.leavingTriggered.emit)
         tew.dataChanged.connect(self.dataChanged.emit)
 
     @staticmethod
-    def editWidgetFactory( data:Any) -> TTkTableProxyEditWidget:
-        if not isinstance(data, (TTkString,str)):
+    def editWidgetFactory(data: Any) -> TTkTableProxyEditWidget:
+        ''' Factory method to create a text editor from string data
+
+        :param data: The initial text value
+        :type data: Union[str, TTkString]
+        :return: A new text editor instance
+        :rtype: TTkTableProxyEditWidget
+        :raises ValueError: If data is not a string or TTkString
+        '''
+        if not isinstance(data, (TTkString, str)):
             raise ValueError(f"{data} is not a TTkStringType")
         te = _TextEditProxy()
         te.setText(data)
         return te
 
     def getCellData(self) -> TTkStringType:
+        ''' Get the current text value from the editor
+
+        :return: The current text content
+        :rtype: Union[str, TTkString]
+        '''
         txt = self.toRawText()
         val = str(txt) if txt.isPlainText() else txt
         return val
 
-    # def setCellData(self, data:TTkStringType) -> None:
-    #     self.setText(data)
-
 class _SpinBoxProxy(TTkSpinBox, TTkTableProxyEditWidget):
     ''' Numeric editor for table cells
 
-    Extends :py:class:`~TermTk.TTkWidgets.spinbox.TTkSpinBox` with table-specific signals
+    Extends :py:class:`TTkSpinBox` with table-specific signals
     for navigation and data change notification.
     '''
     __slots__ = ('leavingTriggered', 'dataChanged')
@@ -242,14 +284,27 @@ class _SpinBoxProxy(TTkSpinBox, TTkTableProxyEditWidget):
     '''
 
     def __init__(self, **kwargs):
+        ''' Initialize the spin box proxy
+
+        :param kwargs: Additional keyword arguments passed to parent
+        :type kwargs: dict
+        '''
         self.leavingTriggered = pyTTkSignal(TTkTableEditLeaving)
         self.dataChanged = pyTTkSignal(object)
         super().__init__(**kwargs)
         self.valueChanged.connect(self.dataChanged.emit)
 
     @staticmethod
-    def editWidgetFactory( data:Any) -> TTkTableProxyEditWidget:
-        if not isinstance(data, (int,float)):
+    def editWidgetFactory(data: Any) -> TTkTableProxyEditWidget:
+        ''' Factory method to create a spin box from numeric data
+
+        :param data: The initial numeric value
+        :type data: Union[int, float]
+        :return: A new spin box instance
+        :rtype: TTkTableProxyEditWidget
+        :raises ValueError: If data is not an int or float
+        '''
+        if not isinstance(data, (int, float)):
             raise ValueError(f"{data} is not a int or float")
         sb = _SpinBoxProxy(
             minimum=-1000000,
@@ -257,15 +312,24 @@ class _SpinBoxProxy(TTkSpinBox, TTkTableProxyEditWidget):
             value=data)
         return sb
 
-    def getCellData(self) -> Union[float,int]:
+    def getCellData(self) -> Union[float, int]:
+        ''' Get the current numeric value from the editor
+
+        :return: The current spin box value
+        :rtype: Union[int, float]
+        '''
         return self.value()
 
-    # def setCellData(self, data:Union[float,int]) -> None:
-    #     self.setValue(data)
+    def keyEvent(self, evt: TTkKeyEvent) -> bool:
+        ''' Handle keyboard events for navigation
 
-    def keyEvent(self, evt:TTkKeyEvent) -> bool:
-        if ( evt.type == TTkK.SpecialKey):
-            if evt.mod==TTkK.NoModifier:
+        :param evt: The keyboard event
+        :type evt: TTkKeyEvent
+        :return: True if event was handled, False otherwise
+        :rtype: bool
+        '''
+        if (evt.type == TTkK.SpecialKey):
+            if evt.mod == TTkK.NoModifier:
                 if evt.key == TTkK.Key_Enter:
                     self.leavingTriggered.emit(TTkTableEditLeaving.RIGHT)
                     return True
@@ -275,7 +339,7 @@ class _SpinBoxProxy(TTkSpinBox, TTkTableProxyEditWidget):
 class _TextPickerProxy(TTkTextPicker, TTkTableProxyEditWidget):
     ''' Rich text editor for table cells
 
-    Extends :py:class:`~TermTk.TTkWidgets.TTkPickers.textpicker.TTkTextPicker` with table-specific signals
+    Extends :py:class:`TTkTextPicker` with table-specific signals
     for navigation and data change notification.
     '''
     __slots__ = ('leavingTriggered', 'dataChanged')
@@ -297,6 +361,11 @@ class _TextPickerProxy(TTkTextPicker, TTkTableProxyEditWidget):
     '''
 
     def __init__(self, **kwargs):
+        ''' Initialize the text picker proxy
+
+        :param kwargs: Additional keyword arguments passed to parent
+        :type kwargs: dict
+        '''
         self.leavingTriggered = pyTTkSignal(TTkTableEditLeaving)
         self.dataChanged = pyTTkSignal(object)
         super().__init__(**kwargs)
@@ -304,11 +373,21 @@ class _TextPickerProxy(TTkTextPicker, TTkTableProxyEditWidget):
 
     @pyTTkSlot()
     def _textChanged(self):
+        ''' Internal slot to emit dataChanged signal
+        '''
         self.dataChanged.emit(self.getCellData())
 
     @staticmethod
-    def editWidgetFactory( data:Any) -> TTkTableProxyEditWidget:
-        if not isinstance(data, (TTkString,str)):
+    def editWidgetFactory(data: Any) -> TTkTableProxyEditWidget:
+        ''' Factory method to create a text picker from string data
+
+        :param data: The initial text value
+        :type data: Union[str, TTkString]
+        :return: A new text picker instance
+        :rtype: TTkTableProxyEditWidget
+        :raises ValueError: If data is not a string or TTkString
+        '''
+        if not isinstance(data, (TTkString, str)):
             raise ValueError(f"{data} is not a TTkStringType")
         te = _TextPickerProxy(
             text=data,
@@ -317,14 +396,23 @@ class _TextPickerProxy(TTkTextPicker, TTkTableProxyEditWidget):
         return te
 
     def getCellData(self) -> TTkString:
+        ''' Get the current rich text value from the editor
+
+        :return: The current TTkString content
+        :rtype: TTkString
+        '''
         return self.getTTkString()
 
-    # def setCellData(self, data:TTkStringType) -> None:
-    #     self.setT(data)
+    def keyEvent(self, evt: TTkKeyEvent) -> bool:
+        ''' Handle keyboard events for navigation
 
-    def keyEvent(self, evt:TTkKeyEvent) -> bool:
-        if ( evt.type == TTkK.SpecialKey):
-            if evt.mod==TTkK.NoModifier:
+        :param evt: The keyboard event
+        :type evt: TTkKeyEvent
+        :return: True if event was handled, False otherwise
+        :rtype: bool
+        '''
+        if (evt.type == TTkK.SpecialKey):
+            if evt.mod == TTkK.NoModifier:
                 if evt.key == TTkK.Key_Enter:
                     self.leavingTriggered.emit(TTkTableEditLeaving.RIGHT)
                     return True
@@ -351,28 +439,44 @@ class TTkTableProxyEdit():
     Creates and configures appropriate editor widgets based on cell data type.
     All editors implement the :py:class:`TTkTableProxyEditWidget` protocol.
 
+    Automatically selects the correct editor type:
+    - :py:class:`_SpinBoxProxy` for int and float values
+    - :py:class:`_TextEditProxy` for plain text strings
+    - :py:class:`_TextPickerProxy` for rich text (TTkString with formatting)
+
     Example usage::
 
         proxy = TTkTableProxyEdit()
-        proxy.editCell(
-            geometry=(10, 5, 20, 3),
-            row=2, col=1,
-            table=myTable
-        )
+        editor = proxy.getProxyWidget(data=42, rich=False)
+        if editor:
+            editor.leavingTriggered.connect(handleNavigation)
+            editor.dataChanged.connect(handleDataChange)
     '''
-    __slots__ = ('_proxies')
-    _proxies:List[TTkProxyEditDef]
+    __slots__ = ('_proxies',)
+    _proxies: List[TTkProxyEditDef]
+
     def __init__(self):
+        ''' Initialize the table proxy edit manager
+        '''
         self._proxies = [
-            TTkProxyEditDef( class_def=_SpinBoxProxy,    types=(int,float)     ),
-            TTkProxyEditDef( class_def=_TextEditProxy,   types=(str,TTkString) ),
-            TTkProxyEditDef( class_def=_TextEditProxy,   types=(str),       rich=True ),
-            TTkProxyEditDef( class_def=_TextPickerProxy, types=(TTkString), rich=True ),
+            TTkProxyEditDef(class_def=_SpinBoxProxy,    types=(int, float)),
+            TTkProxyEditDef(class_def=_TextEditProxy,   types=(str, TTkString)),
+            TTkProxyEditDef(class_def=_TextEditProxy,   types=(str,),       rich=True),
+            TTkProxyEditDef(class_def=_TextPickerProxy, types=(TTkString,), rich=True),
         ]
 
-    def getProxyWidget(self, data, rich:bool=False) -> Optional[TTkTableProxyEditWidget]:
+    def getProxyWidget(self, data, rich: bool = False) -> Optional[TTkTableProxyEditWidget]:
+        ''' Get an appropriate editor widget for the given data
+
+        :param data: The data value to edit
+        :type data: object
+        :param rich: Whether rich text editing is required
+        :type rich: bool
+        :return: An editor widget instance, or None if no suitable editor found
+        :rtype: Optional[TTkTableProxyEditWidget]
+        '''
         for proxy in self._proxies:
-            if proxy.rich==rich and isinstance(data, proxy.types):
+            if proxy.rich == rich and isinstance(data, proxy.types):
                 return proxy.class_def.editWidgetFactory(data)
         for proxy in self._proxies:
             if isinstance(data, proxy.types):
