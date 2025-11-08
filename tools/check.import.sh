@@ -118,6 +118,7 @@ __check(){
             -e "TTkWidgets/widget.py:from __future__ import annotations" \
             -e "TTkWidgets/tabwidget.py:from enum import Enum"  \
             -e "TTkModelView/__init__.py:from importlib.util import find_spec" \
+            -e "TTkModelView/table_edit_proxy.py:from enum import Enum, auto" \
             -e "TTkModelView/tablemodelcsv.py:import csv" \
             -e "TTkModelView/tablemodelsqlite3.py:import sqlite3" \
             -e "TTkModelView/tablemodelsqlite3.py:import threading" |

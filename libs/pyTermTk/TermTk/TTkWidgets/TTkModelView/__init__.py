@@ -11,6 +11,7 @@ from .tablewidget         import *
 from .tablewidgetitem     import *
 from .tablemodellist      import *
 from .tablemodelcsv       import *
+from .table_edit_proxy    import *
 
 if find_spec('sqlite3'):
     from .tablemodelsqlite3   import *
