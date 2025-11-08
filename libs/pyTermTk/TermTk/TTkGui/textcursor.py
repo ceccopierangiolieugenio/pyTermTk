@@ -315,11 +315,11 @@ class TTkTextCursor():
             elif p.line > 0:
                 self.setPosition(p.line-1, len(self._document._dataLines[p.line-1]) , moveMode, cID=cID)
         def moveUpDown(offset):
-            def _moveUpDown(cID,p,n):
+            def _moveUpDown(cID,p,_n):
                 if not textWrap:
                     raise ValueError("textWrap is required for the Up,Down movement")
                 cx, cy    = textWrap.dataToScreenPosition(p.line, p.pos)
-                x,  y     = textWrap.normalizeScreenPosition(cx,cy+offset*n)
+                x,  y     = textWrap.normalizeScreenPosition(cx,cy+offset)
                 line, pos = textWrap.screenToDataPosition(x,y)
                 self.setPosition(line, pos, moveMode, cID=cID)
             return _moveUpDown
