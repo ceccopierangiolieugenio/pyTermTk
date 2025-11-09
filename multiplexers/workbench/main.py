@@ -114,7 +114,7 @@ logWin = WBScrollWin(pos=(10,10), size=(60,20),
                 title=f"Key Press Viewer",layout=ttk.TTkVBoxLayout())
 logWin.setViewport(_TTkLogViewer())
 
-root = TTkWorkbench(layout=ttk.TTkGridLayout(), mouseTrack=True)
+root = TTkWorkbench(layout=ttk.TTkGridLayout())
 root.setPadding(3,3,15,10)
 
 wbl = WBLoader(size=root.size())

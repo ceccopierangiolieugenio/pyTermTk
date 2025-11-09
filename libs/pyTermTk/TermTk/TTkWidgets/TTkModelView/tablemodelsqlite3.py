@@ -68,7 +68,7 @@ class TTkTableModelSQLite3(TTkAbstractTableModel):
         filename='sqlite.database.db'
         tablename='users'
 
-        root = ttk.TTk(mouseTrack=True, layout=ttk.TTkGridLayout())
+        root = ttk.TTk(layout=ttk.TTkGridLayout())
 
         basicTableModel = ttk.TTkTableModelSQLite3(fileName=filename, table=tablename)
         table = ttk.TTkTable(parent=root, tableModel=basicTableModel, sortingEnabled=True)

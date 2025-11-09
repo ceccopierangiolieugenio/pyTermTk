@@ -195,13 +195,13 @@ class CustomColorModifier(ttk.TTkAlternateColor):
         return c[y%len(c)]
 
 parser = argparse.ArgumentParser()
-parser.add_argument('-f', help='Full Screen (default)', action='store_true')
-parser.add_argument('-w', help='Windowed',    action='store_true')
-parser.add_argument('-t', help='Track Mouse', action='store_true')
+parser.add_argument('-f', help="Full Screen (default)", action='store_true')
+parser.add_argument('-w', help="Windowed",              action='store_true')
+parser.add_argument('-t', help="Don't Track Mouse",     action='store_true')
 args = parser.parse_args()
 
 fullScreen = not args.w
-mouseTrack = args.t
+mouseTrack = not args.t
 
 root = ttk.TTk(title="pyTermTk Table Demo", mouseTrack=mouseTrack)
 if fullScreen:

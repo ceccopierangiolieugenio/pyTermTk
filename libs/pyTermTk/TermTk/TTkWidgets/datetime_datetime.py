@@ -47,7 +47,7 @@ class TTkDateTime(TTkContainer):
 
         import TermTk as ttk
 
-        root = ttk.TTk(mouseTrack=True)
+        root = ttk.TTk()
 
         ttk.TTkDateTime(parent=root) # Defaults to the current datetime
 

@@ -67,7 +67,7 @@ class TTkTime(TTkWidget):
 
         import TermTk as ttk
 
-        root = ttk.TTk(mouseTrack=True)
+        root = ttk.TTk()
 
         ttk.TTkTime(parent=root) # Defaults to the current time
 

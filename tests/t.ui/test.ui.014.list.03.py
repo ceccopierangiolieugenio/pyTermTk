@@ -39,9 +39,9 @@ def getWord():
     # return random.choice(words)
 
 parser = argparse.ArgumentParser()
-parser.add_argument('-t', help='Track Mouse', action='store_true')
+parser.add_argument('-t', help="Don't Track Mouse", action='store_true')
 args = parser.parse_args()
-mouseTrack = args.t
+mouseTrack = not args.t
 
 root = ttk.TTk(title="pyTermTk List Demo", mouseTrack=mouseTrack)
 

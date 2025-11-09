@@ -772,8 +772,7 @@ def main():
 
     root = ttk.TTk(
             layout=ttk.TTkGridLayout(),
-            title="TTkode",
-            mouseTrack=True)
+            title="TTkode")
 
     perspectivator = Perspectivator()
     controlPanel = ControlPanel()

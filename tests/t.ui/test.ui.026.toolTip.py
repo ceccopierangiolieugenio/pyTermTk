@@ -27,7 +27,7 @@ import sys, os, argparse, math, random
 sys.path.append(os.path.join(sys.path[0],'../../libs/pyTermTk'))
 import TermTk as ttk
 
-root = ttk.TTk(title="pyTermTk Demo", mouseTrack=True)
+root = ttk.TTk(title="pyTermTk Demo")
 
 ttk.TTkLabel( parent=root, text="Label 1",  pos=(0,0),  size=(10,1), toolTip="TT Label 1")
 ttk.TTkButton(parent=root, text="Button 1", pos=(0,1), size=(10,1),  toolTip="TT Button 1")

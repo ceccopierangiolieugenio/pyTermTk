@@ -143,7 +143,7 @@ class TTkListWidget(TTkAbstractScrollView):
 
         import TermTk as ttk
 
-        root = ttk.TTk(layout=ttk.TTkHBoxLayout(), mouseTrack=True)
+        root = ttk.TTk(layout=ttk.TTkHBoxLayout())
 
         ttk.TTkList(parent=root, items=["Item 1","Item 2","Item 3"])
         ttk.TTkList(parent=root, items=[f"Item 0x{i:03X}" for i in range(100)])

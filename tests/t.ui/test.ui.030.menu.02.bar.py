@@ -28,7 +28,7 @@ import TermTk as ttk
 
 ttk.TTkTheme.loadTheme(ttk.TTkTheme.NERD)
 
-root = ttk.TTk(mouseTrack=True)
+root = ttk.TTk()
 
 def setMenu(curMenu):
     curMenu.addMenu("New File")

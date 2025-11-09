@@ -47,15 +47,15 @@ words = [
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument('-f', help='Full Screen (default)', action='store_true')
-parser.add_argument('-w', help='Windowed',    action='store_true')
-# parser.add_argument('-t',    help='Track Mouse', action='store_true')
+parser.add_argument('-f', help="Full Screen (default)", action='store_true')
+parser.add_argument('-w', help="Windowed",              action='store_true')
+parser.add_argument('-t', help="Don't Track Mouse",     action='store_true')
 parser.add_argument('file', help='Open SQlite3 File', type=str)
 
 args = parser.parse_args()
 
 fullScreen = not args.w
-mouseTrack = True
+mouseTrack = not args.t
 path = args.file
 
 def _createDB(fileName):

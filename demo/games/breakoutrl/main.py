@@ -103,7 +103,7 @@ class WinParams(ttk.TTkWindow):
         self._breakout.setParams(newParams)
 
 
-root = ttk.TTk(title="Breakout - The Roguelike", mouseTrack=True, layout=ttk.TTkGridLayout())
+root = ttk.TTk(title="Breakout - The Roguelike", layout=ttk.TTkGridLayout())
 
 frame = ttk.TTkFrame(layout=ttk.TTkGridLayout(), title="BreakOuTTk - The Roguelike")
 breakout = BreakOutDisplay(parent=frame)
