@@ -60,8 +60,8 @@ def demoTTkTable(root= None):
     dataList = [
         [f"0x{i:04X}"] +
         [int(i*100), float(i*100), ttk.TTkString(getUtfWord(),ttk.TTkColor.YELLOW)] +
-        [random_date(datetime.date(2020,1,1), datetime.date(2025,12,31))] +
         [random_time()] +
+        [random_date(datetime.date(2020,1,1), datetime.date(2025,12,31))] +
         [random_datetime(datetime.datetime(2020,1,1), datetime.datetime(2025,12,31))] +
         [getUtfWord() for _ in range(10)]
         for i in range(101)

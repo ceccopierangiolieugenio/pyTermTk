@@ -438,12 +438,7 @@ class _DateTime_TimeProxy(TTkTime, TTkTableProxyEditWidget, _DateTime_KeyGeneric
         :return: True if event was handled, False otherwise
         :rtype: bool
         '''
-        if (evt.type == TTkK.SpecialKey):
-            if evt.mod == TTkK.NoModifier:
-                if evt.key == TTkK.Key_Enter:
-                    self.leavingTriggered.emit(TTkTableEditLeaving.RIGHT)
-                    return True
-        return super().keyEvent(evt)
+        return self.newKeyEvent(evt,super().keyEvent)
 
 
 class _DateTime_DateProxy(TTkDate, TTkTableProxyEditWidget, _DateTime_KeyGeneric):
@@ -509,12 +504,8 @@ class _DateTime_DateProxy(TTkDate, TTkTableProxyEditWidget, _DateTime_KeyGeneric
         :return: True if event was handled, False otherwise
         :rtype: bool
         '''
-        if (evt.type == TTkK.SpecialKey):
-            if evt.mod == TTkK.NoModifier:
-                if evt.key == TTkK.Key_Enter:
-                    self.leavingTriggered.emit(TTkTableEditLeaving.RIGHT)
-                    return True
-        return super().keyEvent(evt)
+        return self.newKeyEvent(evt,super().keyEvent)
+
 
 class _DateTime_DateTimeProxy(TTkDateTime, TTkTableProxyEditWidget):
     ''' DateTime editor for table cells
