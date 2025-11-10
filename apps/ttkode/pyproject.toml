@@ -24,7 +24,7 @@ classifiers = [
     "Topic :: Software Development :: User Interfaces",
 ]
 dependencies = [
-    'pyTermTk>=0.48.1-a0',
+    'pyTermTk>=0.47.2-a.0',
     'appdirs',
     'copykitten',
     'pygments'
