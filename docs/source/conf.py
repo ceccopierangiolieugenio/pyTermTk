@@ -11,7 +11,7 @@ import sys
 sys.path.insert(0, os.path.abspath('../../libs/pyTermTk'))
 sys.path.insert(0, os.path.abspath('sphinx_modules'))
 
-import TermTk
+import TermTk as ttk
 
 # -- Project information -----------------------------------------------------
 
@@ -20,11 +20,7 @@ copyright = '2021, Eugenio Parodi'
 author = 'Eugenio Parodi'
 
 # The full version, including alpha/beta/rc tags
-if os.path.exists(versionFile:=os.path.join(os.path.dirname(os.path.abspath(__file__)),'../../tmp/docversion.txt')):
-    with open(versionFile) as f:
-        release = f.read()
-else:
-    release = 'X.XX.X-a'
+release = ttk.__version__
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
