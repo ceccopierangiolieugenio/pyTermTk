@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.41.10-a.54](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/theDumbPaintTool-v0.41.9-a.54...theDumbPaintTool-v0.41.10-a.54) (2025-11-10)
+
+
+### Refactors
+
+* None checks anti patterns ([e744d97](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/e744d97d01e4644eccb9f9ac7bd3f5549eefb3b8))
+
 ## [0.41.9-a.54](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/theDumbPaintTool-v0.41.8-a.54...theDumbPaintTool-v0.41.9-a.54) (2025-04-04)
 
 
