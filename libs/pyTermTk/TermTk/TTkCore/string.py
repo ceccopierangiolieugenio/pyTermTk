@@ -485,7 +485,7 @@ class TTkString():
                 start = pos+lenMatch
                 for i in range(pos, pos+lenMatch):
                     ret._colors[i] |= color
-        elif posFrom == posTo == None:
+        elif posFrom is posTo is None:
             ret._colors = [c|color for c in self._colors]
         elif posFrom < posTo:
             ret._colors = self._colors.copy()
@@ -523,7 +523,7 @@ class TTkString():
             while None != (pos := self._text.index(match, start) if match in self._text[start:] else None):
                 start = pos+lenMatch
                 ret._colors[pos: pos+lenMatch] = [color]*lenMatch
-        elif posFrom == posTo == None:
+        elif posFrom is posTo is None:
             ret._colors = [color]*len(self._text)
         elif posFrom < posTo:
             ret._colors += self._colors

@@ -95,7 +95,7 @@ class TTkRadioButton(TTkWidget):
         self._radiogroup = radiogroup
         # self.checked = pyTTkSignal()
         self._checked = checked
-        if checkStatus != None :
+        if checkStatus is not None :
             self._checked = checkStatus==TTkK.Checked
         else:
             self._checked = checked
@@ -190,7 +190,7 @@ class TTkRadioButton(TTkWidget):
     def _checkEvent(self):
         # Uncheck the radio already checked;
         for radio in TTkRadioButton._radioLists[self._radiogroup]:
-            if self != radio != None:
+            if self != radio is not None:
                 if radio.isChecked():
                     radio.setCheckState(TTkK.Unchecked)
         self._checked = True

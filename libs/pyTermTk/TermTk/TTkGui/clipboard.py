@@ -137,7 +137,7 @@ class TTkClipboard():
                 TTkLog.error("Clipboard error, try to export X11 if you are running this UI via SSH")
                 for line in str(e).split("\n"):
                     TTkLog.error(line)
-            if txt == None or txt == str(TTkClipboard._clipboard):
+            if txt is None or txt == str(TTkClipboard._clipboard):
                 return TTkClipboard._clipboard
             return txt
         return TTkClipboard._clipboard

@@ -117,7 +117,7 @@ class TTkCheckbox(TTkWidget):
 
         self._text = TTkString(text)
 
-        if checkStatus != None :
+        if checkStatus is not None :
             self._checkStatus = checkStatus
         else:
             self._checkStatus = TTkK.Checked if checked else TTkK.Unchecked

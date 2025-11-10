@@ -236,7 +236,7 @@ class TTkAppTemplate(TTkContainer):
             self.layout().addWidget(widget)
             if border!=None:
                 self._panels[position].border = border
-            if fixed != None:
+            if fixed is not None:
                self._panels[position].fixed = fixed
             self._panels[position].title = TTkString(title)
             self._panels[position].size = ( size if size is not None else
@@ -277,7 +277,7 @@ class TTkAppTemplate(TTkContainer):
             self.layout().addItem(item)
             if border!=None:
                 self._panels[position].border = border
-            if fixed != None:
+            if fixed is not None:
                self._panels[position].fixed = fixed
             self._panels[position].title = TTkString(title)
             self._panels[position].size = ( size if size is not None else

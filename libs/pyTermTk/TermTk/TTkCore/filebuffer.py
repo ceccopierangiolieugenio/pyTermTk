@@ -101,7 +101,7 @@ class TTkFileBuffer():
             return ""
         page = line//self._window
         offset = line%self._window
-        if self._pages[page] == None:
+        if self._pages[page]is None:
             # Dispose of the pages to the bottom
             dispose = self._buffer.pop(0)
             if dispose is not None:

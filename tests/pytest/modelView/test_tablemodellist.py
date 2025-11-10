@@ -49,7 +49,7 @@ class TestTTkTableModelList:
 
         assert model.rowCount() == 0
         assert model.columnCount() == 0
-        assert model.data(0, 0) == None
+        assert model.data(0, 0) is None
 
     def test_init_with_data(self):
         """Test initialization with data"""
@@ -298,7 +298,7 @@ class TestTTkTableModelList:
         assert model.data(0, 0) == 'Alice'
         assert model.data(1, 0) == 'Bob'
         # Charlie should be gone
-        assert model.data(2, 0) == None
+        assert model.data(2, 0) is None
 
         # Reset for next test
         model = ttk.TTkTableModelList(data=[row[:] for row in self.test_data])
@@ -344,7 +344,7 @@ class TestTTkTableModelList:
         assert model.columnCount() == original_column_count - 1
         assert model.data(0, 0) == 'Alice'  # Name still there
         assert model.data(0, 1) == 25       # Age still there
-        assert model.data(0, 2) == None     # Role should be gone
+        assert model.data(0, 2) is None     # Role should be gone
 
         # Reset for next test
         model = ttk.TTkTableModelList(data=[row[:] for row in self.test_data])
@@ -362,7 +362,7 @@ class TestTTkTableModelList:
         # Should remove columns 1 and 2 (Age and Role), leaving only Name
         assert model.columnCount() == 1
         assert model.data(0, 0) == 'Alice'
-        assert model.data(0, 1) == None     # Age should be gone
+        assert model.data(0, 1) is None     # Age should be gone
 
         # Reset for next test
         model = ttk.TTkTableModelList(data=[row[:] for row in self.test_data])
