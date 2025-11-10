@@ -95,6 +95,9 @@ class TTkDateTime(TTkContainer):
         self._dateWidget.dateChanged.connect(self._somethingChanged)
         self._timeWidget.timeChanged.connect(self._somethingChanged)
 
+    def setFocus(self) -> None:
+        return self._dateWidget.setFocus()
+
     @pyTTkSlot()
     def _somethingChanged(self) -> None:
         '''

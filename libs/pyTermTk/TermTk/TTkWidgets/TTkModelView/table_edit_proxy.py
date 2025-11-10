@@ -24,9 +24,11 @@ from __future__ import annotations
 
 __all__ = ['TTkTableProxyEdit', 'TTkTableEditLeaving', 'TTkTableProxyEditWidget']
 
+
+import datetime
 from dataclasses import dataclass
 from enum import Enum, auto
-from typing import Union, Tuple, Type, List, Optional, Any
+from typing import Union, Tuple, Type, List, Optional, Any, Callable
 
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.string import TTkString, TTkStringType
@@ -36,6 +38,9 @@ from TermTk.TTkCore.TTkTerm.inputkey import TTkKeyEvent
 from TermTk.TTkWidgets.widget import TTkWidget
 from TermTk.TTkWidgets.texedit import TTkTextEdit, TTkTextEditView
 from TermTk.TTkWidgets.spinbox import TTkSpinBox
+from TermTk.TTkWidgets.datetime_time import TTkTime
+from TermTk.TTkWidgets.datetime_date import TTkDate
+from TermTk.TTkWidgets.datetime_datetime import TTkDateTime
 from TermTk.TTkWidgets.TTkPickers.textpicker import TTkTextPicker
 
 class TTkTableEditLeaving(Enum):
@@ -91,7 +96,7 @@ class TTkTableProxyEditWidget(TTkWidget):
         :param data: The initial data value for the editor
         :type data: object
         :return: A new editor widget instance
-        :rtype: TTkTableProxyEditWidget
+        :rtype: :py:class:`TTkTableProxyEditWidget`
         :raises NotImplementedError: Must be implemented by subclasses
         '''
         raise NotImplementedError()
@@ -138,9 +143,6 @@ class _TextEditViewProxy(TTkTextEditView, TTkTableProxyEditWidget):
 
     def __init__(self, **kwargs):
         ''' Initialize the text edit view proxy
-
-        :param kwargs: Additional keyword arguments passed to parent
-        :type kwargs: dict
         '''
         self.leavingTriggered = pyTTkSignal(TTkTableEditLeaving)
         self.dataChanged = pyTTkSignal(object)
@@ -222,9 +224,6 @@ class _TextEditProxy(TTkTextEdit, TTkTableProxyEditWidget):
 
     def __init__(self, **kwargs):
         ''' Initialize the text edit proxy
-
-        :param kwargs: Additional keyword arguments passed to parent
-        :type kwargs: dict
         '''
         self.leavingTriggered = pyTTkSignal(TTkTableEditLeaving)
         self.dataChanged = pyTTkSignal(object)
@@ -240,7 +239,7 @@ class _TextEditProxy(TTkTextEdit, TTkTableProxyEditWidget):
         :param data: The initial text value
         :type data: Union[str, TTkString]
         :return: A new text editor instance
-        :rtype: TTkTableProxyEditWidget
+        :rtype: :py:class:`TTkTableProxyEditWidget`
         :raises ValueError: If data is not a string or TTkString
         '''
         if not isinstance(data, (TTkString, str)):
@@ -285,9 +284,6 @@ class _SpinBoxProxy(TTkSpinBox, TTkTableProxyEditWidget):
 
     def __init__(self, **kwargs):
         ''' Initialize the spin box proxy
-
-        :param kwargs: Additional keyword arguments passed to parent
-        :type kwargs: dict
         '''
         self.leavingTriggered = pyTTkSignal(TTkTableEditLeaving)
         self.dataChanged = pyTTkSignal(object)
@@ -301,7 +297,7 @@ class _SpinBoxProxy(TTkSpinBox, TTkTableProxyEditWidget):
         :param data: The initial numeric value
         :type data: Union[int, float]
         :return: A new spin box instance
-        :rtype: TTkTableProxyEditWidget
+        :rtype: :py:class:`TTkTableProxyEditWidget`
         :raises ValueError: If data is not an int or float
         '''
         if not isinstance(data, (int, float)):
@@ -336,6 +332,249 @@ class _SpinBoxProxy(TTkSpinBox, TTkTableProxyEditWidget):
         return super().keyEvent(evt)
 
 
+class _DateTime_KeyGeneric():
+    ''' Mixin class for datetime widget keyboard navigation
+
+    Provides common keyboard event handling for datetime-based editors,
+    including arrow key navigation and Enter key handling.
+    '''
+
+    leavingTriggered: pyTTkSignal
+    dataChanged: pyTTkSignal
+
+    def newKeyEvent(self, evt: TTkKeyEvent, cb:Callable[[TTkKeyEvent],bool]) -> bool:
+        ''' Handle keyboard events with custom callback and navigation
+
+        :param evt: The keyboard event
+        :type evt: TTkKeyEvent
+        :param cb: Callback function for additional key handling
+        :type cb: Callable[[TTkKeyEvent], bool]
+        :return: True if event was handled, False otherwise
+        :rtype: bool
+        '''
+        if (evt.type == TTkK.SpecialKey):
+            if evt.mod == TTkK.NoModifier:
+                if evt.key == TTkK.Key_Enter:
+                    self.leavingTriggered.emit(TTkTableEditLeaving.RIGHT)
+                    return True
+        if cb(evt):
+            return True
+        if (evt.type == TTkK.SpecialKey):
+            if evt.mod == TTkK.NoModifier:
+                if evt.key == TTkK.Key_Up:
+                    self.leavingTriggered.emit(TTkTableEditLeaving.TOP)
+                    return True
+                elif evt.key == TTkK.Key_Down:
+                    self.leavingTriggered.emit(TTkTableEditLeaving.BOTTOM)
+                    return True
+                elif evt.key == TTkK.Key_Left:
+                    self.leavingTriggered.emit(TTkTableEditLeaving.LEFT)
+                    return True
+                elif evt.key == TTkK.Key_Right:
+                    self.leavingTriggered.emit(TTkTableEditLeaving.RIGHT)
+                    return True
+        return False
+
+class _DateTime_TimeProxy(TTkTime, TTkTableProxyEditWidget, _DateTime_KeyGeneric):
+    ''' Time editor for table cells
+
+    Extends :py:class:`TTkTime` with table-specific signals
+    for navigation and data change notification.
+    '''
+    __slots__ = ('leavingTriggered', 'dataChanged')
+
+    leavingTriggered: pyTTkSignal
+    '''
+    This signal is emitted when the user navigates out of the editor
+
+    :param direction: The direction of navigation
+    :type direction: TTkTableEditLeaving
+    '''
+
+    dataChanged: pyTTkSignal
+    '''
+    This signal is emitted when the time value changes
+
+    :param data: The new time value
+    :type data: datetime.time
+    '''
+
+    def __init__(self, **kwargs):
+        ''' Initialize the time editor proxy
+        '''
+        self.leavingTriggered = pyTTkSignal(TTkTableEditLeaving)
+        self.dataChanged = pyTTkSignal(object)
+        super().__init__(**kwargs)
+        self.timeChanged.connect(self.dataChanged.emit)
+
+    @staticmethod
+    def editWidgetFactory(data: Any) -> TTkTableProxyEditWidget:
+        ''' Factory method to create a time editor from time data
+
+        :param data: The initial time value
+        :type data: datetime.time
+        :return: A new time editor instance
+        :rtype: :py:class:`TTkTableProxyEditWidget`
+        :raises ValueError: If data is not a datetime.time
+        '''
+        if not isinstance(data, datetime.time):
+            raise ValueError(f"{data} is not a int or float")
+        tp = _DateTime_TimeProxy(time=data)
+        return tp
+
+    def getCellData(self) -> datetime.time:
+        ''' Get the current time value from the editor
+
+        :return: The current time
+        :rtype: datetime.time
+        '''
+        return self.time()
+
+    def keyEvent(self, evt: TTkKeyEvent) -> bool:
+        ''' Handle keyboard events for navigation
+
+        :param evt: The keyboard event
+        :type evt: TTkKeyEvent
+        :return: True if event was handled, False otherwise
+        :rtype: bool
+        '''
+        return self.newKeyEvent(evt,super().keyEvent)
+
+
+class _DateTime_DateProxy(TTkDate, TTkTableProxyEditWidget, _DateTime_KeyGeneric):
+    ''' Date editor for table cells
+
+    Extends :py:class:`TTkDate` with table-specific signals
+    for navigation and data change notification.
+    '''
+    __slots__ = ('leavingTriggered', 'dataChanged')
+
+    leavingTriggered: pyTTkSignal
+    '''
+    This signal is emitted when the user navigates out of the editor
+
+    :param direction: The direction of navigation
+    :type direction: TTkTableEditLeaving
+    '''
+
+    dataChanged: pyTTkSignal
+    '''
+    This signal is emitted when the date value changes
+
+    :param data: The new date value
+    :type data: datetime.date
+    '''
+
+    def __init__(self, **kwargs):
+        ''' Initialize the date editor proxy
+        '''
+        self.leavingTriggered = pyTTkSignal(TTkTableEditLeaving)
+        self.dataChanged = pyTTkSignal(object)
+        super().__init__(**kwargs)
+        self.dataChanged.connect(self.dataChanged.emit)
+
+    @staticmethod
+    def editWidgetFactory(data: Any) -> TTkTableProxyEditWidget:
+        ''' Factory method to create a date editor from date data
+
+        :param data: The initial date value
+        :type data: datetime.date
+        :return: A new date editor instance
+        :rtype: :py:class:`TTkTableProxyEditWidget`
+        :raises ValueError: If data is not a datetime.date
+        '''
+        if not isinstance(data, datetime.date):
+            raise ValueError(f"{data} is not a int or float")
+        dp = _DateTime_DateProxy(date=data)
+        return dp
+
+    def getCellData(self) -> datetime.date:
+        ''' Get the current date value from the editor
+
+        :return: The current date
+        :rtype: datetime.date
+        '''
+        return self.date()
+
+    def keyEvent(self, evt: TTkKeyEvent) -> bool:
+        ''' Handle keyboard events for navigation
+
+        :param evt: The keyboard event
+        :type evt: TTkKeyEvent
+        :return: True if event was handled, False otherwise
+        :rtype: bool
+        '''
+        return self.newKeyEvent(evt,super().keyEvent)
+
+
+class _DateTime_DateTimeProxy(TTkDateTime, TTkTableProxyEditWidget):
+    ''' DateTime editor for table cells
+
+    Extends :py:class:`TTkDateTime` with table-specific signals
+    for navigation and data change notification.
+    '''
+    __slots__ = ('leavingTriggered', 'dataChanged')
+
+    leavingTriggered: pyTTkSignal
+    '''
+    This signal is emitted when the user navigates out of the editor
+
+    :param direction: The direction of navigation
+    :type direction: TTkTableEditLeaving
+    '''
+
+    dataChanged: pyTTkSignal
+    '''
+    This signal is emitted when the datetime value changes
+
+    :param data: The new datetime value
+    :type data: datetime.datetime
+    '''
+
+    def __init__(self, **kwargs):
+        ''' Initialize the datetime editor proxy
+        '''
+        self.leavingTriggered = pyTTkSignal(TTkTableEditLeaving)
+        self.dataChanged = pyTTkSignal(object)
+        super().__init__(**kwargs)
+        self.datetimeChanged.connect(self.dataChanged.emit)
+
+    @staticmethod
+    def editWidgetFactory(data: Any) -> TTkTableProxyEditWidget:
+        ''' Factory method to create a datetime editor from datetime data
+
+        :param data: The initial datetime value
+        :type data: datetime.datetime
+        :return: A new datetime editor instance
+        :rtype: :py:class:`TTkTableProxyEditWidget`
+        :raises ValueError: If data is not a datetime.datetime
+        '''
+        if not isinstance(data, datetime.datetime):
+            raise ValueError(f"{data} is not a int or float")
+        dtp = _DateTime_DateTimeProxy(datetime=data)
+        return dtp
+
+    def getCellData(self) -> datetime.datetime:
+        ''' Get the current datetime value from the editor
+
+        :return: The current datetime
+        :rtype: datetime.datetime
+        '''
+        return self.datetime()
+
+    def keyEvent(self, evt: TTkKeyEvent) -> bool:
+        ''' Handle keyboard events for navigation
+
+        Always triggers right navigation on any key event.
+
+        :param evt: The keyboard event
+        :type evt: TTkKeyEvent
+        :return: Always returns True
+        :rtype: bool
+        '''
+        self.leavingTriggered.emit(TTkTableEditLeaving.RIGHT)
+        return True
+
 class _TextPickerProxy(TTkTextPicker, TTkTableProxyEditWidget):
     ''' Rich text editor for table cells
 
@@ -362,9 +601,6 @@ class _TextPickerProxy(TTkTextPicker, TTkTableProxyEditWidget):
 
     def __init__(self, **kwargs):
         ''' Initialize the text picker proxy
-
-        :param kwargs: Additional keyword arguments passed to parent
-        :type kwargs: dict
         '''
         self.leavingTriggered = pyTTkSignal(TTkTableEditLeaving)
         self.dataChanged = pyTTkSignal(object)
@@ -384,7 +620,7 @@ class _TextPickerProxy(TTkTextPicker, TTkTableProxyEditWidget):
         :param data: The initial text value
         :type data: Union[str, TTkString]
         :return: A new text picker instance
-        :rtype: TTkTableProxyEditWidget
+        :rtype: :py:class:`TTkTableProxyEditWidget`
         :raises ValueError: If data is not a string or TTkString
         '''
         if not isinstance(data, (TTkString, str)):
@@ -463,6 +699,11 @@ class TTkTableProxyEdit():
             TTkProxyEditDef(class_def=_TextEditProxy,   types=(str, TTkString)),
             TTkProxyEditDef(class_def=_TextEditProxy,   types=(str,),       rich=True),
             TTkProxyEditDef(class_def=_TextPickerProxy, types=(TTkString,), rich=True),
+            # Datetime go first because
+            #   datetime is instance of date as well
+            TTkProxyEditDef(class_def=_DateTime_DateTimeProxy, types=(datetime.datetime)),
+            TTkProxyEditDef(class_def=_DateTime_TimeProxy, types=(datetime.time)),
+            TTkProxyEditDef(class_def=_DateTime_DateProxy, types=(datetime.date)),
         ]
 
     def getProxyWidget(self, data, rich: bool = False) -> Optional[TTkTableProxyEditWidget]:

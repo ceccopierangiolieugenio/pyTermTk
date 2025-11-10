@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.41.5-a.54](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/ttkDesigner-v0.41.4-a.54...ttkDesigner-v0.41.5-a.54) (2025-11-10)
+
+
+### Refactors
+
+* None checks anti patterns ([e744d97](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/e744d97d01e4644eccb9f9ac7bd3f5549eefb3b8))
+
 ## [0.41.4-a.54](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/ttkDesigner-v0.41.3-a.54...ttkDesigner-v0.41.4-a.54) (2025-04-03)
 
 
