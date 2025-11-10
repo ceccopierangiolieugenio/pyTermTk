@@ -24,6 +24,8 @@ __all__ = ['TTkAbstractTableModel','TTkModelIndex']
 
 from typing import Tuple,Any
 
+import datetime
+
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.string import TTkString
 from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
@@ -288,7 +290,7 @@ class TTkAbstractTableModel():
         '''
         data = self.data(row,col)
         retData =  TTkAbstractTableModel._dataToTTkString(data)
-        if isinstance(data, (int,float)):
+        if isinstance(data, (int,float,datetime.time, datetime.date, datetime.datetime)):
             return retData, TTkK.Alignment.RIGHT_ALIGN
         return retData, TTkK.Alignment.LEFT_ALIGN
 
