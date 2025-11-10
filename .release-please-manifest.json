@@ -1,7 +1,7 @@
 {
-    "libs/pyTermTk": "0.48.0-a.0",
-    "apps/ttkode": "0.5.3-a.2",
-    "apps/tlogg": "0.7.1-a.0",
-    "apps/ttkDesigner": "0.41.5-a.54",
-    "apps/dumbPaintTool": "0.41.10-a.54"
+    "libs/pyTermTk": "0.48.1-a0",
+    "apps/ttkode": "0.48.1-a0",
+    "apps/tlogg": "0.48.1-a0",
+    "apps/ttkDesigner": "0.48.1-a0",
+    "apps/dumbPaintTool": "0.48.1-a0"
 }
