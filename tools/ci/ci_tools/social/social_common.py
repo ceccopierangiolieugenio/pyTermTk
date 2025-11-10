@@ -58,6 +58,12 @@ _all_data:List[SocialData] = [
             image='',
             discord_channel_id=1379381593378000916,
         ),
+        SocialData(
+            name='ttkdesigner',
+            link='https://github.com/ceccopierangiolieugenio/pyTermTk/tree/main/apps/tlogg',
+            image='',
+            discord_channel_id=1437383337407942726,
+        ),
 ]
 
 def get_social_data(app:str) -> SocialData:
