@@ -699,6 +699,8 @@ class TTkTableProxyEdit():
             TTkProxyEditDef(class_def=_TextEditProxy,   types=(str, TTkString)),
             TTkProxyEditDef(class_def=_TextEditProxy,   types=(str,),       rich=True),
             TTkProxyEditDef(class_def=_TextPickerProxy, types=(TTkString,), rich=True),
+            # Datetime go first because
+            #   datetime is instance of date as well
             TTkProxyEditDef(class_def=_DateTime_DateTimeProxy, types=(datetime.datetime)),
             TTkProxyEditDef(class_def=_DateTime_TimeProxy, types=(datetime.time)),
             TTkProxyEditDef(class_def=_DateTime_DateProxy, types=(datetime.date)),
