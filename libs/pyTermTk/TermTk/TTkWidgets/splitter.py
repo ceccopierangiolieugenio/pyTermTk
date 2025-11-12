@@ -216,7 +216,7 @@ class TTkSplitter(TTkContainer):
         :param item: The new layout
         :type item: :py:class:`TTkLayout`
         :param title: Optional title for the item, defaults to None
-        :type title: str, optional
+        :type title: str, :py:class:`TTkString`, optional
         '''
         if index >= len(self._items):
             return self.addItem(item, title=title)
@@ -237,7 +237,7 @@ class TTkSplitter(TTkContainer):
         :param widget: The new widget
         :type widget: :py:class:`TTkWidget`
         :param title: Optional title for the widget, defaults to None
-        :type title: str, optional
+        :type title: str, :py:class:`TTkString`, optional
         '''
         if index >= len(self._items):
             return self.addWidget(widget, title=title)
@@ -290,7 +290,7 @@ class TTkSplitter(TTkContainer):
         :param size: Fixed size for the item in characters, defaults to None (proportional)
         :type size: int, optional
         :param title: Optional title for the item, defaults to None
-        :type title: str, optional
+        :type title: str, :py:class:`TTkString`, optional
         '''
         self.insertItem(len(self._items), item, size=size, title=title)
 
@@ -304,7 +304,7 @@ class TTkSplitter(TTkContainer):
         :param size: Fixed size for the item in characters, defaults to None (proportional)
         :type size: int, optional
         :param title: Optional title for the item, defaults to None
-        :type title: str, optional
+        :type title: str, :py:class:`TTkString`, optional
         '''
         TTkLayout.insertItem(self.layout(), index, item)
         self._insertWidgetItem(index, item, size=size, title=title)
@@ -317,7 +317,7 @@ class TTkSplitter(TTkContainer):
         :param size: Fixed size for the widget in characters, defaults to None (proportional)
         :type size: int, optional
         :param title: Optional title for the widget, defaults to None
-        :type title: str, optional
+        :type title: str, :py:class:`TTkString`, optional
         '''
         self.insertWidget(len(self._items), widget, size=size, title=title)
 
@@ -331,7 +331,7 @@ class TTkSplitter(TTkContainer):
         :param size: Fixed size for the widget in characters, defaults to None (proportional)
         :type size: int, optional
         :param title: Optional title for the widget, defaults to None
-        :type title: str, optional
+        :type title: str, :py:class:`TTkString`, optional
         '''
         TTkLayout.insertWidget(self.layout(), index, widget)
         self._insertWidgetItem(index, widget, size=size, title=title)
@@ -346,7 +346,7 @@ class TTkSplitter(TTkContainer):
         :param size: Fixed size for the item, defaults to None
         :type size: int, optional
         :param title: Optional title, defaults to None
-        :type title: str, optional
+        :type title: str, :py:class:`TTkString`, optional
         '''
         self._items.insert(index, widgetItem)
         self._titles.insert(index, title if isinstance(title,TTkString) else TTkString(title) if isinstance(title,str) else None)
