@@ -26,6 +26,7 @@ from typing import Union,List,Optional
 
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.cfg import TTkCfg
+from TermTk.TTkCore.canvas import TTkCanvas
 from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkCore.string import TTkString
 from TermTk.TTkCore.TTkTerm.inputmouse import TTkMouseEvent
@@ -35,7 +36,46 @@ from TermTk.TTkWidgets.widget import TTkWidget
 from TermTk.TTkWidgets.container import TTkContainer
 
 class TTkSplitter(TTkContainer):
-    '''TTkSplitter'''
+    '''TTkSplitter:
+
+    A container widget that arranges child widgets with adjustable splitter bars.
+
+    ::
+
+        Horizontal Splitter:
+        ┌─────────╥─────────╥─────────┐
+        │ Widget1 ║ Widget2 ║ Widget3 │
+        │         ║         ║         │
+        └─────────╨─────────╨─────────┘
+
+        Vertical Splitter:
+        ┌──────────────────────────────────┐
+        │          Widget 1                │
+        ╞══════════════════════════════════╡
+        │          Widget 2                │
+        ╞══════════════════════════════════╡
+        │          Widget 3                │
+        └──────────────────────────────────┘
+
+    The splitter allows users to redistribute space between child widgets by dragging
+    the splitter bars. Widgets can have fixed or proportional sizes.
+
+    Demo: `splitter.py <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/demo/showcase/splitter.py>`_
+    (`online <https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/sandbox/sandbox.html?filePath=demo/showcase/splitter.py>`__)
+
+    .. code-block:: python
+
+        import TermTk as ttk
+
+        root = ttk.TTk(layout=ttk.TTkGridLayout())
+
+        splitter = ttk.TTkSplitter(parent=root, orientation=ttk.TTkK.HORIZONTAL)
+        splitter.addWidget(ttk.TTkTestWidgetSizes(border=True), size=20)
+        splitter.addWidget(ttk.TTkTestWidgetSizes(border=True))
+        splitter.addWidget(ttk.TTkTestWidgetSizes(border=True), size=30)
+
+        root.mainloop()
+    '''
 
     classStyle = {
                 'default':     {'glyphs' : {
@@ -57,11 +97,19 @@ class TTkSplitter(TTkContainer):
     _titles:List[TTkString]
     _separators:List[int]
     _refSizes:List[Optional[int]]
+    '''Reference sizes for each widget in the splitter'''
     _separatorSelected:Optional[int]
     def __init__(self, *,
                  border:bool=False,
                  orientation:TTkK.Direction=TTkK.HORIZONTAL,
                  **kwargs) -> None:
+        ''' Initialize the splitter
+
+        :param border: Draw a border around the splitter, defaults to False
+        :type border: bool, optional
+        :param orientation: Splitter orientation (:py:class:`TTkK.Direction.HORIZONTAL` or :py:class:`TTkK.Direction.VERTICAL`), defaults to :py:class:`TTkK.Direction.HORIZONTAL`
+        :type orientation: :py:class:`TTkK.Direction`, optional
+        '''
         self._items = []
         self._titles = []
         self._separators = []
@@ -84,48 +132,92 @@ class TTkSplitter(TTkContainer):
                 self.addItem(item)
         self.setLayout(_SplitterLayout())
 
-    def setBorder(self, border):
-        '''setBorder'''
+    def setBorder(self, border:bool) -> None:
+        ''' Set whether to draw a border around the splitter
+
+        :param border: True to show border, False to hide
+        :type border: bool
+        '''
         self._border = border
         if border: self.setPadding(1,1,1,1)
         else:      self.setPadding(0,0,0,0)
         self.update()
 
-    def border(self):
-        '''border'''
+    def border(self) -> bool:
+        ''' Get the current border state
+
+        :return: True if border is visible, False otherwise
+        :rtype: bool
+        '''
         return self._border
 
-    def orientation(self):
-        '''orientation'''
+    def orientation(self) -> TTkK.Direction:
+        ''' Get the current splitter orientation
+
+        :return: The orientation (HORIZONTAL or VERTICAL)
+        :rtype: :py:class:`TTkK.Direction`
+        '''
         return self._orientation
 
-    def setOrientation(self, orientation):
+    def setOrientation(self, orientation:TTkK.Direction) -> None:
+        ''' Set the splitter orientation
+
+        :param orientation: The new orientation (HORIZONTAL or VERTICAL)
+        :type orientation: :py:class:`TTkK.Direction`
+        '''
         if orientation == self._orientation: return
         if orientation not in (TTkK.HORIZONTAL, TTkK.VERTICAL): return
         self._orientation = orientation
         self._updateGeometries()
 
-    def clean(self):
+    def clean(self) -> None:
+        ''' Remove all widgets and items from the splitter '''
         for i in reversed(self._items):
             if issubclass(type(i),TTkWidget):
                 self.removeWidget(i)
             else:
                 self.removeItem(i)
 
-    def count(self):
-        '''count'''
+    def count(self) -> int:
+        ''' Get the number of items in the splitter
+
+        :return: The count of widgets/items
+        :rtype: int
+        '''
         return len(self._items)
 
-    def indexOf(self, widget):
-        '''indexOf'''
+    def indexOf(self, widget:Union[TTkWidget,TTkLayout]) -> int:
+        ''' Get the index of a widget or layout in the splitter
+
+        :param widget: The widget or layout to find
+        :type widget: :py:class:`TTkWidget` or :py:class:`TTkLayout`
+
+        :return: The index of the item
+        :rtype: int
+        '''
         return self._items.index(widget)
 
-    def widget(self, index):
-        '''widget'''
+    def widget(self, index:int) -> Union[TTkWidget,TTkLayout]:
+        ''' Get the widget or layout at the specified index
+
+        :param index: The index of the item
+        :type index: int
+
+        :return: The widget or layout at the index
+        :rtype: :py:class:`TTkWidget` or :py:class:`TTkLayout`
+        '''
         return self._items[index]
 
-    def replaceItem(self, index, item, title=None):
-        '''replaceItem'''
+    def replaceItem(self, index:int, item:TTkLayout, title:Optional[str]=None) -> None:
+        ''' Replace the layout at the specified index
+
+        :param index: The index to replace at
+        :type index: int
+        :param item: The new layout
+        :type item: :py:class:`TTkLayout`
+        :param title: Optional title for the item, defaults to None
+        :type title: str, optional
+        '''
         if index >= len(self._items):
             return self.addItem(item, title=title)
         TTkLayout.removeItem(self.layout(), self._items[index])
@@ -137,8 +229,16 @@ class TTkSplitter(TTkContainer):
         self._processRefSizes(w-b,h-b)
         self._updateGeometries()
 
-    def replaceWidget(self, index, widget, title=None):
-        '''replaceWidget'''
+    def replaceWidget(self, index:int, widget:TTkWidget, title:Optional[str]=None) -> None:
+        ''' Replace the widget at the specified index
+
+        :param index: The index to replace at
+        :type index: int
+        :param widget: The new widget
+        :type widget: :py:class:`TTkWidget`
+        :param title: Optional title for the widget, defaults to None
+        :type title: str, optional
+        '''
         if index >= len(self._items):
             return self.addWidget(widget, title=title)
         TTkLayout.removeWidget(self.layout(), self._items[index])
@@ -150,8 +250,12 @@ class TTkSplitter(TTkContainer):
         self._processRefSizes(w-b,h-b)
         self._updateGeometries()
 
-    def removeItem(self, item):
-        '''removeItem'''
+    def removeItem(self, item:TTkLayout) -> None:
+        ''' Remove a layout from the splitter
+
+        :param item: The layout to remove
+        :type item: :py:class:`TTkLayout`
+        '''
         index = self.indexOf(item)
         self._items.pop(index)
         self._refSizes.pop(index)
@@ -162,8 +266,12 @@ class TTkSplitter(TTkContainer):
         self._processRefSizes(w-b,h-b)
         self._updateGeometries()
 
-    def removeWidget(self, widget):
-        '''removeWidget'''
+    def removeWidget(self, widget:TTkWidget) -> None:
+        ''' Remove a widget from the splitter
+
+        :param widget: The widget to remove
+        :type widget: :py:class:`TTkWidget`
+        '''
         index = self.indexOf(widget)
         self._items.pop(index)
         self._refSizes.pop(index)
@@ -174,25 +282,72 @@ class TTkSplitter(TTkContainer):
         self._processRefSizes(w-b,h-b)
         self._updateGeometries()
 
-    def addItem(self, item, size=None, title=None):
-        '''addItem'''
+    def addItem(self, item:TTkLayout, size:Optional[int]=None, title:Optional[str]=None) -> None:
+        ''' Add a layout to the end of the splitter
+
+        :param item: The layout to add
+        :type item: :py:class:`TTkLayout`
+        :param size: Fixed size for the item in characters, defaults to None (proportional)
+        :type size: int, optional
+        :param title: Optional title for the item, defaults to None
+        :type title: str, optional
+        '''
         self.insertItem(len(self._items), item, size=size, title=title)
 
-    def insertItem(self, index, item, size=None, title=None):
-        '''insertItem'''
+    def insertItem(self, index:int, item:TTkLayout, size:Optional[int]=None, title:Optional[str]=None) -> None:
+        ''' Insert a layout at the specified index
+
+        :param index: The index to insert at
+        :type index: int
+        :param item: The layout to insert
+        :type item: :py:class:`TTkLayout`
+        :param size: Fixed size for the item in characters, defaults to None (proportional)
+        :type size: int, optional
+        :param title: Optional title for the item, defaults to None
+        :type title: str, optional
+        '''
         TTkLayout.insertItem(self.layout(), index, item)
         self._insertWidgetItem(index, item, size=size, title=title)
 
-    def addWidget(self, widget, size=None, title=None):
-        '''addWidget'''
+    def addWidget(self, widget:TTkWidget, size:Optional[int]=None, title:Optional[str]=None) -> None:
+        ''' Add a widget to the end of the splitter
+
+        :param widget: The widget to add
+        :type widget: :py:class:`TTkWidget`
+        :param size: Fixed size for the widget in characters, defaults to None (proportional)
+        :type size: int, optional
+        :param title: Optional title for the widget, defaults to None
+        :type title: str, optional
+        '''
         self.insertWidget(len(self._items), widget, size=size, title=title)
 
-    def insertWidget(self, index, widget, size=None, title=None):
-        '''insertWidget'''
+    def insertWidget(self, index:int, widget:TTkWidget, size:Optional[int]=None, title:Optional[str]=None) -> None:
+        ''' Insert a widget at the specified index
+
+        :param index: The index to insert at
+        :type index: int
+        :param widget: The widget to insert
+        :type widget: :py:class:`TTkWidget`
+        :param size: Fixed size for the widget in characters, defaults to None (proportional)
+        :type size: int, optional
+        :param title: Optional title for the widget, defaults to None
+        :type title: str, optional
+        '''
         TTkLayout.insertWidget(self.layout(), index, widget)
         self._insertWidgetItem(index, widget, size=size, title=title)
 
-    def _insertWidgetItem(self, index, widgetItem, size=None, title=None):
+    def _insertWidgetItem(self, index:int, widgetItem:Union[TTkWidget,TTkLayout], size:Optional[int]=None, title:Optional[str]=None) -> None:
+        ''' Internal method to insert a widget or layout item
+
+        :param index: The index to insert at
+        :type index: int
+        :param widgetItem: The widget or layout to insert
+        :type widgetItem: :py:class:`TTkWidget` or :py:class:`TTkLayout`
+        :param size: Fixed size for the item, defaults to None
+        :type size: int, optional
+        :param title: Optional title, defaults to None
+        :type title: str, optional
+        '''
         self._items.insert(index, widgetItem)
         self._titles.insert(index, TTkString(title) if title else None)
 
@@ -205,8 +360,12 @@ class TTkSplitter(TTkContainer):
         if self.parentWidget():
             self.parentWidget().update(repaint=True, updateLayout=True)
 
-    def setSizes(self, sizes):
-        '''setSizes'''
+    def setSizes(self, sizes:List[Optional[int]]) -> None:
+        ''' Set the sizes for all widgets in the splitter
+
+        :param sizes: List of sizes in characters (None for proportional sizing)
+        :type sizes: list of int or None
+        '''
         ls = len(self._separators)
         sizes=sizes[:ls]+[None]*max(0,ls-len(sizes))
         self._refSizes = sizes.copy()
@@ -215,8 +374,15 @@ class TTkSplitter(TTkContainer):
         self._processRefSizes(w-b,h-b)
         self._updateGeometries()
 
+    def _minMaxSizeBefore(self, index:int) -> tuple[int,int]:
+        ''' Calculate minimum and maximum sizes before the selected separator
 
-    def _minMaxSizeBefore(self, index):
+        :param index: The separator index
+        :type index: int
+
+        :return: Tuple of (minimum_size, maximum_size)
+        :rtype: tuple[int,int]
+        '''
         if self._separatorSelected is None:
             return 0, 0x1000
         # this is because there is a hidden splitter at position -1
@@ -228,7 +394,15 @@ class TTkSplitter(TTkContainer):
             maxsize += item.maxDimension(self._orientation)+1
         return minsize, maxsize
 
-    def _minMaxSizeAfter(self, index):
+    def _minMaxSizeAfter(self, index:int) -> tuple[int,int]:
+        ''' Calculate minimum and maximum sizes after the selected separator
+
+        :param index: The separator index
+        :type index: int
+
+        :return: Tuple of (minimum_size, maximum_size)
+        :rtype: tuple[int,int]
+        '''
         if self._separatorSelected is None:
             return 0, 0x1000
         minsize = 0x0
@@ -239,7 +413,12 @@ class TTkSplitter(TTkContainer):
             maxsize += item.maxDimension(self._orientation)+1
         return minsize, maxsize
 
-    def _updateGeometries(self, resized=False):
+    def _updateGeometries(self, resized:bool=False) -> None:
+        ''' Internal method to update widget geometries based on splitter positions
+
+        :param resized: True if called from resize event, defaults to False
+        :type resized: bool, optional
+        '''
         if not self.isVisible() or not self._items: return
         w,h = self.size()
         if w==h==0: return
@@ -312,7 +491,14 @@ class TTkSplitter(TTkContainer):
             self._refSizes = s
         self.update()
 
-    def _processRefSizes(self, w, h):
+    def _processRefSizes(self, w:int, h:int) -> None:
+        ''' Process reference sizes and calculate separator positions
+
+        :param w: Available width
+        :type w: int
+        :param h: Available height
+        :type h: int
+        '''
         self._separatorSelected = None
         if self._orientation == TTkK.HORIZONTAL:
             sizeRef = w
@@ -348,7 +534,14 @@ class TTkSplitter(TTkContainer):
                 diff = h/sizeRef
             self._separators = [int(i*diff) for i in self._separators]
 
-    def resizeEvent(self, w, h):
+    def resizeEvent(self, w:int, h:int) -> None:
+        ''' Handle resize events
+
+        :param w: New width
+        :type w: int
+        :param h: New height
+        :type h: int
+        '''
         b = 2 if self._border else 0
         self._processRefSizes(w-b,h-b)
         self._updateGeometries(resized=True)
@@ -438,7 +631,7 @@ class TTkSplitter(TTkContainer):
                 ret = min(ret,item.maximumWidth()+b)
         return ret
 
-    def paintEvent(self, canvas):
+    def paintEvent(self, canvas:TTkCanvas) -> None:
         style = self.currentStyle()
         color = style['color']
         borderColor = style['borderColor']

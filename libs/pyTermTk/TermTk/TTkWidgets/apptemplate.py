@@ -97,21 +97,21 @@ class TTkAppTemplate(TTkContainer):
         '''Footer'''
 
     MAIN   =  Position.MAIN
-    ''':py:class:`Position.MAIN`'''
+    ''':py:class:`TTkAppTemplate.Position.MAIN`'''
     TOP    =  Position.TOP
-    ''':py:class:`Position.TOP`'''
+    ''':py:class:`TTkAppTemplate.Position.TOP`'''
     BOTTOM =  Position.BOTTOM
-    ''':py:class:`Position.BOTTOM`'''
+    ''':py:class:`TTkAppTemplate.Position.BOTTOM`'''
     LEFT   =  Position.LEFT
-    ''':py:class:`Position.LEFT`'''
+    ''':py:class:`TTkAppTemplate.Position.LEFT`'''
     RIGHT  =  Position.RIGHT
-    ''':py:class:`Position.RIGHT`'''
+    ''':py:class:`TTkAppTemplate.Position.RIGHT`'''
     CENTER =  Position.CENTER
-    ''':py:class:`Position.CENTER`'''
+    ''':py:class:`TTkAppTemplate.Position.CENTER`'''
     HEADER =  Position.HEADER
-    ''':py:class:`Position.HEADER`'''
+    ''':py:class:`TTkAppTemplate.Position.HEADER`'''
     FOOTER =  Position.FOOTER
-    ''':py:class:`Position.FOOTER`'''
+    ''':py:class:`TTkAppTemplate.Position.FOOTER`'''
 
     @dataclass(frozen=False)
     class _Panel:
@@ -192,10 +192,10 @@ class TTkAppTemplate(TTkContainer):
     __slots__ = ('_panels', '_splitters', '_menubarLines', '_selected'
                  #Signals
                  )
-    _selected:List[Position]
-    _panels:Dict[Position,Optional[_Panel]]
-    _splitters:Dict[Position,Optional[_Splitter]]
-    _menubarLines:Dict[Position,Optional[_MenuBarLine]]
+    _selected:List[TTkAppTemplate.Position]
+    _panels:Dict[TTkAppTemplate.Position,Optional[TTkAppTemplate._Panel]]
+    _splitters:Dict[TTkAppTemplate.Position,Optional[TTkAppTemplate._Splitter]]
+    _menubarLines:Dict[TTkAppTemplate.Position,Optional[TTkAppTemplate._MenuBarLine]]
     def __init__(self,
                  border=False,
                  **kwargs) -> None:
@@ -231,16 +231,16 @@ class TTkAppTemplate(TTkContainer):
         self.setFocusPolicy(TTkK.ClickFocus)
 
     def setWidget(self,
-                  widget:TTkWidget, position:Position=Position.MAIN,
+                  widget:TTkWidget, position:TTkAppTemplate.Position=Position.MAIN,
                   size:Optional[int]=None, title:TTkStringType="",
                   border:Optional[bool]=None, fixed:Optional[bool]=None) -> None:
         '''
-        Place the :py:class:`TTkWidget` in the :py:class:`TTkAppTemplate`'s panel identified by its :py:class:`Position`
+        Place the :py:class:`TTkWidget` in the :py:class:`TTkAppTemplate`'s panel identified by its :py:class:`TTkAppTemplate.Position`
 
         :param widget: The widget to place in the panel
         :type widget: :py:class:`TTkWidget`
-        :param position: The panel position, defaults to :py:class:`Position.MAIN`
-        :type position: :py:class:`Position`, optional
+        :param position: The panel position, defaults to :py:class:`TTkAppTemplate.Position.MAIN`
+        :type position: :py:class:`TTkAppTemplate.Position`, optional
         :param size: The panel size in characters (width for LEFT/RIGHT, height for TOP/BOTTOM/HEADER/FOOTER), defaults to widget's minimum size
         :type size: int, optional
         :param title: The panel title displayed in the border, defaults to ""
@@ -273,15 +273,15 @@ class TTkAppTemplate(TTkContainer):
         self._updateGeometries(force=True)
 
     def setItem(self,
-                item:TTkLayout, position:Position=Position.MAIN,
+                item:TTkLayout, position:TTkAppTemplate.Position=Position.MAIN,
                 size:Optional[int]=None, title:TTkStringType="",
                 border:Optional[bool]=None, fixed:Optional[bool]=None) -> None:
-        ''' Place the :py:class:`TTkLayout` in the :py:class:`TTkAppTemplate`'s panel identified by its :py:class:`Position`
+        ''' Place the :py:class:`TTkLayout` in the :py:class:`TTkAppTemplate`'s panel identified by its :py:class:`TTkAppTemplate.Position`
 
         :param item: The layout to place in the panel
         :type item: :py:class:`TTkLayout`
-        :param position: The panel position, defaults to :py:class:`Position.MAIN`
-        :type position: :py:class:`Position`, optional
+        :param position: The panel position, defaults to :py:class:`TTkAppTemplate.Position.MAIN`
+        :type position: :py:class:`TTkAppTemplate.Position`, optional
         :param size: The panel size in characters (width for LEFT/RIGHT, height for TOP/BOTTOM/HEADER/FOOTER), defaults to layout's minimum size
         :type size: int, optional
         :param title: The panel title displayed in the border, defaults to ""
@@ -313,11 +313,11 @@ class TTkAppTemplate(TTkContainer):
                 item.minimumHeight() )
         self._updateGeometries(force=True)
 
-    def setTitle(self, position:Position=Position.MAIN, title:TTkStringType="") -> None:
+    def setTitle(self, position:TTkAppTemplate.Position=Position.MAIN, title:TTkStringType="") -> None:
         ''' Set the title of the panel identified by the position
 
-        :param position: The panel position, defaults to :py:class:`Position.MAIN`
-        :type position: :py:class:`Position`, optional
+        :param position: The panel position, defaults to :py:class:`TTkAppTemplate.Position.MAIN`
+        :type position: :py:class:`TTkAppTemplate.Position`, optional
         :param title: The title text to display, defaults to ""
         :type title: :py:class:`TTkString`, optional
         '''
@@ -326,24 +326,24 @@ class TTkAppTemplate(TTkContainer):
         p.title =  title if isinstance(title,TTkString) else TTkString(title)
         self._updateGeometries(force=True)
 
-    def menuBar(self, position:Position=MAIN) -> Optional[TTkMenuBarLayout]:
+    def menuBar(self, position:TTkAppTemplate.Position=MAIN) -> Optional[TTkMenuBarLayout]:
         ''' Retrieve the :py:class:`TTkMenuBarLayout` in the panel identified by the position
 
-        :param position: The panel position, defaults to :py:class:`Position.MAIN`
-        :type position: :py:class:`Position`, optional
+        :param position: The panel position, defaults to :py:class:`TTkAppTemplate.Position.MAIN`
+        :type position: :py:class:`TTkAppTemplate.Position`, optional
 
         :return: The menu bar layout or None if not set
         :rtype: :py:class:`TTkMenuBarLayout` or None
         '''
         return None if not (p:=self._panels[position]) else p.menubar
 
-    def setMenuBar(self, menuBar:TTkMenuBarLayout, position:Position=MAIN) -> None:
+    def setMenuBar(self, menuBar:TTkMenuBarLayout, position:TTkAppTemplate.Position=MAIN) -> None:
         ''' Set the :py:class:`TTkMenuBarLayout` for the panel identified by the position
 
         :param menuBar: The menu bar layout to set
         :type menuBar: :py:class:`TTkMenuBarLayout`
-        :param position: The panel position, defaults to :py:class:`Position.MAIN`
-        :type position: :py:class:`Position`, optional
+        :param position: The panel position, defaults to :py:class:`TTkAppTemplate.Position.MAIN`
+        :type position: :py:class:`TTkAppTemplate.Position`, optional
         '''
         if not (p:=self._panels[position]):
             p = self._panels[position] = TTkAppTemplate._Panel()
@@ -360,8 +360,8 @@ class TTkAppTemplate(TTkContainer):
 
         :param border: True to show border, False to hide, defaults to True
         :type border: bool, optional
-        :param position: The panel position, defaults to :py:class:`Position.MAIN`
-        :type position: :py:class:`Position`, optional
+        :param position: The panel position, defaults to :py:class:`TTkAppTemplate.Position.MAIN`
+        :type position: :py:class:`TTkAppTemplate.Position`, optional
         '''
         if not (p:=self._panels[position]):
             p = self._panels[position] = TTkAppTemplate._Panel()
@@ -373,8 +373,8 @@ class TTkAppTemplate(TTkContainer):
 
         :param fixed: True for fixed size, False for resizable, defaults to False
         :type fixed: bool, optional
-        :param position: The panel position, defaults to :py:class:`Position.MAIN`
-        :type position: :py:class:`Position`, optional
+        :param position: The panel position, defaults to :py:class:`TTkAppTemplate.Position.MAIN`
+        :type position: :py:class:`TTkAppTemplate.Position`, optional
         '''
         if not (p:=self._panels[position]):
             p = self._panels[position] = TTkAppTemplate._Panel()

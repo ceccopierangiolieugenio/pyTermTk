@@ -187,7 +187,7 @@ class TTkAppTemplate(TTkContainer):
                   R              L
 
     Demo: `apptemplate.py <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/demo/showcase/apptemplate.py>`_
-    `online <https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/sandbox/sandbox.html?filePath=showcase/apptemplate.py>`_
+    `online <https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/sandbox/sandbox.html?filePath=demo/showcase/apptemplate.py>`_
     '''
 
 # For signals, document parameters:
