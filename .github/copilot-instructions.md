@@ -106,6 +106,25 @@ style = self.currentStyle()  # Get theme-aware colors
 ### Documentation & Docstrings
 Use **Sphinx-compatible docstring format** with Epytext-style field lists:
 ```python
+# In any sphinx reference
+# i.e. ':py:class:' or ':py:meth:'
+# the full path is not required but just che class name,
+# the link will be resolved in one of the sphynx custom plugins.
+def ttkStringData(self, row:int, col:int) -> TTkString:
+    '''
+    Returns the :py:class:`TTkString` reprsents the data stored in the row/column.
+
+    :param row: the row position of the data
+    :type row: int
+    :param col: the column position of the data
+    :type col: int
+
+    :return: the formatted string
+    :rtype: :py:class:`TTkString`
+    '''
+    data = self.data(row,col)
+    return TTkAbstractTableModel._dataToTTkString(data)
+
 def setGeometry(self, x: int, y: int, width: int, height: int):
     ''' Resize and move the widget
 
@@ -119,18 +138,56 @@ def setGeometry(self, x: int, y: int, width: int, height: int):
     :type height: int
     '''
 
-# For class/module docstrings include ASCII art examples:
-class TTkButton(TTkWidget):
-    ''' TTkButton:
+# For class/module docstrings include ASCII art examples,
+# a link to the demo and the sandbox link if available:
+# A small code example if not too complex
+class TTkDate(TTkWidget):
+    ''' TTkDate:
 
-    Border = True
+    A widget for displaying and editing dates. (`demo <https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/sandbox/sandbox.html?filePath=demo/showcase/date_time.py>`__)
+
     ::
 
-         ┌────────┐
-         │  Text  │
-         ╘════════╛
+        2025/11/04 📅
 
-    Demo: `formwidgets.py <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/demo/showcase/formwidgets.py>`_
+    .. code:: python
+
+        import TermTk as ttk
+
+        root = ttk.TTk(mouseTrack=True)
+
+        ttk.TTkDate(parent=root) # Defaults to the current date
+
+        root.mainloop()
+
+    '''
+
+class TTkAppTemplate(TTkContainer):
+    ''' TTkAppTemplate:
+
+    A flexible application template layout with multiple resizable panels.
+
+    ::
+
+        App Template Layout
+        ┌─────────────────────────────────┐
+        │         Header                  │
+        ├─────────┬──────────────┬────────┤ H
+        │         │   Top        │        │
+        │         ├──────────────┤        │ T
+        │         │              │        │
+        │  Right  │   Main       │  Left  │
+        │         │   Center     │        │
+        │         │              │        │
+        │         ├──────────────┤        │ B
+        │         │   Bottom     │        │
+        ├─────────┴──────────────┴────────┤ F
+        │         Footer                  │
+        └─────────────────────────────────┘
+                  R              L
+
+    Demo: `apptemplate.py <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/demo/showcase/apptemplate.py>`_
+    `online <https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/sandbox/sandbox.html?filePath=demo/showcase/apptemplate.py>`_
     '''
 
 # For signals, document parameters:

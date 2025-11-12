@@ -36,7 +36,6 @@ class _TTkCfg:
 
     color_depth: int = TTkK.DEP_24
 
-    toolTipTime:int = 1
     maxFps:int = 65
     doubleBuffer:bool = True
     doubleBufferNew:bool = False
