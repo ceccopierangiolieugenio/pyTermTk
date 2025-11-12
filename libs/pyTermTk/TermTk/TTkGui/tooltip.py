@@ -37,11 +37,30 @@ from TermTk.TTkWidgets.widget import TTkWidget
 from TermTk.TTkCore.signal    import pyTTkSlot
 
 class _TTkToolTipDisplayWidget(TTkWidget):
+    ''' _TTkToolTipDisplayWidget:
+
+    Internal widget that renders tooltip content in a bordered box.
+
+    ::
+
+        ╭────────────────╮
+        │ Tooltip text   │
+        │ Multiple lines │
+        ╰────────────────╯
+
+    This widget is automatically sized based on tooltip content
+    and uses a rounded border style for visual distinction.
+    '''
     __slots__ = ('_tooltip_list', '_x', '_y')
     _tooltip_list:List[TTkString]
     def __init__(self, *,
                  toolTip:TTkStringType="",
                  **kwargs) -> None:
+        ''' Initialize the tooltip display widget
+
+        :param toolTip: The tooltip text to display (supports multiline with \\n)
+        :type toolTip: :py:class:`TTkString`, optional
+        '''
         super().__init__(**kwargs)
         if isinstance(toolTip,TTkString):
             self._tooltip_list = toolTip.split('\n')
@@ -52,9 +71,22 @@ class _TTkToolTipDisplayWidget(TTkWidget):
         self.resize(w,h)
 
     def mouseEvent(self, evt: TTkMouseEvent) -> bool:
+        ''' Handle mouse events (always returns False to allow click-through)
+
+        :param evt: The mouse event
+        :type evt: :py:class:`TTkMouseEvent`
+
+        :return: False to propagate event
+        :rtype: bool
+        '''
         return False
 
     def paintEvent(self, canvas: TTkCanvas) -> None:
+        ''' Paint the tooltip with rounded border and text content
+
+        :param canvas: The canvas to draw on
+        :type canvas: :py:class:`TTkCanvas`
+        '''
         w,h = self.size()
         borderColor = TTkColor.fg("#888888")
         canvas.drawBox(pos=(0,0),size=(w,h), color=borderColor)
@@ -66,23 +98,66 @@ class _TTkToolTipDisplayWidget(TTkWidget):
             canvas.drawTTkString(pos=(1,i), text=s)
 
 class TTkToolTip():
+    ''' TTkToolTip:
+
+    Global tooltip manager for delayed display of help text.
+
+    This class manages tooltip behavior across the application, including:
+
+    - Delayed tooltip display after hover timeout (configurable via :py:class:`TTkToolTip._toolTipTime`)
+    - Automatic positioning and sizing
+    - Support for multiline tooltips
+
+    .. note::
+        This is a singleton-like class using class methods. Do not instantiate it directly.
+
+    Usage:
+
+    .. code-block:: python
+
+        # Widgets set tooltips via their toolTip property
+        button = TTkButton(text="Click me", toolTip="This button does something")
+
+        # The tooltip system automatically handles display timing and positioning
+    '''
+
+    _toolTipTime:int = 1
+    '''Timeout in seconds'''
+
     toolTipTimer:TTkTimer = TTkTimer(name='ToolTip')
+    '''Internal timer for delayed tooltip display'''
+
     toolTip:TTkStringType = ''
+    '''Current tooltip text to be displayed'''
 
     @pyTTkSlot()
     @staticmethod
     def _toolTipShow() -> None:
+        ''' Internal slot that creates and displays the tooltip widget
+
+        This method is called by the timer after the configured delay period.
+        '''
         # TTkLog.debug(f"TT:{TTkToolTip.toolTip}")
         TTkHelper.toolTipShow(_TTkToolTipDisplayWidget(toolTip=TTkToolTip.toolTip))
 
     @staticmethod
     def trigger(toolTip:TTkStringType) -> None:
+        ''' Trigger a tooltip to be displayed after the configured delay
+
+        :param toolTip: The tooltip text to display (supports \\n for multiline)
+        :type toolTip: :py:class:`TTkString`
+        '''
         # TTkToolTip.toolTipTimer.stop()
         TTkToolTip.toolTip = toolTip
-        TTkToolTip.toolTipTimer.start(TTkCfg.toolTipTime)
+        TTkToolTip.toolTipTimer.start(TTkToolTip._toolTipTime)
 
     @staticmethod
     def reset() -> None:
+        ''' Cancel any pending tooltip display
+
+        This is typically called when the mouse leaves a widget
+        or when the tooltip should be hidden.
+        '''
         TTkToolTip.toolTipTimer.stop()
 
 TTkToolTip.toolTipTimer.timeout.connect(TTkToolTip._toolTipShow)
