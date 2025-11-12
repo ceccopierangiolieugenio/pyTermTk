@@ -22,6 +22,8 @@
 
 __all__ = ['TTkSplitter']
 
+from typing import Union,List,Optional
+
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.cfg import TTkCfg
 from TermTk.TTkCore.color import TTkColor
@@ -51,6 +53,11 @@ class TTkSplitter(TTkContainer):
         '_orientation', '_separators', '_refSizes',
         '_items', '_titles', '_separatorSelected',
         '_border')
+    _items:List[Union[TTkWidget,TTkLayout]]
+    _titles:List[TTkString]
+    _separators:List[int]
+    _refSizes:List[Optional[int]]
+    _separatorSelected:Optional[int]
     def __init__(self, *,
                  border:bool=False,
                  orientation:TTkK.Direction=TTkK.HORIZONTAL,

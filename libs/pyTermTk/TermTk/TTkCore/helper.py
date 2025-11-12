@@ -573,7 +573,7 @@ class TTkHelper:
 
     # ToolTip Helper Methods
     toolTipWidget: Optional[TTkWidget] = None
-    toolTipTrigger: Callable[[TTkString], bool] = lambda _: True
+    toolTipTrigger: Callable[[TTkString], None] = lambda _: None
     toolTipReset:   Callable[[], None] = lambda  : None
 
     @staticmethod

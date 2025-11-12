@@ -40,7 +40,7 @@ class TTkTimer():
         'timeout', '_timerEvent',
         '_delay', '_delayLock', '_quit',
         '_stopTime')
-
+    timeout:pyTTkSignal
     def __init__(
             self,
             name:Optional[str]=None,

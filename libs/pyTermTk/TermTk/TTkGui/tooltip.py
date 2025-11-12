@@ -22,6 +22,8 @@
 
 __all__ = ['TTkToolTip']
 
+from typing import List
+
 # from TermTk.TTkCore.helper    import TTkHelper
 from TermTk.TTkCore.log       import TTkLog
 from TermTk.TTkCore.canvas    import TTkCanvas
@@ -29,20 +31,24 @@ from TermTk.TTkCore.cfg       import TTkCfg
 from TermTk.TTkCore.color     import TTkColor
 from TermTk.TTkCore.timer     import TTkTimer
 from TermTk.TTkCore.helper    import TTkHelper
-from TermTk.TTkCore.string    import TTkString
+from TermTk.TTkCore.string    import TTkString, TTkStringType
 from TermTk.TTkCore.TTkTerm.inputmouse import TTkMouseEvent
 from TermTk.TTkWidgets.widget import TTkWidget
 from TermTk.TTkCore.signal    import pyTTkSlot
 
 class _TTkToolTipDisplayWidget(TTkWidget):
-    __slots__ = ('_toolTip', '_x', '_y')
+    __slots__ = ('_tooltip_list', '_x', '_y')
+    _tooltip_list:List[TTkString]
     def __init__(self, *,
-                 toolTip:TTkString="",
+                 toolTip:TTkStringType="",
                  **kwargs) -> None:
         super().__init__(**kwargs)
-        self._toolTip = TTkString(toolTip).split('\n')
-        w = 2+max([s.termWidth() for s in self._toolTip])
-        h = 2+len(self._toolTip)
+        if isinstance(toolTip,TTkString):
+            self._tooltip_list = toolTip.split('\n')
+        else:
+            self._tooltip_list = TTkString(toolTip).split('\n')
+        w = 2+max([s.termWidth() for s in self._tooltip_list])
+        h = 2+len(self._tooltip_list)
         self.resize(w,h)
 
     def mouseEvent(self, evt: TTkMouseEvent) -> bool:
@@ -56,12 +62,12 @@ class _TTkToolTipDisplayWidget(TTkWidget):
         canvas.drawChar(pos=(w-1,0),  char='╮', color=borderColor)
         canvas.drawChar(pos=(w-1,h-1),char='╯', color=borderColor)
         canvas.drawChar(pos=(0,  h-1),char='╰', color=borderColor)
-        for i,s in enumerate(self._toolTip,1):
+        for i,s in enumerate(self._tooltip_list,1):
             canvas.drawTTkString(pos=(1,i), text=s)
 
 class TTkToolTip():
     toolTipTimer:TTkTimer = TTkTimer(name='ToolTip')
-    toolTip:TTkString = TTkString()
+    toolTip:TTkStringType = ''
 
     @pyTTkSlot()
     @staticmethod
@@ -70,7 +76,7 @@ class TTkToolTip():
         TTkHelper.toolTipShow(_TTkToolTipDisplayWidget(toolTip=TTkToolTip.toolTip))
 
     @staticmethod
-    def trigger(toolTip) -> None:
+    def trigger(toolTip:TTkStringType) -> None:
         # TTkToolTip.toolTipTimer.stop()
         TTkToolTip.toolTip = toolTip
         TTkToolTip.toolTipTimer.start(TTkCfg.toolTipTime)
