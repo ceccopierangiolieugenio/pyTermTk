@@ -262,7 +262,7 @@ class TTkTime(TTkWidget):
                 self._state.selected = _FieldSelected.NONE
                 return True
         else:
-            if '0' <= evt.key <= '9':
+            if isinstance(evt.key,str) and '0' <= evt.key <= '9':
                 value = int(evt.key)
                 secondDigit = self._state.secondDigit
                 self._state.secondDigit = not secondDigit

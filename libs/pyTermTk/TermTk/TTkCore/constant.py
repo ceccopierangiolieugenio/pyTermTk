@@ -194,7 +194,7 @@ class TTkConstant:
         Background=0x02
         '''The color type returned is Background'''
 
-    class CheckState(int):
+    class CheckState(IntEnum):
         ''' This class type is used to describe the check status.
 
         .. autosummary::
@@ -213,7 +213,7 @@ class TTkConstant:
     PartiallyChecked = CheckState.PartiallyChecked
     Checked          = CheckState.Checked
 
-    class InsertPolicy(int):
+    class InsertPolicy(IntEnum):
         '''Specifies what the :py:class:`TTkComboBox` should do when a new string is entered by the user.
 
         .. autosummary::
