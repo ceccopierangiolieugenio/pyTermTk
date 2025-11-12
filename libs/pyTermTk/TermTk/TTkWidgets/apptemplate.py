@@ -39,7 +39,9 @@ from TermTk.TTkWidgets.container import TTkWidget, TTkContainer
 from TermTk.TTkWidgets.menubar import TTkMenuBarLayout
 
 class TTkAppTemplate(TTkContainer):
-    ''' TTkAppTemplate Layout:
+    ''' TTkAppTemplate:
+
+    A flexible application template layout with multiple resizable panels.
 
     ::
 
@@ -59,6 +61,9 @@ class TTkAppTemplate(TTkContainer):
         │         Footer                  │
         └─────────────────────────────────┘
                   R              L
+
+    Demo: `apptemplate.py <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/demo/showcase/apptemplate.py>`_
+    `online <https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/sandbox/sandbox.html?filePath=showcase/apptemplate.py>`_
     '''
 
     class Position(IntEnum):
@@ -232,17 +237,17 @@ class TTkAppTemplate(TTkContainer):
         '''
         Place the :py:class:`TTkWidget` in the :py:class:`TTkAppTemplate`'s panel identified by its :py:class:`Position`
 
-        :param widget:
+        :param widget: The widget to place in the panel
         :type widget: :py:class:`TTkWidget`
-        :param position: defaults to :py:class:`Position.MAIN`
+        :param position: The panel position, defaults to :py:class:`Position.MAIN`
         :type position: :py:class:`Position`, optional
-        :param size: defaults to None
+        :param size: The panel size in characters (width for LEFT/RIGHT, height for TOP/BOTTOM/HEADER/FOOTER), defaults to widget's minimum size
         :type size: int, optional
-        :param title: defaults to ""
+        :param title: The panel title displayed in the border, defaults to ""
         :type title: :py:class:`TTkString`, optional
-        :param border: defaults to True
+        :param border: Whether to draw a border around the panel, defaults to True
         :type border: bool, optional
-        :param fixed: defaults to False
+        :param fixed: Whether the panel size is fixed (non-resizable), defaults to False
         :type fixed: bool, optional
         '''
         if not (p:=self._panels[position]):
@@ -271,20 +276,19 @@ class TTkAppTemplate(TTkContainer):
                 item:TTkLayout, position:Position=Position.MAIN,
                 size:Optional[int]=None, title:TTkStringType="",
                 border:Optional[bool]=None, fixed:Optional[bool]=None) -> None:
-        '''
-        Place the :py:class:`TTkLayout` in the :py:class:`TTkAppTemplate`'s panel identified by its :py:class:`Position`
+        ''' Place the :py:class:`TTkLayout` in the :py:class:`TTkAppTemplate`'s panel identified by its :py:class:`Position`
 
-        :param item:
+        :param item: The layout to place in the panel
         :type item: :py:class:`TTkLayout`
-        :param position: defaults to :py:class:`Position.MAIN`
+        :param position: The panel position, defaults to :py:class:`Position.MAIN`
         :type position: :py:class:`Position`, optional
-        :param size: defaults to None
+        :param size: The panel size in characters (width for LEFT/RIGHT, height for TOP/BOTTOM/HEADER/FOOTER), defaults to layout's minimum size
         :type size: int, optional
-        :param title: defaults to ""
+        :param title: The panel title displayed in the border, defaults to ""
         :type title: :py:class:`TTkString`, optional
-        :param border: defaults to True
+        :param border: Whether to draw a border around the panel, defaults to True
         :type border: bool, optional
-        :param fixed: defaults to False
+        :param fixed: Whether the panel size is fixed (non-resizable), defaults to False
         :type fixed: bool, optional
         '''
         if not (p:=self._panels[position]):
@@ -310,11 +314,11 @@ class TTkAppTemplate(TTkContainer):
         self._updateGeometries(force=True)
 
     def setTitle(self, position:Position=Position.MAIN, title:TTkStringType="") -> None:
-        '''Set the title of the panel identified by the "position"
+        ''' Set the title of the panel identified by the position
 
-        :param position: defaults to :py:class:`Position.MAIN`
+        :param position: The panel position, defaults to :py:class:`Position.MAIN`
         :type position: :py:class:`Position`, optional
-        :param title: defaults to ""
+        :param title: The title text to display, defaults to ""
         :type title: :py:class:`TTkString`, optional
         '''
         if not (p:=self._panels[position]):
@@ -323,15 +327,24 @@ class TTkAppTemplate(TTkContainer):
         self._updateGeometries(force=True)
 
     def menuBar(self, position:Position=MAIN) -> Optional[TTkMenuBarLayout]:
-        '''
-        Retrieve the :py:class:`TTkMenuBarLayout` in the panel identified by the position.
+        ''' Retrieve the :py:class:`TTkMenuBarLayout` in the panel identified by the position
 
-        :param position: defaults to :py:class:`Position.MAIN`
+        :param position: The panel position, defaults to :py:class:`Position.MAIN`
         :type position: :py:class:`Position`, optional
+
+        :return: The menu bar layout or None if not set
+        :rtype: :py:class:`TTkMenuBarLayout` or None
         '''
         return None if not (p:=self._panels[position]) else p.menubar
 
     def setMenuBar(self, menuBar:TTkMenuBarLayout, position:Position=MAIN) -> None:
+        ''' Set the :py:class:`TTkMenuBarLayout` for the panel identified by the position
+
+        :param menuBar: The menu bar layout to set
+        :type menuBar: :py:class:`TTkMenuBarLayout`
+        :param position: The panel position, defaults to :py:class:`Position.MAIN`
+        :type position: :py:class:`Position`, optional
+        '''
         if not (p:=self._panels[position]):
             p = self._panels[position] = TTkAppTemplate._Panel()
         if p.menubar:
@@ -343,12 +356,26 @@ class TTkAppTemplate(TTkContainer):
         self._updateGeometries(force=True)
 
     def setBorder(self, border=True, position=MAIN) -> None:
+        ''' Set whether to draw a border around the panel
+
+        :param border: True to show border, False to hide, defaults to True
+        :type border: bool, optional
+        :param position: The panel position, defaults to :py:class:`Position.MAIN`
+        :type position: :py:class:`Position`, optional
+        '''
         if not (p:=self._panels[position]):
             p = self._panels[position] = TTkAppTemplate._Panel()
         p.border = border
         self._updateGeometries(force=True)
 
     def setFixed(self, fixed=False, position=MAIN) -> None:
+        ''' Set whether the panel size is fixed (non-resizable)
+
+        :param fixed: True for fixed size, False for resizable, defaults to False
+        :type fixed: bool, optional
+        :param position: The panel position, defaults to :py:class:`Position.MAIN`
+        :type position: :py:class:`Position`, optional
+        '''
         if not (p:=self._panels[position]):
             p = self._panels[position] = TTkAppTemplate._Panel()
         p.fixed = fixed
@@ -398,6 +425,11 @@ class TTkAppTemplate(TTkContainer):
         return True
 
     def minimumWidth(self) -> int:
+        ''' Get the minimum width required for the template
+
+        :return: The minimum width in characters
+        :rtype: int
+        '''
         pns = self._panels
 
         # Header and Footer sizes
@@ -422,6 +454,11 @@ class TTkAppTemplate(TTkContainer):
         return max(mh, mf, mcr+mcl+max(mct, mcb, mcm)) + (2 if p.border else 0)
 
     def maximumWidth(self) -> int:
+        ''' Get the maximum width allowed for the template
+
+        :return: The maximum width in characters
+        :rtype: int
+        '''
         pns = self._panels
 
         # Header and Footer sizes
@@ -445,6 +482,11 @@ class TTkAppTemplate(TTkContainer):
         return min(mh, mf, mcr+mcl+min(mct, mcb, mcm)) + (2 if p.border else 0)
 
     def minimumHeight(self) -> int:
+        ''' Get the minimum height required for the template
+
+        :return: The minimum height in characters
+        :rtype: int
+        '''
         pns = self._panels
 
         # Retrieve all the panels parameters and hide the menubar if required
@@ -474,6 +516,11 @@ class TTkAppTemplate(TTkContainer):
         return mh+mf+max(mr ,ml, mm+mt+mb ) + ( 2 if bm else 0 )
 
     def maximumHeight(self) -> int:
+        ''' Get the maximum height allowed for the template
+
+        :return: The maximum height in characters
+        :rtype: int
+        '''
         pns = self._panels
 
         # Retrieve all the panels parameters and hide the menubar if required

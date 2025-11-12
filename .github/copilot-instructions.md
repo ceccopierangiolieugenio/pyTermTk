@@ -105,7 +105,23 @@ style = self.currentStyle()  # Get theme-aware colors
 
 ### Documentation & Docstrings
 Use **Sphinx-compatible docstring format** with Epytext-style field lists:
+Don't use the full path in the ':py:class:' or ':py:meth:' but just che class name, the link will be resolved in one of the sphynx custom plugins.
 ```python
+def ttkStringData(self, row:int, col:int) -> TTkString:
+    '''
+    Returns the :py:class:`TTkString` reprsents the data stored in the row/column.
+
+    :param row: the row position of the data
+    :type row: int
+    :param col: the column position of the data
+    :type col: int
+
+    :return: the formatted string
+    :rtype: :py:class:`TTkString`
+    '''
+    data = self.data(row,col)
+    return TTkAbstractTableModel._dataToTTkString(data)
+
 def setGeometry(self, x: int, y: int, width: int, height: int):
     ''' Resize and move the widget
 
