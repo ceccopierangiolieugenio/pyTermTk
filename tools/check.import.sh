@@ -117,6 +117,7 @@ __check(){
         grep -v \
             -e "TTkWidgets/widget.py:from __future__ import annotations" \
             -e "TTkWidgets/tabwidget.py:from enum import Enum"  \
+            -e "TTkWidgets/apptemplate.py:from enum import IntEnum"  \
             -e "TTkModelView/__init__.py:from importlib.util import find_spec" \
             -e "TTkModelView/table_edit_proxy.py:from enum import Enum, auto" \
             -e "TTkModelView/tablemodelcsv.py:import csv" \
