@@ -67,14 +67,14 @@ row += 1; win_form1_grid_layout.addWidget(ttk.TTkLabel(text='Line Edit Test 5'),
 win_form1_grid_layout.addWidget(ttk.TTkLineEdit(text='Line Edit Test 5'),row,2)
 
 row += 1; win_form1_grid_layout.addWidget(ttk.TTkLabel(text='Line Edit Input Number'),row,0)
-win_form1_grid_layout.addWidget(ttk.TTkLineEdit(text='123456', inputType=ttk.TTkK.Input_Number),row,2)
+win_form1_grid_layout.addWidget(ttk.TTkLineEdit(text='123456', inputType=ttk.TTkK.InputType.Input_Number),row,2)
 row += 1; win_form1_grid_layout.addWidget(ttk.TTkLabel(text='Line Edit Input Wrong Number'),row,0)
-win_form1_grid_layout.addWidget(ttk.TTkLineEdit(text='No num Text', inputType=ttk.TTkK.Input_Number),row,2)
+win_form1_grid_layout.addWidget(ttk.TTkLineEdit(text='No num Text', inputType=ttk.TTkK.InputType.Input_Number),row,2)
 
 row += 1; win_form1_grid_layout.addWidget(ttk.TTkLabel(text='Line Edit Input Password'),row,0)
-win_form1_grid_layout.addWidget(ttk.TTkLineEdit(text='Password', inputType=ttk.TTkK.Input_Password),row,2)
+win_form1_grid_layout.addWidget(ttk.TTkLineEdit(text='Password', inputType=ttk.TTkK.InputType.Input_Password),row,2)
 row += 1; win_form1_grid_layout.addWidget(ttk.TTkLabel(text='Line Edit Number Password'),row,0)
-win_form1_grid_layout.addWidget(ttk.TTkLineEdit(text='Password', inputType=ttk.TTkK.Input_Password+ttk.TTkK.Input_Number),row,2)
+win_form1_grid_layout.addWidget(ttk.TTkLineEdit(text='Password', inputType=ttk.TTkK.InputType.Input_Password|ttk.TTkK.InputType.Input_Number),row,2)
 
 row += 1; win_form1_grid_layout.addWidget(ttk.TTkLabel(text='Checkbox'),row,0)
 win_form1_grid_layout.addWidget(ttk.TTkCheckbox(),row,2)

@@ -76,17 +76,17 @@ def demoFormWidgets(root=None):
     win_form1_grid_layout.addWidget(_en_dis_cb := ttk.TTkCheckbox(text=" en/dis", checked=True),row,3); _en_dis_cb.clicked.connect(_wid.setEnabled)
 
     row += 1; win_form1_grid_layout.addWidget(ttk.TTkLabel(text='Line Edit Input Number'),row,0)
-    win_form1_grid_layout.addWidget(_wid := ttk.TTkLineEdit(text='123456', inputType=ttk.TTkK.Input_Number),row,2)
+    win_form1_grid_layout.addWidget(_wid := ttk.TTkLineEdit(text='123456', inputType=ttk.TTkK.InputType.Input_Number),row,2)
     win_form1_grid_layout.addWidget(_en_dis_cb := ttk.TTkCheckbox(text=" en/dis", checked=True),row,3); _en_dis_cb.clicked.connect(_wid.setEnabled)
     row += 1; win_form1_grid_layout.addWidget(ttk.TTkLabel(text='Line Edit Input Wrong Number'),row,0)
-    win_form1_grid_layout.addWidget(_wid := ttk.TTkLineEdit(text='No num Text', inputType=ttk.TTkK.Input_Number),row,2)
+    win_form1_grid_layout.addWidget(_wid := ttk.TTkLineEdit(text='No num Text', inputType=ttk.TTkK.InputType.Input_Number),row,2)
     win_form1_grid_layout.addWidget(_en_dis_cb := ttk.TTkCheckbox(text=" en/dis", checked=True),row,3); _en_dis_cb.clicked.connect(_wid.setEnabled)
 
     row += 1; win_form1_grid_layout.addWidget(ttk.TTkLabel(text='Line Edit Input Password'),row,0)
-    win_form1_grid_layout.addWidget(_wid := ttk.TTkLineEdit(text='Password', inputType=ttk.TTkK.Input_Password),row,2)
+    win_form1_grid_layout.addWidget(_wid := ttk.TTkLineEdit(text='Password', inputType=ttk.TTkK.InputType.Input_Password),row,2)
     win_form1_grid_layout.addWidget(_en_dis_cb := ttk.TTkCheckbox(text=" en/dis", checked=True),row,3); _en_dis_cb.clicked.connect(_wid.setEnabled)
     row += 1; win_form1_grid_layout.addWidget(ttk.TTkLabel(text='Line Edit Number Password'),row,0)
-    win_form1_grid_layout.addWidget(_wid := ttk.TTkLineEdit(text='Password', inputType=ttk.TTkK.Input_Password+ttk.TTkK.Input_Number),row,2)
+    win_form1_grid_layout.addWidget(_wid := ttk.TTkLineEdit(text='Password', inputType=ttk.TTkK.InputType.Input_Password|ttk.TTkK.InputType.Input_Number),row,2)
     win_form1_grid_layout.addWidget(_en_dis_cb := ttk.TTkCheckbox(text=" en/dis", checked=True),row,3); _en_dis_cb.clicked.connect(_wid.setEnabled)
 
     row += 1; win_form1_grid_layout.addWidget(ttk.TTkLabel(text='Spinbox (default [0,99])'),row,0)
