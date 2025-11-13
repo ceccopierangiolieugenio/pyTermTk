@@ -127,7 +127,7 @@ class TTkHelper:
         return TTkGlbl.term_w, TTkGlbl.term_h
 
     @staticmethod
-    def rootOverlay(widget: TTkWidget) -> Optional[TTkWidget]:
+    def rootOverlay(widget: Optional[TTkWidget]) -> Optional[TTkWidget]:
         if not widget:
             return None
         if not TTkHelper._overlay:
@@ -174,7 +174,7 @@ class TTkHelper:
         return False
 
     @staticmethod
-    def isOverlay(widget: TTkWidget) -> bool:
+    def isOverlay(widget: Optional[TTkWidget]) -> bool:
         return TTkHelper.rootOverlay(widget) is not None
 
     @staticmethod
@@ -241,8 +241,8 @@ class TTkHelper:
             bkFocus.setFocus()
 
     @staticmethod
-    def removeOverlayAndChild(widget: TTkWidget) -> None:
-        if not TTkHelper._rootWidget:
+    def removeOverlayAndChild(widget: Optional[TTkWidget]) -> None:
+        if not TTkHelper._rootWidget or not widget:
             return
         if not TTkHelper.isOverlay(widget):
             return

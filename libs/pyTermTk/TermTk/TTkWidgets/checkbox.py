@@ -22,11 +22,13 @@
 
 __all__ = ['TTkCheckbox']
 
+from typing import Optional
+
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.cfg import TTkCfg
 from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkCore.canvas import TTkCanvas
-from TermTk.TTkCore.string import TTkString
+from TermTk.TTkCore.string import TTkString, TTkStringType
 from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
 from TermTk.TTkCore.TTkTerm.inputkey import TTkKeyEvent
 from TermTk.TTkCore.TTkTerm.inputmouse import TTkMouseEvent
@@ -93,9 +95,9 @@ class TTkCheckbox(TTkWidget):
         'clicked', 'stateChanged', 'toggled'
         )
     def __init__(self, *,
-                 text:TTkString='',
+                 text:TTkStringType='',
                  checked:bool=False,
-                 checkStatus:TTkK.CheckState = None,
+                 checkStatus:Optional[TTkK.CheckState] = None,
                  tristate:bool=False,
                  **kwargs) -> None:
         '''
@@ -115,7 +117,7 @@ class TTkCheckbox(TTkWidget):
         self.clicked = pyTTkSignal(bool)
         self.toggled = pyTTkSignal(bool)
 
-        self._text = TTkString(text)
+        self._text = text if isinstance(text,TTkString) else TTkString(text)
 
         if checkStatus is not None :
             self._checkStatus = checkStatus

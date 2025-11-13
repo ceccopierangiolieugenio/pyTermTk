@@ -22,6 +22,8 @@
 
 __all__ = ['TTkComboBox']
 
+from typing import Dict,Any,List,Optional
+
 from TermTk.TTkCore.cfg import TTkCfg
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.log import TTkLog
@@ -41,7 +43,7 @@ from TermTk.TTkWidgets.resizableframe import TTkResizableFrame
 
 
 class _TTkComboBoxPopup(TTkResizableFrame):
-    classStyle = TTkResizableFrame.classStyle
+    classStyle:Dict[str,Dict[str,Any]] = TTkResizableFrame.classStyle
     classStyle['default'] |= {'searchColor': TTkColor.fg("#FFFF00")}
 
     __slots__ = ('_list',
@@ -66,13 +68,13 @@ class _TTkComboBoxPopup(TTkResizableFrame):
 
     def paintEvent(self, canvas:TTkCanvas) -> None:
         super().paintEvent(canvas)
-        if text := self._list.search():
+        if str_text := self._list.search():
             w = self.width()-6
             color = self.currentStyle()['searchColor']
-            if len(text) > w:
-                text = TTkString("≼",TTkColor.BG_BLUE+TTkColor.FG_CYAN)+TTkString(text[-w+1:],color)
+            if len(str_text) > w:
+                text = TTkString("≼",TTkColor.BG_BLUE+TTkColor.FG_CYAN)+TTkString(str_text[-w+1:],color)
             else:
-                text = TTkString(text,color)
+                text = TTkString(str_text,color)
             canvas.drawText(pos=(1,0), text=f"╼ {text} ╾")
             canvas.drawTTkString(pos=(3,0), text=text)
 
@@ -103,24 +105,52 @@ class TTkComboBox(TTkContainer):
     __slots__ = ('_list', '_id', '_lineEdit', '_editable', '_insertPolicy', '_textAlign', '_popupFrame',
         #signals
         'currentIndexChanged', 'currentTextChanged', 'editTextChanged')
+
+    currentIndexChanged:pyTTkSignal
+    '''
+    This signal is emitted when the index in the combobox changes either through user interaction or programmatically.
+
+    :param index: the new current index
+    :type index: int
+    '''
+    currentTextChanged:pyTTkSignal
+    '''
+    This signal is emitted when the text of the current item changes. The text is passed as parameter.
+
+    :param text: the new current text
+    :type text: str
+    '''
+    editTextChanged:pyTTkSignal
+    '''
+    This signal is emitted when the text in the combobox's line edit widget is changed. This signal is only emitted when the combobox is editable.
+
+    :param text: the new text in the line edit
+    :type text: str
+    '''
+
+    _list:List[str]
+    _popupFrame:Optional[_TTkComboBoxPopup]
     def __init__(self, *,
-                 list:list = None,
+                 list:Optional[List[str]] = None,
                  index:int = -1,
                  insertPolicy:TTkK.InsertPolicy = TTkK.InsertAtBottom,
                  textAlign:TTkK.Alignment = TTkK.CENTER_ALIGN,
                  editable:bool = False,
                  **kwargs) -> None:
         '''
-        :param list: the list of the items selectable by this combobox, defaults to "[]"
-        :type list: list(str), optional
+        :param list: the list of the items selectable by this combobox, defaults to []
+        :type list: list[str], optional
 
-        :param insertPolicy: the policy used to determine where user-inserted items should appear in the combobox, defaults to :py:class:`TTkConstant.InsertPolicy.InsertAtBottom`
-        :type insertPolicy: :py:class:`TTkConstant.InsertPolicy`, optional
+        :param index: the initial selected index, defaults to -1 (no selection)
+        :type index: int, optional
 
-        :param textAlign: This enum type is used to define the text alignment, defaults to :py:class:`TTkConstant.Alignment.CENTER_ALIGN`
-        :tye textAlign: :py:class:`TTkConstant.Alignment`, optional
+        :param insertPolicy: the policy used to determine where user-inserted items should appear in the combobox, defaults to :py:class:`TTkK.InsertPolicy.InsertAtBottom`
+        :type insertPolicy: :py:class:`TTkK.InsertPolicy`, optional
 
-        :param editable: This property holds whether the combo box can be edited by the user, defaults to False
+        :param textAlign: the text alignment for the displayed text, defaults to :py:class:`TTkK.Alignment.CENTER_ALIGN`
+        :type textAlign: :py:class:`TTkK.Alignment`, optional
+
+        :param editable: whether the combo box can be edited by the user, defaults to False
         :type editable: bool, optional
         '''
 
@@ -142,7 +172,7 @@ class TTkComboBox(TTkContainer):
         self.setMaximumHeight(1)
 
     def _lineEditChanged(self) -> None:
-        text = self._lineEdit.text()
+        text = self._lineEdit.text().toAscii()
         self._id=-1
         if text in self._list:
             self._id = self._list.index(text)
@@ -169,9 +199,10 @@ class TTkComboBox(TTkContainer):
         self.editTextChanged.emit(text)
 
     def textAlign(self) -> TTkK.Alignment:
-        '''his property holds the displayed text alignment
+        '''This property holds the displayed text alignment
 
-        :return: :py:class:`TTkConstant.Alignment`
+        :return: the current text alignment
+        :rtype: :py:class:`TTkK.Alignment`
         '''
         return self._textAlign
 
@@ -179,32 +210,32 @@ class TTkComboBox(TTkContainer):
         '''This property holds the displayed text alignment
 
         :param align:
-        :type align: :py:class:`TTkConstant.Alignment`
+        :type align: :py:class:`TTkK.Alignment`
         '''
         if self._textAlign != align:
             self._textAlign = align
             self.update()
 
-    def addItem(self, text:TTkString):
+    def addItem(self, text:str):
         '''
         Adds an item to the combobox with the given text.
 
         The item is appended to the list of existing items.
 
-        :param text:
-        :type text: :py:class:`TTkString`
+        :param text: the text of the item to add
+        :type text: str
         '''
         self._list.append(text)
         self.update()
 
-    def addItems(self, items:list[TTkString]) -> None:
+    def addItems(self, items:list[str]) -> None:
         '''
         Adds a list of items to the combobox with the given text.
 
         The items are appended to the list of existing items.
 
         :param items:
-        :type items: list[:py:class:`TTkString`]
+        :type items: list[str]
         '''
         for item in items:
             self.addItem(item)
@@ -217,11 +248,12 @@ class TTkComboBox(TTkContainer):
         self._id = -1
         self.update()
 
-    def lineEdit(self) -> TTkLineEdit:
+    def lineEdit(self) -> Optional[TTkLineEdit]:
         '''
         Returns the :py:class:`TTkLineEdit` widget used if the editable flag is enabled
 
-        :return: :py:class:`TTkLineEdit`
+        :return: the line edit if available, None otherwise
+        :rtype: :py:class:`TTkLineEdit` | None
         '''
         return self._lineEdit if self._editable else None
 
@@ -247,23 +279,25 @@ class TTkComboBox(TTkContainer):
         else:
             canvas.drawText(pos=(w-2,0), text="^]", color=borderColor)
 
-    def currentText(self) -> TTkString:
+    def currentText(self) -> str:
         '''
         Returns the selected text
 
-        :return: :py:class:`TTkString`
+        :return: the current text
+        :rtype: str
         '''
         if self._editable:
-            return self._lineEdit.text()
+            return self._lineEdit.text().toAscii()
         elif self._id >= 0:
             return self._list[self._id]
         return ""
 
     def currentIndex(self) -> int:
         '''
-        Return the current seleccted index.
+        Return the current selected index.
 
-        :return: int
+        :return: the current index, -1 if no selection
+        :rtype: int
         '''
         return self._id
 
@@ -287,12 +321,12 @@ class TTkComboBox(TTkContainer):
         self.update()
 
     @pyTTkSlot(str)
-    def setCurrentText(self, text:TTkString) -> None:
+    def setCurrentText(self, text:str) -> None:
         '''
         Set the selected Text
 
         :param text:
-        :type text: :py:class:`TTkString`
+        :type text: str
         '''
         if self._editable:
             self.setEditText(text)
@@ -318,7 +352,8 @@ class TTkComboBox(TTkContainer):
         '''
         Retrieve the insert policy used when a new item is added if the combobox editable flag is true.
 
-        :return: :py:class:`TTkK.InsertPolicy`
+        :return: the current insert policy
+        :rtype: :py:class:`TTkK.InsertPolicy`
         '''
         return self._insertPolicy
 
@@ -335,7 +370,8 @@ class TTkComboBox(TTkContainer):
         '''
         This field holds the editable status of this widget.
 
-        :return: bool
+        :return: True if editable, False otherwise
+        :rtype: bool
         '''
         return self._editable
 
@@ -355,7 +391,7 @@ class TTkComboBox(TTkContainer):
             self.setFocusPolicy(TTkK.ClickFocus | TTkK.TabFocus)
 
     @pyTTkSlot(str)
-    def _callback(self, label:TTkString) -> None:
+    def _callback(self, label:str) -> None:
         if self._editable:
             self._lineEdit.setText(label)
         self.setCurrentIndex(self._list.index(label))

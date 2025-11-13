@@ -194,7 +194,7 @@ class TTkConstant:
         Background=0x02
         '''The color type returned is Background'''
 
-    class CheckState(int):
+    class CheckState(IntEnum):
         ''' This class type is used to describe the check status.
 
         .. autosummary::
@@ -213,7 +213,7 @@ class TTkConstant:
     PartiallyChecked = CheckState.PartiallyChecked
     Checked          = CheckState.Checked
 
-    class InsertPolicy(int):
+    class InsertPolicy(IntEnum):
         '''Specifies what the :py:class:`TTkComboBox` should do when a new string is entered by the user.
 
         .. autosummary::
@@ -423,10 +423,26 @@ class TTkConstant:
     Cursor_Blinking_Bar        = 0x0006
     Cursor_Steady_Bar          = 0x0007
 
+    class InputType(Flag):
+        '''
+        This enum type describes the input validation types for text input widgets.
+
+        .. autosummary::
+          Input_Text
+          Input_Number
+          Input_Password
+        '''
+        Input_Text      = 0x01
+        '''Accept any text input (default)'''
+        Input_Number    = 0x02
+        '''Accept only numeric input (integers and decimals)'''
+        Input_Password  = 0x04
+        '''Password input type (deprecated - use :py:class:`TTkLineEdit.EchoMode.Password` instead)'''
+
     # Input types
-    Input_Text      = 0x01
-    Input_Number    = 0x02
-    Input_Password  = 0x04
+    Input_Text      = InputType.Input_Text
+    Input_Number    = InputType.Input_Number
+    Input_Password  = InputType.Input_Password
 
     # Alignment
     class Alignment(IntEnum):
