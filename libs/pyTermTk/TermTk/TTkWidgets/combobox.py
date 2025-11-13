@@ -172,7 +172,7 @@ class TTkComboBox(TTkContainer):
         self.setMaximumHeight(1)
 
     def _lineEditChanged(self) -> None:
-        text = self._lineEdit.text()
+        text = self._lineEdit.text().toAscii()
         self._id=-1
         if text in self._list:
             self._id = self._list.index(text)

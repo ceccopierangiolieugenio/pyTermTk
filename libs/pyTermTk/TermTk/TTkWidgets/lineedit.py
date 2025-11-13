@@ -22,6 +22,10 @@
 
 __all__ = ['TTkLineEdit']
 
+from enum import IntEnum
+
+from typing import Optional
+
 from TermTk.TTkCore.cfg import TTkCfg
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.constant import TTkK
@@ -42,10 +46,53 @@ from TermTk.TTkWidgets.widget import TTkWidget
             <-->           Offset
 '''
 class TTkLineEdit(TTkWidget):
-    '''TTkLineEdit'''
+    ''' TTkLineEdit:
 
-    class EchoMode(int):
-        '''EchoMode'''
+    A single-line text editor widget for user input. (`demo <https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/sandbox/sandbox.html?filePath=demo/showcase/lineedit.py>`__)
+
+    ::
+
+        Standard:  |Hello World________|
+        Password:  |**********_________|
+        Number:    |123.45_____________|
+
+    .. code:: python
+
+        import TermTk as ttk
+
+        root = ttk.TTk()
+
+        # Basic text input
+        edit = ttk.TTkLineEdit(parent=root, pos=(1,1), size=(20,1), text="Hello")
+
+        # Password input
+        password = ttk.TTkLineEdit(parent=root, pos=(1,2), size=(20,1),
+                                   echoMode=ttk.TTkLineEdit.EchoMode.Password)
+
+        # Numeric input
+        number = ttk.TTkLineEdit(parent=root, pos=(1,3), size=(20,1),
+                                inputType=ttk.TTkK.InputType.Input_Number)
+
+        # Connect to signal
+        edit.textEdited.connect(lambda text: ttk.TTkLog.debug(f"Edited: {text}"))
+
+        root.mainloop()
+
+    :param text: Initial text content
+    :type text: :py:class:`TTkString` or str, optional
+    :param hint: Placeholder text shown when empty
+    :type hint: :py:class:`TTkString` or str, optional
+    :param inputType: Input validation type (TTkK.InputType.Input_Text or TTkK.InputType.Input_Number)
+    :type inputType: int, optional
+    :param echoMode: How text is displayed (Normal, NoEcho, Password, PasswordEchoOnEdit)
+    :type echoMode: :py:class:`EchoMode`, optional
+    '''
+
+    class EchoMode(IntEnum):
+        ''' EchoMode:
+
+        Defines how text input is displayed in the line edit.
+        '''
         Normal             = 0x00
         '''Display characters as they are entered. This is the default.'''
         NoEcho             = 0x01
@@ -73,10 +120,37 @@ class TTkLineEdit(TTkWidget):
         '_hint',
         # Signals
         'returnPressed', 'textChanged', 'textEdited'     )
+
+    returnPressed:pyTTkSignal
+    '''
+    This signal is emitted when the Return or Enter key is pressed.
+    '''
+
+    textChanged:pyTTkSignal
+    '''
+    This signal is emitted whenever the text changes programmatically or through user input.
+
+    :param text: The new text content
+    :type text: str
+    '''
+
+    textEdited:pyTTkSignal
+    '''
+    This signal is emitted whenever the text is edited by the user (not programmatically).
+
+    :param text: The edited text content
+    :type text: str
+    '''
+
+    _text:TTkString
+    _hint:TTkString
+    _cursorPos:int
+    _inputType:TTkK.InputType
+
     def __init__(self, *,
-                 text:TTkString='',
-                 hint:TTkString='',
-                 inputType:int=TTkK.Input_Text,
+                 text:TTkStringType='',
+                 hint:TTkStringType='',
+                 inputType:TTkK.InputType=TTkK.InputType.Input_Text,
                  echoMode:EchoMode=EchoMode.Normal,
                  **kwargs) -> None:
         # Signals
@@ -88,8 +162,8 @@ class TTkLineEdit(TTkWidget):
         self._selectionFrom = 0
         self._selectionTo   = 0
         self._replace=False
-        self._text = TTkString(text)
-        self._hint = TTkString(hint)
+        self._text = text if isinstance(text,TTkString) else TTkString(text)
+        self._hint = hint if isinstance(hint,TTkString) else TTkString(hint)
         self._inputType = inputType
         self._echoMode = echoMode
         self._clipboard = TTkClipboard()
@@ -101,8 +175,14 @@ class TTkLineEdit(TTkWidget):
         self.enableWidgetCursor()
 
     @pyTTkSlot(TTkStringType)
-    def setText(self, text:TTkStringType, cursorPos=0x1000):
-        '''setText'''
+    def setText(self, text:TTkStringType, cursorPos:int=0x1000) -> None:
+        ''' Set the text content of the line edit
+
+        :param text: The new text to display
+        :type text: :py:class:`TTkString` or str
+        :param cursorPos: Position to place the cursor (defaults to end of text)
+        :type cursorPos: int, optional
+        '''
         if text != self._text:
             self.textChanged.emit(text)
             self._text = TTkString(text)
@@ -110,35 +190,59 @@ class TTkLineEdit(TTkWidget):
             self._cursorPos = max(0,min(cursorPos, len(text)))
             self._pushCursor()
 
-    def text(self):
-        '''text'''
+    def text(self) -> TTkString:
+        ''' Get the current text content
+
+        :return: The current text
+        :rtype: :py:class:`TTkString`
+        '''
         return self._text
 
-    def inputType(self):
-        '''inputType'''
+    def inputType(self) -> TTkK.InputType:
+        ''' Get the current input validation type
+
+        :return: The input type (:py:class:`TTkK.InputType.Input_Text` or :py:class:`TTkK.InputType.Input_Number`)
+        :rtype: :py:class:`TTkK.InputType`
+        '''
         return self._inputType
 
-    def setInputType(self, inputType):
-        '''inputType'''
-        if bool(inputType & TTkK.Input_Text) and bool(inputType & TTkK.Input_Number):
+    def setInputType(self, inputType:TTkK.InputType) -> None:
+        ''' Set the input validation type
+
+        When set to Input_Number, only numeric values (including decimals) are accepted.
+
+        :param inputType: The input type to validate against
+        :type inputType: :py:class:`TTkK.InputType`
+        '''
+        if bool(inputType & TTkK.InputType.Input_Text) and bool(inputType & TTkK.InputType.Input_Number):
             return
         # Kept here for retrocompatibility
-        if inputType & TTkK.Input_Password:
-            TTkLog.warn("TTkK.Input_Password is deprecated, use the EchoMode instead")
+        if inputType & TTkK.InputType.Input_Password:
+            TTkLog.warn("TTkK.InputType.Input_Password is deprecated, use the EchoMode instead")
             self._echoMode = TTkLineEdit.EchoMode.Password
-            inputType &= ~TTkK.Input_Password
-        if inputType & ~(TTkK.Input_Text|TTkK.Input_Number):
+            inputType &= ~TTkK.InputType.Input_Password
+        if inputType & ~(TTkK.InputType.Input_Text|TTkK.InputType.Input_Number):
             return
-        self._inputType = inputType & (TTkK.Input_Text|TTkK.Input_Number) if inputType else TTkK.Input_Text
-        if ( self._inputType == TTkK.Input_Number and
+        self._inputType = inputType & (TTkK.InputType.Input_Text|TTkK.InputType.Input_Number) if inputType else TTkK.InputType.Input_Text
+        if ( self._inputType == TTkK.InputType.Input_Number and
              not self._isFloat(self._text)):
             self._text = TTkString('0')
         self.update()
 
     def echoMode(self) -> EchoMode:
+        ''' Get the current echo mode
+
+        :return: The current echo mode
+        :rtype: :py:class:`EchoMode`
+        '''
         return self._echoMode
 
     def setEchoMode(self, echoMode:EchoMode):
+        ''' Set how text is displayed
+
+        :param echoMode: The echo mode (Normal, NoEcho, Password, PasswordEchoOnEdit)
+        :type echoMode: :py:class:`EchoMode`
+        '''
         self._echoMode = echoMode
         self.update()
 
@@ -229,12 +333,16 @@ class TTkLineEdit(TTkWidget):
 
     @pyTTkSlot()
     def copy(self):
+        ''' Copy the selected text to the clipboard
+        '''
         if self._selectionFrom >= self._selectionTo: return
         txt = self._text.substring(fr=self._selectionFrom,to=self._selectionTo)
         self._clipboard.setText(txt)
 
     @pyTTkSlot()
     def cut(self):
+        ''' Cut the selected text to the clipboard
+        '''
         self.copy()
         self._text = self._text.substring(to=self._selectionFrom) + self._text.substring(fr=self._selectionTo)
         self._cursorPos = self._selectionFrom
@@ -242,11 +350,20 @@ class TTkLineEdit(TTkWidget):
 
     @pyTTkSlot()
     def paste(self):
+        ''' Paste text from the clipboard at the cursor position
+        '''
         txt = self._clipboard.text()
         self.pasteEvent(txt)
 
     def pasteEvent(self, txt:str):
-        txt = TTkString().join(txt.split('\n'))
+        ''' Handle paste event with custom text
+
+        :param txt: The text to paste
+        :type txt: str
+        :return: True if the event was handled
+        :rtype: bool
+        '''
+        ttk_txt = TTkString(''.join(txt.split('\n')))
 
         text = self._text
 
@@ -261,11 +378,11 @@ class TTkLineEdit(TTkWidget):
             else:
                 post = text.substring(fr=self._cursorPos)
 
-        text = pre + txt + post
-        if ( self._inputType & TTkK.Input_Number and
+        text = pre + ttk_txt + post
+        if ( self._inputType & TTkK.InputType.Input_Number and
              not self._isFloat(text) ):
             return True
-        self.setText(text, self._cursorPos+txt.termWidth())
+        self.setText(text, self._cursorPos+ttk_txt.termWidth())
 
         self._pushCursor()
         self.textEdited.emit(self._text)
@@ -323,7 +440,7 @@ class TTkLineEdit(TTkWidget):
                    text = self._text.substring(to=prev) + self._text.substring(fr=self._cursorPos)
                    cursorPos = prev
 
-            if ( self._inputType & TTkK.Input_Number and
+            if ( self._inputType & TTkK.InputType.Input_Number and
                  not self._isFloat(self._text) ):
                 self.setText('0', 1)
             else:
@@ -333,7 +450,7 @@ class TTkLineEdit(TTkWidget):
 
             if evt.key == TTkK.Key_Enter:
                 self.returnPressed.emit()
-        else:
+        elif isinstance(evt.key,str):
             text = self._text
 
             if self._selectionFrom < self._selectionTo:
@@ -348,7 +465,7 @@ class TTkLineEdit(TTkWidget):
                     post = text.substring(fr=self._cursorPos)
 
             text = pre + evt.key + post
-            if ( self._inputType & TTkK.Input_Number and
+            if ( self._inputType & TTkK.InputType.Input_Number and
                  ( evt.key in (' ') or not self._isFloat(text) )):
                 return True
             self.setText(text, self._cursorPos+1)
