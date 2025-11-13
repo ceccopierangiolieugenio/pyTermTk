@@ -159,7 +159,7 @@ class BreakOutDisplay(ttk.TTkWidget):
         canvas.drawText(
             pos=(posx,posy),
             text=ball)
-root = ttk.TTk(title="breakout Demo", mouseTrack=True, layout=ttk.TTkGridLayout())
+root = ttk.TTk(title="breakout Demo", layout=ttk.TTkGridLayout())
 
 frame = ttk.TTkFrame(layout=ttk.TTkGridLayout(), title="BreakOuTTk")
 breakout = BreakOutDisplay(parent=frame)

@@ -939,8 +939,7 @@ def main():
 
     root = ttk.TTk(
             layout=ttk.TTkGridLayout(),
-            title="Perspectivator",
-            mouseTrack=True)
+            title="Perspectivator")
 
 
     if len(args.filename) == 1 and  args.filename[0].endswith('.json'):

@@ -34,7 +34,7 @@ class WindowThatHandleKeypress(ttk.TTkWindow):
                 return True
         return super().keyEvent(evt)
 
-root = ttk.TTk(mouseTrack=True)
+root = ttk.TTk()
 
 logWin = ttk.TTkWindow(title="LOG", parent=root, pos=(20,0), size=(100,20), border=True, layout=ttk.TTkGridLayout())
 ttk.TTkLogViewer(parent=logWin)

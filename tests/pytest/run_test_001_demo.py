@@ -126,11 +126,11 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('-r', '--record', help='Record input to File', type=argparse.FileType('bw'))
     parser.add_argument('-p', '--play',   help='Play input from File', type=argparse.FileType('br'))
-    parser.add_argument('-f', help='Full Screen (default)', action='store_true')
-    parser.add_argument('-w', help='Windowed',    action='store_true')
-    parser.add_argument('-t', help='Track Mouse', action='store_true')
+    parser.add_argument('-f', help="Full Screen (default)", action='store_true')
+    parser.add_argument('-w', help="Windowed",              action='store_true')
+    parser.add_argument('-t', help="Don't Track Mouse",     action='store_true')
     args = parser.parse_args()
-    mouseTrack = args.t
+    mouseTrack = not args.t
 
     print(args)
 

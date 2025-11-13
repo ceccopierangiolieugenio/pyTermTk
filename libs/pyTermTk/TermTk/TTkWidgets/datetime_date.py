@@ -71,7 +71,7 @@ class TTkDate(TTkWidget):
 
         import TermTk as ttk
 
-        root = ttk.TTk(mouseTrack=True)
+        root = ttk.TTk()
 
         ttk.TTkDate(parent=root) # Defaults to the current date
 

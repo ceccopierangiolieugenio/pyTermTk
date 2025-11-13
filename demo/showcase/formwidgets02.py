@@ -136,11 +136,11 @@ def demoFormWidgets(root=None):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('-f', help='Full Screen', action='store_true')
-    parser.add_argument('-t', help='Track Mouse', action='store_true')
+    parser.add_argument('-f', help="Full Screen", action='store_true')
+    parser.add_argument('-t', help="Don't Track Mouse", action='store_true')
     args = parser.parse_args()
 
-    mouseTrack = args.t
+    mouseTrack = not args.t
 
     root = ttk.TTk(title="pyTermTk Form Demo", mouseTrack=mouseTrack)
     if args.f:
