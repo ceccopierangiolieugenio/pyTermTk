@@ -229,7 +229,7 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
         self._widgetCursorType = TTkK.Cursor_Blinking_Bar
 
         self._name = name if name else self.__class__.__name__
-        self._parent:TTkWidget = parent
+        self._parent = parent
 
         self._pendingMouseRelease = False
 

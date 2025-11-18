@@ -237,14 +237,10 @@ class TTkLayout(TTkLayoutItem):
     def zSortedItems(self): return self._zSortedItems
 
     def replaceItem(self, item, index):
-        self._items[index] = item
-        self._zSortItems()
-        self.update()
-        item.setParent(self)
-        if item._layoutItemType == TTkK.WidgetItem:
-            item.widget().setParent(self.parentWidget())
-        if self.parentWidget():
-            self.parentWidget().update(repaint=True, updateLayout=True)
+        if index < 0 or index >= len(self._items):
+            raise ValueError(f"The {index=} is not inside the items list")
+        self.removeItem(item=self._items[index])
+        self.insertItem(item=item,index=index)
 
     def addItem(self, item):
         self.insertItems(len(self._items),[item])
