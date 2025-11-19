@@ -115,11 +115,13 @@ class TTk(TTkContainer):
         '_paintEvent',
         '_lastMultiTap',
         '_exceptions',
+        '_focusWidget',
         'paintExecuted')
 
     _timer:TTkTimer
     _exceptions:List[Exception]
     _mouseCursor:Optional[_MouseCursor]
+    _focusWidget:Optional[TTkWidget]
 
     def __init__(self, *,
                  title:str='TermTk',
@@ -138,6 +140,7 @@ class TTk(TTkContainer):
         self._exceptions = []
         self._title = title
         self._sigmask = sigmask
+        self._focusWidget = None
         self.paintExecuted = pyTTkSignal()
         self._termMouse = True
         self._termDirectMouse = mouseTrack
@@ -168,6 +171,15 @@ class TTk(TTkContainer):
             self._showMouseCursor = True
 
         TTkHelper.registerRootWidget(self)
+
+    def _getFocusWidget(self) -> Optional[TTkWidget]:
+        return self._focusWidget
+
+    def _setFocusWidget(self, widget:Optional[TTkWidget]) -> None:
+        if self._focusWidget is widget:
+            return
+        self._focusWidget = widget
+        self.update()
 
     frame = 0
     time = time.time()
@@ -288,7 +300,7 @@ class TTk(TTkContainer):
 
     @pyTTkSlot(str)
     def _processPaste(self, txt:str):
-        if focusWidget := TTkHelper.getFocus():
+        if focusWidget := self._getFocusWidget():
             while focusWidget and not focusWidget.pasteEvent(txt):
                 focusWidget = focusWidget.parentWidget()
 
@@ -296,7 +308,7 @@ class TTk(TTkContainer):
     def _processInput(self, kevt, mevt):
         with self._drawMutex:
             if kevt is not None:
-                self._key_event(kevt)
+                self.keyEvent(kevt)
             if mevt is not None:
                 self._mouse_event(mevt)
 
@@ -320,7 +332,7 @@ class TTk(TTkContainer):
         # Mouse Events forwarded straight to the Focus widget:
         #  - Drag
         #  - Release
-        focusWidget = TTkHelper.getFocus()
+        focusWidget = self._getFocusWidget()
         if ( focusWidget is not None and
              ( mevt.evt == TTkK.Drag or
                mevt.evt == TTkK.Release ) and
@@ -349,25 +361,24 @@ class TTk(TTkContainer):
         if mevt.evt == TTkK.Release:
             TTkHelper.dndEnd()
 
-    def _key_event(self, kevt):
-        keyHandled = False
-        # TTkLog.debug(f"Key: {kevt}")
-        focusWidget = TTkHelper.getFocus()
-        # TTkLog.debug(f"{focusWidget}")
-        if focusWidget is not None:
-            keyHandled = focusWidget.keyEvent(kevt)
-        if not keyHandled:
-            TTkShortcut.processKey(kevt, focusWidget)
-        # Handle Next Focus Key Binding
-        if not keyHandled and \
-           ((kevt.key == TTkK.Key_Tab and kevt.mod == TTkK.NoModifier) or
-           ( kevt.key == TTkK.Key_Right or kevt.key == TTkK.Key_Down)):
-                TTkHelper.nextFocus(focusWidget if focusWidget else self)
-        # Handle Prev Focus Key Binding
-        if not keyHandled and \
-           ((kevt.key == TTkK.Key_Tab and kevt.mod == TTkK.ShiftModifier) or
-           ( kevt.key == TTkK.Key_Left or kevt.key == TTkK.Key_Up)):
-                TTkHelper.prevFocus(focusWidget if focusWidget else self)
+    def keyEvent(self, evt:TTkKeyEvent) -> bool:
+        if super().keyEvent(evt=evt):
+            return True
+
+        # If this is reached after a tab focus event, it means that either
+        # no focus widgets are defined
+        # or the last/first focus is reached - the focus need to go to start from the opposite side
+        if ( (evt.key == TTkK.Key_Tab and evt.mod == TTkK.NoModifier) or
+             (evt.key in (TTkK.Key_Right, TTkK.Key_Down ) ) ) :
+            if _nfw:=self._getFirstFocus(widget=None,focusPolicy=TTkK.FocusPolicy.TabFocus,reverse=False):
+                _nfw.setFocus()
+                return True
+        if ( (evt.key == TTkK.Key_Tab and evt.mod == TTkK.ShiftModifier) or
+             (evt.key in ( TTkK.Key_Left, TTkK.Key_Up ) ) ) :
+            if _pfw:=self._getFirstFocus(widget=None,focusPolicy=TTkK.FocusPolicy.TabFocus,reverse=True):
+                _pfw.setFocus()
+                return True
+        return False
 
     def _time_event(self):
         # Event.{wait and clear} should be atomic,

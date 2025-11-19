@@ -24,10 +24,17 @@
 **Layout** [:ref:`Tutorial <Layout-Tutorial_Intro>`]
 '''
 
+from __future__ import annotations
+
 __all__ = ['TTkLayoutItem', 'TTkLayout']
+
+from typing import TYPE_CHECKING,Generator
 
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.constant import TTkK
+
+if TYPE_CHECKING:
+    from TermTk.TTkWidgets.widget import TTkWidget
 
 class TTkLayoutItem():
     ''' :py:class:`~TTkLayoutItem` is the base class of layout Items inherited by :py:class:`~TTkLayout`, :py:class:`~TTkWidgetItem`, and all the derived layout managers.
@@ -220,8 +227,22 @@ class TTkLayout(TTkLayoutItem):
         else:
             return self._parent.parentWidget()
 
-    def iterWidgets(self, onlyVisible=True, recurse=True):
-        for child in self._items:
+    def iterWidgets(self, onlyVisible: bool = True, recurse: bool = True, reverse: bool = False) -> Generator[TTkWidget, None, None]:
+        '''
+        Iterate over all widgets in the layout.
+
+        :param onlyVisible: if True, only yield visible widgets
+        :type onlyVisible: bool
+        :param recurse: if True, recursively iterate through nested layouts
+        :type recurse: bool
+        :param reverse: if True, iterate in reverse order
+        :type reverse: bool
+
+        :return: generator yielding widgets
+        :rtype: Generator[:py:class:`TTkWidget`, None, None]
+        '''
+        items = reversed(self._items) if reverse else self._items
+        for child in items:
             if child._layoutItemType == TTkK.WidgetItem:
                 if onlyVisible and not child.widget().isVisible(): continue
                 yield child.widget()
@@ -399,7 +420,8 @@ class TTkWidgetItem(TTkLayoutItem):
         TTkLayoutItem.__init__(self, layoutItemType=TTkK.LayoutItemTypes.WidgetItem, **kwargs)
         self._widget = widget
 
-    def widget(self): return self._widget
+    def widget(self) -> TTkWidget:
+        return self._widget
 
     def isVisible(self): return self._widget.isVisible()
 

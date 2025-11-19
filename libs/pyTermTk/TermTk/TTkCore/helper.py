@@ -45,7 +45,6 @@ class TTkHelper:
 
     This is a collection of helper utilities to be used all around TermTk
     '''
-    _focusWidget: Optional[TTkWidget] = None
     _rootCanvas: Optional[TTkCanvas] = None
     _rootWidget: Optional[TTk] = None
     _updateWidget:Set[TTkWidget] = set()
@@ -206,7 +205,8 @@ class TTkHelper:
             # TTkLayoutItem.LAYER1    =  0x40000000
             widget.move(wx,wy)
         else:
-            TTkHelper._overlay.append(TTkHelper._Overlay(wx,wy,widget,TTkHelper._focusWidget,modal))
+            _fw = TTkHelper._rootWidget._getFocusWidget()
+            TTkHelper._overlay.append(TTkHelper._Overlay(wx,wy,widget,_fw,modal))
         TTkHelper._rootWidget.rootLayout().addWidget(widget)
         widget.setFocus()
         widget.raiseWidget()
@@ -235,8 +235,8 @@ class TTkHelper:
             owidget = TTkHelper._overlay.pop()
             bkFocus = owidget._prevFocus
             TTkHelper._rootWidget.rootLayout().removeWidget(owidget._widget)
-        if TTkHelper._focusWidget:
-            TTkHelper._focusWidget.clearFocus()
+        if _fw:=TTkHelper._rootWidget._getFocusWidget():
+            _fw.clearFocus()
         if bkFocus:
             bkFocus.setFocus()
 
@@ -474,18 +474,6 @@ class TTkHelper:
         if prev:
             prev.setFocus()
             prev.update()
-
-    @staticmethod
-    def setFocus(widget: TTkWidget) -> None:
-        TTkHelper._focusWidget = widget
-
-    @staticmethod
-    def getFocus() -> Optional[TTkWidget]:
-        return TTkHelper._focusWidget
-
-    @staticmethod
-    def clearFocus() -> None:
-        TTkHelper._focusWidget = None
 
     @staticmethod
     def showCursor(cursorType: int = TTkK.Cursor_Blinking_Block) -> None:
