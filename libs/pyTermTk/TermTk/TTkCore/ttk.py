@@ -30,7 +30,7 @@ import threading
 import platform
 import contextlib
 
-from typing import Optional, Callable, List
+from typing import Optional, List
 
 from TermTk.TTkCore.drivers import TTkSignalDriver
 from TermTk.TTkCore.TTkTerm.input import TTkInput
@@ -44,10 +44,9 @@ from TermTk.TTkCore.cfg import TTkCfg, TTkGlbl
 from TermTk.TTkCore.helper import TTkHelper
 from TermTk.TTkCore.timer import TTkTimer
 from TermTk.TTkCore.color import TTkColor
-from TermTk.TTkCore.shortcut import TTkShortcut
 from TermTk.TTkWidgets.about import TTkAbout
 from TermTk.TTkWidgets.widget import TTkWidget
-from TermTk.TTkWidgets.container import TTkContainer
+from TermTk.TTkWidgets.rootcontainer import _TTkRootContainer
 
 
 class _TTkStderrHandler(io.TextIOBase):
@@ -105,7 +104,7 @@ class _MouseCursor():
             self.updated.emit()
 
 
-class TTk(TTkContainer):
+class TTk(_TTkRootContainer):
     __slots__ = (
         '_termMouse', '_termDirectMouse',
         '_title',
@@ -115,13 +114,11 @@ class TTk(TTkContainer):
         '_paintEvent',
         '_lastMultiTap',
         '_exceptions',
-        '_focusWidget',
         'paintExecuted')
 
     _timer:TTkTimer
     _exceptions:List[Exception]
     _mouseCursor:Optional[_MouseCursor]
-    _focusWidget:Optional[TTkWidget]
 
     def __init__(self, *,
                  title:str='TermTk',
@@ -140,7 +137,6 @@ class TTk(TTkContainer):
         self._exceptions = []
         self._title = title
         self._sigmask = sigmask
-        self._focusWidget = None
         self.paintExecuted = pyTTkSignal()
         self._termMouse = True
         self._termDirectMouse = mouseTrack
@@ -171,15 +167,6 @@ class TTk(TTkContainer):
             self._showMouseCursor = True
 
         TTkHelper.registerRootWidget(self)
-
-    def _getFocusWidget(self) -> Optional[TTkWidget]:
-        return self._focusWidget
-
-    def _setFocusWidget(self, widget:Optional[TTkWidget]) -> None:
-        if self._focusWidget is widget:
-            return
-        self._focusWidget = widget
-        self.update()
 
     frame = 0
     time = time.time()
@@ -360,25 +347,6 @@ class TTk(TTkContainer):
         # Clean the Drag and Drop in case of mouse release
         if mevt.evt == TTkK.Release:
             TTkHelper.dndEnd()
-
-    def keyEvent(self, evt:TTkKeyEvent) -> bool:
-        if super().keyEvent(evt=evt):
-            return True
-
-        # If this is reached after a tab focus event, it means that either
-        # no focus widgets are defined
-        # or the last/first focus is reached - the focus need to go to start from the opposite side
-        if ( (evt.key == TTkK.Key_Tab and evt.mod == TTkK.NoModifier) or
-             (evt.key in (TTkK.Key_Right, TTkK.Key_Down ) ) ) :
-            if _nfw:=self._getFirstFocus(widget=None,focusPolicy=TTkK.FocusPolicy.TabFocus,reverse=False):
-                _nfw.setFocus()
-                return True
-        if ( (evt.key == TTkK.Key_Tab and evt.mod == TTkK.ShiftModifier) or
-             (evt.key in ( TTkK.Key_Left, TTkK.Key_Up ) ) ) :
-            if _pfw:=self._getFirstFocus(widget=None,focusPolicy=TTkK.FocusPolicy.TabFocus,reverse=True):
-                _pfw.setFocus()
-                return True
-        return False
 
     def _time_event(self):
         # Event.{wait and clear} should be atomic,
