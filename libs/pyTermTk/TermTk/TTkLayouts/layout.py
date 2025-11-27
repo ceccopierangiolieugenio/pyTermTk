@@ -246,8 +246,6 @@ class TTkLayout(TTkLayoutItem):
             if child._layoutItemType == TTkK.WidgetItem:
                 if onlyVisible and not child.widget().isVisible(): continue
                 yield child.widget()
-                if recurse and hasattr(cw:=child.widget(),'rootLayout'):
-                    yield from cw.rootLayout().iterWidgets(onlyVisible, recurse)
             if child._layoutItemType == TTkK.LayoutItem and recurse:
                 yield from child.iterWidgets(onlyVisible, recurse)
 

@@ -166,8 +166,8 @@ class TTkContainer(TTkWidget):
         _pw._setFocusWidget(widget)
         self.update()
 
-    def _getFirstFocus(self, widget:Optional[TTkWidget], focusPolicy:TTkK.FocusPolicy, reverse:bool) -> Optional[TTkWidget]:
-        widgets = list(self.layout().iterWidgets(onlyVisible=True,recurse=False,reverse=reverse))
+    def _getFirstFocus(self, widget:Optional[TTkWidget], focusPolicy:TTkK.FocusPolicy) -> Optional[TTkWidget]:
+        widgets = list(self.layout().iterWidgets(onlyVisible=True,recurse=True,reverse=False))
 
         if widget:
             if widget not in (_lw:=widgets):
@@ -178,8 +178,24 @@ class TTkContainer(TTkWidget):
         for _w in widgets:
             if focusPolicy & _w.focusPolicy():
                 return _w
-            if isinstance(_w,TTkContainer) and (_fw:=_w._getFirstFocus(widget=None,focusPolicy=focusPolicy,reverse=reverse)):
+            if isinstance(_w,TTkContainer) and (_fw:=_w._getFirstFocus(widget=None,focusPolicy=focusPolicy)):
                 return _fw
+        return None
+
+    def _getLastFocus(self, widget:Optional[TTkWidget], focusPolicy:TTkK.FocusPolicy) -> Optional[TTkWidget]:
+        widgets = list(self.layout().iterWidgets(onlyVisible=True,recurse=True,reverse=True))
+
+        if widget:
+            if widget not in (_lw:=widgets):
+                return None
+            index_widget = _lw.index(widget)
+            widgets = _lw[index_widget+1:]
+
+        for _w in widgets:
+            if isinstance(_w,TTkContainer) and (_fw:=_w._getLastFocus(widget=None,focusPolicy=focusPolicy)):
+                return _fw
+            if focusPolicy & _w.focusPolicy():
+                return _w
         return None
 
     def _focusChildWidget(self) -> Optional[TTkWidget]:
@@ -192,9 +208,6 @@ class TTkContainer(TTkWidget):
         return None
 
     def keyEvent(self, evt:TTkKeyEvent) -> bool:
-        shortcutHandled = False
-        # TTkLog.debug(f"Key: {kevt}")
-
         if (_cfw := self._focusChildWidget()) is not None:
             if _cfw.keyEvent(evt):
                 return True
@@ -205,13 +218,18 @@ class TTkContainer(TTkWidget):
         # Handle Next Focus Key Binding
         if ( (evt.key == TTkK.Key_Tab and evt.mod == TTkK.NoModifier) or
              (evt.key in (TTkK.Key_Right, TTkK.Key_Down ) ) ) :
-            if _nfw:=self._getFirstFocus(widget=_cfw,focusPolicy=TTkK.FocusPolicy.TabFocus,reverse=False):
+            if _nfw:=self._getFirstFocus(widget=_cfw,focusPolicy=TTkK.FocusPolicy.TabFocus):
                 _nfw.setFocus()
                 return True
         if ( (evt.key == TTkK.Key_Tab and evt.mod == TTkK.ShiftModifier) or
              (evt.key in ( TTkK.Key_Left, TTkK.Key_Up ) ) ) :
-            if _pfw:=self._getFirstFocus(widget=_cfw,focusPolicy=TTkK.FocusPolicy.TabFocus,reverse=True):
+            if self._getFocusWidget() is self:
+                return False
+            if _pfw:=self._getLastFocus(widget=_cfw,focusPolicy=TTkK.FocusPolicy.TabFocus):
                 _pfw.setFocus()
+                return True
+            if _cfw and TTkK.FocusPolicy.TabFocus & self.focusPolicy():
+                self.setFocus()
                 return True
         return False
 
@@ -256,9 +274,9 @@ class TTkContainer(TTkWidget):
     def _processForwardStyle(self) -> None:
         if not self._forwardStyle: return
         def _getChildren():
-            for w in self.rootLayout().iterWidgets(onlyVisible=True, recurse=False):
+            for w in self.rootLayout().iterWidgets(onlyVisible=True):
                 yield w
-            for w in self.layout().iterWidgets(onlyVisible=True, recurse=False):
+            for w in self.layout().iterWidgets(onlyVisible=True):
                 yield w
 
         for w in _getChildren():
@@ -461,4 +479,7 @@ class TTkContainer(TTkWidget):
         for w in self.rootLayout().iterWidgets(onlyVisible=False, recurse=True):
             if w._name == name:
                 return w
+            if isinstance(w, TTkContainer):
+                if _w:=w.getWidgetByName(name):
+                    return _w
         return None

@@ -41,23 +41,23 @@ def test_next_prev_widget_01():
     widget3.setFocusPolicy(ttk.TTkK.FocusPolicy.TabFocus)
 
     # Forward
-    ff = container._getFirstFocus(widget=None, focusPolicy=ttk.TTkK.FocusPolicy.TabFocus, reverse=False)
+    ff = container._getFirstFocus(widget=None, focusPolicy=ttk.TTkK.FocusPolicy.TabFocus)
     assert ff is widget1
-    ff = container._getFirstFocus(widget=widget1, focusPolicy=ttk.TTkK.FocusPolicy.TabFocus, reverse=False)
+    ff = container._getFirstFocus(widget=widget1, focusPolicy=ttk.TTkK.FocusPolicy.TabFocus)
     assert ff is widget2
-    ff = container._getFirstFocus(widget=widget2, focusPolicy=ttk.TTkK.FocusPolicy.TabFocus, reverse=False)
+    ff = container._getFirstFocus(widget=widget2, focusPolicy=ttk.TTkK.FocusPolicy.TabFocus)
     assert ff is widget3
-    ff = container._getFirstFocus(widget=widget3, focusPolicy=ttk.TTkK.FocusPolicy.TabFocus, reverse=False)
+    ff = container._getFirstFocus(widget=widget3, focusPolicy=ttk.TTkK.FocusPolicy.TabFocus)
     assert ff is None
 
     # Reverse
-    ff = container._getFirstFocus(widget=None, focusPolicy=ttk.TTkK.FocusPolicy.TabFocus, reverse=True)
+    ff = container._getLastFocus(widget=None, focusPolicy=ttk.TTkK.FocusPolicy.TabFocus)
     assert ff is widget3
-    ff = container._getFirstFocus(widget=widget3, focusPolicy=ttk.TTkK.FocusPolicy.TabFocus, reverse=True)
+    ff = container._getLastFocus(widget=widget3, focusPolicy=ttk.TTkK.FocusPolicy.TabFocus)
     assert ff is widget2
-    ff = container._getFirstFocus(widget=widget2, focusPolicy=ttk.TTkK.FocusPolicy.TabFocus, reverse=True)
+    ff = container._getLastFocus(widget=widget2, focusPolicy=ttk.TTkK.FocusPolicy.TabFocus)
     assert ff is widget1
-    ff = container._getFirstFocus(widget=widget1, focusPolicy=ttk.TTkK.FocusPolicy.TabFocus, reverse=True)
+    ff = container._getLastFocus(widget=widget1, focusPolicy=ttk.TTkK.FocusPolicy.TabFocus)
     assert ff is None
 
 def test_next_prev_widget_02_nested():
@@ -80,34 +80,34 @@ def test_next_prev_widget_02_nested():
     widget4.setFocusPolicy(ttk.TTkK.FocusPolicy.TabFocus)
 
     # Forward
-    ff = container1._getFirstFocus(widget=None, focusPolicy=ttk.TTkK.FocusPolicy.TabFocus, reverse=False)
+    ff = container1._getFirstFocus(widget=None, focusPolicy=ttk.TTkK.FocusPolicy.TabFocus)
     assert ff is widget1
-    ff = container2._getFirstFocus(widget=None, focusPolicy=ttk.TTkK.FocusPolicy.TabFocus, reverse=False)
+    ff = container2._getFirstFocus(widget=None, focusPolicy=ttk.TTkK.FocusPolicy.TabFocus)
     assert ff is widget2
 
-    ff = container1._getFirstFocus(widget=widget1, focusPolicy=ttk.TTkK.FocusPolicy.TabFocus, reverse=False)
+    ff = container1._getFirstFocus(widget=widget1, focusPolicy=ttk.TTkK.FocusPolicy.TabFocus)
     assert ff is widget2
 
-    ff = container2._getFirstFocus(widget=widget2, focusPolicy=ttk.TTkK.FocusPolicy.TabFocus, reverse=False)
+    ff = container2._getFirstFocus(widget=widget2, focusPolicy=ttk.TTkK.FocusPolicy.TabFocus)
     assert ff is widget3
-    ff = container2._getFirstFocus(widget=widget3, focusPolicy=ttk.TTkK.FocusPolicy.TabFocus, reverse=False)
+    ff = container2._getFirstFocus(widget=widget3, focusPolicy=ttk.TTkK.FocusPolicy.TabFocus)
     assert ff is widget4
-    ff = container2._getFirstFocus(widget=widget4, focusPolicy=ttk.TTkK.FocusPolicy.TabFocus, reverse=False)
+    ff = container2._getFirstFocus(widget=widget4, focusPolicy=ttk.TTkK.FocusPolicy.TabFocus)
     assert ff is None
 
     # Reverse
-    ff = container1._getFirstFocus(widget=None, focusPolicy=ttk.TTkK.FocusPolicy.TabFocus, reverse=True)
+    ff = container1._getLastFocus(widget=None, focusPolicy=ttk.TTkK.FocusPolicy.TabFocus)
     assert ff is widget4
-    ff = container2._getFirstFocus(widget=None, focusPolicy=ttk.TTkK.FocusPolicy.TabFocus, reverse=True)
+    ff = container2._getLastFocus(widget=None, focusPolicy=ttk.TTkK.FocusPolicy.TabFocus)
     assert ff is widget4
 
-    ff = container1._getFirstFocus(widget=widget1, focusPolicy=ttk.TTkK.FocusPolicy.TabFocus, reverse=True)
+    ff = container1._getLastFocus(widget=widget1, focusPolicy=ttk.TTkK.FocusPolicy.TabFocus)
     assert ff is None
 
-    ff = container2._getFirstFocus(widget=widget4, focusPolicy=ttk.TTkK.FocusPolicy.TabFocus, reverse=True)
+    ff = container2._getLastFocus(widget=widget4, focusPolicy=ttk.TTkK.FocusPolicy.TabFocus)
     assert ff is widget3
-    ff = container2._getFirstFocus(widget=widget3, focusPolicy=ttk.TTkK.FocusPolicy.TabFocus, reverse=True)
+    ff = container2._getLastFocus(widget=widget3, focusPolicy=ttk.TTkK.FocusPolicy.TabFocus)
     assert ff is widget2
-    ff = container2._getFirstFocus(widget=widget2, focusPolicy=ttk.TTkK.FocusPolicy.TabFocus, reverse=True)
+    ff = container2._getLastFocus(widget=widget2, focusPolicy=ttk.TTkK.FocusPolicy.TabFocus)
     assert ff is None
 

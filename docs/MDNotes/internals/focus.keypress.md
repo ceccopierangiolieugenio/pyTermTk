@@ -58,9 +58,12 @@
 
 # TODO
 
-[ ] - Implement root handler to handle overlay widgets where the focus switch should be contained in the overlay
-[ ] - Adapt tab widget to the new logic
-[ ] - Remove nextFocus,prevFocus from the helper
+[x] - Implement root handler to handle overlay widgets where the focus switch should be contained in the overlay
+[x] - Remove nextFocus,prevFocus from the helper
 [ ] - Investigate other widgets focus propagation
 [ ] - Switch Focus to the menu
 [ ] - Type TTkLayout and add docstrings
+[ ] - Add deprecated methods in ttkhelper
+[ ] - Investigate lineedit of the combobox
+[x] - Tab Widget: Adapt to the new logic
+[ ] - Tab Widget: Apply Highlight colors
