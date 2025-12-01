@@ -227,7 +227,11 @@ class TTkLayout(TTkLayoutItem):
         else:
             return self._parent.parentWidget()
 
-    def iterWidgets(self, onlyVisible: bool = True, recurse: bool = True, reverse: bool = False) -> Generator[TTkWidget, None, None]:
+    def iterWidgets(
+            self,
+            onlyVisible: bool = True,
+            recurse: bool = True,
+            reverse: bool = False) -> Generator[TTkWidget, None, None]:
         '''
         Iterate over all widgets in the layout.
 

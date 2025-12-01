@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-__all__ = ['_TTkRootContainer']
+__all__ = []
 
 from typing import Optional, List, Tuple
 
