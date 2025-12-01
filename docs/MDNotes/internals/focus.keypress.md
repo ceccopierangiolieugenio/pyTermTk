@@ -64,6 +64,7 @@
 [ ] - Switch Focus to the menu
 [ ] - Type TTkLayout and add docstrings
 [ ] - Add deprecated methods in ttkhelper
-[ ] - Investigate lineedit of the combobox
+[x] - Investigate lineedit of the combobox
 [x] - Tab Widget: Adapt to the new logic
+[x] - DateTime: Adapt to the new logic
 [ ] - Tab Widget: Apply Highlight colors
