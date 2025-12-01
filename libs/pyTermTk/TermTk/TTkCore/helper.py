@@ -45,7 +45,6 @@ class TTkHelper:
 
     This is a collection of helper utilities to be used all around TermTk
     '''
-    _focusWidget: Optional[TTkWidget] = None
     _rootCanvas: Optional[TTkCanvas] = None
     _rootWidget: Optional[TTk] = None
     _updateWidget:Set[TTkWidget] = set()
@@ -55,14 +54,6 @@ class TTkHelper:
     _cursor: bool = False
     _cursorType: str = TTkTerm.Cursor.BLINKING_BLOCK
     _cursorWidget: Optional[TTkWidget] = None
-    class _Overlay():
-        __slots__ = ('_widget','_prevFocus','_x','_y','_modal')
-        def __init__(self,x,y,widget,prevFocus,modal):
-            self._widget = widget
-            self._prevFocus = prevFocus
-            self._modal = modal
-            widget.move(x,y)
-    _overlay: list[TTkHelper._Overlay] = []
 
     @staticmethod
     def updateAll() -> None:
@@ -127,164 +118,42 @@ class TTkHelper:
         return TTkGlbl.term_w, TTkGlbl.term_h
 
     @staticmethod
-    def rootOverlay(widget: Optional[TTkWidget]) -> Optional[TTkWidget]:
-        if not widget:
-            return None
-        if not TTkHelper._overlay:
-            return None
-        overlayWidgets = [o._widget for o in TTkHelper._overlay]
-        while widget is not None:
-            if widget in overlayWidgets:
-                return widget
-            widget = widget.parentWidget()
-        return None
-
-    @staticmethod
-    def focusLastModal() -> None:
-        if modal := TTkHelper.getLastModal():
-            modal._widget.setFocus()
-
-    @staticmethod
-    def getLastModal() -> Optional[TTkHelper._Overlay]:
-        modal = None
-        for o in TTkHelper._overlay:
-            if o._modal:
-                modal = o
-        return modal
-
-    @staticmethod
     def checkModalOverlay(widget: TTkWidget) -> bool:
-        #if not TTkHelper._overlay:
-        #    # There are no Overlays
-        #    return True
-
-        if not (lastModal := TTkHelper.getLastModal()):
-            return True
-
-        # if not TTkHelper._overlay[-1]._modal:
-        #     # The last window is not modal
-        #     return True
-        if not (rootWidget := TTkHelper.rootOverlay(widget)):
-            # This widget is not overlay
+        if not TTkHelper._rootWidget:
             return False
-        if rootWidget in [ o._widget for o in TTkHelper._overlay[TTkHelper._overlay.index(lastModal):]]:
-            return True
-        # if TTkHelper._overlay[-1]._widget == rootWidget:
-        #     return True
-        return False
-
-    @staticmethod
-    def isOverlay(widget: Optional[TTkWidget]) -> bool:
-        return TTkHelper.rootOverlay(widget) is not None
+        return TTkHelper._rootWidget._checkModalOverlay(widget)
 
     @staticmethod
     def overlay(caller: Optional[TTkWidget], widget: TTkWidget, x:int, y:int, modal:bool=False, forceBoundaries:bool=True, toolWindow:bool=False) -> None:
         '''overlay'''
         if not TTkHelper._rootWidget:
             return
-        if not caller:
-            caller = TTkHelper._rootWidget
-        wx, wy = TTkHelper.absPos(caller)
-        w,h = widget.size()
-
-        # Try to keep the overlay widget inside the terminal
-        if forceBoundaries:
-            wx = max(0, wx+x if wx+x+w < TTkGlbl.term_w else TTkGlbl.term_w-w )
-            wy = max(0, wy+y if wy+y+h < TTkGlbl.term_h else TTkGlbl.term_h-h )
-            mw,mh = widget.minimumSize()
-            ww = min(w,max(mw, TTkGlbl.term_w))
-            wh = min(h,max(mh, TTkGlbl.term_h))
-            widget.resize(ww,wh)
-        else:
-            wx += x
-            wy += y
-
-        wi = widget.widgetItem()
-        wi.setLayer(wi.LAYER1)
-        if  toolWindow:
-            # Forcing the layer to:
-            # TTkLayoutItem.LAYER1    =  0x40000000
-            widget.move(wx,wy)
-        else:
-            TTkHelper._overlay.append(TTkHelper._Overlay(wx,wy,widget,TTkHelper._focusWidget,modal))
-        TTkHelper._rootWidget.rootLayout().addWidget(widget)
-        widget.setFocus()
-        widget.raiseWidget()
-        if hasattr(widget,'rootLayout'):
-            for w in widget.rootLayout().iterWidgets(onlyVisible=True):
-                w.update()
-
-    @staticmethod
-    def getOverlay() -> Optional[TTkWidget]:
-        if TTkHelper._overlay:
-            return TTkHelper._overlay[-1]._widget
-        return None
+        TTkHelper._rootWidget.overlay(
+            caller=caller,
+            widget=widget,
+            pos=(x,y),
+            modal=modal,
+            forceBoundaries=forceBoundaries,
+            toolWindow=toolWindow
+        )
 
     @staticmethod
     def removeOverlay() -> None:
         if not TTkHelper._rootWidget:
             return
-        if not TTkHelper._overlay:
-            return
-        bkFocus = None
-        # Remove the first element also if it is modal
-        TTkHelper._overlay[-1]._modal = False
-        while TTkHelper._overlay:
-            if TTkHelper._overlay[-1]._modal:
-                break
-            owidget = TTkHelper._overlay.pop()
-            bkFocus = owidget._prevFocus
-            TTkHelper._rootWidget.rootLayout().removeWidget(owidget._widget)
-        if TTkHelper._focusWidget:
-            TTkHelper._focusWidget.clearFocus()
-        if bkFocus:
-            bkFocus.setFocus()
+        return TTkHelper._rootWidget._removeOverlay()
 
     @staticmethod
     def removeOverlayAndChild(widget: Optional[TTkWidget]) -> None:
-        if not TTkHelper._rootWidget or not widget:
+        if not TTkHelper._rootWidget:
             return
-        if not TTkHelper.isOverlay(widget):
-            return
-        if len(TTkHelper._overlay) <= 1:
-            return TTkHelper.removeOverlay()
-        rootWidget = TTkHelper.rootOverlay(widget)
-        bkFocus = None
-        found = False
-        newOverlay = []
-        for o in TTkHelper._overlay:
-            if o._widget == rootWidget:
-                found = True
-                bkFocus = o._prevFocus
-            if not found:
-                newOverlay.append(o)
-            else:
-                TTkHelper._rootWidget.rootLayout().removeWidget(o._widget)
-        TTkHelper._overlay = newOverlay
-        if bkFocus:
-            bkFocus.setFocus()
-        if not found:
-            TTkHelper.removeOverlay()
+        return TTkHelper._rootWidget._removeOverlayAndChild(widget=widget)
 
     @staticmethod
     def removeOverlayChild(widget: TTkWidget) -> None:
         if not TTkHelper._rootWidget:
             return
-        rootWidget = TTkHelper.rootOverlay(widget)
-        found = False
-        newOverlay = []
-        for o in TTkHelper._overlay:
-            if o._widget == rootWidget:
-                found = True
-                newOverlay.append(o)
-                continue
-            if not found:
-                newOverlay.append(o)
-            else:
-                TTkHelper._rootWidget.rootLayout().removeWidget(o._widget)
-        TTkHelper._overlay = newOverlay
-        if not found:
-            TTkHelper.removeOverlay()
+        return TTkHelper._rootWidget._removeOverlayChild(widget=widget)
 
     @staticmethod
     def setMousePos(pos: Tuple[int, int]) -> None:
@@ -418,74 +287,6 @@ class TTkHelper:
             wx, wy = wx+px+ox, wy+py+oy
             layout = layout.parent()
         return (wx, wy)
-
-    @staticmethod
-    def nextFocus(widget: TTkWidget) -> None:
-        from TermTk.TTkWidgets.container import TTkContainer
-        if not TTkHelper._rootWidget:
-            return
-        rootWidget = TTkHelper.rootOverlay(widget)
-        checkWidget:Optional[TTkWidget] = widget
-        if not rootWidget:
-            rootWidget =  TTkHelper._rootWidget
-        if checkWidget == rootWidget:
-            checkWidget = None
-        if not isinstance(rootWidget, TTkContainer):
-            return
-        first = None
-        for w in rootWidget.rootLayout().iterWidgets():
-            if not first and w.focusPolicy() & TTkK.TabFocus == TTkK.TabFocus:
-                first = w
-            # TTkLog.debug(f"{w._name} {widget}")
-            if checkWidget:
-                if w == checkWidget:
-                    checkWidget=None
-                continue
-            if w.isEnabled() and w.focusPolicy() & TTkK.TabFocus == TTkK.TabFocus:
-                w.setFocus()
-                w.update()
-                return
-        if first:
-            first.setFocus()
-            first.update()
-
-    @staticmethod
-    def prevFocus(widget: TTkWidget) -> None:
-        from TermTk.TTkWidgets.container import TTkContainer
-        if not TTkHelper._rootWidget:
-            return
-        rootWidget = TTkHelper.rootOverlay(widget)
-        checkWidget:Optional[TTkWidget] = widget
-        if not rootWidget:
-            rootWidget = TTkHelper._rootWidget
-        if checkWidget == rootWidget:
-            checkWidget = None
-        if not isinstance(rootWidget, TTkContainer):
-            return
-        prev = None
-        for w in rootWidget.rootLayout().iterWidgets():
-            # TTkLog.debug(f"{w._name} {widget}")
-            if w == checkWidget:
-                checkWidget=None
-                if prev:
-                    break
-            if w.isEnabled() and w.focusPolicy() & TTkK.TabFocus == TTkK.TabFocus:
-                prev = w
-        if prev:
-            prev.setFocus()
-            prev.update()
-
-    @staticmethod
-    def setFocus(widget: TTkWidget) -> None:
-        TTkHelper._focusWidget = widget
-
-    @staticmethod
-    def getFocus() -> Optional[TTkWidget]:
-        return TTkHelper._focusWidget
-
-    @staticmethod
-    def clearFocus() -> None:
-        TTkHelper._focusWidget = None
 
     @staticmethod
     def showCursor(cursorType: int = TTkK.Cursor_Blinking_Block) -> None:

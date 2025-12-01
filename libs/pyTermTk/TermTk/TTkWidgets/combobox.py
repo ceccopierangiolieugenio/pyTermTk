@@ -441,7 +441,7 @@ class TTkComboBox(TTkContainer):
            ( evt.type == TTkK.SpecialKey and evt.key in [TTkK.Key_Enter,TTkK.Key_Down] ):
             self._pressEvent()
             return True
-        return False
+        return super().keyEvent(evt=evt)
 
     def focusInEvent(self) -> None:
         if self._editable:

@@ -30,7 +30,7 @@ import threading
 import platform
 import contextlib
 
-from typing import Optional, Callable, List
+from typing import Optional, List
 
 from TermTk.TTkCore.drivers import TTkSignalDriver
 from TermTk.TTkCore.TTkTerm.input import TTkInput
@@ -44,10 +44,9 @@ from TermTk.TTkCore.cfg import TTkCfg, TTkGlbl
 from TermTk.TTkCore.helper import TTkHelper
 from TermTk.TTkCore.timer import TTkTimer
 from TermTk.TTkCore.color import TTkColor
-from TermTk.TTkCore.shortcut import TTkShortcut
 from TermTk.TTkWidgets.about import TTkAbout
 from TermTk.TTkWidgets.widget import TTkWidget
-from TermTk.TTkWidgets.container import TTkContainer
+from TermTk.TTkWidgets.rootcontainer import _TTkRootContainer
 
 
 class _TTkStderrHandler(io.TextIOBase):
@@ -105,7 +104,7 @@ class _MouseCursor():
             self.updated.emit()
 
 
-class TTk(TTkContainer):
+class TTk(_TTkRootContainer):
     __slots__ = (
         '_termMouse', '_termDirectMouse',
         '_title',
@@ -288,7 +287,7 @@ class TTk(TTkContainer):
 
     @pyTTkSlot(str)
     def _processPaste(self, txt:str):
-        if focusWidget := TTkHelper.getFocus():
+        if focusWidget := self._getFocusWidget():
             while focusWidget and not focusWidget.pasteEvent(txt):
                 focusWidget = focusWidget.parentWidget()
 
@@ -296,7 +295,7 @@ class TTk(TTkContainer):
     def _processInput(self, kevt, mevt):
         with self._drawMutex:
             if kevt is not None:
-                self._key_event(kevt)
+                self.keyEvent(kevt)
             if mevt is not None:
                 self._mouse_event(mevt)
 
@@ -320,7 +319,7 @@ class TTk(TTkContainer):
         # Mouse Events forwarded straight to the Focus widget:
         #  - Drag
         #  - Release
-        focusWidget = TTkHelper.getFocus()
+        focusWidget = self._getFocusWidget()
         if ( focusWidget is not None and
              ( mevt.evt == TTkK.Drag or
                mevt.evt == TTkK.Release ) and
@@ -343,31 +342,11 @@ class TTk(TTkContainer):
                     TTkHelper.dndEnter(None)
                 if mevt.evt == TTkK.Press and focusWidget:
                     focusWidget.clearFocus()
-                    TTkHelper.focusLastModal()
+                    self._focusLastModal()
 
         # Clean the Drag and Drop in case of mouse release
         if mevt.evt == TTkK.Release:
             TTkHelper.dndEnd()
-
-    def _key_event(self, kevt):
-        keyHandled = False
-        # TTkLog.debug(f"Key: {kevt}")
-        focusWidget = TTkHelper.getFocus()
-        # TTkLog.debug(f"{focusWidget}")
-        if focusWidget is not None:
-            keyHandled = focusWidget.keyEvent(kevt)
-        if not keyHandled:
-            TTkShortcut.processKey(kevt, focusWidget)
-        # Handle Next Focus Key Binding
-        if not keyHandled and \
-           ((kevt.key == TTkK.Key_Tab and kevt.mod == TTkK.NoModifier) or
-           ( kevt.key == TTkK.Key_Right or kevt.key == TTkK.Key_Down)):
-                TTkHelper.nextFocus(focusWidget if focusWidget else self)
-        # Handle Prev Focus Key Binding
-        if not keyHandled and \
-           ((kevt.key == TTkK.Key_Tab and kevt.mod == TTkK.ShiftModifier) or
-           ( kevt.key == TTkK.Key_Left or kevt.key == TTkK.Key_Up)):
-                TTkHelper.prevFocus(focusWidget if focusWidget else self)
 
     def _time_event(self):
         # Event.{wait and clear} should be atomic,

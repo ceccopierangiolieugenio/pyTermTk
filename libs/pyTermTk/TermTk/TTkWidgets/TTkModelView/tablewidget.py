@@ -1233,6 +1233,10 @@ class TTkTableWidget(TTkAbstractScrollView):
         self.update()
 
     def keyEvent(self, evt:TTkKeyEvent) -> bool:
+        if _pw:=self._edit_proxy_widget:
+            if _pw.widget.keyEvent(evt=evt):
+                return True
+
         # rows = self._tableModel.rowCount()
         cols = self._tableModel.columnCount()
         if self._currentPos:

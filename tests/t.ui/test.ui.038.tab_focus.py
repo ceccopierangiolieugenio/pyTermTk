@@ -30,5 +30,17 @@ import TermTk as ttk
 ttk.TTkLog.use_default_file_logging()
 
 root = ttk.TTk()
-ttk.TTkWindow(parent=root, pos=(0,0), size=(30,5), border=True)
+
+win1 = ttk.TTkWindow(parent=root, title='1', pos=( 0,0), size=(40,10), border=True)
+win2 = ttk.TTkWindow(parent=root, title='2', pos=(20,3), size=(40,15), border=True)
+win3 = ttk.TTkWindow(parent=win2, title='3', pos=( 0,0), size=(30,10), border=True)
+win4 = ttk.TTkWindow(parent=win2, title='4', pos=( 5,4), size=(30,5), border=True)
+win5 = ttk.TTkWindow(parent=win3, title='5', pos=( 0,0), size=(20,5), border=True)
+
+win1.setFocusPolicy(ttk.TTkK.TabFocus | ttk.TTkK.ClickFocus)
+win2.setFocusPolicy(ttk.TTkK.TabFocus | ttk.TTkK.ClickFocus)
+win3.setFocusPolicy(ttk.TTkK.TabFocus | ttk.TTkK.ClickFocus)
+win4.setFocusPolicy(ttk.TTkK.TabFocus | ttk.TTkK.ClickFocus)
+win5.setFocusPolicy(ttk.TTkK.TabFocus | ttk.TTkK.ClickFocus)
+
 root.mainloop()

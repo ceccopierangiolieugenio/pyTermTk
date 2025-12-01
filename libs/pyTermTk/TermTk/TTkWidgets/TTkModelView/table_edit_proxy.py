@@ -507,7 +507,7 @@ class _DateTime_DateProxy(TTkDate, TTkTableProxyEditWidget, _DateTime_KeyGeneric
         return self.newKeyEvent(evt,super().keyEvent)
 
 
-class _DateTime_DateTimeProxy(TTkDateTime, TTkTableProxyEditWidget):
+class _DateTime_DateTimeProxy(TTkDateTime, TTkTableProxyEditWidget, _DateTime_KeyGeneric):
     ''' DateTime editor for table cells
 
     Extends :py:class:`TTkDateTime` with table-specific signals
@@ -565,15 +565,12 @@ class _DateTime_DateTimeProxy(TTkDateTime, TTkTableProxyEditWidget):
     def keyEvent(self, evt: TTkKeyEvent) -> bool:
         ''' Handle keyboard events for navigation
 
-        Always triggers right navigation on any key event.
-
         :param evt: The keyboard event
         :type evt: TTkKeyEvent
-        :return: Always returns True
+        :return: True if event was handled, False otherwise
         :rtype: bool
         '''
-        self.leavingTriggered.emit(TTkTableEditLeaving.RIGHT)
-        return True
+        return self.newKeyEvent(evt,super().keyEvent)
 
 class _TextPickerProxy(TTkTextPicker, TTkTableProxyEditWidget):
     ''' Rich text editor for table cells

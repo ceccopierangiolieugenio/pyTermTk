@@ -550,7 +550,15 @@ class _TTkDateCal(TTkWidget):
                 'focus':       {'color':            TTkColor.fgbg("#888888","#000066")+TTkColor.UNDERLINE}
             }
 
-    __slots__ = ('_state')
+    __slots__ = ('_state', 'dateChanged')
+
+    dateChanged:pyTTkSignal
+    '''
+    This signal is emitted whenever the selected date changes.
+
+    :param date: The new selected date
+    :type date: :py:class:`datetime.date`
+    '''
 
     _state:_TTkDateWidgetState
 
@@ -563,6 +571,7 @@ class _TTkDateCal(TTkWidget):
         :param state: Shared state object for date management
         :type state: :py:class:`_TTkDateWidgetState`
         '''
+        self.dateChanged = pyTTkSignal(datetime.date)
         self._state = state
         super().__init__(**kwargs|{'size':(20,6)})
         self.setFocusPolicy(TTkK.ClickFocus | TTkK.TabFocus)
@@ -597,6 +606,7 @@ class _TTkDateCal(TTkWidget):
             return True
         elif evt.key == ' ':
             self._state.setDate(self._state._highlighted)
+            self.dateChanged.emit(self._state._highlighted)
             self.update()
             return True
         return False
@@ -625,6 +635,7 @@ class _TTkDateCal(TTkWidget):
         if 0 <= y <= 5 and 0 <= x < 20:
             if _d := self._getDayFromPos(x,y):
                 self._state.setDate(_d)
+                self.dateChanged.emit(_d)
             self.update()
         return True
 
@@ -753,12 +764,12 @@ class TTkDateForm(TTkContainer):
             date = datetime.date.today()
         self._state = _TTkDateWidgetState(date=date)
         self._state.highlightedChanged.connect(self.update)
-        self.dateChanged = self._state.dateChanged
         size = (20,8)
         super().__init__(**kwargs|{'size':size, 'minSize':size})
         self._calWidget = _TTkDateCal(parent=self, pos=(0,2), state=self._state)
         self._yearWidget = _TTkDateYear(parent=self, pos=(2,0), state=self._state)
         self._monthWidget = _TTkDateMonth(parent=self, pos=(12,0), state=self._state)
+        self.dateChanged = self._calWidget.dateChanged
 
     def date(self) -> datetime.date:
         '''

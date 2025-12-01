@@ -1,8 +1,9 @@
+
 #!/usr/bin/env python3
 
 # MIT License
 #
-# Copyright (c) 2021 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
+# Copyright (c) 2025 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -27,8 +28,35 @@ import sys, os
 sys.path.append(os.path.join(sys.path[0],'../../libs/pyTermTk'))
 import TermTk as ttk
 
-ttk.TTkLog.use_default_file_logging()
+
+class MovementContainer(ttk.TTkContainer):
+    def __init__(self, *, widget=ttk.TTkWidget, **kwargs):
+        super().__init__(**kwargs)
+        self.layout().addWidget(widget=widget)
+        widget.sizeChanged.connect(self._sizeChanged)
+        # widget.positionChanged.connect(self._positionChanged)
+
+
+    @ttk.pyTTkSlot(int,int)
+    def _sizeChanged(self,w,h):
+        self.resize(w,h)
+
+    @ttk.pyTTkSlot(int,int)
+    def _positionChanged(self,x,y):
+        ox,oy = self.layout().offset()
+        self.layout().setOffset(-x,-y)
+        self.move(x,y)
+
+    def paintEvent(self, canvas):
+        canvas.fill(color=ttk.TTkColor.BG_RED)
 
 root = ttk.TTk()
-ttk.TTkWindow(parent=root, pos=(0,0), size=(30,5), border=True)
+
+win = ttk.TTkWindow(size=(40,15))
+frame = ttk.TTkResizableFrame(size=(40,15), border=True)
+
+mcWin = MovementContainer(widget=win, parent=root, pos=(10,5),  size=(40,15))
+mcFrame = MovementContainer(widget=frame, parent=root, pos=(5,2),  size=(40,15))
+
+
 root.mainloop()

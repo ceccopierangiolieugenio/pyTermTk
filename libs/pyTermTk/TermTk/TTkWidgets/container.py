@@ -20,15 +20,19 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
+
 __all__ = ['TTkContainer', 'TTkPadding']
 
-from typing import NamedTuple, Optional
+from typing import NamedTuple, Optional, List
 
 from TermTk.TTkCore.constant  import TTkK
 from TermTk.TTkCore.log       import TTkLog
 from TermTk.TTkCore.helper    import TTkHelper
 from TermTk.TTkCore.signal    import pyTTkSignal, pyTTkSlot
+from TermTk.TTkCore.shortcut import TTkShortcut
 from TermTk.TTkCore.TTkTerm.inputmouse import TTkMouseEvent
+from TermTk.TTkCore.TTkTerm.inputkey import TTkKeyEvent
 from TermTk.TTkLayouts.layout import TTkLayout
 from TermTk.TTkWidgets.widget import TTkWidget
 
@@ -151,6 +155,84 @@ class TTkContainer(TTkWidget):
         self._layout.setParent(self)
         self.update(updateLayout=True)
 
+    def _getFocusWidget(self) -> Optional[TTkWidget]:
+        if (_pw:=self.parentWidget()):
+            return _pw._getFocusWidget()
+        return None
+
+    def _setFocusWidget(self, widget:Optional[TTkWidget]) -> None:
+        if not (_pw:=self.parentWidget()):
+            return
+        _pw._setFocusWidget(widget)
+        self.update()
+
+    def _getFirstFocus(self, widget:Optional[TTkWidget], focusPolicy:TTkK.FocusPolicy) -> Optional[TTkWidget]:
+        widgets = list(self.layout().iterWidgets(onlyVisible=True,recurse=True,reverse=False))
+
+        if widget:
+            if widget not in (_lw:=widgets):
+                return None
+            index_widget = _lw.index(widget)
+            widgets = _lw[index_widget+1:]
+
+        for _w in widgets:
+            if focusPolicy & _w.focusPolicy():
+                return _w
+            if isinstance(_w,TTkContainer) and (_fw:=_w._getFirstFocus(widget=None,focusPolicy=focusPolicy)):
+                return _fw
+        return None
+
+    def _getLastFocus(self, widget:Optional[TTkWidget], focusPolicy:TTkK.FocusPolicy) -> Optional[TTkWidget]:
+        widgets = list(self.layout().iterWidgets(onlyVisible=True,recurse=True,reverse=True))
+
+        if widget:
+            if widget not in (_lw:=widgets):
+                return None
+            index_widget = _lw.index(widget)
+            widgets = _lw[index_widget+1:]
+
+        for _w in widgets:
+            if isinstance(_w,TTkContainer) and (_fw:=_w._getLastFocus(widget=None,focusPolicy=focusPolicy)):
+                return _fw
+            if focusPolicy & _w.focusPolicy():
+                return _w
+        return None
+
+    def _focusChildWidget(self) -> Optional[TTkWidget]:
+        if not (_fw := self._getFocusWidget()):
+            return None
+        while (_pw:=_fw.parentWidget()) and _pw is not self:
+            _fw = _pw
+        if _pw is self:
+            return _fw
+        return None
+
+    def keyEvent(self, evt:TTkKeyEvent) -> bool:
+        if (_cfw := self._focusChildWidget()) is not None:
+            if _cfw.keyEvent(evt):
+                return True
+
+        if TTkShortcut.processKey(evt, _cfw):
+            return True
+
+        # Handle Next Focus Key Binding
+        if ( (evt.key == TTkK.Key_Tab and evt.mod == TTkK.NoModifier) or
+             (evt.key in (TTkK.Key_Right, TTkK.Key_Down ) ) ) :
+            if _nfw:=self._getFirstFocus(widget=_cfw,focusPolicy=TTkK.FocusPolicy.TabFocus):
+                _nfw.setFocus()
+                return True
+        if ( (evt.key == TTkK.Key_Tab and evt.mod == TTkK.ShiftModifier) or
+             (evt.key in ( TTkK.Key_Left, TTkK.Key_Up ) ) ) :
+            if self._getFocusWidget() is self:
+                return False
+            if _pfw:=self._getLastFocus(widget=_cfw,focusPolicy=TTkK.FocusPolicy.TabFocus):
+                _pfw.setFocus()
+                return True
+            if _cfw and TTkK.FocusPolicy.TabFocus & self.focusPolicy():
+                self.setFocus()
+                return True
+        return False
+
     def addWidget(self, widget:TTkWidget) -> None:
         '''
         .. warning::
@@ -165,7 +247,8 @@ class TTkContainer(TTkWidget):
                 parentWidget.layout().addWidget(childWidget)
         '''
         TTkLog.error("<TTkWidget>.addWidget(...) is deprecated, use <TTkWidget>.layout().addWidget(...)")
-        if self.layout(): self.layout().addWidget(widget)
+        if self.layout():
+            self.layout().addWidget(widget)
 
     def removeWidget(self, widget:TTkWidget) -> None:
         '''
@@ -181,7 +264,8 @@ class TTkContainer(TTkWidget):
                 parentWidget.layout().removeWidget(childWidget)
         '''
         TTkLog.error("<TTkWidget>.removeWidget(...) is deprecated, use <TTkWidget>.layout().removeWidget(...)")
-        if self.layout(): self.layout().removeWidget(widget)
+        if self.layout():
+            self.layout().removeWidget(widget)
 
     # def forwardStyleTo(self, widget:TTkWidget):
     #     widget._currentStyle |= self._currentStyle
@@ -190,9 +274,9 @@ class TTkContainer(TTkWidget):
     def _processForwardStyle(self) -> None:
         if not self._forwardStyle: return
         def _getChildren():
-            for w in self.rootLayout().iterWidgets(onlyVisible=True, recurse=False):
+            for w in self.rootLayout().iterWidgets(onlyVisible=True):
                 yield w
-            for w in self.layout().iterWidgets(onlyVisible=True, recurse=False):
+            for w in self.layout().iterWidgets(onlyVisible=True):
                 yield w
 
         for w in _getChildren():
@@ -395,4 +479,7 @@ class TTkContainer(TTkWidget):
         for w in self.rootLayout().iterWidgets(onlyVisible=False, recurse=True):
             if w._name == name:
                 return w
+            if isinstance(w, TTkContainer):
+                if _w:=w.getWidgetByName(name):
+                    return _w
         return None
