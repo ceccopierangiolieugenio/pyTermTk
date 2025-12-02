@@ -44,7 +44,7 @@ class TTkTerminalHelper():
 
         import TermTk as ttk
 
-        root = ttk.TTk(mouseTrack=True)
+        root = ttk.TTk()
 
         win = ttk.TTkWindow(parent=root, title="Terminal", size=(80+2,24+4), layout=ttk.TTkGridLayout())
 

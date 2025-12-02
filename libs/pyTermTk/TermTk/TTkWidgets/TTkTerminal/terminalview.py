@@ -109,7 +109,7 @@ class TTkTerminalView(TTkAbstractScrollView, _TTkTerminal_CSI_DEC):
 
         import TermTk as ttk
 
-        root = ttk.TTk(mouseTrack=True)
+        root = ttk.TTk()
 
         win = ttk.TTkWindow(parent=root, title="Terminal", size=(80+2,24+4), layout=ttk.TTkGridLayout())
 

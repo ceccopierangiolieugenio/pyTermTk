@@ -63,7 +63,6 @@ def main():
 
     root = TTk( layout=ttkodeProxy.ttkode(),
                 title="TTkode",
-                mouseTrack=True,
                 sigmask=(
                     # TTkTerm.Sigmask.CTRL_C |
                     TTkTerm.Sigmask.CTRL_Q |

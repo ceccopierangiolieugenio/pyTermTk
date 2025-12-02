@@ -712,7 +712,7 @@ class TTkDateForm(TTkContainer):
 
         import TermTk as ttk
 
-        root = ttk.TTk(mouseTrack=True)
+        root = ttk.TTk()
 
         ttk.TTkDateForm(parent=root) # Defaults to the current date
 

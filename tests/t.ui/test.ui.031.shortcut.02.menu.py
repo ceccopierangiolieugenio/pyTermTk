@@ -60,7 +60,7 @@ def setMenu(curMenu:ttk.TTkMenuButton):
     curMenu.addSpacer()
     curMenu.addMenu("Exit")
 
-root = ttk.TTk(mouseTrack=True)
+root = ttk.TTk()
 
 window = ttk.TTkWindow(title="Test MenuBar", parent=root,pos=(30,1), size=(60,10), border=True)
 menuTop = ttk.TTkMenuBarLayout()

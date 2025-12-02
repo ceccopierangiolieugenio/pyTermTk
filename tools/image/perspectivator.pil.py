@@ -901,8 +901,7 @@ def main():
 
     root = ttk.TTk(
             layout=ttk.TTkGridLayout(),
-            title="TTkode",
-            mouseTrack=True)
+            title="TTkode")
 
 
     if len(args.filename) == 1 and  args.filename[0].endswith('.json'):

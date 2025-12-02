@@ -99,12 +99,8 @@ class MyTableModel(ttk.TTkAbstractTableModel):
 #   layout = GridLayout
 #     I am using a grid layout in order to align/resize the table
 #     to the root widget (the terminal area)
-#
-#   mouseTrack = True (optional)
-#     I am enabling the mouseTrack because the table can handle
-#     the mouse move events and highlight the cells under the cursor
 
-root = ttk.TTk(layout=ttk.TTkGridLayout(), mouseTrack=True)
+root = ttk.TTk(layout=ttk.TTkGridLayout())
 
 # The TTkTable is the widget responsible of handling and displaying a table model
 # There are several table models available, in this example I am using

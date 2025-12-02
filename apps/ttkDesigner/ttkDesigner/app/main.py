@@ -37,7 +37,6 @@ def main():
 
     root = TTk(
             title="TTk Designer",
-            mouseTrack=True,
             layout=TTkGridLayout(),
             sigmask=(
                 TTkTerm.Sigmask.CTRL_C |

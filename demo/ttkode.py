@@ -60,7 +60,7 @@ def main():
 
     ttk.TTkTheme.loadTheme(ttk.TTkTheme.NERD)
 
-    root = ttk.TTk(title="ttkode", mouseTrack=True)
+    root = ttk.TTk(title="ttkode")
     layout = ttk.TTkGridLayout()
     if args.f:
         root.setLayout(layout)

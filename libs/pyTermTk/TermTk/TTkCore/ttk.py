@@ -123,7 +123,7 @@ class TTk(_TTkRootContainer):
     def __init__(self, *,
                  title:str='TermTk',
                  sigmask:TTkTerm.Sigmask=TTkTerm.Sigmask.NONE,
-                 mouseTrack:bool=False,
+                 mouseTrack:bool=True,
                  mouseCursor:bool=False,
                  **kwargs) -> None:
         # If the "TERMTK_FILE_LOG" env variable is defined

@@ -41,7 +41,6 @@ def main():
     root = ttk.TTk(
             title="Dumb Paint Tool",
             layout=ttk.TTkGridLayout(),
-            mouseTrack=True,
             sigmask=(
                 ttk.TTkTerm.Sigmask.CTRL_C |
                 ttk.TTkTerm.Sigmask.CTRL_Q |

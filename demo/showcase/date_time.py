@@ -76,7 +76,7 @@ def main():
     parser.add_argument('-f', help='Full Screen', action='store_true')
     args = parser.parse_args()
 
-    root = ttk.TTk(mouseTrack=True)
+    root = ttk.TTk()
     if args.f:
         root.setLayout(ttk.TTkGridLayout())
         winColor1 = root

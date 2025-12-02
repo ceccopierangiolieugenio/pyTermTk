@@ -27,7 +27,7 @@ import sys, os, argparse, math, random
 sys.path.append(os.path.join(sys.path[0],'../../libs/pyTermTk'))
 import TermTk as ttk
 
-root = ttk.TTk(title="pyTermTk Demo", mouseTrack=True)
+root = ttk.TTk(title="pyTermTk Demo")
 
 
 tdp = ttk.TTkTextDialogPicker(parent=root, pos=(0,0), size=(60,10))

@@ -118,10 +118,6 @@ class MyTableModel(ttk.TTkAbstractTableModel):
 #     I am using a grid layout in order to align/resize the table
 #     to the root widget (the terminal area)
 #
-#   mouseTrack = True (optional)
-#     I am enabling the mouseTrack because the table can handle
-#     the mouse move events and highlight the cells under the cursor
-#
 #   sigmask = <various signals>
 #     This field configure pyTermTk to mask those shortcuts and allow
 #     the library to handle them internally, this is useful to handle
@@ -130,7 +126,6 @@ class MyTableModel(ttk.TTkAbstractTableModel):
 #     NOTE: to quit the app I added in this example a QUIT button attached
 #           to the quit method of the root widget
 root = ttk.TTk(layout=ttk.TTkGridLayout(),
-               mouseTrack=True,
                sigmask=(
                     ttk.TTkTerm.Sigmask.CTRL_Q |
                     ttk.TTkTerm.Sigmask.CTRL_S |
