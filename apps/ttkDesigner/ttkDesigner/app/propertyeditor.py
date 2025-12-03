@@ -79,11 +79,11 @@ class PropertyEditor(ttk.TTkGridLayout):
         #   • Password     │[ ] 0x0004
         def _processMultiFlag(name, prop, domw):
             flags = prop['get']['flags']
-            ret = ttk.TTkTreeWidgetItem([name,f" - (0x{prop['get']['cb'](domw):04X})"],expanded=True)
+            ret = ttk.TTkTreeWidgetItem([name,f" - (0x{int(prop['get']['cb'](domw)):04X})"],expanded=True)
             # value = ttk.TTkFrame(layout=ttk.TTkVBoxLayout(), height=len(flags), border=False)
             for fl in flags:
                 if 'set' in prop:
-                    fcb = ttk.TTkCheckbox(text=f" 0x{flags[fl]:04X}", checked=bool(prop['get']['cb'](domw)&flags[fl]), height=1)
+                    fcb = ttk.TTkCheckbox(text=f" 0x{int(flags[fl]):04X}", checked=bool(prop['get']['cb'](domw)&flags[fl]), height=1)
                     fcb.stateChanged.connect(_boundFlags(
                                 prop['set']['cb'], prop['get']['cb'],
                                 domw, lambda v: v==ttk.TTkK.Checked, flags[fl]))

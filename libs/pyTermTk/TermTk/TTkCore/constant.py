@@ -60,7 +60,7 @@ class TTkConstant:
         ColorModifier = 0x08
         '''The :py:class:`TTkColor` include a color modifier based on :py:class:`TTkColorModifier`'''
 
-    class FocusPolicy(Flag):
+    class FocusPolicy(int, Flag):
         '''
         This Class type defines the various policies a widget
         can have with respect to acquiring keyboard focus.
@@ -423,7 +423,7 @@ class TTkConstant:
     Cursor_Blinking_Bar        = 0x0006
     Cursor_Steady_Bar          = 0x0007
 
-    class InputType(Flag):
+    class InputType(int, Flag):
         '''
         This enum type describes the input validation types for text input widgets.
 
@@ -504,7 +504,7 @@ class TTkConstant:
         AcceptSave	= 1
         '''Save'''
 
-    class TTkItemSelectionModel(Flag):
+    class TTkItemSelectionModel(int, Flag):
         '''These values describes the way the selection model will be updated.
 
         .. autosummary::
@@ -584,7 +584,7 @@ class TTkConstant:
     LayoutItem = LayoutItemTypes.LayoutItem
     WidgetItem = LayoutItemTypes.WidgetItem
 
-    class WindowFlag(Flag):
+    class WindowFlag(int, Flag):
         '''
         Those flags are used to enable customization of the window controls.
 
@@ -623,6 +623,15 @@ class TTkConstant:
         # ''' Informs the window system that the window should stay on top of all other windows. Note that on some window managers on X11 you also have to pass Qt::X11BypassWindowManagerHint for this flag to work correctly.'''
         # WindowStaysOnBottomHint     = 0x04000000
         # ''' Informs the window system that the window should stay on bottom of all other windows.'''
+
+        def __int__(self) -> int:
+            '''
+            Convert the flag to its integer value
+
+            :return: the integer representation of the flag
+            :rtype: int
+            '''
+            return self.value
 
     class KeyType(int):
         '''Input Key Types
