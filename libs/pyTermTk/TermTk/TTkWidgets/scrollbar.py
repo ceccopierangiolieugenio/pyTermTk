@@ -36,9 +36,10 @@ class TTkScrollBar(TTkWidget):
     '''TTkScrollBar'''
 
     classStyle = {
-                'default':     {'color': TTkColor.RST},
+                'default':     {'color': TTkColor.fg('#AAAACC'), 'borderColor': TTkColor.fg('#004080')},
                 'disabled':    {'color': TTkColor.fg('#888888')},
-                'focus':       {'color': TTkColor.fg('#cccc00')},
+                'focus':       {'color': TTkColor.fg('#cccc00'), 'borderColor': TTkColor.fg('#AAAA88')},
+                'hover':       {'color': TTkColor.fg('#0088FF'), 'borderColor': TTkColor.fg('#6666BB')},
             }
 
     __slots__ = (
@@ -108,7 +109,8 @@ class TTkScrollBar(TTkWidget):
     '''
     def paintEvent(self, canvas):
         style = self.currentStyle()
-        color   = style['color']
+        color = style.get('color', TTkColor.RST)
+        borderColor = style.get('borderColor', color)
 
         if self._orientation == TTkK.VERTICAL:
             size=self._height
@@ -128,7 +130,8 @@ class TTkScrollBar(TTkWidget):
             # convert i screen coordinates
             aa = asciiDrawingSize * a // (self._maximum - self._minimum)
             bb = aa + asciiStep
-        canvas.drawScroll(pos=(0,0),size=size,slider=(aa+1,bb+1),orientation=self._orientation, color=color)
+        canvas.drawScroll(pos=(0,0),size=size,slider=(aa+1,bb+1),orientation=self._orientation,
+                          color=color,borderColor=borderColor)
         # Update the screen position coordinates
         self._screenPgDown =   ( 1 ,    aa+1     )
         self._screenScroller = ( aa+1 , bb+1)
