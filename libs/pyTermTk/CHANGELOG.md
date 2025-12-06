@@ -1,5 +1,28 @@
 # Changelog
 
+## [0.49.0-a0](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/pyTermTk-v0.48.1-a0...pyTermTk-v0.49.0-a0) (2025-12-06)
+
+
+### Fixes
+
+* **ttkDesigner:** crash due to the flag integer handling ([#540](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/540)) ([c6d8955](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/c6d89550df8fbb442429c68c650ab5608dc29ad8))
+
+
+### Features
+
+* reworked the focus handler ([#537](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/537)) ([8938323](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/89383239df7357ffb0fdee0315b053c6190cd0a0))
+
+
+### Chores
+
+* release main ([#526](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/526)) ([ed584a6](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/ed584a659a8314ba544ec9cad4ea28cbf13fd3e0))
+
+
+### Refactors
+
+* Improve typing ([#533](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/533)) ([9c6a9fb](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/9c6a9fbfaab28d65adb5e83827a2b73ced691b32))
+* Improve typing ([#535](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/535)) ([2885f21](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/2885f21bc4d05f783021f8cb9f456a4e20e6b07b))
+
 ## [0.48.1-a0](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/pyTermTk-v0.48.0-a.0...pyTermTk-v0.48.1-a0) (2025-11-10)
 
 
