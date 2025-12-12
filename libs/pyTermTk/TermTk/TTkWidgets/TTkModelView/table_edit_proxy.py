@@ -22,12 +22,17 @@
 
 from __future__ import annotations
 
-__all__ = ['TTkTableProxyEdit', 'TTkTableEditLeaving', 'TTkTableProxyEditWidget']
+__all__ = [
+    'TTkProxyEditDef',
+    'TTkTableEditLeaving', 'TTkTableProxyEditFlag',
+    'TTkTableProxyEdit', 'TTkTableProxyEditWidget',
+    'TTkCellListTypeBase', 'TTkCellListType',
+]
 
 
 import datetime
 from dataclasses import dataclass
-from enum import Enum, auto
+from enum import Enum, Flag, auto
 from typing import Union, Tuple, Type, List, Optional, Any, Callable
 
 from TermTk.TTkCore.constant import TTkK
@@ -35,9 +40,14 @@ from TermTk.TTkCore.string import TTkString, TTkStringType
 from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
 from TermTk.TTkCore.TTkTerm.inputkey import TTkKeyEvent
 
+from TermTk.TTkLayouts.gridlayout import TTkGridLayout
+
 from TermTk.TTkWidgets.widget import TTkWidget
+from TermTk.TTkWidgets.resizableframe import TTkResizableFrame
 from TermTk.TTkWidgets.texedit import TTkTextEdit, TTkTextEditView
 from TermTk.TTkWidgets.spinbox import TTkSpinBox
+from TermTk.TTkWidgets.list_ import TTkList
+from TermTk.TTkWidgets.listwidget import TTkAbstractListItem
 from TermTk.TTkWidgets.datetime_time import TTkTime
 from TermTk.TTkWidgets.datetime_date import TTkDate
 from TermTk.TTkWidgets.datetime_datetime import TTkDateTime
@@ -53,6 +63,60 @@ class TTkTableEditLeaving(Enum):
     BOTTOM = auto()
     LEFT   = auto()
     RIGHT  = auto()
+
+class TTkTableProxyEditFlag(Flag):
+    NONE = 0x00
+    BASE = 0x01
+    RICH = 0x02
+    ALL  = BASE | RICH
+    # MODAL = 0x04
+
+class TTkCellListTypeBase():
+    def items(self) -> List[Any]:
+        raise NotImplementedError()
+
+    def value(self) -> Any:
+        raise NotImplementedError()
+
+    def serValue(self, val: Any) -> None:
+        raise NotImplementedError()
+
+    def factory(self, value:Any, items:List[Any]) -> TTkCellListTypeBase:
+        raise NotImplementedError()
+
+    def __str__(self) -> str:
+        raise NotImplementedError()
+
+class TTkCellListType(TTkCellListTypeBase):
+    __slots__ = ('_value', '_items')
+    def __init__(self, value:Any, items:List[Any]):
+        self._value = value
+        self._items = items
+        if value not in items:
+            raise ValueError(f"{value=} not included in {items}")
+
+    def items(self) -> List[Any]:
+        return self._items
+
+    def value(self) -> Any:
+        return self._value
+
+    def serValue(self, val: Any) -> None:
+        '''
+        Set the value
+
+        :param val: The new value
+        :type val: Any
+        '''
+        if val not in self._items:
+            raise ValueError(f"{val} not included in {self._list}")
+        self._value = val
+
+    def factory(self, value:Any, items:List[Any]) -> TTkCellListTypeBase:
+        return TTkCellListType(value=value, items=items)
+
+    def __str__(self) -> str:
+        return str(self._value)
 
 
 class TTkTableProxyEditWidget(TTkWidget):
@@ -116,6 +180,184 @@ class TTkTableProxyEditWidget(TTkWidget):
         self.leavingTriggered.clear()
         self.dataChanged.clear()
         self.close()
+
+    def isModal(self) -> bool:
+        return False
+
+
+class _ListBaseProxy(TTkResizableFrame, TTkTableProxyEditWidget):
+    ''' Numeric editor for table cells
+
+    Extends :py:class:`TTkSpinBox` with table-specific signals
+    for navigation and data change notification.
+    '''
+    __slots__ = ('leavingTriggered', 'dataChanged', '_list', '_items', '_value')
+
+    leavingTriggered: pyTTkSignal
+    '''
+    This signal is emitted when the user navigates out of the editor
+
+    :param direction: The direction of navigation
+    :type direction: TTkTableEditLeaving
+    '''
+
+    dataChanged: pyTTkSignal
+    '''
+    This signal is emitted when the numeric value changes
+
+    :param data: The new numeric value
+    :type data: Union[int, float]
+    '''
+
+    _items:List[Any]
+    _value:TTkCellListTypeBase
+
+    def __init__(self, *, value:TTkCellListTypeBase, items:List[Any], **kwargs):
+        ''' Initialize the spin box proxy
+        '''
+        self.leavingTriggered = pyTTkSignal(TTkTableEditLeaving)
+        self.dataChanged = pyTTkSignal(object)
+        self._items = items
+        self._value = value
+        w = max(_i.termWidth() if isinstance(_i,TTkString) else len(str(_i)) for _i in self._items)
+        h = len(self._items)
+        super().__init__(**kwargs|{'size':(2+w,2+h), 'layout':TTkGridLayout()})
+        self._list = TTkList(parent=self, items=self._items)
+        index = self._list.indexOf(value.value())
+        self._list.setCurrentRow(index)
+        self._list.itemClicked.connect(self._itemClicked)
+
+    @pyTTkSlot(TTkAbstractListItem)
+    def _itemClicked(self, item:TTkAbstractListItem):
+        self.dataChanged.emit(self._value.factory(value=item.data(), items=self._items))
+
+    def isModal(self) -> bool:
+        return True
+
+    def setFocus(self) -> None:
+        return self._list.setFocus()
+
+    @staticmethod
+    def editWidgetFactory(data: Any) -> TTkTableProxyEditWidget:
+        ''' Factory method to create a spin box from numeric data
+
+        :param data: The initial numeric value
+        :type data: Union[int, float]
+        :return: A new spin box instance
+        :rtype: :py:class:`TTkTableProxyEditWidget`
+        :raises ValueError: If data is not an int or float
+        '''
+        if not isinstance(data, TTkCellListTypeBase):
+            raise ValueError(f"{data} is not instance of 'TTkCellListTypeBase'")
+        sb = _ListBaseProxy(items=data.items(), value=data)
+        return sb
+
+    def getCellData(self) -> Union[float, int]:
+        ''' Get the current numeric value from the editor
+
+        :return: The current spin box value
+        :rtype: Union[int, float]
+        '''
+        self.dataChanged.emit(self._value.factory(
+            value=self._list.selectedItems()[0].data(),
+            items=self._items))
+
+    def keyEvent(self, evt: TTkKeyEvent) -> bool:
+        ''' Handle keyboard events for navigation
+
+        :param evt: The keyboard event
+        :type evt: TTkKeyEvent
+        :return: True if event was handled, False otherwise
+        :rtype: bool
+        '''
+        if (evt.type == TTkK.SpecialKey):
+            if evt.mod == TTkK.NoModifier:
+                if evt.key == TTkK.Key_Enter:
+                    self.leavingTriggered.emit(TTkTableEditLeaving.NONE)
+                    return True
+        return super().keyEvent(evt)
+
+class _BoolListProxy(TTkResizableFrame, TTkTableProxyEditWidget):
+    ''' Numeric editor for table cells
+
+    Extends :py:class:`TTkSpinBox` with table-specific signals
+    for navigation and data change notification.
+    '''
+    __slots__ = ('leavingTriggered', 'dataChanged', '_list')
+
+    leavingTriggered: pyTTkSignal
+    '''
+    This signal is emitted when the user navigates out of the editor
+
+    :param direction: The direction of navigation
+    :type direction: TTkTableEditLeaving
+    '''
+
+    dataChanged: pyTTkSignal
+    '''
+    This signal is emitted when the numeric value changes
+
+    :param data: The new numeric value
+    :type data: Union[int, float]
+    '''
+
+    def __init__(self, **kwargs):
+        ''' Initialize the spin box proxy
+        '''
+        self.leavingTriggered = pyTTkSignal(TTkTableEditLeaving)
+        self.dataChanged = pyTTkSignal(object)
+        super().__init__(**kwargs|{'size':(7,4), 'layout':TTkGridLayout()})
+        self._list = TTkList(parent=self, items=[True,False])
+        self._list.itemClicked.connect(self._itemClicked)
+
+    @pyTTkSlot(TTkAbstractListItem)
+    def _itemClicked(self, item:TTkAbstractListItem):
+        self.dataChanged.emit(item.data())
+
+    def isModal(self) -> bool:
+        return True
+
+    def setFocus(self) -> None:
+        return self._list.setFocus()
+
+    @staticmethod
+    def editWidgetFactory(data: Any) -> TTkTableProxyEditWidget:
+        ''' Factory method to create a spin box from numeric data
+
+        :param data: The initial numeric value
+        :type data: Union[int, float]
+        :return: A new spin box instance
+        :rtype: :py:class:`TTkTableProxyEditWidget`
+        :raises ValueError: If data is not an int or float
+        '''
+        if not isinstance(data, bool):
+            raise ValueError(f"{data} is not a boolean")
+        sb = _BoolListProxy()
+        sb._list.setCurrentRow(0 if data else 1)
+        return sb
+
+    def getCellData(self) -> Union[float, int]:
+        ''' Get the current numeric value from the editor
+
+        :return: The current spin box value
+        :rtype: Union[int, float]
+        '''
+        return self._list.selectedItems()[0].data()
+
+    def keyEvent(self, evt: TTkKeyEvent) -> bool:
+        ''' Handle keyboard events for navigation
+
+        :param evt: The keyboard event
+        :type evt: TTkKeyEvent
+        :return: True if event was handled, False otherwise
+        :rtype: bool
+        '''
+        if (evt.type == TTkK.SpecialKey):
+            if evt.mod == TTkK.NoModifier:
+                if evt.key == TTkK.Key_Enter:
+                    self.leavingTriggered.emit(TTkTableEditLeaving.NONE)
+                    return True
+        return super().keyEvent(evt)
 
 class _TextEditViewProxy(TTkTextEditView, TTkTableProxyEditWidget):
     ''' Text editor view for table cells
@@ -664,7 +906,7 @@ class TTkProxyEditDef():
     '''
     types: Tuple[type, ...]
     class_def: Type[TTkTableProxyEditWidget]
-    rich: bool = False
+    flags: TTkTableProxyEditFlag = TTkTableProxyEditFlag.ALL
 
 class TTkTableProxyEdit():
     ''' Proxy class for managing table cell editors
@@ -692,10 +934,12 @@ class TTkTableProxyEdit():
         ''' Initialize the table proxy edit manager
         '''
         self._proxies = [
+            TTkProxyEditDef(class_def=_ListBaseProxy,       types=(TTkCellListTypeBase)),
+            TTkProxyEditDef(class_def=_BoolListProxy,   types=(bool)),
             TTkProxyEditDef(class_def=_SpinBoxProxy,    types=(int, float)),
-            TTkProxyEditDef(class_def=_TextEditProxy,   types=(str, TTkString)),
-            TTkProxyEditDef(class_def=_TextEditProxy,   types=(str,),       rich=True),
-            TTkProxyEditDef(class_def=_TextPickerProxy, types=(TTkString,), rich=True),
+            TTkProxyEditDef(class_def=_TextEditProxy,   types=(str,)),
+            TTkProxyEditDef(class_def=_TextEditProxy,   types=(TTkString,), flags=TTkTableProxyEditFlag.BASE),
+            TTkProxyEditDef(class_def=_TextPickerProxy, types=(TTkString,), flags=TTkTableProxyEditFlag.RICH),
             # Datetime go first because
             #   datetime is instance of date as well
             TTkProxyEditDef(class_def=_DateTime_DateTimeProxy, types=(datetime.datetime)),
@@ -703,7 +947,10 @@ class TTkTableProxyEdit():
             TTkProxyEditDef(class_def=_DateTime_DateProxy, types=(datetime.date)),
         ]
 
-    def getProxyWidget(self, data, rich: bool = False) -> Optional[TTkTableProxyEditWidget]:
+    def addProxy(self, proxy:TTkProxyEditDef) -> None:
+        self._proxies.insert(0,proxy)
+
+    def getProxyWidget(self, data, flags: TTkTableProxyEditFlag = TTkTableProxyEditFlag.BASE) -> Optional[TTkTableProxyEditWidget]:
         ''' Get an appropriate editor widget for the given data
 
         :param data: The data value to edit
@@ -714,9 +961,6 @@ class TTkTableProxyEdit():
         :rtype: Optional[TTkTableProxyEditWidget]
         '''
         for proxy in self._proxies:
-            if proxy.rich == rich and isinstance(data, proxy.types):
-                return proxy.class_def.editWidgetFactory(data)
-        for proxy in self._proxies:
-            if isinstance(data, proxy.types):
+            if ( proxy.flags & flags ) and isinstance(data, proxy.types):
                 return proxy.class_def.editWidgetFactory(data)
         return None
