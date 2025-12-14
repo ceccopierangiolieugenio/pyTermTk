@@ -27,6 +27,7 @@ from typing import Optional
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
 from TermTk.TTkWidgets.TTkModelView.tablewidget import TTkTableWidget, TTkHeaderView
+from TermTk.TTkWidgets.TTkModelView.table_edit_proxy import TTkTableProxyEdit
 from TermTk.TTkAbstract.abstractscrollarea import TTkAbstractScrollArea, _ForwardData
 from TermTk.TTkAbstract.abstracttablemodel import TTkAbstractTableModel
 
@@ -49,6 +50,7 @@ class TTkTable(TTkAbstractScrollArea):
             'currentCellChanged'],
         methods=[ # Forwarded Methods From TTkTable
             'undo', 'redo',
+            'proxyEdit',
             'isUndoAvailable','isRedoAvailable',
             'copy', 'cut', 'paste',
             'setSortingEnabled', 'isSortingEnabled', 'sortByColumn',
@@ -197,6 +199,19 @@ class TTkTable(TTkAbstractScrollArea):
         Redoes the last operation if redo is available.
         '''
         return self._tableView.redo()
+    def proxyEdit(self) -> TTkTableProxyEdit:
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkTableWidget.proxyEdit`
+
+        Returns the table proxy edit handler.
+
+        The proxy edit handler manages the creation and behavior of proxy widgets
+        used for editing table cells.
+
+        :return: the table proxy edit handler
+        :rtype: :py:class:`TTkTableProxyEdit`
+        '''
+        return self._tableView.proxyEdit()
     def isUndoAvailable(self) -> bool:
         '''
         .. seealso:: this method is forwarded to :py:meth:`TTkTableWidget.isUndoAvailable`

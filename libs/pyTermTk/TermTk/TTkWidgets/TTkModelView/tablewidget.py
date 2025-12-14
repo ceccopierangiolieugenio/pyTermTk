@@ -42,7 +42,7 @@ from TermTk.TTkWidgets.texedit  import TTkTextEdit
 from TermTk.TTkWidgets.spinbox  import TTkSpinBox
 from TermTk.TTkWidgets.TTkPickers.textpicker import TTkTextPicker
 from TermTk.TTkWidgets.TTkModelView.tablemodellist import TTkTableModelList, TTkModelIndex
-from TermTk.TTkWidgets.TTkModelView.table_edit_proxy import TTkTableProxyEdit, TTkTableProxyEditWidget, TTkTableEditLeaving
+from TermTk.TTkWidgets.TTkModelView.table_edit_proxy import TTkTableProxyEdit, TTkTableProxyEditWidget, TTkTableEditLeaving, TTkTableProxyEditFlag
 
 from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollView
 from TermTk.TTkAbstract.abstracttablemodel import TTkAbstractTableModel
@@ -531,6 +531,18 @@ class TTkTableWidget(TTkAbstractScrollView):
         self._setCurrentCell(cpsi.row(),cpsi.col())
         self._moveCurrentCell(diff=(0,0))
         self.update()
+
+    def proxyEdit(self) -> TTkTableProxyEdit:
+        '''
+        Returns the table proxy edit handler.
+
+        The proxy edit handler manages the creation and behavior of proxy widgets
+        used for editing table cells.
+
+        :return: the table proxy edit handler
+        :rtype: :py:class:`TTkTableProxyEdit`
+        '''
+        return self._edit_proxy
 
     @pyTTkSlot()
     def undo(self) -> None:
@@ -1186,10 +1198,27 @@ class TTkTableWidget(TTkAbstractScrollView):
         self.setSelection(pos=(col,row),size=(1,1),flags=TTkK.TTkItemSelectionModel.Select)
 
         data = self._tableModel.data(row, col)
-        if proxyWidget := self._edit_proxy.getProxyWidget(data, rich=richEditSupport):
-            epwl = _ProxyWidgetLocation(widget=proxyWidget, row=row, col=col)
-            self._placeProxyWidget(epwl)
-
+        proxy_flags = TTkTableProxyEditFlag.RICH if richEditSupport else TTkTableProxyEditFlag.BASE
+        if proxyWidget := self._edit_proxy.getProxyWidget(data, flags=proxy_flags):
+            if proxyWidget.isModal():
+                pad = self.getPadding()
+                pw,ph = proxyWidget.size()
+                cw,ch = (xb-xa+2), (yb-ya+2)
+                pw_n,ph_n = max(pw,cw), max(ph,ch)
+                proxyWidget.resize(pw_n,ph_n)
+                TTkHelper.overlay(
+                    caller=self,
+                    widget=proxyWidget,
+                    x=xa+pad.left-1,
+                    y=ya+pad.top-1)
+                @pyTTkSlot(Any)
+                def _removeModalWidget(data: Any):
+                    self._tableModel_setData([(row,col,data)])
+                    self.setFocus()
+                proxyWidget.dataChanged.connect(_removeModalWidget)
+            else:
+                epwl = _ProxyWidgetLocation(widget=proxyWidget, row=row, col=col)
+                self._placeProxyWidget(epwl)
 
     def _setCurrentCell(self, currRow:int, currCol:int) -> None:
         prevRow,prevCol = self._currentPos if self._currentPos else (0,0)

@@ -22,12 +22,17 @@
 
 from __future__ import annotations
 
-__all__ = ['TTkTableProxyEdit', 'TTkTableEditLeaving', 'TTkTableProxyEditWidget']
+__all__ = [
+    'TTkProxyEditDef',
+    'TTkTableEditLeaving', 'TTkTableProxyEditFlag',
+    'TTkTableProxyEdit', 'TTkTableProxyEditWidget',
+    'TTkCellListTypeBase', 'TTkCellListType',
+]
 
 
 import datetime
 from dataclasses import dataclass
-from enum import Enum, auto
+from enum import Enum, Flag, auto
 from typing import Union, Tuple, Type, List, Optional, Any, Callable
 
 from TermTk.TTkCore.constant import TTkK
@@ -35,9 +40,14 @@ from TermTk.TTkCore.string import TTkString, TTkStringType
 from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
 from TermTk.TTkCore.TTkTerm.inputkey import TTkKeyEvent
 
+from TermTk.TTkLayouts.gridlayout import TTkGridLayout
+
 from TermTk.TTkWidgets.widget import TTkWidget
+from TermTk.TTkWidgets.resizableframe import TTkResizableFrame
 from TermTk.TTkWidgets.texedit import TTkTextEdit, TTkTextEditView
 from TermTk.TTkWidgets.spinbox import TTkSpinBox
+from TermTk.TTkWidgets.list_ import TTkList
+from TermTk.TTkWidgets.listwidget import TTkAbstractListItem
 from TermTk.TTkWidgets.datetime_time import TTkTime
 from TermTk.TTkWidgets.datetime_date import TTkDate
 from TermTk.TTkWidgets.datetime_datetime import TTkDateTime
@@ -53,6 +63,131 @@ class TTkTableEditLeaving(Enum):
     BOTTOM = auto()
     LEFT   = auto()
     RIGHT  = auto()
+
+class TTkTableProxyEditFlag(Flag):
+    NONE = 0x00
+    BASE = 0x01
+    RICH = 0x02
+    ALL  = BASE | RICH
+    # MODAL = 0x04
+
+class TTkCellListTypeBase():
+    ''' Base protocol for list-based cell data types
+
+    Defines the interface for cell values that can be selected from a list of items.
+    Implementations must provide methods to get/set values and available items.
+    '''
+    def items(self) -> List[Any]:
+        ''' Get the list of available items
+
+        :return: List of available items
+        :rtype: List[Any]
+        :raises NotImplementedError: Must be implemented by subclasses
+        '''
+        raise NotImplementedError()
+
+    def value(self) -> Any:
+        ''' Get the current selected value
+
+        :return: The current value
+        :rtype: Any
+        :raises NotImplementedError: Must be implemented by subclasses
+        '''
+        raise NotImplementedError()
+
+    def setValue(self, val: Any) -> None:
+        ''' Set the current value
+
+        :param val: The new value to set
+        :type val: Any
+        :raises NotImplementedError: Must be implemented by subclasses
+        '''
+        raise NotImplementedError()
+
+    def factory(self, value:Any, items:List[Any]) -> TTkCellListTypeBase:
+        ''' Create a new instance with the given value and items
+
+        :param value: The initial value
+        :type value: Any
+        :param items: The list of available items
+        :type items: List[Any]
+        :return: A new instance
+        :rtype: TTkCellListTypeBase
+        :raises NotImplementedError: Must be implemented by subclasses
+        '''
+        raise NotImplementedError()
+
+    def __str__(self) -> str:
+        ''' Return string representation of the current value
+
+        :return: String representation
+        :rtype: str
+        :raises NotImplementedError: Must be implemented by subclasses
+        '''
+        raise NotImplementedError()
+
+class TTkCellListType(TTkCellListTypeBase):
+    ''' Concrete implementation of list-based cell data type
+
+    Represents a value that can be selected from a predefined list of items.
+    Used in table cells to provide dropdown-like selection behavior.
+
+    Example::
+
+        items = ['Option A', 'Option B', 'Option C']
+        cell_value = TTkCellListType(value='Option A', items=items)
+        print(cell_value.value())  # 'Option A'
+        cell_value.setValue('Option B')
+
+    :param value: The initial selected value (must be in items)
+    :type value: Any
+    :param items: List of available options
+    :type items: List[Any]
+    :raises ValueError: If value is not in items list
+    '''
+    __slots__ = ('_value', '_items')
+    def __init__(self, value:Any, items:List[Any]):
+        self._value = value
+        self._items = items
+        if value not in items:
+            raise ValueError(f"{value=} not included in {items}")
+
+    def items(self) -> List[Any]:
+        return self._items
+
+    def value(self) -> Any:
+        return self._value
+
+    def serValue(self, val: Any) -> None:
+        '''
+        Set the value
+
+        :param val: The new value
+        :type val: Any
+        '''
+        if val not in self._items:
+            raise ValueError(f"{val} not included in {self._list}")
+        self._value = val
+
+    def factory(self, value:Any, items:List[Any]) -> TTkCellListTypeBase:
+        ''' Create a new TTkCellListType instance
+
+        :param value: The initial value
+        :type value: Any
+        :param items: The list of available items
+        :type items: List[Any]
+        :return: A new TTkCellListType instance
+        :rtype: TTkCellListTypeBase
+        '''
+        return TTkCellListType(value=value, items=items)
+
+    def __str__(self) -> str:
+        ''' Return string representation of the current value
+
+        :return: String representation of the value
+        :rtype: str
+        '''
+        return str(self._value)
 
 
 class TTkTableProxyEditWidget(TTkWidget):
@@ -117,11 +252,157 @@ class TTkTableProxyEditWidget(TTkWidget):
         self.dataChanged.clear()
         self.close()
 
+    def isModal(self) -> bool:
+        return False
+
+
+class _ListBaseProxy(TTkResizableFrame, TTkTableProxyEditWidget):
+    ''' List-based editor for table cells
+
+    Extends :py:class:`TTkResizableFrame` with a list widget for selecting
+    values from a predefined set of options. Used for :py:class:`TTkCellListTypeBase` data.
+    '''
+    __slots__ = ('leavingTriggered', 'dataChanged', '_list', '_items', '_value')
+
+    leavingTriggered: pyTTkSignal
+    '''
+    This signal is emitted when the user navigates out of the editor
+
+    :param direction: The direction of navigation
+    :type direction: TTkTableEditLeaving
+    '''
+
+    dataChanged: pyTTkSignal
+    '''
+    This signal is emitted when the numeric value changes
+
+    :param data: The new numeric value
+    :type data: Union[int, float]
+    '''
+
+    _items:List[Any]
+    _value:TTkCellListTypeBase
+
+    def __init__(self, *, value:TTkCellListTypeBase, items:List[Any], **kwargs):
+        ''' Initialize the list-based proxy editor
+
+        :param value: The cell value with list data
+        :type value: TTkCellListTypeBase
+        :param items: The list of available items
+        :type items: List[Any]
+        '''
+        self.leavingTriggered = pyTTkSignal(TTkTableEditLeaving)
+        self.dataChanged = pyTTkSignal(object)
+        self._items = items
+        self._value = value
+        w = max(_i.termWidth() if isinstance(_i,TTkString) else len(str(_i)) for _i in self._items)
+        h = len(self._items)
+        super().__init__(**kwargs|{'size':(2+w,2+h), 'layout':TTkGridLayout()})
+        self._list = TTkList(parent=self, items=self._items)
+        index = self._list.indexOf(value.value())
+        self._list.setCurrentRow(index)
+        self._list.itemClicked.connect(self._itemClicked)
+
+    @pyTTkSlot(TTkAbstractListItem)
+    def _itemClicked(self, item:TTkAbstractListItem):
+        ''' Handle item click event from the list
+
+        :param item: The clicked list item
+        :type item: TTkAbstractListItem
+        '''
+        self.dataChanged.emit(self._value.factory(value=item.data(), items=self._items))
+
+    def isModal(self) -> bool:
+        ''' Check if this editor should be displayed modally
+
+        :return: True (list editors are modal)
+        :rtype: bool
+        '''
+        return True
+
+    def setFocus(self) -> None:
+        ''' Set focus to the internal list widget
+        '''
+        return self._list.viewport().setFocus()
+
+    def keyEvent(self, evt:TTkKeyEvent) -> bool:
+        return self._list.keyEvent(evt=evt)
+
+    @staticmethod
+    def editWidgetFactory(data: Any) -> TTkTableProxyEditWidget:
+        ''' Factory method to create a list proxy from cell list data
+
+        :param data: The initial list-based cell value
+        :type data: TTkCellListTypeBase
+        :return: A new list proxy instance
+        :rtype: :py:class:`TTkTableProxyEditWidget`
+        :raises ValueError: If data is not instance of TTkCellListTypeBase
+        '''
+        if not isinstance(data, TTkCellListTypeBase):
+            raise ValueError(f"{data} is not instance of 'TTkCellListTypeBase'")
+        sb = _ListBaseProxy(items=data.items(), value=data)
+        return sb
+
+    def getCellData(self) -> Union[float, int]:
+        ''' Get the current selected value from the list
+
+        :return: The selected item value
+        :rtype: Union[float, int]
+        '''
+        self.dataChanged.emit(self._value.factory(
+            value=self._list.selectedItems()[0].data(),
+            items=self._items))
+
+class _BoolListProxy(_ListBaseProxy):
+    ''' Boolean editor for table cells
+
+    Specialized list proxy that presents True/False choices for boolean cell values.
+    Displays as a compact 2-item list.
+    '''
+    def __init__(self, **kwargs):
+        ''' Initialize the boolean list proxy
+        '''
+        super().__init__(**kwargs|{'size':(7,4), 'layout':TTkGridLayout()})
+
+    @pyTTkSlot(TTkAbstractListItem)
+    def _itemClicked(self, item:TTkAbstractListItem):
+        ''' Handle boolean item selection
+
+        :param item: The clicked list item (True or False)
+        :type item: TTkAbstractListItem
+        '''
+        self.dataChanged.emit(item.data())
+
+    @staticmethod
+    def editWidgetFactory(data: Any) -> TTkTableProxyEditWidget:
+        ''' Factory method to create a boolean editor from bool data
+
+        :param data: The initial boolean value
+        :type data: bool
+        :return: A new boolean list proxy instance
+        :rtype: :py:class:`TTkTableProxyEditWidget`
+        :raises ValueError: If data is not a boolean
+        '''
+        if not isinstance(data, bool):
+            raise ValueError(f"{data} is not a boolean")
+        value = TTkCellListType(value=data, items=[True,False])
+        sb = _BoolListProxy(value=value, items=[True,False])
+        return sb
+
+    def getCellData(self) -> Union[float, int]:
+        ''' Get the current boolean value from the list
+
+        :return: The selected boolean value (True or False)
+        :rtype: bool
+        '''
+        return self._list.selectedItems()[0].data()
+
 class _TextEditViewProxy(TTkTextEditView, TTkTableProxyEditWidget):
     ''' Text editor view for table cells
 
     Extends :py:class:`TTkTextEditView` with table-specific signals
-    for navigation and data change notification.
+    for navigation and data change notification. Handles both plain text
+    and rich text (:py:class:`TTkString`) editing.
     '''
     __slots__ = ('leavingTriggered', 'dataChanged')
 
@@ -192,7 +473,9 @@ class _TextEditViewProxy(TTkTextEditView, TTkTableProxyEditWidget):
 
     @pyTTkSlot()
     def _emitDataChanged(self) -> None:
-        ''' Emit dataChanged signal when text changes
+        ''' Emit dataChanged signal when text content changes
+
+        Converts text to string or TTkString based on formatting.
         '''
         txt = self.toRawText()
         val = str(txt) if txt.isPlainText() else txt
@@ -335,19 +618,23 @@ class _SpinBoxProxy(TTkSpinBox, TTkTableProxyEditWidget):
 class _DateTime_KeyGeneric():
     ''' Mixin class for datetime widget keyboard navigation
 
-    Provides common keyboard event handling for datetime-based editors,
-    including arrow key navigation and Enter key handling.
+    Provides common keyboard event handling for datetime-based editors
+    (:py:class:`TTkDate`, :py:class:`TTkTime`, :py:class:`TTkDateTime`).
+    Handles arrow key navigation between cells and Enter key submission.
     '''
 
     leavingTriggered: pyTTkSignal
     dataChanged: pyTTkSignal
 
     def newKeyEvent(self, evt: TTkKeyEvent, cb:Callable[[TTkKeyEvent],bool]) -> bool:
-        ''' Handle keyboard events with custom callback and navigation
+        ''' Handle keyboard events with custom callback and table navigation
+
+        Processes Enter key for cell submission and arrow keys for navigation
+        to adjacent cells. Falls back to widget-specific handling via callback.
 
         :param evt: The keyboard event
         :type evt: TTkKeyEvent
-        :param cb: Callback function for additional key handling
+        :param cb: Callback function for widget-specific key handling
         :type cb: Callable[[TTkKeyEvent], bool]
         :return: True if event was handled, False otherwise
         :rtype: bool
@@ -664,7 +951,7 @@ class TTkProxyEditDef():
     '''
     types: Tuple[type, ...]
     class_def: Type[TTkTableProxyEditWidget]
-    rich: bool = False
+    flags: TTkTableProxyEditFlag = TTkTableProxyEditFlag.ALL
 
 class TTkTableProxyEdit():
     ''' Proxy class for managing table cell editors
@@ -673,29 +960,48 @@ class TTkTableProxyEdit():
     All editors implement the :py:class:`TTkTableProxyEditWidget` protocol.
 
     Automatically selects the correct editor type:
+
+    - :py:class:`_BoolListProxy` for boolean values
+    - :py:class:`_ListBaseProxy` for :py:class:`TTkCellListTypeBase` values
     - :py:class:`_SpinBoxProxy` for int and float values
     - :py:class:`_TextEditProxy` for plain text strings
     - :py:class:`_TextPickerProxy` for rich text (TTkString with formatting)
+    - :py:class:`_DateTime_DateProxy` for datetime.date values
+    - :py:class:`_DateTime_TimeProxy` for datetime.time values
+    - :py:class:`_DateTime_DateTimeProxy` for datetime.datetime values
 
     Example usage::
 
         proxy = TTkTableProxyEdit()
-        editor = proxy.getProxyWidget(data=42, rich=False)
+
+        # Get editor for numeric data
+        editor = proxy.getProxyWidget(data=42, flags=TTkTableProxyEditFlag.BASE)
+
+        # Get editor for rich text
+        rich_text = TTkString("Hello", TTkColor.BOLD)
+        editor = proxy.getProxyWidget(data=rich_text, flags=TTkTableProxyEditFlag.RICH)
+
         if editor:
             editor.leavingTriggered.connect(handleNavigation)
             editor.dataChanged.connect(handleDataChange)
     '''
+
     __slots__ = ('_proxies',)
     _proxies: List[TTkProxyEditDef]
 
     def __init__(self):
         ''' Initialize the table proxy edit manager
+
+        Sets up the default proxy definitions for all supported data types.
+        Proxies are checked in order, with custom proxies taking precedence.
         '''
         self._proxies = [
+            TTkProxyEditDef(class_def=_ListBaseProxy,       types=(TTkCellListTypeBase)),
+            TTkProxyEditDef(class_def=_BoolListProxy,   types=(bool)),
             TTkProxyEditDef(class_def=_SpinBoxProxy,    types=(int, float)),
-            TTkProxyEditDef(class_def=_TextEditProxy,   types=(str, TTkString)),
-            TTkProxyEditDef(class_def=_TextEditProxy,   types=(str,),       rich=True),
-            TTkProxyEditDef(class_def=_TextPickerProxy, types=(TTkString,), rich=True),
+            TTkProxyEditDef(class_def=_TextEditProxy,   types=(str,)),
+            TTkProxyEditDef(class_def=_TextEditProxy,   types=(TTkString,), flags=TTkTableProxyEditFlag.BASE),
+            TTkProxyEditDef(class_def=_TextPickerProxy, types=(TTkString,), flags=TTkTableProxyEditFlag.RICH),
             # Datetime go first because
             #   datetime is instance of date as well
             TTkProxyEditDef(class_def=_DateTime_DateTimeProxy, types=(datetime.datetime)),
@@ -703,20 +1009,31 @@ class TTkTableProxyEdit():
             TTkProxyEditDef(class_def=_DateTime_DateProxy, types=(datetime.date)),
         ]
 
-    def getProxyWidget(self, data, rich: bool = False) -> Optional[TTkTableProxyEditWidget]:
+    def addProxy(self, proxy:TTkProxyEditDef) -> None:
+        ''' Add a custom proxy definition to the manager
+
+        Custom proxies are inserted at the beginning of the list,
+        so they take precedence over default proxies.
+
+        :param proxy: The proxy definition to add
+        :type proxy: TTkProxyEditDef
+        '''
+        self._proxies.insert(0,proxy)
+
+    def getProxyWidget(self, data, flags: TTkTableProxyEditFlag = TTkTableProxyEditFlag.BASE) -> Optional[TTkTableProxyEditWidget]:
         ''' Get an appropriate editor widget for the given data
+
+        Searches through registered proxy definitions to find one that
+        matches the data type and requested flags. Returns the first match.
 
         :param data: The data value to edit
         :type data: object
-        :param rich: Whether rich text editing is required
-        :type rich: bool
+        :param flags: Flags indicating editor capabilities (BASE or RICH)
+        :type flags: TTkTableProxyEditFlag
         :return: An editor widget instance, or None if no suitable editor found
         :rtype: Optional[TTkTableProxyEditWidget]
         '''
         for proxy in self._proxies:
-            if proxy.rich == rich and isinstance(data, proxy.types):
-                return proxy.class_def.editWidgetFactory(data)
-        for proxy in self._proxies:
-            if isinstance(data, proxy.types):
+            if ( proxy.flags & flags ) and isinstance(data, proxy.types):
                 return proxy.class_def.editWidgetFactory(data)
         return None
