@@ -359,10 +359,6 @@ class _BoolListProxy(_ListBaseProxy):
     Specialized list proxy that presents True/False choices for boolean cell values.
     Displays as a compact 2-item list.
     '''
-    def __init__(self, **kwargs):
-        ''' Initialize the boolean list proxy
-        '''
-        super().__init__(**kwargs|{'size':(7,4), 'layout':TTkGridLayout()})
 
     @pyTTkSlot(TTkAbstractListItem)
     def _itemClicked(self, item:TTkAbstractListItem):
@@ -396,6 +392,29 @@ class _BoolListProxy(_ListBaseProxy):
         :rtype: bool
         '''
         return self._list.selectedItems()[0].data()
+
+class _EnumListProxy(_BoolListProxy):
+    ''' Enum editor for table cells
+
+    Specialized list proxy that presents choices for enum cell values.
+    '''
+
+    @staticmethod
+    def editWidgetFactory(data: Any) -> TTkTableProxyEditWidget:
+        ''' Factory method to create a enum editor from enum data
+
+        :param data: The initial enum value
+        :type data: Enum
+        :return: A new enum list proxy instance
+        :rtype: :py:class:`TTkTableProxyEditWidget`
+        :raises ValueError: If data is not a enum
+        '''
+        if not isinstance(data, Enum):
+            raise ValueError(f"{data} is not an Enum")
+        items = list(type(data))
+        value = TTkCellListType(value=data, items=items)
+        sb = _BoolListProxy(value=value, items=items)
+        return sb
 
 class _TextEditViewProxy(TTkTextEditView, TTkTableProxyEditWidget):
     ''' Text editor view for table cells
@@ -996,8 +1015,9 @@ class TTkTableProxyEdit():
         Proxies are checked in order, with custom proxies taking precedence.
         '''
         self._proxies = [
-            TTkProxyEditDef(class_def=_ListBaseProxy,       types=(TTkCellListTypeBase)),
+            TTkProxyEditDef(class_def=_ListBaseProxy,   types=(TTkCellListTypeBase)),
             TTkProxyEditDef(class_def=_BoolListProxy,   types=(bool)),
+            TTkProxyEditDef(class_def=_EnumListProxy,   types=(Enum)),
             TTkProxyEditDef(class_def=_SpinBoxProxy,    types=(int, float)),
             TTkProxyEditDef(class_def=_TextEditProxy,   types=(str,)),
             TTkProxyEditDef(class_def=_TextEditProxy,   types=(TTkString,), flags=TTkTableProxyEditFlag.BASE),
