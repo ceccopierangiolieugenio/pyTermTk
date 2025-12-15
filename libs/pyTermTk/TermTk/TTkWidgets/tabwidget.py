@@ -260,7 +260,7 @@ class TTkTabButton(_TTkTabColorButton):
         drag = TTkDrag()
         self._closeButtonPressed = False
         if tb := self.parentWidget():
-            if issubclass(type(tb),TTkTabBar):
+            if issubclass(type(tb),TTkTabBar) and tb.tabsMovable():
                 if tw:= tb.parentWidget():
                     # Init the drag only if used in a tabBar/tabWidget
                     if issubclass(type(tw), TTkTabWidget):
@@ -468,6 +468,7 @@ class TTkTabBar(TTkContainer):
                  closable:bool=False,
                  small:bool=True,
                  barType:TTkBarType=TTkBarType.NONE,
+                 movable:bool=True,
                  **kwargs) -> None:
         self.currentChanged    = pyTTkSignal(int)
         self.tabBarClicked     = pyTTkSignal(int)
@@ -477,7 +478,7 @@ class TTkTabBar(TTkContainer):
         self._currentIndex = -1
         self._lastIndex = -1
         self._highlighted = -1
-        self._tabMovable = False
+        self._tabMovable = movable
         self._tabClosable = closable
         self._sideEnd = TTkK.LEFT | TTkK.RIGHT
         self._barType = barType
@@ -569,6 +570,14 @@ class TTkTabBar(TTkContainer):
     def setTabsClosable(self, closable):
         '''setTabsClosable'''
         self._tabClosable = closable
+
+    def tabsMovable(self):
+        '''tabsMovable'''
+        return self._tabMovable
+
+    def setTabsMovable(self, movable):
+        '''setTabsMovable'''
+        self._tabMovable = movable
 
     def currentIndex(self):
         '''currentIndex'''
@@ -729,6 +738,7 @@ class TTkTabWidget(TTkFrame):
     def __init__(self, *,
                  closable:bool=False,
                  barType:TTkBarType=TTkBarType.NONE,
+                 movable:bool=True,
                  **kwargs) -> None:
         self._tabWidgets = []
         self._tabBarTopLayout = TTkGridLayout()
@@ -741,7 +751,8 @@ class TTkTabWidget(TTkFrame):
 
         self._tabBar = TTkTabBar(
                 barType=self._barType,
-                closable=closable)
+                closable=closable,
+                movable=movable)
         self._topLeftLayout   = None
         self._topRightLayout  = None
 
@@ -772,6 +783,8 @@ class TTkTabWidget(TTkFrame):
         self.currentData = self._tabBar.currentData
         self.tabsClosable    = self._tabBar.tabsClosable
         self.setTabsClosable = self._tabBar.setTabsClosable
+        self.tabsMovable    = self._tabBar.tabsMovable
+        self.setTabsMovable = self._tabBar.setTabsMovable
         # forwarded Signals
         self.currentChanged    = self._tabBar.currentChanged
         self.tabBarClicked     = self._tabBar.tabBarClicked
