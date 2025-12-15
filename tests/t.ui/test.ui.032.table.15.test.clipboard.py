@@ -22,13 +22,11 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-# Demo inspired from:
-# https://www.daniweb.com/programming/software-development/code/447834/applying-pyside-s-qabstracttablemodel
-
 import os
 import sys
 import argparse
 import random
+import datetime
 from enum import Enum
 
 from random import choice
@@ -47,6 +45,28 @@ args = parser.parse_args()
 fullScreen = not args.w
 mouseTrack = True
 
+# Random date between two dates
+def random_date(start_date, end_date):
+    time_between = end_date - start_date
+    days_between = time_between.days
+    random_days = random.randrange(days_between)
+    return start_date + datetime.timedelta(days=random_days)
+
+# Random time
+def random_time():
+    hour = random.randint(0, 23)
+    minute = random.randint(0, 59)
+    second = random.randint(0, 59)
+    return datetime.time(hour, minute, second)
+
+# Random datetime
+def random_datetime(start_datetime, end_datetime):
+    time_between = end_datetime - start_datetime
+    total_seconds = int(time_between.total_seconds())
+    random_seconds = random.randrange(total_seconds)
+    return start_datetime + datetime.timedelta(seconds=random_seconds)
+
+
 class MyEnum(Enum):
     Foo=auto()
     Bar=auto()
@@ -64,33 +84,58 @@ class MyEnumYesNo(Enum):
     def __bool__(self):
         return self.value
 
+data_list = [
+    'Pippo', 'Pluto', 'Paperino',
+    'Qui', 'Quo', 'Qua', # L'accento non ci va
+    'Minnie', 'Topolino'
+]
+
 data = [
     [
         bool(random.randint(0,1)),
-        MyEnum.Foo,
-        MyEnum.Bar,
-        MyEnum.Baz,
-        MyEnumYesNo.Yes,
-        MyEnumYesNo.No,
+        'Pippo',
+        'Pluto',
+        ttk.TTkCellListType(value=random.choice(data_list), items=data_list)
+    ] for y in range(20)
+]
+
+data = [
+    [
+        f"0x{random.randint(0,0xFFFF):04X}",
+        ttk.TTkString(f"0x{random.randint(0,0xFFFF):04X}", ttk.TTkColor.YELLOW),
+        bool(random.randint(0,1)),
+        ttk.TTkCellListType(value=random.choice(data_list), items=data_list),
         random.choice(list(MyEnum)),
         random.choice(list(MyEnumYesNo)),
+        random_time(),
+        random_date(datetime.date(2020,1,1), datetime.date(2025,12,31)),
+        random_datetime(datetime.datetime(2020,1,1), datetime.datetime(2025,12,31)),
+
     ] for y in range(20)
 ]
 
 root = ttk.TTk(
     title="pyTermTk Table Demo",
-    mouseTrack=mouseTrack)
+    mouseTrack=mouseTrack,
+    sigmask=(
+        ttk.TTkTerm.Sigmask.CTRL_Z |
+        ttk.TTkTerm.Sigmask.CTRL_C ))
 
 if fullScreen:
-    rootTable = root
+    rootContainer = root
     root.setLayout(ttk.TTkGridLayout())
 else:
-    rootTable = ttk.TTkWindow(parent=root,pos = (0,0), size=(150,40), title="Test Table 1", layout=ttk.TTkGridLayout(), border=True)
+    rootContainer = ttk.TTkWindow(parent=root,pos = (0,0), size=(150,40), title="Test Table 1", layout=ttk.TTkGridLayout(), border=True)
 
-table_model1 = ttk.TTkTableModelList(data=data)
-table = ttk.TTkTable(parent=rootTable, tableModel=table_model1)
+table_model = ttk.TTkTableModelList(data=data)
+table = ttk.TTkTable(tableModel=table_model)
+btn_quit = ttk.TTkButton(text='quit', maxSize=(8,3), border=True)
+rootContainer.layout().addWidget(table,1,0,1,2)
+rootContainer.layout().addWidget(btn_quit,0,0)
 
 table.resizeRowsToContents()
 table.resizeColumnsToContents()
+
+btn_quit.clicked.connect(root.quit)
 
 root.mainloop()
