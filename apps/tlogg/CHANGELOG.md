@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.48.2-a0](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/tlogg-v0.48.1-a0...tlogg-v0.48.2-a0) (2025-12-15)
+
+
+### Chores
+
+* release main ([#526](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/526)) ([ed584a6](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/ed584a659a8314ba544ec9cad4ea28cbf13fd3e0))
+
 ## [0.48.1-a0](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/tlogg-v0.7.1-a.0...tlogg-v0.48.1-a0) (2025-11-10)
 
 

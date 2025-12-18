@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.48.2-a0](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/ttkDesigner-v0.48.1-a0...ttkDesigner-v0.48.2-a0) (2025-12-15)
+
+
+### Fixes
+
+* **ttkDesigner:** crash due to the flag integer handling ([#540](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/540)) ([c6d8955](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/c6d89550df8fbb442429c68c650ab5608dc29ad8))
+
+
+### Chores
+
+* release main ([#526](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/526)) ([ed584a6](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/ed584a659a8314ba544ec9cad4ea28cbf13fd3e0))
+
 ## [0.48.1-a0](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/ttkDesigner-v0.41.5-a.54...ttkDesigner-v0.48.1-a0) (2025-11-10)
 
 
