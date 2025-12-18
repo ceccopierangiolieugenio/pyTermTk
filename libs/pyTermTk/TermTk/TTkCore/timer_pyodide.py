@@ -20,9 +20,11 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
+
 __all__ = ['TTkTimer']
 
-from typing import Optional,Callable
+from typing import Optional,Callable,Dict
 
 from TermTk.TTkCore.helper import TTkHelper
 from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
@@ -30,7 +32,7 @@ from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
 import pyodideProxy
 
 class TTkTimer():
-    _timers = {}
+    _timers:Dict[int,TTkTimer] = {}
     _uid = 0
 
     __slots__ = (
@@ -38,7 +40,7 @@ class TTkTimer():
         'timeout', '_timerEvent',
         '_delay', '_delayLock', '_quit',
         '_stopTime')
-
+    timeout:pyTTkSignal
     def __init__(
             self,
             name:Optional[str]=None,

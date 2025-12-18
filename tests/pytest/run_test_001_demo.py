@@ -152,7 +152,7 @@ if __name__ == "__main__":
 
 def test_demo():
     root = demo.ttk.TTk(layout=demo.ttk.TTkGridLayout())
-    assert demo.demoShowcase(root) != None
+    assert demo.demoShowcase(root) is not None
     root.quit()
 
 def message_handler(mode, context, message):

@@ -4,6 +4,7 @@ __check(){
     grep -r -e "^import" -e "^from" libs/pyTermTk/TermTk |
         grep -v -e "from TermTk" -e "import TermTk" |
         grep -v "from typing import" |
+        grep -v "from enum import" |
         grep -v "__init__.py:from \.[^ ]* *import" |
         grep -v -e "import re" -e "import os" -e "import datetime" |
         grep -v \
@@ -46,9 +47,7 @@ __check(){
             -e "propertyanimation.py:import time, math" \
             -e "savetools.py:import importlib.util" \
             -e "savetools.py:import json" \
-            -e "TTkCore/constant.py:from enum import IntEnum" |
         grep -v \
-            -e "TTkTerm/term_base.py:from enum import Flag" \
             -e "TTkTerm/input_mono.py:from time import time" \
             -e "TTkTerm/input_mono.py:import platform" \
             -e "TTkTerm/input_mono.py:from ..drivers import TTkInputDriver" \
@@ -58,7 +57,6 @@ __check(){
             -e "TTkTerm/input.py:from .input_thread import *" |
         grep -v \
             -e "TTkGui/__init__.py:import importlib.util" \
-            -e "TTkGui/textcursor.py:from enum import IntEnum" \
             -e "TTkGui/textdocument.py:from threading import Lock" \
             -e "TTkGui/textdocument_highlight_pygments.py:from pygments" |
         grep -v \
@@ -116,11 +114,13 @@ __check(){
             -e "TTkTerminal/__init__.py:import platform" |
         grep -v \
             -e "TTkWidgets/widget.py:from __future__ import annotations" \
-            -e "TTkWidgets/tabwidget.py:from enum import Enum"  \
             -e "TTkModelView/__init__.py:from importlib.util import find_spec" \
             -e "TTkModelView/tablemodelcsv.py:import csv" \
             -e "TTkModelView/tablemodelsqlite3.py:import sqlite3" \
-            -e "TTkModelView/tablemodelsqlite3.py:import threading"
+            -e "TTkModelView/tablemodelsqlite3.py:import threading" |
+        grep -v \
+            -e "TTkWidgets/datetime_date.py:import calendar" \
+            -e "TTkWidgets/datetime_date_form.py:import calendar"
 } ;
 
 if __check ;  then

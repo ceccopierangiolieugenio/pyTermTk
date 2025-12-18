@@ -14,6 +14,7 @@ from .about           import *
 from .button          import *
 from .checkbox        import *
 from .combobox        import *
+from .datetime_time   import *
 from .graph           import *
 from .image           import *
 from .label           import *
@@ -34,5 +35,10 @@ from .texedit         import *
 from .TTkModelView    import *
 from .TTkPickers      import *
 from .TTkTerminal     import *
+
+from .datetime_time      import *
+from .datetime_date      import *
+from .datetime_datetime  import *
+from .datetime_date_form import *
 
 from .Fancy           import *

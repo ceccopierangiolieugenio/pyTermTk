@@ -19,25 +19,38 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+from __future__ import annotations
 
 __all__ = ['TTkCfg', 'TTkGlbl']
 
-from TermTk.TTkCore.constant import TTkK
-from TermTk import __version__
+from typing import TYPE_CHECKING, Optional
+if TYPE_CHECKING:
+    from TermTk.TTkTheme.theme import TTkTheme
 
-class TTkCfg:
+from TermTk import __version__
+from TermTk.TTkCore.constant import TTkK
+
+class _TTkCfg:
     version:str = __version__
     name:str = "pyTermTk"
 
     color_depth: int = TTkK.DEP_24
 
-    toolTipTime:int = 1
     maxFps:int = 65
     doubleBuffer:bool = True
     doubleBufferNew:bool = False
 
-    scrollDelta:bool = 5
-    theme = None
+    scrollDelta:int = 5
+
+    _theme:Optional[TTkTheme] = None
+    @property
+    def theme(self) -> TTkTheme:
+        if not TTkCfg._theme:
+            from TermTk.TTkTheme.theme import TTkTheme
+            TTkCfg._theme = TTkTheme()
+        return TTkCfg._theme
+
+TTkCfg = _TTkCfg()
 
 class TTkGlbl:
     term_w: int = 0

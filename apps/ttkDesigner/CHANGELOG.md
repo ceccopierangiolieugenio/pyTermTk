@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.48.1-a0](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/ttkDesigner-v0.41.5-a.54...ttkDesigner-v0.48.1-a0) (2025-11-10)
+
+
+### Chores
+
+* release 0.48.1-a0 ([7a9e1b4](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/7a9e1b411242d61b5d034abb2256eb4a0caa4558))
+* release 0.48.1-a0 ([#523](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/523)) ([a6b5f5d](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/a6b5f5d1309516c44719577a8468fb21f0804b72))
+* release main ([#524](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/524)) ([373f26d](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/373f26dc37e4c3b6c47a460d109de34de90bfa23))
+
+## [0.41.5-a.54](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/ttkDesigner-v0.41.4-a.54...ttkDesigner-v0.41.5-a.54) (2025-11-10)
+
+
+### Refactors
+
+* None checks anti patterns ([e744d97](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/e744d97d01e4644eccb9f9ac7bd3f5549eefb3b8))
+
 ## [0.41.4-a.54](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/ttkDesigner-v0.41.3-a.54...ttkDesigner-v0.41.4-a.54) (2025-04-03)
 
 

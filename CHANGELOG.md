@@ -1,5 +1,46 @@
 # Changelog
 
+## [0.48.1-a0](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/pyTermTk-v0.48.0-a.0...pyTermTk-v0.48.1-a0) (2025-11-10)
+
+
+### Chores
+
+* release 0.48.1-a0 ([7a9e1b4](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/7a9e1b411242d61b5d034abb2256eb4a0caa4558))
+* release 0.48.1-a0 ([#523](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/523)) ([a6b5f5d](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/a6b5f5d1309516c44719577a8468fb21f0804b72))
+* release main ([#524](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/524)) ([373f26d](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/373f26dc37e4c3b6c47a460d109de34de90bfa23))
+
+## [0.48.0-a.0](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/pyTermTk-v0.47.2-a.0...pyTermTk-v0.48.0-a.0) (2025-11-10)
+
+
+### Fixes
+
+* **menu:** don't prevent setting the text color of an item ([#513](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/513)) ([370684e](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/370684ebc68b95665c60a08ce2e47b1313fd19e9))
+* **textcursor:** correct number of Up/Down movements ([#512](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/512)) ([6410b77](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/6410b77f51d34ee251508f5856273af0e894cbcf))
+* **textedit:** trigger update when wrap size change ([#508](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/508)) ([6b1d58e](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/6b1d58e6e1aa377c9a9a8dc1fd1c9e59c8611c4e))
+
+
+### Features
+
+* add Date and Time widgets ([#501](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/501)) ([bdfc130](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/bdfc130f877435194650c476146fca67c33e5bc6))
+* **table:** add edit proxy widget to allow a common extensible interface for the cell editing ([#517](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/517)) ([9331c03](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/9331c036892e8cb81154e5d06e1d30f02110d7fe))
+* **table:** add support for time,date,datetime ([#522](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/522)) ([5492e1e](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/5492e1e748f298727c5f86d8a93088610243e3ea))
+* **textcursor:** Move to the start of the document ([#500](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/500)) ([70ddd9a](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/70ddd9a1bce201c61cbf2ea063a8a28d89372f10))
+* **theme:** implement UTF-8 checkbox and radiobox ([#514](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/514)) ([a02f62c](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/a02f62c7060bab9c8812f1a80e03fcd316e0d23b))
+* **TTkTerminal:** add getBuffer ([#496](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/496)) ([997d0f6](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/997d0f6d7278ba6e09777bbfdd45ba8e359d33ef))
+
+
+### Chores
+
+* fix typo in terminal screen ([b262f80](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/b262f80d871e986fa9f8d4c86c80144e371b66cf))
+* improve the error handling and the quit routine ([#494](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/494)) ([d644604](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/d644604e377cd15ae420fa3e05758eff84922270))
+* improve typing ([#504](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/504)) ([cae23b1](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/cae23b16bc6cd7e064c72eb0b0a6503bf19fad11))
+* use TextIOBase for the stderr handler ([#499](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/499)) ([26b127f](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/26b127fe4cfcdd6c13d63b639013884f96a69e49))
+
+
+### Refactors
+
+* None checks anti patterns ([e744d97](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/e744d97d01e4644eccb9f9ac7bd3f5549eefb3b8))
+
 ## [0.47.2-a.0](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/pyTermTk-v0.47.1-a.0...pyTermTk-v0.47.2-a.0) (2025-10-13)
 
 

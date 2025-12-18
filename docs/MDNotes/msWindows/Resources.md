@@ -15,6 +15,16 @@ python.exe demo/demo.py
 python.exe tests/test.input.win.py
 ```
 
+```bash
+alias wine='~/.var/app/net.lutris.Lutris/data/lutris/runners/wine/wine-10.16-staging-amd64-wow64-x86_64/bin/wine'
+export WINEPREFIX="$(pwd)/wineprefix"
+wine ConEmuSetup.230724.exe 
+wget https://www.python.org/ftp/python/3.14.0/python-3.14.0-amd64.exe
+wine python-3.14.0-amd64.exe
+wine 'C:\Program Files\ConEmu\ConEmu64.exe'
+
+```
+
 # termios wrappers
  - termiWin -> https://github.com/veeso/termiWin
 

@@ -6,18 +6,22 @@
 [![OSX](https://img.shields.io/badge/-OSX-grey?logo=apple&logoColor=white)](https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/info/features/crosscompatible.html)
 [![HTML5](https://img.shields.io/badge/-HTML5-grey?logo=html5)](https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/info/features/crosscompatible.html)
 
+[![pypi_version](https://img.shields.io/badge/Twitter-pyTermTk-blue?logo=x&logoColor=blue)](https://twitter.com/hashtag/pyTermTk?src=hashtag_click&f=live)
+[![Static Badge](https://img.shields.io/badge/BlyeSky-pyTermTk-blue?logo=bluesky&logoColor=blue)](https://bsky.app/profile/piercecco.bsky.social)
+[![Static Badge](https://img.shields.io/badge/Discord-pyTermTk-8A2BE2?logo=discord&logoColor=blue)](https://discord.gg/bqcSZvup)
+
 [![Python](https://img.shields.io/badge/Python-v3.9%5E-green?logo=python)](https://devguide.python.org/versions/)
 [![Test Status](https://img.shields.io/github/actions/workflow/status/ceccopierangiolieugenio/pyTermTk/testing.yml?branch=main&label=tests)](https://github.com/ceccopierangiolieugenio/pyTermTk/actions?query=workflow%3Atesting)
 [![pyTermTk_version](https://img.shields.io/github/v/tag/ceccopierangiolieugenio/pyTermTk?label=version)](https://github.com/ceccopierangiolieugenio/pyTermTk/releases)
 [![pypi_version](https://img.shields.io/pypi/v/pyTermTk?label=pypi)](https://pypi.org/project/pyTermTk)
 [![Usage](https://img.shields.io/badge/Usage-Terminal%20User%20Interface-yellow)](https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/)
 
+[![pyTermTk_snyk advisor](https://snyk.io/advisor/python/pyTermTk/badge.svg)](https://snyk.io/advisor/python/pyTermTk)
+[![pyTermTk_piptrends age](https://assets.piptrends.com/get-age-badge/pytermtk.svg)](https://piptrends.com/widgets/pytermtk)
+[![pyTermTk_piptrends downloads](https://assets.piptrends.com/get-average-downloads-badge/pytermtk.svg)](https://piptrends.com/widgets/pytermtk)
+[![pyTermTk_piptrends downloads](https://assets.piptrends.com/get-last-month-downloads-badge/pytermtk.svg)](https://piptrends.com/widgets/pytermtk)
+
 ![hero](https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/images/pyTermTk.HERO.1000.png)
-
-[![pypi_version](https://img.shields.io/badge/Twitter-pyTermTk-blue?logo=x&logoColor=blue)](https://twitter.com/hashtag/pyTermTk?src=hashtag_click&f=live)
-[![Static Badge](https://img.shields.io/badge/BlyeSky-pyTermTk-blue?logo=bluesky&logoColor=blue)](https://bsky.app/profile/piercecco.bsky.social)
-[![Static Badge](https://img.shields.io/badge/Discord-pyTermTk-8A2BE2?logo=discord&logoColor=blue)](https://discord.gg/7E5DZdbw)
-
 
 ## [pyTermTk](https://github.com/ceccopierangiolieugenio/pyTermTk)
 

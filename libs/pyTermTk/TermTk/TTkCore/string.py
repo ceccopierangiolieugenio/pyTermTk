@@ -179,8 +179,8 @@ class TTkString():
     def __gt__(self, other): return self._text >  other._text if issubclass(type(other),TTkString) else self._text >  other
     def __ge__(self, other): return self._text >= other._text if issubclass(type(other),TTkString) else self._text >= other
 
-    def sameAs(self, other:TTkString) -> bool:
-        if not issubclass(type(other),TTkString): return False
+    def sameAs(self, other:TTkStringType) -> bool:
+        if not isinstance(other,TTkString): return False
         return (
             self==other and
             len(self._colors) == len(other._colors) and
@@ -485,7 +485,7 @@ class TTkString():
                 start = pos+lenMatch
                 for i in range(pos, pos+lenMatch):
                     ret._colors[i] |= color
-        elif posFrom == posTo == None:
+        elif posFrom is posTo is None:
             ret._colors = [c|color for c in self._colors]
         elif posFrom < posTo:
             ret._colors = self._colors.copy()
@@ -523,7 +523,7 @@ class TTkString():
             while None != (pos := self._text.index(match, start) if match in self._text[start:] else None):
                 start = pos+lenMatch
                 ret._colors[pos: pos+lenMatch] = [color]*lenMatch
-        elif posFrom == posTo == None:
+        elif posFrom is posTo is None:
             ret._colors = [color]*len(self._text)
         elif posFrom < posTo:
             ret._colors += self._colors
@@ -602,7 +602,7 @@ class TTkString():
     def getIndexes(self, char):
         return [i for i,c in enumerate(self._text) if c==char]
 
-    def join(self, strings:Union[GeneratorType[TTkStringType,None,None],List[TTkStringType]]) -> TTkString:
+    def join(self, strings:Union[GeneratorType[TTkStringType,None,None],List[TTkStringType],List[TTkString],List[str]]) -> TTkString:
         ''' Join the input strings using the current as separator
 
         :param strings: the list of strings to be joined
@@ -638,7 +638,7 @@ class TTkString():
             sum(unicodedata.category(ch) in ('Me','Mn') for ch in txt) )
 
     @staticmethod
-    def _getLenTextWoZero(txt:str):
+    def _getLenTextWoZero(txt:str) -> int:
         return ( len(txt) -
             sum(unicodedata.category(ch) in ('Me','Mn') for ch in txt) )
 

@@ -47,7 +47,7 @@ _all_data:List[SocialData] = [
             discord_channel_id=1379381474783924295,
         ),
         SocialData(
-            name='dumbpainttool',
+            name='thedumbpainttool',
             link='https://github.com/ceccopierangiolieugenio/pyTermTk/tree/main/apps/dumbPaintTool',
             image='',
             discord_channel_id=1379381571412430931,
@@ -57,6 +57,12 @@ _all_data:List[SocialData] = [
             link='https://github.com/ceccopierangiolieugenio/pyTermTk/tree/main/apps/tlogg',
             image='',
             discord_channel_id=1379381593378000916,
+        ),
+        SocialData(
+            name='ttkdesigner',
+            link='https://github.com/ceccopierangiolieugenio/pyTermTk/tree/main/apps/tlogg',
+            image='',
+            discord_channel_id=1437383337407942726,
         ),
 ]
 

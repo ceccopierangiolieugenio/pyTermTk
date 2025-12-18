@@ -22,7 +22,7 @@
 
 __all__ = ['TTkTextEditView', 'TTkTextEdit', 'TTkTextEditRuler']
 
-from typing import List,Optional,Union,Dict,Any
+from typing import List,Optional,Union,Dict,Any,TYPE_CHECKING
 
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.cfg import TTkCfg
@@ -120,6 +120,8 @@ class TTkTextEditRuler(TTkAbstractScrollView):
         self._wrapChanged()
 
     def setTextWrap(self, tw:TTkTextWrap) -> None:
+        if self._textWrap:
+            self._textWrap.wrapChanged.disconnect(self._wrapChanged)
         self._textWrap = tw
         tw.wrapChanged.connect(self._wrapChanged)
         self._wrapChanged()
@@ -223,12 +225,12 @@ class TTkTextEditView(TTkAbstractScrollView):
 
         __slots__ = ('_format', '_color', '_cursor')
         def __init__(self,
-                     format:TTkK.SelectionFormat=TTkK.NONE,
-                     color:TTkColor=TTkColor.RST,
-                     cursor:Optional[TTkTextCursor]=None) -> None:
+                     cursor:TTkTextCursor,
+                     format:TTkK.SelectionFormat=TTkK.SelectionFormat.NONE,
+                     color:TTkColor=TTkColor.RST) -> None:
             self._color = color
             self._format = format
-            self._cursor = cursor if cursor else TTkTextCursor()
+            self._cursor = cursor
 
         def color(self) -> TTkColor:
              '''
@@ -511,6 +513,7 @@ class TTkTextEditView(TTkAbstractScrollView):
         self._textDocument = document
         self._textCursor = TTkTextCursor(document=self._textDocument)
         self._textWrap = TTkTextWrap(document=self._textDocument)
+        self._textWrap.wrapChanged.connect(self.update)
         self._textDocument.contentsChanged.connect(self._documentChanged)
         self._textDocument.cursorPositionChanged.connect(self._cursorPositionChanged)
         self._textDocument.undoAvailable.connect(self._undoAvailable)
@@ -531,8 +534,6 @@ class TTkTextEditView(TTkAbstractScrollView):
         self._textDocument.formatChanged.disconnect(self.update)
         self._textWrap.wrapChanged.disconnect(self.update)
         self._setDocument(document)
-        # Trigger an update when the rewrap happen
-        self._textWrap.wrapChanged.connect(self.update)
 
     # forward textWrap Methods
     def wrapWidth(self, *args, **kwargs) -> None:
@@ -888,7 +889,7 @@ class TTkTextEditView(TTkAbstractScrollView):
         self.update()
         return True
 
-    def pasteEvent(self, txt:TTkStringType) -> None:
+    def pasteEvent(self, txt:TTkStringType) -> bool:
         txt = TTkString(txt)
         if not self._multiLine:
             txt = TTkString().join(txt.split('\n'))
@@ -903,6 +904,7 @@ class TTkTextEditView(TTkAbstractScrollView):
         self._scrolToInclude(cx,cy)
         self._pushCursor()
         self.update()
+        return True
 
     def keyEvent(self, evt: TTkKeyEvent) -> bool:
         if self._readOnly:
@@ -1025,9 +1027,9 @@ class TTkTextEditView(TTkAbstractScrollView):
             return True
         else: # Input char
             if self._replace:
-                self._textCursor.replaceText(evt.key, moveCursor=True)
+                self._textCursor.replaceText(str(evt.key), moveCursor=True)
             else:
-                self._textCursor.insertText(evt.key, moveCursor=True)
+                self._textCursor.insertText(str(evt.key), moveCursor=True)
             # Scroll to align to the cursor
             p = self._textCursor.position()
             cx, cy = self._textWrap.dataToScreenPosition(p.line, p.pos)
@@ -1086,7 +1088,12 @@ class TTkTextEdit(TTkAbstractScrollArea):
 
     ''' + (TTkTextEditView.__doc__ if TTkTextEditView.__doc__ else '')
 
-    ExtraSelection = TTkTextEditView.ExtraSelection
+    if TYPE_CHECKING:
+        from typing import TypeAlias
+        ExtraSelection: TypeAlias = TTkTextEditView.ExtraSelection
+    else:
+        # TODO: remove this once Python 3.9 will disappear from the world
+        ExtraSelection = TTkTextEditView.ExtraSelection
 
     _ttk_forward:_ForwardData = _ForwardData(
         forwardClass=TTkTextEditView ,

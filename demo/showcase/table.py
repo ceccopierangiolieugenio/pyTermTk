@@ -23,6 +23,8 @@
 # SOFTWARE.
 
 import sys, os, argparse
+import datetime
+import random
 
 sys.path.append(os.path.join(sys.path[0],'../../libs/pyTermTk'))
 import TermTk as ttk
@@ -30,11 +32,41 @@ import TermTk as ttk
 sys.path.append(os.path.join(sys.path[0],'..'))
 from showcase._showcasehelper import getUtfWord
 
+# Random date between two dates
+def random_date(start_date, end_date):
+    time_between = end_date - start_date
+    days_between = time_between.days
+    random_days = random.randrange(days_between)
+    return start_date + datetime.timedelta(days=random_days)
+
+# Random time
+def random_time():
+    hour = random.randint(0, 23)
+    minute = random.randint(0, 59)
+    second = random.randint(0, 59)
+    return datetime.time(hour, minute, second)
+
+# Random datetime
+def random_datetime(start_datetime, end_datetime):
+    time_between = end_datetime - start_datetime
+    total_seconds = int(time_between.total_seconds())
+    random_seconds = random.randrange(total_seconds)
+    return start_datetime + datetime.timedelta(seconds=random_seconds)
+
 def demoTTkTable(root= None):
     # Basic Table Demo
 
     # Setup a model using a 2d list of random values
-    dataList = [[f"0x{i:04X}"] + [int(i*100),float(i*100),ttk.TTkString(getUtfWord(),ttk.TTkColor.YELLOW)] + [getUtfWord() for _ in range(10)] for i in range(101)]
+    dataList = [
+        [f"0x{i:04X}"] +
+        [int(i*100), float(i*100), ttk.TTkString(getUtfWord(),ttk.TTkColor.YELLOW)] +
+        [random_time()] +
+        [bool(random.randint(0,1))]+
+        [random_date(datetime.date(2020,1,1), datetime.date(2025,12,31))] +
+        [random_datetime(datetime.datetime(2020,1,1), datetime.datetime(2025,12,31))] +
+        [getUtfWord() for _ in range(10)]
+        for i in range(101)
+    ]
     tableModel = ttk.TTkTableModelList(data=dataList)
 
     # Init the table with the model defilned

@@ -22,11 +22,13 @@
 
 __all__ = ['TTkCheckbox']
 
+from typing import Optional
+
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.cfg import TTkCfg
 from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkCore.canvas import TTkCanvas
-from TermTk.TTkCore.string import TTkString
+from TermTk.TTkCore.string import TTkString, TTkStringType
 from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
 from TermTk.TTkCore.TTkTerm.inputkey import TTkKeyEvent
 from TermTk.TTkCore.TTkTerm.inputmouse import TTkMouseEvent
@@ -93,9 +95,9 @@ class TTkCheckbox(TTkWidget):
         'clicked', 'stateChanged', 'toggled'
         )
     def __init__(self, *,
-                 text:TTkString='',
+                 text:TTkStringType='',
                  checked:bool=False,
-                 checkStatus:TTkK.CheckState = None,
+                 checkStatus:Optional[TTkK.CheckState] = None,
                  tristate:bool=False,
                  **kwargs) -> None:
         '''
@@ -115,9 +117,9 @@ class TTkCheckbox(TTkWidget):
         self.clicked = pyTTkSignal(bool)
         self.toggled = pyTTkSignal(bool)
 
-        self._text = TTkString(text)
+        self._text = text if isinstance(text,TTkString) else TTkString(text)
 
-        if checkStatus != None :
+        if checkStatus is not None :
             self._checkStatus = checkStatus
         else:
             self._checkStatus = TTkK.Checked if checked else TTkK.Unchecked
@@ -210,9 +212,10 @@ class TTkCheckbox(TTkWidget):
         canvas.drawText(pos=(0,0), color=borderColor ,text="[ ]")
         canvas.drawText(pos=(3,0), color=textColor ,text=self._text)
         text = {
-            TTkK.Checked :   "X",
-            TTkK.Unchecked : " ",
-            TTkK.PartiallyChecked: "/"}.get(self._checkStatus, " ")
+            TTkK.Unchecked :       TTkCfg.theme.checkbox[0],  # ' ' or '□'
+            TTkK.Checked :         TTkCfg.theme.checkbox[1],  # 'X' or '▣'
+            TTkK.PartiallyChecked: TTkCfg.theme.checkbox[2]   # '/' or '◪'
+        }.get(self._checkStatus, TTkCfg.theme.checkbox[0])
         canvas.drawText(pos=(1,0), color=xColor ,text=text)
 
     def _pressEvent(self) -> bool:

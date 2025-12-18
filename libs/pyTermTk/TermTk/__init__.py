@@ -20,10 +20,10 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-__version__:str = '0.47.2-a.0'
+__version__:str = '0.48.1-a0'
 
-from .TTkCore        import *
 from .TTkTheme       import *
+from .TTkCore        import *
 from .TTkGui         import *
 from .TTkWidgets     import *
 from .TTkTypes       import *
@@ -33,4 +33,4 @@ from .TTkAbstract    import *
 from .TTkUiTools     import *
 from .TTkCrossTools  import *
 
-TTkCfg.theme = TTkTheme()
+TTkTheme.themeLoaded.connect(TTkHelper.updateAll)

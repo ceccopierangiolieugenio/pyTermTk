@@ -94,14 +94,14 @@ class Palette(ttk.TTkWidget):
             return None
         pw, ph = len(self._palette[0]),len(self._palette)
         if fg!=ttk.TTkColor.RST:
-            if (pos:=_getPos(fg)) != None:
+            if (pos:=_getPos(fg)) is not None:
                 self._fg = pos
             else:
                 self._fg = (pw-2,ph-1)
                 self._palette[ph-1][pw-2] = (fg,fg.invertFgBg())
 
         if bg!=ttk.TTkColor.RST:
-            if (pos:=_getPos(bg)) != None:
+            if (pos:=_getPos(bg)) is not None:
                 self._bg = pos
             else:
                 self._bg = (pw-1,ph-1)

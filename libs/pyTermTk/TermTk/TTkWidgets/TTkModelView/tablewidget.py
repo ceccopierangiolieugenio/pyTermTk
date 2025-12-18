@@ -27,7 +27,7 @@ __all__ = ['TTkTableWidget','TTkHeaderView']
 from typing import Optional, List, Tuple, Callable, Iterator, Any, Protocol
 from dataclasses import dataclass
 
-from TermTk.TTkCore.log import TTkLog
+from TermTk.TTkCore.helper import TTkHelper
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.string import TTkString
 from TermTk.TTkCore.color import TTkColor
@@ -42,6 +42,7 @@ from TermTk.TTkWidgets.texedit  import TTkTextEdit
 from TermTk.TTkWidgets.spinbox  import TTkSpinBox
 from TermTk.TTkWidgets.TTkPickers.textpicker import TTkTextPicker
 from TermTk.TTkWidgets.TTkModelView.tablemodellist import TTkTableModelList, TTkModelIndex
+from TermTk.TTkWidgets.TTkModelView.table_edit_proxy import TTkTableProxyEdit, TTkTableProxyEditWidget, TTkTableEditLeaving, TTkTableProxyEditFlag
 
 from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollView
 from TermTk.TTkAbstract.abstracttablemodel import TTkAbstractTableModel
@@ -251,6 +252,13 @@ class _DragPosType():
     fr:Tuple[int,int]
     to:Tuple[int,int]
 
+@dataclass
+class _ProxyWidgetLocation:
+    __slots__ = ('widget', 'row', 'col')
+    widget: TTkTableProxyEditWidget
+    row: int
+    col: int
+
 class TTkTableWidget(TTkAbstractScrollView):
     '''
     A :py:class:`TTkTableWidget` implements a table view that displays items from a model.
@@ -403,6 +411,7 @@ class TTkTableWidget(TTkAbstractScrollView):
                   '_sortColumn', '_sortOrder',
                   '_fastCheck', '_guessDataEdit',
                   '_snapshot', '_snapshotId',
+                  '_edit_proxy', '_edit_proxy_widget',
                   # Signals
                   # '_cellActivated',
                   '_cellChanged',
@@ -412,6 +421,8 @@ class TTkTableWidget(TTkAbstractScrollView):
                   )
 
     _select_proxy:_SelectionProxy
+    _edit_proxy:TTkTableProxyEdit
+    _edit_proxy_widget:Optional[_ProxyWidgetLocation]
     _snapshot:List[_SnapshotItems]
     _hoverPos:Optional[Tuple[int,int]]
     _currentPos:Optional[Tuple[int,int]]
@@ -421,6 +432,7 @@ class TTkTableWidget(TTkAbstractScrollView):
 
     def __init__(self, *,
                  tableModel:Optional[TTkAbstractTableModel]=None,
+                 tableEditProxy:Optional[TTkTableProxyEdit]=None,
                  vSeparator:bool=True,
                  hSeparator:bool=True,
                  vHeader:bool=True,
@@ -480,6 +492,8 @@ class TTkTableWidget(TTkAbstractScrollView):
         self._verticalHeader    = TTkHeaderView(visible=vHeader)
         self._horizontallHeader = TTkHeaderView(visible=hHeader)
         self._select_proxy = _SelectionProxy()
+        self._edit_proxy = tableEditProxy if tableEditProxy else TTkTableProxyEdit()
+        self._edit_proxy_widget = None
         self._hoverPos = None
         self._dragPos = None
         self._currentPos = None
@@ -500,8 +514,6 @@ class TTkTableWidget(TTkAbstractScrollView):
         self._verticalHeader.visibilityUpdated.connect(   self._headerVisibilityChanged)
         self._horizontallHeader.visibilityUpdated.connect(self._headerVisibilityChanged)
 
-
-
     def _saveSnapshot(self, items:list[_SnapItem], currentPos:TTkModelIndex) -> None:
         self._snapshot = self._snapshot[:self._snapshotId] + [_SnapshotItems(pos=currentPos, items=items)]
         self._snapshotId += 1
@@ -519,6 +531,18 @@ class TTkTableWidget(TTkAbstractScrollView):
         self._setCurrentCell(cpsi.row(),cpsi.col())
         self._moveCurrentCell(diff=(0,0))
         self.update()
+
+    def proxyEdit(self) -> TTkTableProxyEdit:
+        '''
+        Returns the table proxy edit handler.
+
+        The proxy edit handler manages the creation and behavior of proxy widgets
+        used for editing table cells.
+
+        :return: the table proxy edit handler
+        :rtype: :py:class:`TTkTableProxyEdit`
+        '''
+        return self._edit_proxy
 
     @pyTTkSlot()
     def undo(self) -> None:
@@ -734,6 +758,7 @@ class TTkTableWidget(TTkAbstractScrollView):
         Deselects all selected items.
         The current index will not be changed.
         '''
+        self._removeProxyWidget()
         self._select_proxy.clear()
         self.update()
 
@@ -742,6 +767,7 @@ class TTkTableWidget(TTkAbstractScrollView):
         Selects all items in the view.
         This function will use the selection behavior set on the view when selecting.
         '''
+        self._removeProxyWidget()
         self._select_proxy.selectAll()
         self.update()
 
@@ -756,6 +782,7 @@ class TTkTableWidget(TTkAbstractScrollView):
         :param flags: the selection model used (i.e. :py:class:`TTkItemSelectionModel.Select`)
         :type flags: :py:class:`TTkItemSelectionModel`
         '''
+        self._removeProxyWidget()
         self._select_proxy.setSelection(pos=pos, size=size, flags=flags)
         self.update()
 
@@ -766,6 +793,7 @@ class TTkTableWidget(TTkAbstractScrollView):
         :param row: the row to be selected
         :type row: int
         '''
+        self._removeProxyWidget()
         self._select_proxy.selectRow(row=row)
         self.update()
 
@@ -776,6 +804,7 @@ class TTkTableWidget(TTkAbstractScrollView):
         :param col: the column to be selected
         :type col: int
         '''
+        self._removeProxyWidget()
         self._select_proxy.selectColumn(col=col)
         self.update()
 
@@ -786,6 +815,7 @@ class TTkTableWidget(TTkAbstractScrollView):
         :param row: the row to be unselected
         :type row: int
         '''
+        self._removeProxyWidget()
         self._select_proxy.unselectRow(row=row)
         self.update()
 
@@ -796,6 +826,7 @@ class TTkTableWidget(TTkAbstractScrollView):
         :param col: the column to be unselected
         :type col: int
         '''
+        self._removeProxyWidget()
         self._select_proxy.unselectColumn(col=col)
         self.update()
 
@@ -1105,122 +1136,50 @@ class TTkTableWidget(TTkAbstractScrollView):
 
         return row,col
 
-    def _editStr(self, x,y,w,h, row, col, data):
-        _te = TTkTextEdit(
-                    parent=self, pos=(x, y), size=(w,h),
-                    readOnly=False, wrapMode=TTkK.NoWrap)
-        _tev = _te.textEditView()
-        _te.setText(data)
-        _te.textCursor().movePosition(operation=TTkTextCursor.EndOfLine)
-        _te.setFocus()
+    def _alignWidgets(self) -> None:
+        if not (epwl:=self._edit_proxy_widget):
+            return
+        epw = epwl.widget
+        row = epwl.row
+        col = epwl.col
+        showHS = self._showHSeparators
+        showVS = self._showVSeparators
+        rp = self._rowsPos
+        cp = self._colsPos
+        xa,xb = 1+cp[col-1] if col>0 else 0, cp[col] + (0 if showVS else 1)
+        ya,yb = 1+rp[row-1] if row>0 else 0, rp[row] + (0 if showHS else 1)
+        epw.setGeometry(xa,ya,xb-xa,yb-ya)
 
-        @pyTTkSlot(bool)
-        def _processClose(change):
-            if change:
-                self.focusChanged.disconnect(_processClose)
-                txt = _te.toRawText()
-                val = str(txt) if txt.isPlainText() else txt
-                self._tableModel_setData([(row,col,val)])
-                self.update()
-                _te.close()
-                self.setFocus()
+    def _removeProxyWidget(self, direction:TTkTableEditLeaving=TTkTableEditLeaving.NONE) -> None:
+        if not (epwl:=self._edit_proxy_widget):
+            return
+        epw = epwl.widget
+        row = epwl.row
+        col = epwl.col
+        self._edit_proxy_widget = None
+        self.layout().removeWidget(epw)
+        data = epw.getCellData()
+        self._tableModel_setData([(row,col,data)])
+        epw.proxyDispose()
+        if direction == TTkTableEditLeaving.TOP:
+            self._moveCurrentCell(diff=(0,-1))
+        elif direction == TTkTableEditLeaving.BOTTOM:
+            self._moveCurrentCell(diff=(0,+1))
+        if direction == TTkTableEditLeaving.LEFT:
+            self._moveCurrentCell(diff=(-1,0))
+        elif direction == TTkTableEditLeaving.RIGHT:
+            self._moveCurrentCell(diff=(+1,0))
+        TTkHelper.hideCursor()
+        self.setFocus()
 
-        # Override the key event
-        _ke = _tev.keyEvent
-        _doc = _tev.document()
-        _cur = _tev.textCursor()
-        def _keyEvent(evt):
-            if ( evt.type == TTkK.SpecialKey):
-                _line = _cur.anchor().line
-                _pos  = _cur.anchor().pos
-                _lineCount = _doc.lineCount()
-                # _lineLen
-                if evt.mod==TTkK.NoModifier:
-                    if evt.key == TTkK.Key_Enter:
-                        # self.enterPressed.emit(True)
-                        self._moveCurrentCell(diff=(0,+1))
-                        _processClose(True)
-                        return True
-                    elif evt.key == TTkK.Key_Up:
-                        if _line == 0:
-                            self._moveCurrentCell(diff=(0,-1))
-                            _processClose(True)
-                            return True
-                    elif evt.key == TTkK.Key_Down:
-                        if _lineCount == 1:
-                            self._moveCurrentCell(diff=(0,+1))
-                            _processClose(True)
-                            return True
-                    elif evt.key == TTkK.Key_Left:
-                        if _pos == _line == 0:
-                            self._moveCurrentCell(diff=(-1, 0))
-                            _processClose(True)
-                            return True
-                    elif evt.key == TTkK.Key_Right:
-                        if _lineCount == 1 and _pos==len(_doc.toPlainText()):
-                            self._moveCurrentCell(diff=(+1, 0))
-                            _processClose(True)
-                            return True
-                elif ( evt.type == TTkK.SpecialKey and
-                       evt.mod==TTkK.ControlModifier|TTkK.AltModifier and
-                       evt.key == TTkK.Key_M ):
-                    evt.mod = TTkK.NoModifier
-                    evt.key = TTkK.Key_Enter
-            return _ke(evt)
-        _tev.keyEvent = _keyEvent
-
-        # _tev.enterPressed.connect(_processClose)
-        self.focusChanged.connect(_processClose)
-
-    def _editNum(self, x,y,w,h, row, col, data):
-        _sb = TTkSpinBox(
-                    parent=self, pos=(x, y), size=(w,1),
-                    minimum=-1000000, maximum=1000000,
-                    value=data)
-        _sb.setFocus()
-
-        @pyTTkSlot(bool)
-        def _processClose(change):
-            if change:
-                self.focusChanged.disconnect(_processClose)
-                val = _sb.value()
-                self._tableModel_setData([(row,col,val)])
-                self.update()
-                _sb.close()
-                self.setFocus()
-
-        # Override the key event
-        _ke = _sb.keyEvent
-        def _keyEvent(evt):
-            if ( evt.type == TTkK.SpecialKey):
-                if evt.mod==TTkK.NoModifier:
-                    if evt.key == TTkK.Key_Enter:
-                        self._moveCurrentCell( 0,+1)
-                        _processClose(True)
-                        return True
-            return _ke(evt)
-        _sb.keyEvent = _keyEvent
-
-        self.focusChanged.connect(_processClose)
-
-    def _editTTkString(self, x,y,w,h, row, col, data):
-        _tp = TTkTextPicker(
-                    parent=self, pos=(x, y), size=(w,h),
-                    text=data, autoSize=False, wrapMode=TTkK.NoWrap)
-
-        _tp.setFocus()
-
-        @pyTTkSlot(bool)
-        def _processClose(change):
-            if change:
-                self.focusChanged.disconnect(_processClose)
-                txt = _tp.getTTkString()
-                self._tableModel_setData([(row,col,txt)])
-                self.update()
-                _tp.close()
-                self.setFocus()
-
-        self.focusChanged.connect(_processClose)
+    def _placeProxyWidget(self, proxyWidgetLocation:_ProxyWidgetLocation) -> None:
+        self._removeProxyWidget()
+        self._edit_proxy_widget = proxyWidgetLocation
+        proxyWidget = proxyWidgetLocation.widget
+        self._alignWidgets()
+        self.layout().addWidget(proxyWidget)
+        proxyWidget.leavingTriggered.connect(self._removeProxyWidget)
+        proxyWidget.setFocus()
 
     def _editCell(self, row:int, col:int, richEditSupport:bool=True) -> None:
         if not (self._tableModel.flags(row=row,col=col) & TTkK.ItemFlag.ItemIsEditable):
@@ -1239,16 +1198,27 @@ class TTkTableWidget(TTkAbstractScrollView):
         self.setSelection(pos=(col,row),size=(1,1),flags=TTkK.TTkItemSelectionModel.Select)
 
         data = self._tableModel.data(row, col)
-        if type(data) is str:
-            self._editStr(xa,ya,xb-xa,yb-ya,row,col,data)
-        elif type(data) in [int,float]:
-            self._editNum(xa,ya,xb-xa,yb-ya,row,col,data)
-        else:
-            data = self._tableModel.ttkStringData(row, col)
-            if richEditSupport:
-                self._editTTkString(xa,ya,xb-xa,yb-ya,row,col,data)
+        proxy_flags = TTkTableProxyEditFlag.RICH if richEditSupport else TTkTableProxyEditFlag.BASE
+        if proxyWidget := self._edit_proxy.getProxyWidget(data, flags=proxy_flags):
+            if proxyWidget.isModal():
+                pad = self.getPadding()
+                pw,ph = proxyWidget.size()
+                cw,ch = (xb-xa+2), (yb-ya+2)
+                pw_n,ph_n = max(pw,cw), max(ph,ch)
+                proxyWidget.resize(pw_n,ph_n)
+                TTkHelper.overlay(
+                    caller=self,
+                    widget=proxyWidget,
+                    x=xa+pad.left-1,
+                    y=ya+pad.top-1)
+                @pyTTkSlot(Any)
+                def _removeModalWidget(data: Any):
+                    self._tableModel_setData([(row,col,data)])
+                    self.setFocus()
+                proxyWidget.dataChanged.connect(_removeModalWidget)
             else:
-                self._editStr(xa,ya,xb-xa,yb-ya,row,col,data)
+                epwl = _ProxyWidgetLocation(widget=proxyWidget, row=row, col=col)
+                self._placeProxyWidget(epwl)
 
     def _setCurrentCell(self, currRow:int, currCol:int) -> None:
         prevRow,prevCol = self._currentPos if self._currentPos else (0,0)
@@ -1292,6 +1262,10 @@ class TTkTableWidget(TTkAbstractScrollView):
         self.update()
 
     def keyEvent(self, evt:TTkKeyEvent) -> bool:
+        if _pw:=self._edit_proxy_widget:
+            if _pw.widget.keyEvent(evt=evt):
+                return True
+
         # rows = self._tableModel.rowCount()
         cols = self._tableModel.columnCount()
         if self._currentPos:
@@ -1527,7 +1501,7 @@ class TTkTableWidget(TTkAbstractScrollView):
             # Align all the other Separators relative to the selection
             for i in range(ss, len(self._colsPos)):
                 self._colsPos[i] += diff
-            # self._alignWidgets()
+            self._alignWidgets()
             self.viewChanged.emit()
             self.update()
             return True
@@ -1542,7 +1516,7 @@ class TTkTableWidget(TTkAbstractScrollView):
             # Align all the other Separators relative to the selection
             for i in range(ss, len(self._rowsPos)):
                 self._rowsPos[i] += diff
-            # self._alignWidgets()
+            self._alignWidgets()
             self.viewChanged.emit()
             self.update()
             return True
@@ -1579,6 +1553,8 @@ class TTkTableWidget(TTkAbstractScrollView):
 
         self._hoverPos = None
         self._dragPos = None
+        if self._edit_proxy_widget:
+            self._edit_proxy_widget.widget.setFocus()
         self.update()
         return True
 

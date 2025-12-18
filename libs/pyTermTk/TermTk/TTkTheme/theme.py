@@ -23,8 +23,8 @@
 __all__ = ['TTkTheme']
 
 from TermTk.TTkCore.color import TTkColor
-from TermTk.TTkCore.helper import TTkHelper
-# from TermTk.TTkCore.string import TTkString
+from TermTk.TTkCore.signal import pyTTkSignal
+
 import TermTk.TTkTheme.fileicon_nerd  as fi_nerd
 import TermTk.TTkTheme.fileicon_utf8  as fi_utf8
 import TermTk.TTkTheme.fileicon_ascii as fi_ascii
@@ -44,6 +44,8 @@ class TTkTheme():
     box       = draw_utf8.TTkTheme.box
     grid      = draw_utf8.TTkTheme.grid
     buttonBox = draw_utf8.TTkTheme.buttonBox
+    radiobox  = draw_utf8.TTkTheme.radiobox
+    checkbox  = draw_utf8.TTkTheme.checkbox
     hscroll   = draw_utf8.TTkTheme.hscroll
     vscroll   = draw_utf8.TTkTheme.vscroll
     tree      = draw_utf8.TTkTheme.tree
@@ -68,7 +70,9 @@ class TTkTheme():
     folderIconColor = TTkColor.fg("#FFFFAA") # Yellowish
     '''Default to **TTkColor.fg("#FFFFAA") # Yellowish**'''
 
-    fileIcon        = fi_utf8.FileIcon
+    fileIcon    = fi_utf8.FileIcon
+
+    themeLoaded = pyTTkSignal()
 
     @staticmethod
     def loadTheme(theme):
@@ -77,6 +81,8 @@ class TTkTheme():
         TTkTheme.box       = theme['draw'].TTkTheme.box
         TTkTheme.grid      = theme['draw'].TTkTheme.grid
         TTkTheme.buttonBox = theme['draw'].TTkTheme.buttonBox
+        TTkTheme.radiobox  = theme['draw'].TTkTheme.radiobox
+        TTkTheme.checkbox  = theme['draw'].TTkTheme.checkbox
         TTkTheme.hscroll   = theme['draw'].TTkTheme.hscroll
         TTkTheme.vscroll   = theme['draw'].TTkTheme.vscroll
         TTkTheme.tree      = theme['draw'].TTkTheme.tree
@@ -87,5 +93,5 @@ class TTkTheme():
         TTkTheme.progressbarBlocks = theme['draw'].TTkTheme.progressbarBlocks
 
         TTkTheme.fileIcon    = theme['file'].FileIcon
-        TTkHelper.updateAll()
+        TTkTheme.themeLoaded.emit()
 

@@ -254,7 +254,7 @@ class SuperLayoutGrid(SuperLayout):
         # iy, ih = verSizes[row]
 
         wid = self.layout().itemAtPosition(row,col)
-        if wid == None:
+        if wid is None:
             return dir,pos,wid,placesSpan
 
         col = wid._col
@@ -336,7 +336,7 @@ class SuperLayoutGrid(SuperLayout):
         dr = ix+iw-x-1
         dmin = min(dt,db,dl,dr)
 
-        if self.layout().itemAtPosition(row,col) == None:
+        if self.layout().itemAtPosition(row,col) is None:
             ret = (ix, iy, iw, ih)
         else:
             #Top - we are closer to this edge

@@ -97,7 +97,7 @@ class _TTkFormatter(Formatter):
                 ttype = ttype.parent
             # TTkLog.debug (f"{ttype=}")
             # TTkLog.debug (f"{value=}")
-            color:TTkColor = self._highlightStyles[ttype]
+            color = self._highlightStyles[ttype]
             if not color.hasForeground():
                color += self._defaultColor
 

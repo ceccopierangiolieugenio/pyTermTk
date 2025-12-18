@@ -60,7 +60,7 @@ class TTkConstant:
         ColorModifier = 0x08
         '''The :py:class:`TTkColor` include a color modifier based on :py:class:`TTkColorModifier`'''
 
-    class FocusPolicy(Flag):
+    class FocusPolicy(int, Flag):
         '''
         This Class type defines the various policies a widget
         can have with respect to acquiring keyboard focus.
@@ -129,13 +129,16 @@ class TTkConstant:
     # ContiguousSelection = SelectionMode.ContiguousSelection
     MultiSelection      = SelectionMode.MultiSelection
 
-    class SelectionFormat(int):
+    class SelectionFormat(IntEnum):
         '''
         Selection properties
 
         .. autosummary::
+          NONE
           FullWidthSelection
         '''
+        NONE = 0
+        '''Default value'''
         FullWidthSelection = 0x06000
         '''When set on the characterFormat of a selection, the whole width of the text will be shown selected.'''
 
@@ -191,7 +194,7 @@ class TTkConstant:
         Background=0x02
         '''The color type returned is Background'''
 
-    class CheckState(int):
+    class CheckState(IntEnum):
         ''' This class type is used to describe the check status.
 
         .. autosummary::
@@ -210,7 +213,7 @@ class TTkConstant:
     PartiallyChecked = CheckState.PartiallyChecked
     Checked          = CheckState.Checked
 
-    class InsertPolicy(int):
+    class InsertPolicy(IntEnum):
         '''Specifies what the :py:class:`TTkComboBox` should do when a new string is entered by the user.
 
         .. autosummary::
@@ -420,10 +423,26 @@ class TTkConstant:
     Cursor_Blinking_Bar        = 0x0006
     Cursor_Steady_Bar          = 0x0007
 
+    class InputType(int, Flag):
+        '''
+        This enum type describes the input validation types for text input widgets.
+
+        .. autosummary::
+          Input_Text
+          Input_Number
+          Input_Password
+        '''
+        Input_Text      = 0x01
+        '''Accept any text input (default)'''
+        Input_Number    = 0x02
+        '''Accept only numeric input (integers and decimals)'''
+        Input_Password  = 0x04
+        '''Password input type (deprecated - use :py:class:`TTkLineEdit.EchoMode.Password` instead)'''
+
     # Input types
-    Input_Text      = 0x01
-    Input_Number    = 0x02
-    Input_Password  = 0x04
+    Input_Text      = InputType.Input_Text
+    Input_Number    = InputType.Input_Number
+    Input_Password  = InputType.Input_Password
 
     # Alignment
     class Alignment(IntEnum):
@@ -485,7 +504,7 @@ class TTkConstant:
         AcceptSave	= 1
         '''Save'''
 
-    class TTkItemSelectionModel(Flag):
+    class TTkItemSelectionModel(int, Flag):
         '''These values describes the way the selection model will be updated.
 
         .. autosummary::
@@ -565,7 +584,7 @@ class TTkConstant:
     LayoutItem = LayoutItemTypes.LayoutItem
     WidgetItem = LayoutItemTypes.WidgetItem
 
-    class WindowFlag(int):
+    class WindowFlag(int, Flag):
         '''
         Those flags are used to enable customization of the window controls.
 
@@ -576,6 +595,8 @@ class TTkConstant:
           WindowMinMaxButtonsHint
           WindowCloseButtonHint
         '''
+        NONE = 0
+        '''Empty flag'''
         # FramelessWindowHint         = 0x00000800
         # ''' Produces a borderless window.'''
         # CustomizeWindowHint         = 0x02000000
@@ -602,6 +623,15 @@ class TTkConstant:
         # ''' Informs the window system that the window should stay on top of all other windows. Note that on some window managers on X11 you also have to pass Qt::X11BypassWindowManagerHint for this flag to work correctly.'''
         # WindowStaysOnBottomHint     = 0x04000000
         # ''' Informs the window system that the window should stay on bottom of all other windows.'''
+
+        def __int__(self) -> int:
+            '''
+            Convert the flag to its integer value
+
+            :return: the integer representation of the flag
+            :rtype: int
+            '''
+            return self.value
 
     class KeyType(int):
         '''Input Key Types
@@ -676,7 +706,7 @@ class TTkConstant:
     CTRL  = KeyModifier.CTRL
     ALT   = KeyModifier.ALT
 
-    class ShortcutContext(int):
+    class ShortcutContext(IntEnum):
         '''
         For a :py:class:`TTkShortcut` event to occur,
         the shortcut's key sequence must be entered by the user in a context where the shortcut is active.

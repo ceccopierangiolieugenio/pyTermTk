@@ -82,8 +82,8 @@ class TTkTheme():
        'X',' ','X',
        'X','X','X'))
 
-    combobox = {'( )','(x)'}
-    checkbox = {'[ ]','[x]','[/]'}
+    radiobox = (' ','X')
+    checkbox = (' ','X','/')
 
     hscroll = ('<','-','X','>')
     vscroll = ('^','|','X','v')

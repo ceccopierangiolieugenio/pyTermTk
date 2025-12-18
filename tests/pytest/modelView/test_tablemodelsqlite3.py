@@ -773,7 +773,7 @@ class TestTTkTableModelSQLite3:
         assert model.columnCount() == 2  # name, age (id is primary key)
 
         # Test data access on empty table
-        assert model.data(0, 0) == None or model.data(0, 0) is None
+        assert model.data(0, 0) is None or model.data(0, 0) is None
 
         # Test header data still works
         assert model.headerData(0, ttk.TTkK.HORIZONTAL) == 'name'

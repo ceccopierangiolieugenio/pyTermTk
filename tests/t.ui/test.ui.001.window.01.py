@@ -30,5 +30,5 @@ import TermTk as ttk
 ttk.TTkLog.use_default_file_logging()
 
 root = ttk.TTk()
-ttk.TTkWindow(parent=root, pops=(0,0), size=(30,5), border=True)
+ttk.TTkWindow(parent=root, pos=(0,0), size=(30,5), border=True)
 root.mainloop()

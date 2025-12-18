@@ -43,7 +43,7 @@ from TermTk.TTkCore.TTkTerm.inputmouse import TTkMouseEvent
 if TYPE_CHECKING:
     from TermTk import TTkContainer
 
-class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
+class TTkWidget(TMouseEvents, TKeyEvents, TDragEvents):
     ''' Widget sizes:
 
     ::
@@ -110,7 +110,7 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
         '_name', '_parent',
         '_x', '_y', '_width', '_height',
         '_maxw', '_maxh', '_minw', '_minh',
-        '_focus','_focus_policy',
+        '_focus_policy',
         '_canvas', '_widgetItem',
         '_visible',
         '_pendingMouseRelease',
@@ -132,7 +132,6 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
     _maxh:int
     _minw:int
     _minh:int
-    _focus:bool
     _focus_policy:TTkK.FocusPolicy
     _canvas:TTkCanvas
     _widgetItem:TTkWidgetItem
@@ -229,7 +228,7 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
         self._widgetCursorType = TTkK.Cursor_Blinking_Bar
 
         self._name = name if name else self.__class__.__name__
-        self._parent:TTkWidget = parent
+        self._parent = parent
 
         self._pendingMouseRelease = False
 
@@ -239,7 +238,6 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
         self._maxw, self._maxh = maxSize if maxSize else (maxWidth,maxHeight)
         self._minw, self._minh = minSize if minSize else (minWidth,minHeight)
 
-        self._focus = False
         self._focus_policy = TTkK.NoFocus
 
         self._visible = visible
@@ -710,30 +708,29 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
     @pyTTkSlot()
     def setFocus(self) -> None:
         '''Focus the widget'''
-        # TTkLog.debug(f"setFocus: {self._name} - {self._focus}")
-        if self._focus and self == TTkHelper.getFocus(): return
-        tmp = TTkHelper.getFocus()
-        if tmp == self: return
-        if tmp is not None:
-            tmp.clearFocus()
-        TTkHelper.setFocus(self)
-        self._focus = True
-        self.focusChanged.emit(self._focus)
+        if not (_p:=self._parent):
+             return
+        if (_old_fw:=_p._getFocusWidget()) is self:
+            return
+        if _old_fw:
+            _old_fw.clearFocus()
+        _p._setFocusWidget(self)
+        self.focusChanged.emit(True)
         self.focusInEvent()
-        TTkHelper.removeOverlayChild(self)
-        self._pushWidgetCursor()
         self._processStyleEvent(TTkWidget._S_DEFAULT)
+        self._pushWidgetCursor()
+        TTkHelper.removeOverlayChild(self)
+        self.update()
 
     def clearFocus(self) -> None:
         '''Remove the Focus state of this widget'''
-        # TTkLog.debug(f"clearFocus: {self._name} - {self._focus}")
-        if not self._focus and self != TTkHelper.getFocus(): return
-        TTkHelper.clearFocus()
-        self._focus = False
-        self.focusChanged.emit(self._focus)
+        if not (_p:=self._parent) or _p._getFocusWidget() is not self:
+            return
+        _p._setFocusWidget(None)
+        self.focusChanged.emit(False)
         self.focusOutEvent()
         self._processStyleEvent(TTkWidget._S_DEFAULT)
-        self.update(repaint=True, updateLayout=False)
+        self.update()
 
     def hasFocus(self) -> bool:
         '''
@@ -741,7 +738,7 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
 
         :return: bool
         '''
-        return self._focus
+        return bool((_p:=self._parent) and _p._getFocusWidget() is self)
 
     def getCanvas(self) -> TTkCanvas:
         return self._canvas
@@ -926,7 +923,7 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
     def _pushWidgetCursor(self):
         if ( self._widgetCursorEnabled and
              self._visible and
-             ( self._focus or self == TTkHelper.cursorWidget() ) ):
+             ( self.hasFocus() or self == TTkHelper.cursorWidget() ) ):
             cx,cy  = self._widgetCursor
             ax, ay = TTkHelper.absPos(self)
             if ( self == TTkHelper.widgetAt(cx+ax, cy+ay) or

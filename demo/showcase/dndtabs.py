@@ -29,7 +29,7 @@ import TermTk as ttk
 
 def demoDnDTabs(root=None, border=True):
     vsplitter = ttk.TTkSplitter(parent=root, orientation=ttk.TTkK.VERTICAL)
-    tabWidget1 = ttk.TTkTabWidget(parent=vsplitter, border=border)
+    tabWidget1 = ttk.TTkTabWidget(parent=vsplitter, border=True)
     hsplitter = ttk.TTkSplitter(parent=vsplitter)
     tabWidget2 = ttk.TTkTabWidget(parent=hsplitter, border=False, barType=ttk.TTkBarType.DEFAULT_2)
     tabWidget3 = ttk.TTkTabWidget(parent=hsplitter, border=False, barType=ttk.TTkBarType.NERD_1)
@@ -44,8 +44,12 @@ def demoDnDTabs(root=None, border=True):
     tabWidget1.addTab(ttk.TTkTestWidgetSizes(border=True, title="Frame1.6"),  "Label 1.6")
     tabWidget1.addTab(ttk.TTkTestWidget(     border=True, title="Frame1.7"),  "Label Test 1.7")
     tabWidget1.addTab(ttk.TTkTestWidgetSizes(border=True, title="Frame1.8"),  "Label 1.8")
-    tabWidget2.addTab(ttk.TTkTestWidget(     border=True, title="Frame1.9"),  "Label Test 1.9")
-    tabWidget3.addTab(ttk.TTkTestWidgetSizes(border=True, title="Frame1.10"), "Label 1.10")
+
+    tabWidget2.addTab(ttk.TTkTestWidgetSizes(border=True, title="Frame1.10"), "Label 2.1")
+    tabWidget2.addTab(ttk.TTkTestWidget(     border=True, title="Frame1.9"),  "Label Test 2.2")
+
+    tabWidget3.addTab(ttk.TTkTestWidgetSizes(border=True, title="Frame1.10"), "Label 3.1")
+    tabWidget3.addTab(ttk.TTkTestWidget(     border=True, title="Frame1.9"),  "Label Test 3.2")
 
     fileMenu1 = tabWidget1.addMenu("XX")
     fileMenu1.addMenu("Open")
