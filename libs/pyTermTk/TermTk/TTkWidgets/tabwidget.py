@@ -26,7 +26,7 @@ __all__ = ['TTkTabButton', 'TTkTabBar', 'TTkTabWidget', 'TTkBarType']
 
 from enum import Enum
 from dataclasses import dataclass
-from typing import List, Tuple, Optional
+from typing import List, Tuple, Optional, Any, Dict
 
 from TermTk.TTkCore.constant import  TTkK
 from TermTk.TTkCore.helper import TTkHelper
@@ -82,16 +82,64 @@ class _TTkScrollerStatus(Enum):
     HIGHLIGHTED = 0x02
     INACTIVE = 0x03
 
-@dataclass
 class _TTkTabStatus():
+    __slots__ = (
+        "statusUpdated",
+        "tabBar", "tabButtons", "barType",
+        "currentIndex", "lastIndex", "highlighted")
+
+    statusUpdated:pyTTkSignal
     tabBar:TTkTabBar
     tabButtons:List[TTkTabButton]
     barType:TTkBarType
-    currentIndex:int = -1
-    lastIndex:int = -1
-    highlighted:int = -1
+    lastIndex:int
+    highlighted:int
+    currentIndex:int
 
-_tabStyle  = {
+    def __init__(
+            self,
+            tabBar:TTkTabBar,
+            barType:TTkBarType):
+        self.tabBar = tabBar
+        self.barType = barType
+        self.statusUpdated = pyTTkSignal()
+        self.tabButtons = []
+        self.lastIndex = -1
+        self.highlighted = -1
+        self.currentIndex = -1
+
+    @pyTTkSlot(int)
+    def _setCurrentButton(self, button:TTkTabButton) -> None:
+        '''setCurrentButton'''
+        index = self.tabButtons.index(button)
+        self._setCurrentIndex(index)
+
+    @pyTTkSlot(int)
+    def _setCurrentIndex(self, index) -> None:
+        '''setCurrentIndex'''
+        if ( ( 0 <= index < len(self.tabButtons) ) and
+             ( self.currentIndex != index or
+               self.highlighted  != -1 ) ):
+            self.currentIndex = index
+            self.highlighted = -1
+            self.statusUpdated.emit()
+
+    @pyTTkSlot(int)
+    def _resetHighlighted(self) -> None:
+        if self.highlighted != -1:
+            self.highlighted = -1
+            self.statusUpdated.emit()
+
+    def _insertButton(self, index:int, button:TTkTabButton) -> None:
+        self.tabButtons.insert(index,button)
+        self.statusUpdated.connect(button.update)
+
+    def _popButton(self, index:int) -> TTkTabButton:
+        button = self.tabButtons.pop(index)
+        self.statusUpdated.disconnect(button.update)
+        return button
+
+_tabStyle:Dict[str,Any]  = {
             'default':     {'color': TTkColor.fgbg("#dddd88","#000044"),
                             'bgColor': TTkColor.fgbg("#000000","#8888aa"),
                             'borderColor': TTkColor.RST,
@@ -103,14 +151,11 @@ _tabStyle  = {
                                 'highlight': TTkColor.fg('#00FFFF'),
                                 'inactive': TTkColor.fg('#888888'),
                             },
-                            'tabOffsetColor': TTkColor.RST,
                             'glyphs':_tabGlyphs},
             'disabled':    {'color': TTkColor.fg('#888888'),
-                            'borderColor':TTkColor.fg('#888888'),
-                            'tabOffsetColor': TTkColor.RST},
+                            'borderColor':TTkColor.fg('#888888')},
             'focus':       {'color': TTkColor.fgbg("#dddd88","#000044")+TTkColor.BOLD,
-                            'borderColor': TTkColor.fg("#ffff00") + TTkColor.BOLD,
-                            'tabOffsetColor': TTkColor.RST},
+                            'borderColor': TTkColor.fg("#ffff00") + TTkColor.BOLD},
         }
 
 _tabStyleNormal = {
@@ -127,12 +172,11 @@ _tabStyleFocussed = {
 
 
 
-
 class _TTkTabWidgetDragData():
     __slots__ = ('_tabButton', '_tabWidget')
-    def __init__(self, b, tw):
-        self._tabButton:TTkTabButton = b
-        self._tabWidget:TTkTabWidget = tw
+    def __init__(self, b:TTkTabButton, tw:TTkTabWidget):
+        self._tabButton = b
+        self._tabWidget = tw
     def tabButton(self) -> TTkTabButton:
         return self._tabButton
     def tabWidget(self) -> TTkTabWidget:
@@ -172,18 +216,19 @@ class _TTkTabColorButton(TTkWidget):
     __slots__ = (
         '_tabStatus',
         # Signals
-        'clicked'
+        'tcbClicked'
         )
     _tabStatus:_TTkTabStatus
+    tcbClicked:pyTTkSignal
     def __init__(self, *,
                  tabStatus:_TTkTabStatus,
                  **kwargs) -> None:
-        self.clicked = pyTTkSignal()
+        self.tcbClicked = pyTTkSignal(_TTkTabColorButton)
         self._tabStatus = tabStatus
         super().__init__(forwardStyle=True, **kwargs)
 
     def mouseReleaseEvent(self, evt:TTkMouseEvent) -> bool:
-        self.clicked.emit()
+        self.tcbClicked.emit(self)
         return True
 
     def keyEvent(self, evt:TTkKeyEvent) -> bool:
@@ -192,7 +237,7 @@ class _TTkTabColorButton(TTkWidget):
             self._keyPressed = True
             self._pressed = True
             self.update()
-            self.clicked.emit()
+            self.tcbClicked.emit(self)
             return True
         return False
 
@@ -487,50 +532,64 @@ class _TTkTabScrollerButton(_TTkTabColorButton):
     def mouseReleaseEvent(self, evt:TTkMouseEvent) -> bool:
         return False
     def mouseTapEvent(self, evt:TTkMouseEvent) -> bool:
-        self.clicked.emit()
+        self.tcbClicked.emit(self)
         return True
 
-    def paintEvent(self, canvas):
+    def paintEvent(self, canvas:TTkCanvas) -> None:
         style = self.currentStyle()
         glyphs = style['glyphs']['scroller']
         scrollerColors = style['scrollerColors']
         borderColor = style['borderColor']
-        offsetColor = style['tabOffsetColor']
 
-        arrowColor = borderColor
-        if self._scrollerStatus == _TTkScrollerStatus.HIGHLIGHTED:
-            arrowColor = scrollerColors['highlight']
-        elif self._scrollerStatus == _TTkScrollerStatus.INACTIVE:
+        arrowColor:TTkColor = borderColor
+        if self._tabStatus.highlighted == -1:
+            pass
+        elif ( self._side == TTkK.LEFT and
+             self._tabStatus.highlighted == 0 ):
             arrowColor = scrollerColors['inactive']
+        elif ( self._side == TTkK.RIGHT and
+             self._tabStatus.highlighted >= len(self._tabStatus.tabButtons)-1 ):
+            arrowColor = scrollerColors['inactive']
+        else:
+            arrowColor = scrollerColors['highlight']
 
         # textColor   = style['color']
 
         tt = TTkCfg.theme.tab
         if self._tabStatus.barType == TTkBarType.DEFAULT_3:
+            TTkLog.debug(f"D3")
             lse = tt[11] if self._sideEnd &  TTkK.LEFT  else tt[13]
             rse = tt[15] if self._sideEnd &  TTkK.RIGHT else tt[13]
             if self._side == TTkK.LEFT:
+                # Draw Border
                 canvas.drawText(pos=(0,0), color=borderColor, text=tt[7] +tt[1])
                 canvas.drawText(pos=(0,1), color=borderColor, text=tt[9]       )
-                canvas.drawText(pos=(1,1), color=arrowColor,  text=tt[31]      )
                 canvas.drawText(pos=(0,2), color=borderColor, text=lse   +tt[12])
-                canvas.drawChar(pos=(1,1), char=glyphs[0], color=offsetColor)
+                # Draw Arrow
+                canvas.drawChar(pos=(1,1), char=glyphs[0], color=arrowColor)
             else:
+                # Draw Border
                 canvas.drawText(pos=(0,0), color=borderColor, text=tt[1] +tt[8])
-                canvas.drawText(pos=(0,1), color=arrowColor,  text=tt[32]      )
                 canvas.drawText(pos=(1,1), color=borderColor, text=       tt[9])
                 canvas.drawText(pos=(0,2), color=borderColor, text=tt[12]+rse)
-                canvas.drawChar(pos=(0,1), char=glyphs[1], color=offsetColor)
+                # Draw Arrow
+                canvas.drawChar(pos=(0,1), char=glyphs[1], color=arrowColor)
         elif self._tabStatus.barType == TTkBarType.DEFAULT_2:
+            TTkLog.debug(f"D2")
             if self._side == TTkK.LEFT:
+                # Draw Border
                 canvas.drawText(pos=(0,0), color=borderColor, text=tt[9] +tt[31])
                 canvas.drawText(pos=(0,1), color=borderColor, text=tt[23]+tt[1])
-                canvas.drawChar(pos=(1,0), char=glyphs[0], color=offsetColor)
+                # Draw Arrow
+                canvas.drawChar(pos=(1,0), char=glyphs[0], color=arrowColor)
             else:
+                # Draw Border
                 canvas.drawText(pos=(0,0), color=borderColor, text=tt[32]+tt[9])
                 canvas.drawText(pos=(0,1), color=borderColor, text=tt[1] +tt[24])
-                canvas.drawChar(pos=(0,0), char=glyphs[1], color=offsetColor)
+                # Draw Arrow
+                canvas.drawChar(pos=(0,0), char=glyphs[1], color=arrowColor)
         elif self._tabStatus.barType == TTkBarType.NERD_1:
+            TTkLog.debug(f"D1")
             border = style['glyphs']['border'][self._tabStatus.barType]
             if self._side == TTkK.LEFT:
                 canvas.drawText(pos=(0,0),color=style['bgColor'],text=f" {glyphs[0]}{border[5]}")
@@ -581,11 +640,7 @@ class TTkTabBar(TTkContainer):
 
         self._tabStatus = _TTkTabStatus(
             tabBar = self,
-            tabButtons = [],
             barType = barType,
-            currentIndex = -1,
-            lastIndex = -1,
-            highlighted = -1,
         )
         self._tabMovable = False
         self._tabClosable = closable
@@ -594,8 +649,8 @@ class TTkTabBar(TTkContainer):
             self._tabStatus.barType = TTkBarType.DEFAULT_2 if small else TTkBarType.DEFAULT_3
         self._leftScroller =  _TTkTabScrollerButton(tabStatus=self._tabStatus,side=TTkK.LEFT)
         self._rightScroller = _TTkTabScrollerButton(tabStatus=self._tabStatus,side=TTkK.RIGHT)
-        self._leftScroller.clicked.connect( self._moveToTheLeft)
-        self._rightScroller.clicked.connect(self._andMoveToTheRight)
+        self._leftScroller.tcbClicked.connect( self._moveToTheLeft)
+        self._rightScroller.tcbClicked.connect(self._andMoveToTheRight)
 
         super().__init__(forwardStyle=False, **kwargs)
 
@@ -604,6 +659,9 @@ class TTkTabBar(TTkContainer):
         self.layout().addWidget(self._rightScroller)
 
         self.setFocusPolicy(TTkK.ParentFocus)
+        self._tabStatus.statusUpdated.connect(self._updateTabs)
+        self._tabStatus.statusUpdated.connect(self._leftScroller.update)
+        self._tabStatus.statusUpdated.connect(self._rightScroller.update)
 
     def mergeStyle(self, style):
         super().mergeStyle(style)
@@ -630,21 +688,25 @@ class TTkTabBar(TTkContainer):
         if index <= self._tabStatus.currentIndex:
             self._tabStatus.currentIndex += 1
         button = TTkTabButton(parent=self, text=label, tabStatus=self._tabStatus, closable=self._tabClosable if closable is None else closable, data=data)
-        self._tabStatus.tabButtons.insert(index,button)
-        button.clicked.connect(lambda :self.setCurrentIndex(self._tabStatus.tabButtons.index(button)))
-        button.clicked.connect(lambda :self.tabBarClicked.emit(self._tabStatus.tabButtons.index(button)))
+        self._tabStatus._insertButton(index,button)
+        button.tcbClicked.connect(self._tcbClickedHandler)
         button.closeClicked.connect(lambda :self.tabCloseRequested.emit(self._tabStatus.tabButtons.index(button)))
         self._updateTabs()
         return index
 
+    @pyTTkSlot(TTkTabButton)
+    def _tcbClickedHandler(self, btn:TTkTabButton):
+        index = self._tabStatus.tabButtons.index(btn)
+        self.setCurrentIndex(index)
+        self.tabBarClicked.emit(index)
+
     @pyTTkSlot(int)
     def removeTab(self, index:int) -> None:
         '''removeTab'''
-        button = self._tabStatus.tabButtons[index]
-        button.clicked.clear()
+        button = self._tabStatus._popButton(index)
+        button.tcbClicked.clear()
         button.closeClicked.clear()
         self.layout().removeWidget(button)
-        self._tabStatus.tabButtons.pop(index)
         if self._tabStatus.currentIndex == index:
             self._tabStatus.lastIndex = -2
         if self._tabStatus.currentIndex >= index:
@@ -686,11 +748,7 @@ class TTkTabBar(TTkContainer):
     @pyTTkSlot(int)
     def setCurrentIndex(self, index):
         '''setCurrentIndex'''
-        TTkLog.debug(index)
-        if 0 <= index < len(self._tabStatus.tabButtons):
-            self._tabStatus.currentIndex = index
-            self._tabStatus.highlighted = index
-            self._updateTabs()
+        self._tabStatus._setCurrentIndex(index)
 
     def resizeEvent(self, w, h):
         self._updateTabs()
@@ -713,6 +771,8 @@ class TTkTabBar(TTkContainer):
             w-=4
             shrink = w/maxLen
             offx = 2
+        self._leftScroller.update()
+        self._rightScroller.update()
 
         posx=0
         for t in self._tabStatus.tabButtons:
@@ -899,6 +959,7 @@ class TTkTabWidget(TTkFrame):
         if focus:
             self._tabStatus.tabBar.mergeStyle(_tabStyleFocussed)
         else:
+            self._tabStatus.highlighted = -1
             self._tabStatus.tabBar.mergeStyle(_tabStyleNormal)
 
     def count(self) -> int:
@@ -932,7 +993,6 @@ class TTkTabWidget(TTkFrame):
         for i, w in enumerate(self._tabWidgets):
             if widget == w:
                 self.setCurrentIndex(i)
-                break
 
     @pyTTkSlot(int)
     def _tabChanged(self, index:int) -> None:
@@ -964,14 +1024,14 @@ class TTkTabWidget(TTkFrame):
         if y < 3:
             tbx = self._tabStatus.tabBar.x()
             newIndex = 0
-            for b in self._tabStatus.tabBar._tabButtons:
+            for b in self._tabStatus.tabButtons:
                 if tbx+b.x()+b.width()/2 < x:
                     newIndex += 1
             self.insertTab(newIndex, w, l, d, c)
             self.setCurrentIndex(newIndex)
         else:
             self.addTab(w, l, d, c)
-            self.setCurrentIndex(len(self._tabStatus.tabBar._tabButtons)-1)
+            self.setCurrentIndex(len(self._tabStatus.tabButtons)-1)
 
     def dropEvent(self, evt:TTkDnDEvent) -> bool:
         data = evt.data()
@@ -981,7 +1041,7 @@ class TTkTabWidget(TTkFrame):
         elif isinstance(data, _TTkTabWidgetDragData):
             tb = data.tabButton()
             tw = data.tabWidget()
-            index  = tw._tabStatus.tabBar._tabButtons.index(tb)
+            index  = tw._tabStatus.tabButtons.index(tb)
             widget = tw.widget(index)
             data   = tw.tabData(index)
             if TTkHelper.isParent(self, tw):
@@ -989,7 +1049,7 @@ class TTkTabWidget(TTkFrame):
             if y < 3:
                 tbx = self._tabStatus.tabBar.x()
                 newIndex = 0
-                for b in self._tabStatus.tabBar._tabButtons:
+                for b in self._tabStatus.tabButtons:
                     if tbx+b.x()+b.width()/2 < x:
                         newIndex += 1
                 if tw == self:
@@ -998,6 +1058,10 @@ class TTkTabWidget(TTkFrame):
                 tw.removeTab(index)
                 self.insertTab(newIndex, widget, tb.text(), data, tb._closable)
                 self.setCurrentIndex(newIndex)
+                if self.hasFocus():
+                    self._tabStatus.tabBar.mergeStyle(_tabStyleFocussed)
+                else:
+                    self._tabStatus.tabBar.mergeStyle(_tabStyleNormal)
                 #self._tabChanged(newIndex)
             elif tw != self:
                 tw.removeTab(index)
