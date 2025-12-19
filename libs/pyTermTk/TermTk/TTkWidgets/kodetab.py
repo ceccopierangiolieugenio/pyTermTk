@@ -147,7 +147,7 @@ class _TTkKodeTab(TTkTabWidget):
                 splitter.setStyle(_splitter_NERD_1_style)
                 splitter.addWidget(self)
                 index=offset
-            splitter.insertWidget(index+offset, kt:=_TTkKodeTab(baseWidget=self._baseWidget, border=self.border(), barType=self._barType, closable=self.tabsClosable()))
+            splitter.insertWidget(index+offset, kt:=_TTkKodeTab(baseWidget=self._baseWidget, border=self.border(), barType=self._tabStatus.barType, closable=self.tabsClosable()))
             kt._dropEventProxy = self._dropEventProxy
             kt.kodeTabCloseRequested.connect(self._baseWidget._handleKodeTabCloseRequested)
             for (_w,_l) in data:
