@@ -869,7 +869,7 @@ class TTkTabBar(TTkContainer):
                 return True
         if ( evt.type == TTkK.Character and evt.key==" " ) or \
            ( evt.type == TTkK.SpecialKey and evt.key == TTkK.Key_Enter ):
-            self._tabStatus.currentIndex = self._tabStatus.highlighted
+            self._tabStatus._setCurrentIndex(self._tabStatus.highlighted)
             self._updateTabs()
             return True
         return False

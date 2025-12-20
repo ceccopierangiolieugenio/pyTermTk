@@ -664,3 +664,223 @@ def test_tabwidget_empty_initialization():
     assert tabWidget.currentIndex() == -1
     assert tabWidget.widget(0) is None
     assert tabWidget.indexOf(ttk.TTkWidget()) == -1
+
+# ============================================================================
+# Keyboard Navigation Tests
+# ============================================================================
+
+def test_tabbar_highlight_navigation_with_arrow_keys():
+    '''
+    Test that arrow keys navigate through highlighted tabs.
+    '''
+    tabBar = ttk.TTkTabBar()
+
+    tabBar.addTab("Tab 0")
+    tabBar.addTab("Tab 1")
+    tabBar.addTab("Tab 2")
+    tabBar.addTab("Tab 3")
+
+    # Initial state - highlighted should be 0
+    assert tabBar._tabStatus.highlighted == -1
+    assert tabBar.currentIndex() == 0
+
+    # Press Right arrow
+    evt = ttk.TTkKeyEvent(ttk.TTkK.SpecialKey, ttk.TTkK.Key_Right, "", ttk.TTkK.NoModifier)
+    result = tabBar.keyEvent(evt)
+    assert result is True
+    assert tabBar._tabStatus.highlighted == 0
+    assert tabBar.currentIndex() == 0  # Current doesn't change yet
+
+    # Press Right arrow again
+    result = tabBar.keyEvent(evt)
+    assert result is True
+    assert tabBar._tabStatus.highlighted == 1
+
+    # Press Left arrow
+    evt = ttk.TTkKeyEvent(ttk.TTkK.SpecialKey, ttk.TTkK.Key_Left, "", ttk.TTkK.NoModifier)
+    result = tabBar.keyEvent(evt)
+    assert result is True
+    assert tabBar._tabStatus.highlighted == 0
+
+def test_tabbar_enter_activates_highlighted_tab():
+    '''
+    Test that pressing Enter activates the highlighted tab.
+    '''
+    tabBar = ttk.TTkTabBar()
+
+    tabBar.addTab("Tab 0")
+    tabBar.addTab("Tab 1")
+    tabBar.addTab("Tab 2")
+
+    # Set current to Tab 0
+    tabBar.setCurrentIndex(0)
+    assert tabBar.currentIndex() == 0
+
+    # Highlight Tab 2 using arrow keys
+    evt_right = ttk.TTkKeyEvent(ttk.TTkK.SpecialKey, ttk.TTkK.Key_Right, "", ttk.TTkK.NoModifier)
+    tabBar.keyEvent(evt_right)
+    tabBar.keyEvent(evt_right)
+    tabBar.keyEvent(evt_right)
+    assert tabBar._tabStatus.highlighted == 2
+    assert tabBar.currentIndex() == 0  # Still on Tab 0
+
+    # Press Enter to activate highlighted tab
+    evt_enter = ttk.TTkKeyEvent(ttk.TTkK.SpecialKey, ttk.TTkK.Key_Enter, "", ttk.TTkK.NoModifier)
+    result = tabBar.keyEvent(evt_enter)
+    assert result is True
+    assert tabBar.currentIndex() == 2  # Now switched to Tab 2
+
+def test_tabbar_space_activates_highlighted_tab():
+    '''
+    Test that pressing Space activates the highlighted tab.
+    '''
+    tabBar = ttk.TTkTabBar()
+
+    tabBar.addTab("Tab 0")
+    tabBar.addTab("Tab 1")
+    tabBar.addTab("Tab 2")
+
+    # Set current to Tab 0
+    tabBar.setCurrentIndex(0)
+    assert tabBar.currentIndex() == 0
+
+    # Highlight Tab 1 using arrow key
+    evt_right = ttk.TTkKeyEvent(ttk.TTkK.SpecialKey, ttk.TTkK.Key_Right, "", ttk.TTkK.NoModifier)
+    tabBar.keyEvent(evt_right)
+    tabBar.keyEvent(evt_right)
+    assert tabBar._tabStatus.highlighted == 1
+    assert tabBar.currentIndex() == 0  # Still on Tab 0
+
+    # Press Space to activate highlighted tab
+    evt_space = ttk.TTkKeyEvent(ttk.TTkK.Character, " ", " ", ttk.TTkK.NoModifier)
+    result = tabBar.keyEvent(evt_space)
+    assert result is True
+    assert tabBar.currentIndex() == 1  # Now switched to Tab 1
+
+def test_tabwidget_enter_shows_highlighted_widget():
+    '''
+    Test that pressing Enter shows the widget of the highlighted tab.
+    '''
+    tabWidget = ttk.TTkTabWidget()
+    tabBar = tabWidget._tabStatus.tabBar
+
+    widget0 = ttk.TTkWidget()
+    widget1 = ttk.TTkWidget()
+    widget2 = ttk.TTkWidget()
+
+    tabWidget.addTab(widget0, "Tab 0")
+    tabWidget.addTab(widget1, "Tab 1")
+    tabWidget.addTab(widget2, "Tab 2")
+
+    # Initially Tab 0 is current
+    assert tabWidget.currentIndex() == 0
+    assert tabWidget.currentWidget() == widget0
+
+    evt_right = ttk.TTkKeyEvent(ttk.TTkK.SpecialKey, ttk.TTkK.Key_Right, "", ttk.TTkK.NoModifier)
+    tabBar.keyEvent(evt_right)
+    tabBar.keyEvent(evt_right)
+    tabBar.keyEvent(evt_right)
+    assert tabBar._tabStatus.highlighted == 2
+
+    # Press Enter to activate
+    evt_enter = ttk.TTkKeyEvent(ttk.TTkK.SpecialKey, ttk.TTkK.Key_Enter, "", ttk.TTkK.NoModifier)
+    result = tabBar.keyEvent(evt_enter)
+
+    # Verify the widget changed
+    assert tabWidget.currentIndex() == 2
+    assert tabWidget.currentWidget() == widget2
+
+def test_tabwidget_space_shows_highlighted_widget():
+    '''
+    Test that pressing Space shows the widget of the highlighted tab.
+    '''
+    tabWidget = ttk.TTkTabWidget()
+    tabBar = tabWidget._tabStatus.tabBar
+
+    widget0 = ttk.TTkWidget()
+    widget1 = ttk.TTkWidget()
+    widget2 = ttk.TTkWidget()
+
+    tabWidget.addTab(widget0, "Tab 0")
+    tabWidget.addTab(widget1, "Tab 1")
+    tabWidget.addTab(widget2, "Tab 2")
+
+    # Initially Tab 0 is current
+    assert tabWidget.currentIndex() == 0
+    assert tabWidget.currentWidget() == widget0
+
+    # Navigate to Tab 1 using arrow key
+    evt_right = ttk.TTkKeyEvent(ttk.TTkK.SpecialKey, ttk.TTkK.Key_Right, "", ttk.TTkK.NoModifier)
+    tabBar.setFocus()
+    tabBar.keyEvent(evt_right)
+    tabBar.keyEvent(evt_right)
+    assert tabWidget._tabStatus.highlighted == 1
+
+    # Press Space to activate
+    evt_space = ttk.TTkKeyEvent(ttk.TTkK.Character, " ", " ", ttk.TTkK.NoModifier)
+    result = tabBar.keyEvent(evt_space)
+
+    # Verify the widget changed
+    assert tabWidget.currentIndex() == 1
+    assert tabWidget.currentWidget() == widget1
+
+def test_tabbar_highlight_bounds():
+    '''
+    Test that highlight stays within bounds when navigating.
+    '''
+    tabBar = ttk.TTkTabBar()
+
+    tabBar.addTab("Tab 0")
+    tabBar.addTab("Tab 1")
+    tabBar.addTab("Tab 2")
+
+    # At start
+    assert tabBar._tabStatus.highlighted == -1
+
+    # Try to go left from first tab
+    evt_left = ttk.TTkKeyEvent(ttk.TTkK.SpecialKey, ttk.TTkK.Key_Left, "", ttk.TTkK.NoModifier)
+    tabBar.keyEvent(evt_left)
+    tabBar.keyEvent(evt_left)
+    assert tabBar._tabStatus.highlighted == 0  # Should stay at 0
+
+    # Navigate to last tab
+    evt_right = ttk.TTkKeyEvent(ttk.TTkK.SpecialKey, ttk.TTkK.Key_Right, "", ttk.TTkK.NoModifier)
+    tabBar.keyEvent(evt_right)
+    tabBar.keyEvent(evt_right)
+    assert tabBar._tabStatus.highlighted == 2
+
+    # Try to go right from last tab
+    tabBar.keyEvent(evt_right)
+    assert tabBar._tabStatus.highlighted == 2  # Should stay at 2
+
+def test_tabwidget_keyboard_navigation_with_signals():
+    '''
+    Test that currentChanged signal is emitted when activating with Enter/Space.
+    '''
+    tabWidget = ttk.TTkTabWidget()
+    tabBar = tabWidget._tabStatus.tabBar
+
+    widget0 = ttk.TTkWidget()
+    widget1 = ttk.TTkWidget()
+
+    tabWidget.addTab(widget0, "Tab 0")
+    tabWidget.addTab(widget1, "Tab 1")
+
+    current_changed_calls = []
+    tabWidget.currentChanged.connect(lambda i: current_changed_calls.append(i))
+
+    # Clear initial signal
+    current_changed_calls.clear()
+
+    # Highlight Tab 1 and activate with Enter
+    tabBar.setFocus()
+    evt_right = ttk.TTkKeyEvent(ttk.TTkK.SpecialKey, ttk.TTkK.Key_Right, "", ttk.TTkK.NoModifier)
+    tabBar.keyEvent(evt_right)
+    tabBar.keyEvent(evt_right)
+
+    evt_enter = ttk.TTkKeyEvent(ttk.TTkK.SpecialKey, ttk.TTkK.Key_Enter, "", ttk.TTkK.NoModifier)
+    tabBar.keyEvent(evt_enter)
+
+    # Signal should be emitted
+    assert len(current_changed_calls) == 1
+    assert current_changed_calls[0] == 1
