@@ -392,12 +392,6 @@ class TTkTabButton(_TTkTabColorButton):
         is_selected = self_index == self._tabStatus.currentIndex
         is_highlighted = self_index == self._tabStatus.highlighted
 
-        # canvas.drawTabButton(
-        #     pos=(0,0), size=self.size(),
-        #     small=(not self._border),
-        #     sideEnd=self._sideEnd, status=self._tabStatus,
-        #     color=borderColor )
-
         tt = TTkCfg.theme.tab
         label = ' '*(w-2)
         if self._tabStatus.barType == TTkBarType.DEFAULT_3:
@@ -425,25 +419,18 @@ class TTkTabButton(_TTkTabColorButton):
                 bLeft  = tt[11] if self._sideEnd & TTkK.LEFT  else tt[14]
                 bRight = tt[15] if self._sideEnd & TTkK.RIGHT else tt[14]
                 txtBottom = bLeft + tt[12]*(w-2) + bRight
+
             elif is_highlighted:
                 # ╭─────────╮  ╭─────────╮  ╭─────────╮
                 # │Label 1.1│  │Label 1.2│  │Label 1.6│
                 # ╞═════════╧  ╧═════════╧  ╧═════════╡
                 # Initial
-                # txtTop    = tt[0]  + tt[1] *(w-2) + tt[3]
+                txtTop    = tt[7]  + tt[1] *(w-2) + tt[8]
                 txtCenter = tt[9]  + label        + tt[9]
                 bLeft  = tt[11] if self._sideEnd & TTkK.LEFT  else tt[13]
                 bRight = tt[15] if self._sideEnd & TTkK.RIGHT else tt[13]
-
-                # Test
-                txtTop    = tt[7]  + tt[1] *(w-2) + tt[8]
-                # txtTop    = tt[41]  + tt[42] *(w-2) + tt[44]
-                # txtCenter = tt[45]  + label         + tt[45]
-                # bLeft  = tt[11] if self._sideEnd & TTkK.LEFT  else tt[12]
-                # bRight = tt[15] if self._sideEnd & TTkK.RIGHT else tt[12]
-                # bLeft  = tt[11] if self._sideEnd & TTkK.LEFT  else tt[14]
-                # bRight = tt[15] if self._sideEnd & TTkK.RIGHT else tt[14]
                 txtBottom = bLeft + tt[12]*(w-2) + bRight
+
             else:
                 # ┌─────────┐  ┌─────────┐  ┌─────────┐
                 # │Label 1.1│  │Label 1.2│  │Label 1.6│
@@ -473,12 +460,13 @@ class TTkTabButton(_TTkTabColorButton):
                 # ╚═════════╝
                 txtCenter = tt[10] + label        + tt[10]
                 txtBottom = tt[21] + tt[5] *(w-2) + tt[22]
+
             elif is_highlighted:
                 # │Label 2.1│
                 # ╰─────────╯
-
                 txtCenter = tt[9]  + label        + tt[9]
                 txtBottom = tt[23] + tt[19]*(w-2) + tt[24]
+
             else:
                 # │Label 2.1│
                 # └─────────┘
@@ -492,6 +480,7 @@ class TTkTabButton(_TTkTabColorButton):
             # 🭛Label 5.1🭦  ╱Label Test 5.3╲
             bgColor:TTkColor = style['bgColor']
             glyphs = style['glyphs']['border'][self._tabStatus.barType]
+
             if is_selected:
                 if is_highlighted:
                     textColor += TTkColor.CYAN
@@ -506,6 +495,7 @@ class TTkTabButton(_TTkTabColorButton):
                     _r = TTkString(glyphs[1],selectedBgColor+bgColor.invertFgBg().foreground())
                 txtCenter = _l + label + _r
                 canvas.drawText(pos=(0,0),color=selectedBgColor,text=txtCenter)
+
             elif is_highlighted:
                 highlightedBgColor = borderHighlightColors['fade'].invertFgBg().background()
                 selectedColor = textColor.background().invertFgBg()
@@ -530,6 +520,7 @@ class TTkTabButton(_TTkTabColorButton):
                         _r = TTkString(glyphs[1],highlightedBgColor+bgColor.invertFgBg().foreground())
                 txtCenter = _l + label + _r
                 canvas.drawText(pos=(0,0),color=highlightedBgColor,text=txtCenter)
+
             else:
                 textColor = bgColor
                 if self._sideEnd & TTkK.LEFT:
@@ -543,6 +534,7 @@ class TTkTabButton(_TTkTabColorButton):
                 txtCenter = _l + label + _r
                 canvas.drawText(pos=(0,0),color=borderColor,text=txtCenter)
         canvas.drawText(pos=(1,offY), text=self.text(), color=textColor)
+
         if self._closable:
             closeGlyph = style['closeGlyph']
             closeOff = len(closeGlyph)
