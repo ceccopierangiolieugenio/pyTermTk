@@ -75,7 +75,7 @@ class _TTkScrollerStatus(Enum):
 
 class _TTkTabStatus():
     __slots__ = (
-        "statusUpdated",
+        "statusUpdated", "currentChanged",
         "tabBar", "tabButtons", "barType",
         "currentIndex", "lastIndex", "highlighted")
 
@@ -94,6 +94,7 @@ class _TTkTabStatus():
         self.tabBar = tabBar
         self.barType = barType
         self.statusUpdated = pyTTkSignal()
+        self.currentChanged = pyTTkSignal(int)
         self.tabButtons = []
         self.lastIndex = -1
         self.highlighted = -1
@@ -107,7 +108,7 @@ class _TTkTabStatus():
     def _andMoveToTheRight(self):
         self._setCurrentIndex(self.currentIndex+1)
 
-    @pyTTkSlot(int)
+    # @pyTTkSlot(TTkTabButton)
     def _setCurrentButton(self, button:TTkTabButton) -> None:
         '''setCurrentButton'''
         index = self.tabButtons.index(button)
@@ -119,8 +120,10 @@ class _TTkTabStatus():
         if ( ( 0 <= index < len(self.tabButtons) ) and
              ( self.currentIndex != index or
                self.highlighted  != -1 ) ):
-            self.currentIndex = index
             self.highlighted = -1
+            if (self.currentIndex != index):
+                self.currentIndex = index
+                self.currentChanged.emit(index)
             self.statusUpdated.emit()
 
     @pyTTkSlot(int)
@@ -133,10 +136,19 @@ class _TTkTabStatus():
         self.tabButtons.insert(index,button)
         self.statusUpdated.connect(button.update)
 
-    def _popButton(self, index:int) -> TTkTabButton:
-        button = self.tabButtons.pop(index)
-        self.statusUpdated.disconnect(button.update)
-        return button
+    def _popButton(self, index:int) -> Optional[TTkTabButton]:
+        if 0 <= index < len(self.tabButtons):
+            button = self.tabButtons.pop(index)
+            self.statusUpdated.disconnect(button.update)
+            self.highlighted = -1
+            if self.currentIndex == index:
+                self.lastIndex = -2
+            if self.currentIndex >= index:
+                self.currentIndex -= 1
+                self.currentChanged.emit(self.currentIndex)
+            self.statusUpdated.emit()
+            return button
+        return None
 
 _tabGlyphs = {
     'scroller': ['◀','▶'],
@@ -679,7 +691,6 @@ class TTkTabBar(TTkContainer):
                  small:bool=True,
                  barType:TTkBarType=TTkBarType.NONE,
                  **kwargs) -> None:
-        self.currentChanged    = pyTTkSignal(int)
         self.tabBarClicked     = pyTTkSignal(int)
         self.tabCloseRequested = pyTTkSignal(int)
 
@@ -687,6 +698,8 @@ class TTkTabBar(TTkContainer):
             tabBar = self,
             barType = barType,
         )
+        self.currentChanged = self._tabStatus.currentChanged
+
         self._tabMovable = False
         self._tabClosable = closable
         self._sideEnd = TTkK.LEFT | TTkK.RIGHT
@@ -748,15 +761,11 @@ class TTkTabBar(TTkContainer):
     @pyTTkSlot(int)
     def removeTab(self, index:int) -> None:
         '''removeTab'''
-        button = self._tabStatus._popButton(index)
+        if not (button := self._tabStatus._popButton(index)):
+            return
         button.tcbClicked.clear()
         button.closeClicked.clear()
         self.layout().removeWidget(button)
-        if self._tabStatus.currentIndex == index:
-            self._tabStatus.lastIndex = -2
-        if self._tabStatus.currentIndex >= index:
-            self._tabStatus.currentIndex -= 1
-        self._tabStatus.highlighted = self._tabStatus.currentIndex
         self._updateTabs()
 
     def currentData(self):

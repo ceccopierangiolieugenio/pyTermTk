@@ -22,7 +22,7 @@
 
 __all__ = ['TTkKodeTab']
 
-from typing import Callable, Iterator, Tuple, List
+from typing import Callable, Iterator, Tuple, List, Any
 
 from TermTk.TTkCore.constant import  TTkK
 from TermTk.TTkCore.helper import  TTkHelper
@@ -121,9 +121,6 @@ class _TTkKodeTab(TTkTabWidget):
         self.update()
         return True
 
-    def _dropNewKodeTab(self, y:int, data:_TTkNewTabWidgetDragData) -> bool:
-        pass
-
     def dropEvent(self, evt:TTkDnDEvent) -> bool:
         self._frameOverlay = None
         x,y = evt.x, evt.y
@@ -180,7 +177,7 @@ class _TTkKodeTab(TTkTabWidget):
             w,h = self.size()
             h-=3
             y-=3
-            index  = tw._tabBar._tabButtons.index(tb)
+            index  = tw._tabStatus.tabButtons.index(tb)
             widget = tw._tabWidgets[index]
             label  = tb.text()
             dropData = [(widget,label)]
@@ -210,7 +207,7 @@ class _TTkKodeTab(TTkTabWidget):
     def _kodeTabClosed(self, widget=None):
         # Remove the widget and/or all the cascade empty splitters
         fwold = self._baseWidget._getFirstWidget()
-        widget = widget if issubclass(type(widget), _TTkKodeTab) else self
+        widget = widget if isinstance(widget, _TTkKodeTab) else self
         if not widget._tabWidgets:
             if splitter := widget.parentWidget():
                 while splitter.count() == 1 and splitter != self._baseWidget:
@@ -271,18 +268,18 @@ class TTkKodeTab(TTkSplitter):
         return item if type(item)==_TTkKodeTab else None
 
     def iterItems(self) -> Iterator[Tuple[_TTkKodeTab, int]]:
-        def _iterSplitter(split:TTkSplitter):
+        def _iterSplitter(split:TTkSplitter) -> Iterator[Tuple[_TTkKodeTab, int]]:
             for i in range(split.count()):
                 _wid = split.widget(i)
-                if issubclass(type(_wid), TTkSplitter):
+                if isinstance(_wid, TTkSplitter):
                     yield from _iterSplitter(_wid)
-                elif issubclass(type(_wid), _TTkKodeTab):
+                elif isinstance(_wid, _TTkKodeTab):
                     yield from _wid.iterItems()
         yield from _iterSplitter(self)
 
-    def setDropEventProxy(self, proxy:Callable) -> None:
+    def setDropEventProxy(self, proxy:Callable[[TTkDnDEvent], bool]) -> None:
         for widget in self.layout().iterWidgets(onlyVisible=False):
-            if issubclass(type(widget),_TTkKodeTab):
+            if isinstance(widget, _TTkKodeTab):
                 widget.setDropEventProxy(proxy)
         return super().setDropEventProxy(proxy)
 
