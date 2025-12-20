@@ -69,9 +69,10 @@ def demoDnDTabs(root=None, border=True):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('-f', help='Full Screen', action='store_true')
+    parser.add_argument('-t', help='Track Mouse', action='store_true')
     args = parser.parse_args()
 
-    root = ttk.TTk()
+    root = ttk.TTk(mouseTrack=args.t)
     if args.f:
         rootTab = root
         root.setLayout(ttk.TTkGridLayout())
