@@ -77,13 +77,12 @@ class _TTkTabStatus():
     __slots__ = (
         "statusUpdated", "currentChanged",
         "tabBar", "tabButtons", "barType",
-        "currentIndex", "lastIndex", "highlighted")
+        "currentIndex", "highlighted")
 
     statusUpdated:pyTTkSignal
     tabBar:TTkTabBar
     tabButtons:List[TTkTabButton]
     barType:TTkBarType
-    lastIndex:int
     highlighted:int
     currentIndex:int
 
@@ -96,7 +95,6 @@ class _TTkTabStatus():
         self.statusUpdated = pyTTkSignal()
         self.currentChanged = pyTTkSignal(int)
         self.tabButtons = []
-        self.lastIndex = -1
         self.highlighted = -1
         self.currentIndex = -1
 
@@ -135,14 +133,18 @@ class _TTkTabStatus():
     def _insertButton(self, index:int, button:TTkTabButton) -> None:
         self.tabButtons.insert(index,button)
         self.statusUpdated.connect(button.update)
+        if index <= self.currentIndex:
+            self.currentIndex += 1
+            self.currentChanged.emit(self.currentIndex)
+        if self.currentIndex < 0:
+            self.currentIndex = 0
+            self.currentChanged.emit(0)
 
     def _popButton(self, index:int) -> Optional[TTkTabButton]:
         if 0 <= index < len(self.tabButtons):
             button = self.tabButtons.pop(index)
             self.statusUpdated.disconnect(button.update)
             self.highlighted = -1
-            if self.currentIndex == index:
-                self.lastIndex = -2
             if self.currentIndex >= index:
                 self.currentIndex -= 1
                 self.currentChanged.emit(self.currentIndex)
@@ -743,8 +745,6 @@ class TTkTabBar(TTkContainer):
 
     def insertTab(self, index, label, data=None, closable=None) -> int:
         '''insertTab'''
-        if index <= self._tabStatus.currentIndex:
-            self._tabStatus.currentIndex += 1
         button = TTkTabButton(parent=self, text=label, tabStatus=self._tabStatus, closable=self._tabClosable if closable is None else closable, data=data)
         self._tabStatus._insertButton(index,button)
         button.tcbClicked.connect(self._tcbClickedHandler)
@@ -845,13 +845,6 @@ class TTkTabBar(TTkContainer):
             self._tabStatus.tabButtons[i].raiseWidget()
         for i in reversed(range(max(0,self._tabStatus.currentIndex),len(self._tabStatus.tabButtons))):
             self._tabStatus.tabButtons[i].raiseWidget()
-
-        if self._tabStatus.currentIndex == -1:
-            self._tabStatus.currentIndex = len(self._tabStatus.tabButtons)-1
-
-        if self._tabStatus.lastIndex != self._tabStatus.currentIndex:
-            self._tabStatus.lastIndex = self._tabStatus.currentIndex
-            self.currentChanged.emit(self._tabStatus.currentIndex)
 
         # set the buttons text color based on the selection/offset
         for i,b in enumerate(self._tabStatus.tabButtons):
