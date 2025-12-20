@@ -498,6 +498,178 @@ def test_focus_mixed_containers_tab_focus():
     assert False is widget3.hasFocus()
     assert False is widget4.hasFocus()
 
+def test_focus_mixed_containers_tab_focus_disabled_2():
+    '''
+        Root ─▶ Container1 (No TabFocus) ─┬─▶ Widget1
+                                          ├─▶ Container2 (TabFocus) ─┬─▶ Widget2
+                                          │                          └─▶ Widget3
+                                          └─▶ Widget4
+    '''
+    root = ttk.TTk()
+    container1 = ttk.TTkContainer(parent=root)
+    widget1 = ttk.TTkWidget(parent=container1)
+    container2 = ttk.TTkContainer(parent=container1)
+    container2.setFocusPolicy(ttk.TTkK.FocusPolicy.TabFocus)
+    widget2 = ttk.TTkWidget(parent=container2)
+    widget3 = ttk.TTkWidget(parent=container2)
+    widget4 = ttk.TTkWidget(parent=container1)
+    widget1.setFocusPolicy(ttk.TTkK.FocusPolicy.TabFocus)
+    widget2.setFocusPolicy(ttk.TTkK.FocusPolicy.TabFocus)
+    widget3.setFocusPolicy(ttk.TTkK.FocusPolicy.TabFocus)
+    widget4.setFocusPolicy(ttk.TTkK.FocusPolicy.TabFocus)
+
+    widget3.setDisabled()
+
+    widget1.setFocus()
+
+    assert True  is widget1.hasFocus()
+    assert False is container2.hasFocus()
+    assert False is widget2.hasFocus()
+    assert False is widget3.hasFocus()
+    assert False is widget4.hasFocus()
+
+    tab_key = ttk.TTkKeyEvent(
+        type=ttk.TTkK.KeyType.SpecialKey,
+        key=ttk.TTkK.Key_Tab,
+        mod=ttk.TTkK.NoModifier,
+        code='',)
+
+    root.keyEvent(evt=tab_key)
+
+    assert False is widget1.hasFocus()
+    assert True  is container2.hasFocus()
+    assert False is widget2.hasFocus()
+    assert False is widget3.hasFocus()
+    assert False is widget4.hasFocus()
+
+    root.keyEvent(evt=tab_key)
+
+    assert False is widget1.hasFocus()
+    assert False is container2.hasFocus()
+    assert True  is widget2.hasFocus()
+    assert False is widget3.hasFocus()
+    assert False is widget4.hasFocus()
+
+    root.keyEvent(evt=tab_key)
+
+    assert False is widget1.hasFocus()
+    assert False is container2.hasFocus()
+    assert False is widget2.hasFocus()
+    assert False  is widget3.hasFocus()
+    assert True is widget4.hasFocus()
+
+    root.keyEvent(evt=tab_key)
+
+    assert True  is widget1.hasFocus()
+    assert False is container2.hasFocus()
+    assert False is widget2.hasFocus()
+    assert False is widget3.hasFocus()
+    assert False is widget4.hasFocus()
+
+def test_focus_mixed_containers_tab_focus_disabled_1():
+    '''
+        Root ─▶ Container1 (No TabFocus) ─┬─▶ Widget1
+                                          ├─▶ Container2 (TabFocus) ─┬─▶ Widget2
+                                          │                          └─▶ Widget3
+                                          └─▶ Widget4
+    '''
+    root = ttk.TTk()
+    container1 = ttk.TTkContainer(parent=root)
+    widget1 = ttk.TTkWidget(parent=container1)
+    container2 = ttk.TTkContainer(parent=container1)
+    container2.setFocusPolicy(ttk.TTkK.FocusPolicy.TabFocus)
+    widget2 = ttk.TTkWidget(parent=container2)
+    widget3 = ttk.TTkWidget(parent=container2)
+    widget4 = ttk.TTkWidget(parent=container1)
+    widget1.setFocusPolicy(ttk.TTkK.FocusPolicy.TabFocus)
+    widget2.setFocusPolicy(ttk.TTkK.FocusPolicy.TabFocus)
+    widget3.setFocusPolicy(ttk.TTkK.FocusPolicy.TabFocus)
+    widget4.setFocusPolicy(ttk.TTkK.FocusPolicy.TabFocus)
+
+    container2.setDisabled()
+
+    widget1.setFocus()
+
+    assert True  is widget1.hasFocus()
+    assert False is container2.hasFocus()
+    assert False is widget2.hasFocus()
+    assert False is widget3.hasFocus()
+    assert False is widget4.hasFocus()
+
+    tab_key = ttk.TTkKeyEvent(
+        type=ttk.TTkK.KeyType.SpecialKey,
+        key=ttk.TTkK.Key_Tab,
+        mod=ttk.TTkK.NoModifier,
+        code='',)
+
+    root.keyEvent(evt=tab_key)
+
+    assert False is widget1.hasFocus()
+    assert False  is container2.hasFocus()
+    assert False is widget2.hasFocus()
+    assert False is widget3.hasFocus()
+    assert True is widget4.hasFocus()
+
+    root.keyEvent(evt=tab_key)
+
+    assert True is widget1.hasFocus()
+    assert False is container2.hasFocus()
+    assert False  is widget2.hasFocus()
+    assert False is widget3.hasFocus()
+    assert False is widget4.hasFocus()
+
+def test_focus_mixed_containers_tab_focus_disabled_1_rev():
+    '''
+        Root ─▶ Container1 (No TabFocus) ─┬─▶ Widget1
+                                          ├─▶ Container2 (TabFocus) ─┬─▶ Widget2
+                                          │                          └─▶ Widget3
+                                          └─▶ Widget4
+    '''
+    root = ttk.TTk()
+    container1 = ttk.TTkContainer(parent=root)
+    widget1 = ttk.TTkWidget(parent=container1)
+    container2 = ttk.TTkContainer(parent=container1)
+    container2.setFocusPolicy(ttk.TTkK.FocusPolicy.TabFocus)
+    widget2 = ttk.TTkWidget(parent=container2)
+    widget3 = ttk.TTkWidget(parent=container2)
+    widget4 = ttk.TTkWidget(parent=container1)
+    widget1.setFocusPolicy(ttk.TTkK.FocusPolicy.TabFocus)
+    widget2.setFocusPolicy(ttk.TTkK.FocusPolicy.TabFocus)
+    widget3.setFocusPolicy(ttk.TTkK.FocusPolicy.TabFocus)
+    widget4.setFocusPolicy(ttk.TTkK.FocusPolicy.TabFocus)
+
+    container2.setDisabled()
+
+    widget1.setFocus()
+
+    assert True  is widget1.hasFocus()
+    assert False is container2.hasFocus()
+    assert False is widget2.hasFocus()
+    assert False is widget3.hasFocus()
+    assert False is widget4.hasFocus()
+
+    tab_key = ttk.TTkKeyEvent(
+        type=ttk.TTkK.KeyType.SpecialKey,
+        key=ttk.TTkK.Key_Tab,
+        mod=ttk.TTkK.ShiftModifier,
+        code='',)
+
+    root.keyEvent(evt=tab_key)
+
+    assert False is widget1.hasFocus()
+    assert False  is container2.hasFocus()
+    assert False is widget2.hasFocus()
+    assert False is widget3.hasFocus()
+    assert True is widget4.hasFocus()
+
+    root.keyEvent(evt=tab_key)
+
+    assert True is widget1.hasFocus()
+    assert False is container2.hasFocus()
+    assert False  is widget2.hasFocus()
+    assert False is widget3.hasFocus()
+    assert False is widget4.hasFocus()
+
 def test_focus_container_tab_focus_reversed():
     '''
         Container (TabFocus) ─┬─▶ Widget1
