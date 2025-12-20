@@ -158,12 +158,13 @@ class TTkComboBox(TTkContainer):
         self.currentIndexChanged = pyTTkSignal(int)
         self.currentTextChanged  = pyTTkSignal(str)
         self.editTextChanged     = pyTTkSignal(str)
-        super().__init__(**kwargs)
         # self.checked = pyTTkSignal()
-        self._lineEdit = TTkLineEdit(parent=self)
+        self._lineEdit = TTkLineEdit()
+        super().__init__(**kwargs)
+        self._lineEdit.setParent(self)
+        self._lineEdit.returnPressed.connect(self._lineEditChanged)
         self._list =  list if list else []
         self._insertPolicy = insertPolicy
-        self._lineEdit.returnPressed.connect(self._lineEditChanged)
         self._textAlign = textAlign
         self._id = index
         self._popupFrame = None
