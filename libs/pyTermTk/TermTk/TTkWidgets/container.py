@@ -176,10 +176,11 @@ class TTkContainer(TTkWidget):
             widgets = _lw[index_widget+1:]
 
         for _w in widgets:
-            if focusPolicy & _w.focusPolicy():
-                return _w
-            if isinstance(_w,TTkContainer) and (_fw:=_w._getFirstFocus(widget=None,focusPolicy=focusPolicy)):
-                return _fw
+            if _w._enabled:
+                if focusPolicy & _w.focusPolicy():
+                    return _w
+                if isinstance(_w,TTkContainer) and (_fw:=_w._getFirstFocus(widget=None,focusPolicy=focusPolicy)):
+                    return _fw
         return None
 
     def _getLastFocus(self, widget:Optional[TTkWidget], focusPolicy:TTkK.FocusPolicy) -> Optional[TTkWidget]:
@@ -192,10 +193,11 @@ class TTkContainer(TTkWidget):
             widgets = _lw[index_widget+1:]
 
         for _w in widgets:
-            if isinstance(_w,TTkContainer) and (_fw:=_w._getLastFocus(widget=None,focusPolicy=focusPolicy)):
-                return _fw
-            if focusPolicy & _w.focusPolicy():
-                return _w
+            if _w._enabled:
+                if isinstance(_w,TTkContainer) and (_fw:=_w._getLastFocus(widget=None,focusPolicy=focusPolicy)):
+                    return _fw
+                if focusPolicy & _w.focusPolicy():
+                    return _w
         return None
 
     def _focusChildWidget(self) -> Optional[TTkWidget]:
