@@ -886,8 +886,8 @@ class TTkTabBar(TTkContainer):
         w = self.width()
         tt = TTkCfg.theme.tab
         if self._tabStatus.barType == TTkBarType.DEFAULT_2:
-            lse = tt[23] if self._sideEnd &  TTkK.LEFT  else tt[19]
-            rse = tt[24] if self._sideEnd &  TTkK.RIGHT else tt[19]
+            lse = tt[36] if self._sideEnd &  TTkK.LEFT  else tt[19]
+            rse = tt[35] if self._sideEnd &  TTkK.RIGHT else tt[19]
             canvas.drawText(pos=(0,1),text=lse + tt[19]*(w-2) + rse, color=borderColor)
         elif self._tabStatus.barType == TTkBarType.DEFAULT_3:
             lse = tt[11] if self._sideEnd &  TTkK.LEFT  else tt[12]

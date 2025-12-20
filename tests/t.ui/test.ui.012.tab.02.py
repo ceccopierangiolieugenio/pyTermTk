@@ -81,4 +81,7 @@ tabWidget5.addTab(ttk.TTkTestWidgetSizes(border=True, title="Frame5.6"), "Label 
 winLogs = ttk.TTkWindow(parent=root,pos=(45,10), size=(100,30), title="Logs", border=True, layout=ttk.TTkGridLayout())
 ttk.TTkLogViewer(parent=winLogs)
 
+winKeys = ttk.TTkWindow(parent=root,pos=(50,15), size=(100,7), title="Key Press", border=True, layout=ttk.TTkGridLayout())
+ttk.TTkKeyPressView(parent=winKeys)
+
 root.mainloop()
