@@ -211,7 +211,7 @@ class TTkContainer(TTkWidget):
 
     def keyEvent(self, evt:TTkKeyEvent) -> bool:
         if (_cfw := self._focusChildWidget()) is not None:
-            if _cfw.keyEvent(evt):
+            if _cfw._enabled and _cfw.keyEvent(evt):
                 return True
 
         if TTkShortcut.processKey(evt, _cfw):

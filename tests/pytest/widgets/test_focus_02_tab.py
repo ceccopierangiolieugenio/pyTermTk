@@ -21,6 +21,7 @@
 # SOFTWARE.
 
 import sys, os
+from typing import List
 
 sys.path.append(os.path.join(sys.path[0],'../../../libs/pyTermTk'))
 import TermTk as ttk
@@ -726,3 +727,128 @@ def test_focus_container_tab_focus_reversed():
     assert False is widget1.hasFocus()
     assert True  is widget2.hasFocus()
     assert False is widget3.hasFocus()
+
+def _check_focus_order(root:ttk.TTk, widgets:List[ttk.TTkWidget], all_widgets:List[ttk.TTkWidget], evt:ttk.TTkKeyEvent):
+    for wid in widgets:
+        root.keyEvent(evt=evt)
+        print(f"Send {evt}")
+        for test_wid in all_widgets:
+            assert_condition = wid is test_wid
+            print(f"{assert_condition} == {test_wid.hasFocus()} - {test_wid.name()}")
+        for test_wid in all_widgets:
+            assert_condition = wid is test_wid
+            assert assert_condition is test_wid.hasFocus(), f"{assert_condition} != {test_wid.hasFocus()} - {test_wid.name()}"
+
+
+def test_focus_mixed_containers_tab_focus_disabled_3():
+    '''
+        Root ─▶ Container1 (No TabFocus) ─┬─▶ Widget1
+                                          ├─▶ Container2 (TabFocus) ─┬─▶ Widget2
+                                          │                          └─▶ Widget3
+                                          └─▶ Widget4
+    '''
+    root = ttk.TTk()
+    container1 = ttk.TTkContainer(parent=root)
+    widget1 = ttk.TTkWidget(parent=container1)
+    container2 = ttk.TTkContainer(parent=container1)
+    container2.setFocusPolicy(ttk.TTkK.FocusPolicy.TabFocus)
+    widget2 = ttk.TTkWidget(parent=container2)
+    widget3 = ttk.TTkWidget(parent=container2)
+    widget4 = ttk.TTkWidget(parent=container1)
+    widget1.setFocusPolicy(ttk.TTkK.FocusPolicy.TabFocus)
+    widget2.setFocusPolicy(ttk.TTkK.FocusPolicy.TabFocus)
+    widget3.setFocusPolicy(ttk.TTkK.FocusPolicy.TabFocus)
+    widget4.setFocusPolicy(ttk.TTkK.FocusPolicy.TabFocus)
+
+    widget3.setDisabled()
+
+    widget1.setFocus()
+
+    tab_key = ttk.TTkKeyEvent(
+        type=ttk.TTkK.KeyType.SpecialKey,
+        key=ttk.TTkK.Key_Tab,
+        mod=ttk.TTkK.NoModifier,
+        code='',)
+
+    _check_focus_order(
+        root=root, evt=tab_key,
+        widgets=[
+            container2,
+            widget2,
+            widget4,
+            widget1,
+        ],
+        all_widgets=[
+            container1,
+            container2,
+            widget1,
+            widget2,
+            widget3,
+            widget4,
+        ]
+    )
+
+def test_focus_mixed_containers_tab_focus_disabled_4():
+    '''
+        Root ─▶ Container1 (No TabFocus) ─┬─▶ Widget1
+                                          ├─▶ Container2 (TabFocus) ─┬─▶ Widget2
+                                          │                          └─▶ Widget3
+                                          └─▶ Widget4
+    '''
+    root = ttk.TTk()
+    container1 = ttk.TTkContainer(parent=root, name='Container1')
+    widget1 = ttk.TTkWidget(parent=container1, name='Widget1')
+    container2 = ttk.TTkContainer(parent=container1, name='Container2')
+    container2.setFocusPolicy(ttk.TTkK.FocusPolicy.TabFocus)
+    widget2 = ttk.TTkWidget(parent=container2, name='Widget2')
+    widget3 = ttk.TTkWidget(parent=container2, name='Widget3')
+    widget4 = ttk.TTkWidget(parent=container1, name='Widget4')
+    widget1.setFocusPolicy(ttk.TTkK.FocusPolicy.TabFocus)
+    widget2.setFocusPolicy(ttk.TTkK.FocusPolicy.TabFocus)
+    widget3.setFocusPolicy(ttk.TTkK.FocusPolicy.TabFocus)
+    widget4.setFocusPolicy(ttk.TTkK.FocusPolicy.TabFocus)
+
+    all_widgets=[
+        container1,
+        container2,
+        widget1,
+        widget2,
+        widget3,
+        widget4,
+    ]
+
+    container2.setDisabled()
+    widget2.setFocus()
+
+    tab_key = ttk.TTkKeyEvent(
+        type=ttk.TTkK.KeyType.SpecialKey,
+        key=ttk.TTkK.Key_Tab,
+        mod=ttk.TTkK.NoModifier,
+        code='',)
+
+    _check_focus_order(
+        root=root, evt=tab_key, all_widgets=all_widgets,
+        widgets=[
+            widget4,
+            widget1,
+            widget4,
+        ],
+    )
+
+    container2.setDisabled()
+    widget3.setFocus()
+
+    tab_key = ttk.TTkKeyEvent(
+        type=ttk.TTkK.KeyType.SpecialKey,
+        key=ttk.TTkK.Key_Tab,
+        mod=ttk.TTkK.ShiftModifier,
+        code='',)
+
+    _check_focus_order(
+        root=root, evt=tab_key, all_widgets=all_widgets,
+        widgets=[
+            widget1,
+            widget4,
+            widget1,
+        ],
+    )
