@@ -281,9 +281,9 @@ class TTkConstant:
 
         def invert(order:TTkConstant.SortOrder) -> TTkConstant.SortOrder:
             if order == TTkConstant.SortOrder.AscendingOrder:
-                return TTkConstant.SortOrder.AscendingOrder
-            else:
                 return TTkConstant.SortOrder.DescendingOrder
+            else:
+                return TTkConstant.SortOrder.AscendingOrder
 
     AscendingOrder  = SortOrder.AscendingOrder
     DescendingOrder = SortOrder.DescendingOrder
