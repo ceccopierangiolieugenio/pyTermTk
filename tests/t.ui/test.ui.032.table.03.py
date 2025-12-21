@@ -25,6 +25,23 @@
 # Demo inspired from:
 # https://www.daniweb.com/programming/software-development/code/447834/applying-pyside-s-qabstracttablemodel
 
+'''
+TTkTable Wide Table Example
+============================
+
+This example demonstrates table behavior with many columns (20+ columns).
+
+Key Features:
+- Horizontal scrolling for wide tables
+- Handling tables that exceed screen width
+- Same features as previous examples (images, multi-line text)
+- Many columns (20 columns total)
+- Demonstrates column navigation and viewport management
+
+Useful for testing horizontal scrolling performance and column
+visibility management in wide data sets.
+'''
+
 import os
 import sys
 import argparse

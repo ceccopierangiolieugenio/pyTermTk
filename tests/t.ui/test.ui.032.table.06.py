@@ -25,6 +25,27 @@
 # Demo inspired from:
 # https://www.daniweb.com/programming/software-development/code/447834/applying-pyside-s-qabstracttablemodel
 
+'''
+TTkTable CSV and Multiple Models Example
+=========================================
+
+This example demonstrates advanced table features including CSV support
+and management of multiple table models.
+
+Key Features:
+- CSV file loading support (via --csv argument)
+- Switching between multiple table models
+- Custom table model for CSV data (MyTableModelCSV)
+- Complex color modifiers with rainbow effects
+- Large datasets with mixed content
+- Dynamic model switching
+- Cell selection and highlighting
+
+Usage:
+  python test.ui.032.table.06.py --csv yourfile.csv  # Load CSV file
+  python test.ui.032.table.06.py -f                  # Full screen mode
+'''
+
 import os
 import sys
 import csv
@@ -48,14 +69,16 @@ args = parser.parse_args()
 fullScreen = not args.w
 mouseTrack = args.t
 
+# CSV file parsing support (currently commented out)
+# This code shows how to load CSV files into the table:
 # csvData = []
 # if args.csv:
-#     sniffer = csv.Sniffer()
-#     has_header = sniffer.has_header(args.csv.read(2048))
-#     args.csv.seek(0)
-#     csvreader = csv.reader(args.csv)
+#     sniffer = csv.Sniffer()  # Detect CSV format
+#     has_header = sniffer.has_header(args.csv.read(2048))  # Check for headers
+#     args.csv.seek(0)  # Reset file pointer
+#     csvreader = csv.reader(args.csv)  # Create CSV reader
 #     for row in csvreader:
-#         csvData.append(row)
+#         csvData.append(row)  # Store each row
 
 
 imagesFile = os.path.join(os.path.dirname(os.path.abspath(__file__)),'../ansi.images.json')

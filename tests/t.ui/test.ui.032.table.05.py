@@ -25,6 +25,25 @@
 # Demo inspired from:
 # https://www.daniweb.com/programming/software-development/code/447834/applying-pyside-s-qabstracttablemodel
 
+'''
+TTkTable Large Dataset Example
+================================
+
+This example demonstrates table performance with large datasets (5000 rows).
+
+Key Features:
+- Handling large datasets (5000+ rows) efficiently
+- Custom color modifiers for creating rainbow and pattern effects
+- Multiple table models with different dataset sizes
+- Cell selection demonstration (setSelection)
+- Dynamic style switching with custom colors
+- Performance testing with varied content (text, images, numbers)
+- Rich content mixing: TTkStrings with colors, ANSI images, multiline text
+
+This is useful for performance testing and understanding how TTkTable
+handles large amounts of data and complex rendering scenarios.
+'''
+
 import os
 import sys
 import argparse
@@ -53,7 +72,13 @@ with open(imagesFile) as f:
     images = [fireMini,pepper,python]
 
 
+# Custom color modifier that creates complex color patterns for table rows
+# This class extends TTkAlternateColor to provide custom alternating colors
 class CustomColorModifier(ttk.TTkAlternateColor):
+    # Define a color palette with various effects:
+    # - Blue shades for grouping
+    # - Green shades for contrast
+    # - Rainbow effects for visual interest
     colors = (
         [ ttk.TTkColor.bg("#000066"), ttk.TTkColor.bg("#0000FF") ] * 3 +
         [ ttk.TTkColor.bg("#003300"), ttk.TTkColor.bg("#006600") ] +

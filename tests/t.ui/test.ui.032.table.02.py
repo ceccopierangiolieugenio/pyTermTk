@@ -25,6 +25,24 @@
 # Demo inspired from:
 # https://www.daniweb.com/programming/software-development/code/447834/applying-pyside-s-qabstracttablemodel
 
+'''
+TTkTable Advanced Example with Images and Multi-line Text
+=========================================================
+
+This example extends the basic table functionality by demonstrating:
+
+Key Features:
+- Displaying ANSI art images within table cells
+- Multi-line text in cells
+- Long text handling
+- Custom vertical header labels with prefixes
+- Mixed content types (text, numbers, and images)
+- Custom color modifiers for alternating row colors
+
+The table contains chemical solvents data with embedded images and
+demonstrates how TTkTable handles complex cell content.
+'''
+
 import os
 import sys
 import argparse
@@ -34,10 +52,12 @@ import json
 sys.path.append(os.path.join(sys.path[0],'../..'))
 import TermTk as ttk
 
+# Load ANSI art images from JSON file
+# These images were created using the Dumb Paint Tool and can be displayed in table cells
 imagesFile = os.path.join(os.path.dirname(os.path.abspath(__file__)),'ansi.images.json')
 with open(imagesFile) as f:
     d = json.load(f)
-    # Image exported by the Dumb Paint Tool
+    # Decompress base64-encoded ANSI art images
     pepper   = ttk.TTkUtil.base64_deflate_2_obj(d['compressed']['pepper'])
     python   = ttk.TTkUtil.base64_deflate_2_obj(d['compressed']['python'])
     fire     = ttk.TTkUtil.base64_deflate_2_obj(d['compressed']['fire'])
@@ -55,10 +75,12 @@ class MyTableModel(ttk.TTkAbstractTableModel):
         return len(self.mylist[0])
     def data(self, row, col):
         return self.mylist[row][col]
+    # Provide custom header labels for both columns and rows
     def headerData(self, num, orientation):
         if orientation == ttk.TTkK.HORIZONTAL:
-            return self.header[num]
+            return self.header[num]  # Column headers
         if orientation == ttk.TTkK.VERTICAL:
+            # Create custom row headers with rotating prefixes
             prefix = ['aa','bb','cc','dd','ee','ff','gg','Euge']
             return f"{prefix[num%len(prefix)]}:{num:03}"
         return super().headerData(num, orientation)
