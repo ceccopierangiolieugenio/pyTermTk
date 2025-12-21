@@ -747,8 +747,8 @@ class TTkTabBar(TTkContainer):
     @pyTTkSlot(TTkTabButton)
     def _tcbClickedHandler(self, btn:TTkTabButton):
         index = self._tabStatus.tabButtons.index(btn)
-        self.setCurrentIndex(index)
         self.tabBarClicked.emit(index)
+        self.setCurrentIndex(index)
 
     @pyTTkSlot(int)
     def removeTab(self, index:int) -> None:
