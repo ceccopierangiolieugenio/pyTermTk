@@ -22,6 +22,28 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+'''
+PySide6 QTableWidget Column Insertion Example (for comparison)
+===============================================================
+
+This is a PySide6/Qt reference example showing how to insert columns
+into QTableWidget. It's provided for comparison with TTkTable.
+
+Key Operations:
+- QTableWidget: Simpler than QTableView, manages data internally
+- setHorizontalHeaderLabels(): Set column titles
+- setItem(): Place data in cells
+- insertColumn(): Add a new column at specific index
+- setHorizontalHeaderItem(): Set header for new column
+
+This demonstrates the widget approach (data stored in widget)
+rather than the model/view approach used by TTkTable.
+
+Qt provides both approaches:
+- QTableWidget: Simple, data in widget (used here)
+- QTableView + Model: More flexible, data separate (like TTkTable)
+'''
+
 from PySide6.QtWidgets import QApplication, QTableWidget, QTableWidgetItem
 
 app = QApplication([])

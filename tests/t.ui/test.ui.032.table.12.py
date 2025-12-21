@@ -25,6 +25,25 @@
 # Demo inspired from:
 # https://www.daniweb.com/programming/software-development/code/447834/applying-pyside-s-qabstracttablemodel
 
+'''
+TTkTable Cell Edit Flags Example
+=================================
+
+This example demonstrates controlling cell editability through ItemFlags.
+
+Key Features:
+- Custom flags() method to control cell behavior per column
+- ItemIsEnabled: Cell can receive focus
+- ItemIsEditable: Cell content can be edited
+- ItemIsSelectable: Cell can be selected
+- Column 0: Only enabled and selectable (not editable)
+- Column 1: Enabled and editable (can modify content)
+- Other columns: Use default flags
+
+Useful for creating tables with mixed editable/read-only columns,
+like forms where some fields are locked and others are user-editable.
+'''
+
 import os
 import sys
 import csv
@@ -138,15 +157,20 @@ class MyTableModel(ttk.TTkTableModelList):
             return f"{prefix[num%len(prefix)]}:{num:03}"
         return super().headerData(num, orientation)
 
+    # Control cell behavior through flags
+    # This method determines what the user can do with each cell
     def flags(self, row: int, col: int) -> ttk.TTkConstant.ItemFlag:
         if col==0:
+            # Column 0: Read-only, can be selected but not edited
             return (
-                ttk.TTkK.ItemFlag.ItemIsEnabled  |
-                ttk.TTkK.ItemFlag.ItemIsSelectable )
+                ttk.TTkK.ItemFlag.ItemIsEnabled  |   # Can receive focus
+                ttk.TTkK.ItemFlag.ItemIsSelectable ) # Can be selected
         if col==1:
+            # Column 1: Editable, user can modify content
             return (
-                ttk.TTkK.ItemFlag.ItemIsEnabled  |
-                ttk.TTkK.ItemFlag.ItemIsEditable )
+                ttk.TTkK.ItemFlag.ItemIsEnabled  |   # Can receive focus
+                ttk.TTkK.ItemFlag.ItemIsEditable )   # Can be edited
+        # Other columns use default flags
         return super().flags(row, col)
 
 

@@ -22,6 +22,27 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+'''
+PySide6 QTableView Alignment Example (for comparison)
+======================================================
+
+This is a PySide6/Qt reference example showing how text alignment works
+in QTableView. It's provided for comparison with TTkTable alignment.
+
+Key Concepts:
+- QAbstractTableModel for data handling
+- Qt.DisplayRole for showing data
+- Qt.TextAlignmentRole for alignment
+- Combining flags: Qt.AlignLeft | Qt.AlignTop
+
+Alignment Options in Qt:
+- Horizontal: AlignLeft, AlignCenter, AlignRight, AlignJustify
+- Vertical: AlignTop, AlignVCenter, AlignBottom
+
+Compare this with TTkTable alignment in test.ui.032.table.13.alignment.*.py
+to see how pyTermTk implements similar functionality in a terminal UI.
+'''
+
 from PySide6.QtWidgets import QApplication, QTableView
 from PySide6.QtCore import Qt, QAbstractTableModel
 

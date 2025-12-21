@@ -25,6 +25,27 @@
 # Demo inspired from:
 # https://www.daniweb.com/programming/software-development/code/447834/applying-pyside-s-qabstracttablemodel
 
+'''
+TTkTable with Custom Enum Types Example
+========================================
+
+This example demonstrates displaying Python Enum types in table cells.
+
+Key Features:
+- Custom Enum classes with auto() values
+- Enum display using __str__() method
+- Boolean Enum (MyEnumYesNo) with True/False values
+- Mixed Enum types in different columns
+- Automatic enum value rendering
+- Random enum selection for variety
+
+The table automatically displays enum values by calling their __str__() method,
+making it easy to show meaningful names instead of raw enum values.
+
+Useful for displaying categorical data, status fields, or any predefined
+set of options in a human-readable format.
+'''
+
 import os
 import sys
 import argparse
@@ -47,20 +68,26 @@ args = parser.parse_args()
 fullScreen = not args.w
 mouseTrack = True
 
+# Custom Enum for demonstrating enum display in tables
 class MyEnum(Enum):
-    Foo=auto()
+    Foo=auto()  # auto() generates sequential values automatically
     Bar=auto()
     Baz=auto()
 
+    # Override __str__ to display the enum name instead of the full value
     def __str__(self):
         return self.name
 
+# Boolean-like Enum that maps to True/False values
 class MyEnumYesNo(Enum):
-    Yes=True
-    No=False
+    Yes=True   # Maps to boolean True
+    No=False   # Maps to boolean False
 
+    # Display as "Yes" or "No" instead of "MyEnumYesNo.Yes"
     def __str__(self):
         return self.name
+
+    # Allow the enum to be used in boolean contexts
     def __bool__(self):
         return self.value
 

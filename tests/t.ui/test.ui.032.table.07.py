@@ -25,6 +25,26 @@
 # Demo inspired from:
 # https://www.daniweb.com/programming/software-development/code/447834/applying-pyside-s-qabstracttablemodel
 
+'''
+TTkTableModelList Example
+==========================
+
+This example demonstrates using TTkTableModelList, a ready-made list-based
+table model that simplifies table creation.
+
+Key Features:
+- Using TTkTableModelList instead of custom TTkAbstractTableModel
+- Simplified table creation with list data
+- No need to implement rowCount(), columnCount(), data() methods
+- Full theming and styling support
+- Large dataset handling (5000+ rows)
+- Custom color modifiers
+- Dynamic style switching
+
+TTkTableModelList is ideal when your data is already in a list format
+and you don't need custom data access logic.
+'''
+
 import os
 import sys
 import csv
