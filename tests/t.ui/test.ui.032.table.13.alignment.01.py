@@ -26,6 +26,26 @@
 # Demo inspired from:
 # https://www.daniweb.com/programming/software-development/code/447834/applying-pyside-s-qabstracttablemodel
 
+'''
+TTkTable Cell Alignment Example
+================================
+
+This example demonstrates text alignment within table cells.
+
+Key Features:
+- displayData() method returning (TTkString, Alignment) tuples
+- Horizontal alignment: LEFT, CENTER, RIGHT, JUSTIFY
+- Vertical alignment: TOP, CENTER, BOTTOM
+- Combined alignments (e.g., LEFT|TOP, CENTER|CENTER, RIGHT|BOTTOM)
+- Per-cell alignment control
+- Multi-line text with different alignments
+
+The displayData() method allows returning both the cell content and
+its desired alignment, providing fine-grained control over cell presentation.
+
+Alignment constants can be combined using the | (bitwise OR) operator.
+'''
+
 import os
 import sys
 import csv

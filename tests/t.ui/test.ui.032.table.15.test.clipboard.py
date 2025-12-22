@@ -22,6 +22,34 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+'''
+TTkTable Clipboard Operations Example
+======================================
+
+This example demonstrates table clipboard functionality and complex data types.
+
+Key Features:
+- Clipboard operations (copy/paste) with Ctrl+C/Ctrl+Z signals enabled
+- Mixed data types in cells:
+  * Hex numbers (formatted strings)
+  * TTkString with colors
+  * Boolean values
+  * TTkCellListType (dropdown lists)
+  * Custom Enum types
+  * datetime.time objects
+  * datetime.date objects
+  * datetime.datetime objects
+- Random data generation for dates and times
+- Signal mask configuration for clipboard shortcuts
+
+Usage:
+- Select cells and press Ctrl+C to copy
+- Use Ctrl+Z for undo (if enabled in application)
+
+This example shows how TTkTable handles various Python data types
+and provides built-in clipboard support.
+'''
+
 import os
 import sys
 import argparse
@@ -45,21 +73,21 @@ args = parser.parse_args()
 fullScreen = not args.w
 mouseTrack = True
 
-# Random date between two dates
+# Helper function to generate random dates within a range
 def random_date(start_date, end_date):
     time_between = end_date - start_date
     days_between = time_between.days
     random_days = random.randrange(days_between)
     return start_date + datetime.timedelta(days=random_days)
 
-# Random time
+# Helper function to generate random times
 def random_time():
     hour = random.randint(0, 23)
     minute = random.randint(0, 59)
     second = random.randint(0, 59)
     return datetime.time(hour, minute, second)
 
-# Random datetime
+# Helper function to generate random datetimes within a range
 def random_datetime(start_datetime, end_datetime):
     time_between = end_datetime - start_datetime
     total_seconds = int(time_between.total_seconds())

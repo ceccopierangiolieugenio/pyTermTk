@@ -25,6 +25,24 @@
 # Demo inspired from:
 # https://www.daniweb.com/programming/software-development/code/447834/applying-pyside-s-qabstracttablemodel
 
+'''
+TTkTableModelList Multi-line Cell Example
+==========================================
+
+This example focuses on displaying multi-line text content in table cells.
+
+Key Features:
+- Multi-line text formatting in cells
+- Automatic row height adjustment with resizeRowsToContents()
+- TTkTableModelList for simplified data management
+- Mixed content (short text, long multi-line text)
+- Custom row header labels
+- Item flags customization (editable vs read-only cells)
+
+This demonstrates how TTkTable handles cells with varying heights
+and properly wraps/displays multi-line content.
+'''
+
 import os
 import sys
 import csv

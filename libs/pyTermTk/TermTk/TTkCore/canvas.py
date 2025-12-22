@@ -390,16 +390,15 @@ class TTkCanvas():
                 self._set(y,x+i, TTkCfg.theme.hscroll[1], color)
             for i in range(f,t): # Slider
                 self._set(y,x+i, TTkCfg.theme.hscroll[2], color)
-            self._set(y,x, TTkCfg.theme.hscroll[0], color)        # Left Arrow
             self._set(y,x+size-1, TTkCfg.theme.hscroll[3], color) # Right Arrow
+            self._set(y,x, TTkCfg.theme.hscroll[0], color)        # Left Arrow
         else:
             for i in range(y+1,y+size-1): # V line
                 self._set(y+i,x, TTkCfg.theme.vscroll[1], color)
             for i in range(f,t): # Slider
                 self._set(y+i,x, TTkCfg.theme.vscroll[2], color)
-            self._set(y,x, TTkCfg.theme.vscroll[0], color)        # Up Arrow
             self._set(y+size-1,x, TTkCfg.theme.vscroll[3], color) # Down Arrow
-        pass
+            self._set(y,x, TTkCfg.theme.vscroll[0], color)        # Up Arrow
 
     def drawTabMenuButton(
             self, pos, size, text, slim=False,

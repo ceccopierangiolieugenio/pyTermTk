@@ -22,6 +22,29 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+'''
+PySide6 QTableView with QStandardItemModel Column Insertion (for comparison)
+============================================================================
+
+This is a PySide6/Qt reference example showing how to insert columns
+using the model/view pattern with QStandardItemModel.
+
+Key Concepts:
+- QStandardItemModel: Pre-built model for common use cases
+- QTableView: View component that displays the model
+- insertColumn(): Add column to model
+- setHeaderData(): Set column header text
+- Qt.Horizontal: Specify horizontal (column) orientation
+
+Model/View Pattern Benefits:
+- Separation of data (model) and presentation (view)
+- Multiple views can share one model
+- Easier to update data without affecting display
+
+This is the pattern that TTkTable follows, providing similar
+flexibility and power in a terminal-based interface.
+'''
+
 from PySide6.QtWidgets import QApplication, QTableView
 from PySide6.QtGui import QStandardItemModel, QStandardItem
 from PySide6.QtCore import Qt

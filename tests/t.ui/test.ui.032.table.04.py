@@ -25,6 +25,23 @@
 # Demo inspired from:
 # https://www.daniweb.com/programming/software-development/code/447834/applying-pyside-s-qabstracttablemodel
 
+'''
+TTkTable Custom Size Example
+=============================
+
+This example shows how to create a table model with a custom/fixed size
+that may differ from the actual data size.
+
+Key Features:
+- Table model with optional size parameter
+- Demonstrates rowCount() and columnCount() override with custom dimensions
+- Wide table with 21 columns (including 'KK-Last' column)
+- Shows how to handle tables where displayed size differs from data size
+
+This is useful when you want to display a subset of data or when
+implementing lazy loading / virtual scrolling.
+'''
+
 import os
 import sys
 import argparse
@@ -49,15 +66,19 @@ class MyTableModel(ttk.TTkAbstractTableModel):
         super().__init__(*args)
         self.mylist = mylist
         self.header = header
-        self.size = size
+        self.size = size  # Optional (rows, cols) tuple to override actual data size
+
+    # Return custom row count if size is specified, otherwise use actual data length
     def rowCount(self):
         if self.size:
-            return self.size[0]
-        return len(self.mylist)
+            return self.size[0]  # Use custom row count
+        return len(self.mylist)  # Use actual data row count
+
+    # Return custom column count if size is specified, otherwise use actual data length
     def columnCount(self):
         if self.size:
-            return self.size[1]
-        return len(self.mylist[0])
+            return self.size[1]  # Use custom column count
+        return len(self.mylist[0])  # Use actual data column count
     def data(self, row, col):
         return self.mylist[row][col]
     def headerData(self, num, orientation):
