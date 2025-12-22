@@ -20,6 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
+
 __all__ = ['TTkAbstractTableModel','TTkModelIndex']
 
 from typing import Tuple,Any
@@ -52,7 +54,7 @@ class TTkModelIndex():
 
         :return: int
         '''
-        pass
+        raise NotImplementedError()
 
     def col(self) -> int:
         '''
@@ -60,7 +62,8 @@ class TTkModelIndex():
 
         :return: int
         '''
-        pass
+        raise NotImplementedError()
+
 
     def data(self) -> object:
         '''
@@ -68,7 +71,7 @@ class TTkModelIndex():
 
         :return: object
         '''
-        pass
+        raise NotImplementedError()
 
     def setData(self, data:object) -> None:
         '''
@@ -77,11 +80,11 @@ class TTkModelIndex():
         :param data: the data to be set in the (row,col) position of the table
         :type data: object
         '''
-        pass
+        raise NotImplementedError()
 
 class _TTkModelIndexList(TTkModelIndex):
     __slots__ = ('_col','_row','_model')
-    def __init__(self, row:int, col:list, model) -> None:
+    def __init__(self, row:int, col:int, model:TTkAbstractTableModel) -> None:
         self._col = col
         self._row = row
         self._model = model

@@ -25,7 +25,7 @@ __all__ = ['TTkTree']
 from typing import List,Optional
 
 from TermTk.TTkCore.constant import TTkK
-from TermTk.TTkCore.string import TTkString
+from TermTk.TTkCore.string import TTkString, TTkStringType
 from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
 from TermTk.TTkWidgets.TTkModelView.treewidget import TTkTreeWidget
 from TermTk.TTkWidgets.TTkModelView.treewidgetitem import TTkTreeWidgetItem
@@ -77,7 +77,7 @@ class TTkTree(TTkAbstractScrollArea):
 
         This signal is emitted when the user activates an item by double-clicking
         or pressing a special key (e.g., Enter).
-        
+
         :param item: the item that was clicked.
         :type item: :py:class:`TTkTreeWidgetItem`
         :param col: the item's column that was clicked.
@@ -90,7 +90,7 @@ class TTkTree(TTkAbstractScrollArea):
         .. seealso:: this method is forwarded to :py:meth:`TTkTreeWidget.itemChanged`
 
         This signal is emitted when the contents of the column in the specified item changes.
-        
+
         :param item: the item reported by this signal
         :type item: :py:class:`TTkTreeWidgetItem`
         :param col: the item's column
@@ -103,9 +103,9 @@ class TTkTree(TTkAbstractScrollArea):
         .. seealso:: this method is forwarded to :py:meth:`TTkTreeWidget.itemClicked`
 
         This signal is emitted when the user clicks inside the widget.
-        
+
         If no item was clicked, no signal will be emitted.
-        
+
         :param item: the item that was clicked.
         :type item: :py:class:`TTkTreeWidgetItem`
         :param col: the item's column that was clicked.
@@ -118,7 +118,7 @@ class TTkTree(TTkAbstractScrollArea):
         .. seealso:: this method is forwarded to :py:meth:`TTkTreeWidget.itemExpanded`
 
         This signal is emitted when the specified item is expanded so that all of its children are displayed.
-        
+
         :param item: the item reported by this signal
         :type item: :py:class:`TTkTreeWidgetItem`
         '''
@@ -129,7 +129,7 @@ class TTkTree(TTkAbstractScrollArea):
         .. seealso:: this method is forwarded to :py:meth:`TTkTreeWidget.itemCollapsed`
 
         This signal is emitted when the specified item is collapsed so that none of its children are displayed.
-        
+
         :param item: the item reported by this signal
         :type item: :py:class:`TTkTreeWidgetItem`
         '''
@@ -140,16 +140,16 @@ class TTkTree(TTkAbstractScrollArea):
         .. seealso:: this method is forwarded to :py:meth:`TTkTreeWidget.itemDoubleClicked`
 
         This signal is emitted when the user double clicks inside the widget.
-        
+
         If no item was double clicked, no signal will be emitted.
-        
+
         :param item: the item that was clicked.
         :type item: :py:class:`TTkTreeWidgetItem`
         :param col: the item's column that was clicked.
         :type col: int
         '''
         return self._treeView.itemDoubleClicked
-    def setHeaderLabels(self, labels:List[TTkString]) -> None:
+    def setHeaderLabels(self, labels:List[TTkStringType]) -> None:
         '''
         .. seealso:: this method is forwarded to :py:meth:`TTkTreeWidget.setHeaderLabels`
 

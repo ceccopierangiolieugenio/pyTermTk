@@ -48,6 +48,7 @@ from TermTk.TTkAbstract.abstractscrollarea import TTkAbstractScrollArea
 from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollView, TTkAbstractScrollViewGridLayout
 from TermTk.TTkWidgets.widget import TTkWidget
 
+from TermTk.TTkWidgets.TTkTerminal import TTkTerminal
 from TermTk.TTkWidgets.TTkTerminal.mode            import TTkTerminalModes
 
 from TermTk.TTkWidgets.TTkTerminal.vt102 import TTkVT102
@@ -55,14 +56,16 @@ from TermTk.TTkWidgets.TTkTerminal.vt102 import TTkVT102
 from TermTk.TTkCore.TTkTerm.colors import TTkTermColor
 from TermTk.TTkCore.TTkTerm.colors_ansi_map import ansiMap16, ansiMap256
 
-class DebugTTkTerminal(TTkWidget):
-    __slots__ = ('_terminal')
-    def __init__(self, terminal, **kwargs) -> None:
-        super().__init__(**kwargs)
+# class DebugTTkTerminal(TTkWidget):
+#     __slots__ = ('_terminal')
+#     _terminal:TTkTerminal
+#     def __init__(self, terminal, **kwargs) -> None:
+#         self._terminal = terminal
+#         super().__init__(**kwargs)
 
-    def paintEvent(self, canvas: TTkCanvas):
-        t = self._terminal
-        canvas.drawText(pos=(0,0), text=f"{t=}")
-        canvas.drawText(pos=(0,1), text=f"{t._terminalCursor=}")
-        canvas.drawText(pos=(0,2), text=f"{t._scrollingRegion=}")
-        canvas.drawText(pos=(0,3), text=f"{len(t._bufferedLines)=}")
+#     def paintEvent(self, canvas: TTkCanvas):
+#         t = self._terminal
+#         canvas.drawText(pos=(0,0), text=f"{t=}")
+#         canvas.drawText(pos=(0,1), text=f"{t._terminalCursor=}")
+#         canvas.drawText(pos=(0,2), text=f"{t._scrollingRegion=}")
+#         canvas.drawText(pos=(0,3), text=f"{len(t._bufferedLines)=}")
