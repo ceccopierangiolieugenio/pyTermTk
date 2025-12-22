@@ -20,7 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-__all__ = ['DebugTTkTerminal']
+# __all__ = ['DebugTTkTerminal']
+__all__ = []
 
 import os, pty, threading
 import struct, fcntl, termios
