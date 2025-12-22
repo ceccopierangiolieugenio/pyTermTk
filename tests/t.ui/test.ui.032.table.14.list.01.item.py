@@ -25,6 +25,24 @@
 # Demo inspired from:
 # https://www.daniweb.com/programming/software-development/code/447834/applying-pyside-s-qabstracttablemodel
 
+'''
+TTkTable with TTkCellListType Example
+======================================
+
+This example demonstrates using TTkCellListType for dropdown lists in cells.
+
+Key Features:
+- TTkCellListType: Creates a dropdown/combo box within a cell
+- Mixed cell types: booleans, strings, and list selectors
+- value parameter: The currently selected item
+- items parameter: List of available options
+- Interactive selection: Click cell to see dropdown menu
+- Automatic cell editor for list types
+
+TTkCellListType is useful for creating tables where users can select
+from predefined options, similar to dropdown menus in spreadsheet applications.
+'''
+
 import os
 import sys
 import argparse
@@ -46,18 +64,23 @@ fullScreen = not args.w
 mouseTrack = True
 
 
+# Create a list of options for the dropdown cells
 data_list = [
     'Pippo', 'Pluto', 'Paperino',
     'Qui', 'Quo', 'Qua', # L'accento non ci va
     'Minnie', 'Topolino'
 ]
 
+# Generate table data with mixed types:
+# Column 0: Boolean checkboxes
+# Column 1-2: Simple strings
+# Column 3: TTkCellListType dropdown with random selection from data_list
 data = [
     [
-        bool(random.randint(0,1)),
-        'Pippo',
-        'Pluto',
-        ttk.TTkCellListType(value=random.choice(data_list), items=data_list)
+        bool(random.randint(0,1)),  # Random True/False
+        'Pippo',                     # Fixed string
+        'Pluto',                     # Fixed string
+        ttk.TTkCellListType(value=random.choice(data_list), items=data_list)  # Dropdown list
     ] for y in range(20)
 ]
 

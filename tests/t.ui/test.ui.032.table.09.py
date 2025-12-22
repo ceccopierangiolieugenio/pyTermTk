@@ -25,6 +25,24 @@
 # Demo inspired from:
 # https://www.daniweb.com/programming/software-development/code/447834/applying-pyside-s-qabstracttablemodel
 
+'''
+TTkTable Interactive Example with Mouse Tracking
+================================================
+
+This example demonstrates interactive table features with mouse tracking enabled.
+
+Key Features:
+- Mouse tracking enabled by default (mouseTrack=True)
+- Multi-line cell content
+- Interactive cell hover effects
+- Row and column selection
+- Item flags for controlling cell editability
+- Custom row heights with resizeRowsToContents()
+
+Mouse tracking allows the table to respond to mouse movements,
+enabling hover effects and improved interactivity.
+'''
+
 import os
 import sys
 import csv

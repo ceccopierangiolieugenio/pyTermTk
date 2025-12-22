@@ -306,7 +306,7 @@ class TestTTkTableModelCSV:
         model = ttk.TTkTableModelCSV(fd=csv_fd)
 
         # Test inherited methods
-        assert isinstance(model.flags(0, 0), int)
+        assert isinstance(model.flags(0, 0), ttk.TTkK.ItemFlag)
 
         # Test setData (inherited)
         original_value = model.data(0, 0)

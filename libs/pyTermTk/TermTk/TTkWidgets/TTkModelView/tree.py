@@ -25,7 +25,7 @@ __all__ = ['TTkTree']
 from typing import List,Optional
 
 from TermTk.TTkCore.constant import TTkK
-from TermTk.TTkCore.string import TTkString
+from TermTk.TTkCore.string import TTkString, TTkStringType
 from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
 from TermTk.TTkWidgets.TTkModelView.treewidget import TTkTreeWidget
 from TermTk.TTkWidgets.TTkModelView.treewidgetitem import TTkTreeWidgetItem

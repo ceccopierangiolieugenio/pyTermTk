@@ -25,6 +25,24 @@
 # Demo inspired from:
 # https://www.daniweb.com/programming/software-development/code/447834/applying-pyside-s-qabstracttablemodel
 
+'''
+TTkTable Basic Example
+======================
+
+This example demonstrates the fundamental usage of TTkTable widget with a custom table model.
+
+Key Features Demonstrated:
+- Creating a custom table model by extending TTkAbstractTableModel
+- Implementing required methods: rowCount(), columnCount(), data()
+- Adding custom header data with headerData()
+- Implementing column sorting functionality
+- Resizing columns to fit content
+- Enabling sorting by clicking column headers
+
+The example displays a table of chemical solvents with their physical properties
+(boiling point, melting point, density) and allows sorting by any column.
+'''
+
 import os
 import sys
 import argparse
@@ -33,27 +51,40 @@ import operator
 sys.path.append(os.path.join(sys.path[0],'../..'))
 import TermTk as ttk
 
+# Custom table model that provides data to the TTkTable widget
 class MyTableModel(ttk.TTkAbstractTableModel):
     def __init__(self, mylist, header, *args):
         super().__init__(*args)
-        self.mylist = mylist
-        self.header = header
+        self.mylist = mylist    # Store the data as a list of tuples
+        self.header = header     # Store column headers
+
+    # Return the number of rows in the table
     def rowCount(self):
         return len(self.mylist)
+
+    # Return the number of columns in the table
     def columnCount(self):
         return len(self.mylist[0])
+
+    # Return the data at the specified row and column
     def data(self, row, col):
         return self.mylist[row][col]
+    # Provide header labels for columns and rows
     def headerData(self, num, orientation):
         if orientation == ttk.TTkK.HORIZONTAL:
-            return self.header[num]
+            return self.header[num]  # Return column header text
         return super().headerData(num, orientation)
+
+    # Sort the table data by the specified column
     def sort(self, col, order):
         """sort table by given column number col"""
+        # Sort the list by the specified column
         self.mylist = sorted(self.mylist,
             key=operator.itemgetter(col))
+        # Reverse if descending order is requested
         if order == ttk.TTkK.DescendingOrder:
             self.mylist.reverse()
+        # Notify the table that the data has changed
         self.dataChanged.emit()
 
 # the solvent data ...
@@ -118,6 +149,7 @@ data_list = [
     ('WATER', 100.0, 0.0, 1.0),
     ('XYLENES', 139.1, -47.8, 0.86)]
 
+# Parse command line arguments for display options
 parser = argparse.ArgumentParser()
 parser.add_argument('-f', help='Full Screen (default)', action='store_true')
 parser.add_argument('-w', help='Windowed',    action='store_true')
@@ -127,6 +159,7 @@ args = parser.parse_args()
 fullScreen = not args.w
 mouseTrack = args.t
 
+# Create the main TTk application
 root = ttk.TTk(title="pyTermTk Table Demo", mouseTrack=mouseTrack)
 if fullScreen:
     rootTable = root
@@ -134,17 +167,22 @@ if fullScreen:
 else:
     rootTable = ttk.TTkWindow(parent=root,pos = (0,0), size=(150,40), title="Test Table 1", layout=ttk.TTkGridLayout(), border=True)
 
+# Create a vertical splitter to hold the table and log viewer
 splitter = ttk.TTkSplitter(parent=rootTable,orientation=ttk.TTkK.VERTICAL)
 
+# Create the table model with our data
 table_model = MyTableModel(data_list, header)
 
+# Create the table widget and attach the model
 table = ttk.TTkTable(parent=splitter, tableModel=table_model)
 
-# set column width to fit contents (set font first!)
+# Automatically resize columns to fit their contents
 table.resizeColumnsToContents()
-# enable sorting
+
+# Enable column sorting by clicking on column headers
 table.setSortingEnabled(True)
 
+# Add a log viewer at the bottom of the splitter
 splitter.addWidget(ttk.TTkLogViewer(),size=10,title="LOGS")
 
 root.mainloop()

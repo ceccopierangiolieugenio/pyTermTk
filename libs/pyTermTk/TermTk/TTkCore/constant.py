@@ -169,7 +169,7 @@ class TTkConstant:
     HORIZONTAL = Direction.HORIZONTAL
     VERTICAL   = Direction.VERTICAL
 
-    class ScrollBarPolicy(int):
+    class ScrollBarPolicy(IntEnum):
         ScrollBarAsNeeded  =  0x00
         ScrollBarAlwaysOff =  0x01
         ScrollBarAlwaysOn  =  0x02
@@ -281,9 +281,9 @@ class TTkConstant:
 
         def invert(order:TTkConstant.SortOrder) -> TTkConstant.SortOrder:
             if order == TTkConstant.SortOrder.AscendingOrder:
-                return TTkConstant.SortOrder.AscendingOrder
-            else:
                 return TTkConstant.SortOrder.DescendingOrder
+            else:
+                return TTkConstant.SortOrder.AscendingOrder
 
     AscendingOrder  = SortOrder.AscendingOrder
     DescendingOrder = SortOrder.DescendingOrder
@@ -543,7 +543,7 @@ class TTkConstant:
         ClearAndSelect = Clear | Select
         '''A combination of Clear and Select, provided for convenience.'''
 
-    class ItemFlag(int):
+    class ItemFlag(Flag):
         ''':py:class:`ItemFlag` describes the properties of an item
 
         .. autosummary::
