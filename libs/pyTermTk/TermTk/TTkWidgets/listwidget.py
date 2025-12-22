@@ -849,7 +849,6 @@ class TTkListWidget(TTkAbstractScrollView):
         if not self._highlighted:
             self._highlighted = self._items[0]
         self._highlighted._setHighlighted(True)
-        self._moveToHighlighted()
 
     def focusOutEvent(self):
         if self._highlighted:
