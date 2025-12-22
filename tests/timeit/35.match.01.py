@@ -32,6 +32,11 @@ import timeit
 
 from typing import List, Tuple, Iterator
 
+# match statement requires Python 3.10+
+if sys.version_info < (3, 10):
+    print("This test requires Python 3.10 or higher (match statement not available)")
+    sys.exit(0)
+
 def test_ti_01_01_ma():
     ret = 0
     for i in range(1000):
