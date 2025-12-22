@@ -106,7 +106,7 @@ class TTkAbstractScrollArea(TTkContainer):
     @pyTTkSlot()
     def _viewportChanged(self) -> None:
         ''' Internal slot to handle viewport changes and update scroll bar ranges and visibility '''
-        if not self._viewport or not self.isVisible(): return
+        if self._processing or not self._viewport or not self.isVisible(): return
         w,h = self.size()
         fw, fh = self._viewport.viewFullAreaSize()
         dw, dh = self._viewport.viewDisplayedSize()
@@ -126,10 +126,9 @@ class TTkAbstractScrollArea(TTkContainer):
         self._horizontalScrollBar.setValue(ox)
 
         if self._verticalScrollBarPolicy == TTkK.ScrollBarAsNeeded:
-            if h<=4 or w<=1 or vrange<=0:
+            if w<=self._verticalScrollBar.minimumWidth() or vrange<=0:
                 self._verticalScrollBar.hide()
-            elif dh>self._verticalScrollBar.minimumHeight()+1:
-                # we need enough space to display the bar to avoid endless loop
+            elif dh>=self._verticalScrollBar.minimumHeight():
                 self._verticalScrollBar.show()
         elif self._verticalScrollBarPolicy == TTkK.ScrollBarAlwaysOn:
             self._verticalScrollBar.show()
@@ -137,10 +136,9 @@ class TTkAbstractScrollArea(TTkContainer):
             self._verticalScrollBar.hide()
 
         if self._horizontalScrollBarPolicy == TTkK.ScrollBarAsNeeded:
-            if w<=4 or h<=1 or hrange<=0:
+            if h<=self._horizontalScrollBar.minimumHeight() or hrange<=0:
                 self._horizontalScrollBar.hide()
-            elif dw>self._horizontalScrollBar.minimumWidth()+1:
-                # we need enough space to display the bar to avoid endless loop
+            elif dw>=self._horizontalScrollBar.minimumWidth():
                 self._horizontalScrollBar.show()
         elif self._horizontalScrollBarPolicy == TTkK.ScrollBarAlwaysOn:
             self._horizontalScrollBar.show()
