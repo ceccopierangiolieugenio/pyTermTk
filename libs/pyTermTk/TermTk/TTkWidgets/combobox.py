@@ -438,8 +438,9 @@ class TTkComboBox(TTkContainer):
         return True
 
     def keyEvent(self, evt:TTkKeyEvent) -> bool:
-        if ( evt.type == TTkK.Character and evt.key==" " ) or \
-           ( evt.type == TTkK.SpecialKey and evt.key in [TTkK.Key_Enter,TTkK.Key_Down] ):
+        if ((evt.type == TTkK.SpecialKey and evt.key==TTkK.Key_Down) or
+                not self._editable and (evt.type == TTkK.Character and evt.key==" " or
+                                        evt.type == TTkK.SpecialKey and evt.key==TTkK.Key_Enter)):
             self._pressEvent()
             return True
         return super().keyEvent(evt=evt)
