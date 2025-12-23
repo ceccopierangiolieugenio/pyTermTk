@@ -22,10 +22,12 @@
 
 __all__ = ['TTkWindowProperties']
 
+from typing import Dict
+
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkWidgets.window import TTkWindow
 
-TTkWindowProperties = {
+TTkWindowProperties:Dict[str,Dict] = {
     'properties' : {
         'Window Flags' : {
                 'init': { 'name':'flags', 'type':'multiflags',

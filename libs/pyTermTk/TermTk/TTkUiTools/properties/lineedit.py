@@ -22,11 +22,13 @@
 
 __all__ = ['TTkLineEditProperties']
 
+from typing import Dict
+
 from TermTk.TTkCore.string import TTkString
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkWidgets.lineedit import TTkLineEdit
 
-TTkLineEditProperties = {
+TTkLineEditProperties:Dict[str,Dict] = {
     'properties' : {
         'Input Type' : {
                 'init': {'name':'inputType', 'type':'singleflag',

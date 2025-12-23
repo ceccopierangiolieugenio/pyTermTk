@@ -22,12 +22,14 @@
 
 __all__ = ['TTkTextEditProperties']
 
+from typing import Dict
+
 # from TermTk.TTkCore.string import TTkString
 # from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkWidgets.texedit import TTkTextEdit
 
-TTkTextEditProperties = {
+TTkTextEditProperties:Dict[str,Dict] = {
     'properties' : {
         'Line Number': {
                 'init': {'name':'lineNumber',            'type':bool } ,

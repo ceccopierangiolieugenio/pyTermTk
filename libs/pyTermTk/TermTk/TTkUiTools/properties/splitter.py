@@ -22,10 +22,12 @@
 
 __all__ = ['TTkSplitterProperties']
 
+from typing import Dict
+
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkWidgets.splitter import TTkSplitter
 
-TTkSplitterProperties = {
+TTkSplitterProperties:Dict[str,Dict] = {
     'properties' : {
         'Border' : {
                 'init': {'name':'border', 'type':bool },

@@ -22,10 +22,12 @@
 
 __all__ = ['TTkButtonProperties']
 
+from typing import Dict
+
 from TermTk.TTkCore.string import TTkString
 from TermTk.TTkWidgets.button import TTkButton
 
-TTkButtonProperties = {
+TTkButtonProperties:Dict[str,Dict] = {
     'properties' : {
         'Text' : {
                 'init': {'name':'text', 'type':TTkString },

@@ -22,10 +22,12 @@
 
 __all__ = ['TTkFrameProperties']
 
+from typing import Dict
+
 from TermTk.TTkCore.string import TTkString
 from TermTk.TTkWidgets.frame import TTkFrame
 
-TTkFrameProperties = {
+TTkFrameProperties:Dict[str,Dict] = {
     'properties' : {
         'Border' : {
                 'init': {'name':'border', 'type':bool },
