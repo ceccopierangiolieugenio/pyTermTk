@@ -81,12 +81,12 @@ class _TTkComboBoxPopup(TTkResizableFrame):
 class TTkComboBox(TTkContainer):
     ''' TTkComboBox:
 
-    Editable = False
+    editable = False
     ::
 
          [ - select -  ^]
 
-    Editable = True
+    editable = True
     ::
 
          [ Text       [^]
@@ -102,7 +102,7 @@ class TTkComboBox(TTkContainer):
                                 'borderColor': TTkColor.fg("#ffff00") + TTkColor.BOLD},
             }
 
-    __slots__ = ('_list', '_id', '_lineEdit', '_editable', '_insertPolicy', '_textAlign', '_popupFrame',
+    __slots__ = ('_list', '_id', '_lineEdit', '_insertPolicy', '_textAlign', '_popupFrame',
         #signals
         'currentIndexChanged', 'currentTextChanged', 'editTextChanged')
 
@@ -154,20 +154,20 @@ class TTkComboBox(TTkContainer):
         :type editable: bool, optional
         '''
 
+        # Define Sub-Widgets
+        self._lineEdit = None    # TTkLineEdit created only when required, if editable
+        self._popupFrame = None  # TTkList created only when required, on _pressEvent()
+
         # Define Signals
         self.currentIndexChanged = pyTTkSignal(int)
         self.currentTextChanged  = pyTTkSignal(str)
         self.editTextChanged     = pyTTkSignal(str)
-        # self.checked = pyTTkSignal()
-        self._lineEdit = TTkLineEdit()
+
         super().__init__(**kwargs)
-        self._lineEdit.setParent(self)
-        self._lineEdit.returnPressed.connect(self._lineEditChanged)
         self._list =  list if list else []
         self._insertPolicy = insertPolicy
         self._textAlign = textAlign
         self._id = index
-        self._popupFrame = None
         self.setEditable(editable)
         self.setMinimumSize(5, 1)
         self.setMaximumHeight(1)
@@ -244,7 +244,8 @@ class TTkComboBox(TTkContainer):
     pyTTkSlot()
     def clear(self) -> None:
         '''Remove all the items.'''
-        self._lineEdit.setText("")
+        if self._lineEdit is not None:
+            self._lineEdit.setText("")
         self._list = []
         self._id = -1
         self.update()
@@ -256,10 +257,11 @@ class TTkComboBox(TTkContainer):
         :return: the line edit if available, None otherwise
         :rtype: :py:class:`TTkLineEdit` | None
         '''
-        return self._lineEdit if self._editable else None
+        return self._lineEdit
 
     def resizeEvent(self, width: int, height: int) -> None:
-        self._lineEdit.setGeometry(1,0,width-4,height)
+        if self._lineEdit is not None:
+            self._lineEdit.setGeometry(1,0,width-4,height)
 
     def paintEvent(self, canvas: TTkCanvas) -> None:
         style = self.currentStyle()
@@ -275,10 +277,10 @@ class TTkComboBox(TTkContainer):
 
         canvas.drawTTkString(pos=(1,0), text=TTkString(text), width=w-3, alignment=self._textAlign, color=color)
         canvas.drawText(pos=(0,0), text="[",    color=borderColor)
-        if self._editable:
-            canvas.drawText(pos=(w-3,0), text="[^]", color=borderColor)
+        if self._lineEdit is not None:
+            canvas.drawText(pos=(w-3,0), text="[▽]", color=borderColor)
         else:
-            canvas.drawText(pos=(w-2,0), text="^]", color=borderColor)
+            canvas.drawText(pos=(w-2,0), text="▽]", color=borderColor)
 
     def currentText(self) -> str:
         '''
@@ -287,7 +289,7 @@ class TTkComboBox(TTkContainer):
         :return: the current text
         :rtype: str
         '''
-        if self._editable:
+        if self._lineEdit is not None:
             return self._lineEdit.text().toAscii()
         elif self._id >= 0:
             return self._list[self._id]
@@ -314,7 +316,7 @@ class TTkComboBox(TTkContainer):
         if index > len(self._list)-1: return
         if self._id == index: return
         self._id = index
-        if self._editable:
+        if self._lineEdit is not None:
             self._lineEdit.setText(self._list[self._id])
         else:
             self.currentTextChanged.emit(self._list[self._id])
@@ -329,7 +331,7 @@ class TTkComboBox(TTkContainer):
         :param text:
         :type text: str
         '''
-        if self._editable:
+        if self._lineEdit is not None:
             self.setEditText(text)
         else:
             if text not in self._list:
@@ -346,7 +348,7 @@ class TTkComboBox(TTkContainer):
         :param text:
         :type text: :py:class:`TTkString`
         '''
-        if self._editable:
+        if self._lineEdit is not None:
             self._lineEdit.setText(text)
 
     def insertPolicy(self) -> TTkK.InsertPolicy:
@@ -369,31 +371,36 @@ class TTkComboBox(TTkContainer):
 
     def isEditable(self) -> bool:
         '''
-        This field holds the editable status of this widget.
+        This tells if an editable :py:class:`TTkLineEdit` exists within this widget or not.
 
         :return: True if editable, False otherwise
         :rtype: bool
         '''
-        return self._editable
+        return bool(self._lineEdit is not None)
 
     def setEditable(self, editable:bool) -> None:
         '''
-        Set the editable status of this widget.
+        Create or destroy the editable :py:class:`TTkLineEdit` inside this widget.
 
         :param editable:
         :type editable: bool
         '''
-        self._editable = editable
         if editable:
-            self._lineEdit.show()
+            if self._lineEdit is None:
+                self._lineEdit = TTkLineEdit(parent=self)
+                self._lineEdit.returnPressed.connect(self._lineEditChanged)
             self.setFocusPolicy(TTkK.ClickFocus)
         else:
-            self._lineEdit.hide()
+            if self._lineEdit is not None:
+                self._lineEdit.returnPressed.disconnect(self._lineEditChanged)
+                self.layout().removeWidget(self._lineEdit)
+                self._lineEdit.close()
+                self._lineEdit = None
             self.setFocusPolicy(TTkK.ClickFocus | TTkK.TabFocus)
 
     @pyTTkSlot(str)
     def _callback(self, label:str) -> None:
-        if self._editable:
+        if self._lineEdit is not None:
             self._lineEdit.setText(label)
         self.setCurrentIndex(self._list.index(label))
         TTkHelper.removeOverlayAndChild(self._popupFrame)
@@ -438,12 +445,13 @@ class TTkComboBox(TTkContainer):
         return True
 
     def keyEvent(self, evt:TTkKeyEvent) -> bool:
-        if ( evt.type == TTkK.Character and evt.key==" " ) or \
-           ( evt.type == TTkK.SpecialKey and evt.key in [TTkK.Key_Enter,TTkK.Key_Down] ):
+        if ((evt.type == TTkK.SpecialKey and evt.key==TTkK.Key_Down) or
+                self._lineEdit is None and (evt.type == TTkK.Character and evt.key==" " or
+                                            evt.type == TTkK.SpecialKey and evt.key==TTkK.Key_Enter)):
             self._pressEvent()
             return True
         return super().keyEvent(evt=evt)
 
     def focusInEvent(self) -> None:
-        if self._editable:
+        if self._lineEdit is not None:
             self._lineEdit.setFocus()
