@@ -471,7 +471,7 @@ class TTkConstant:
     CENTER_ALIGN = Alignment.CENTER_ALIGN
     JUSTIFY      = Alignment.JUSTIFY
 
-    class FileMode(int):
+    class FileMode(IntEnum):
         '''FileMode
 
         .. autosummary::
@@ -492,7 +492,7 @@ class TTkConstant:
     # Directory     = FileMode.Directory
     # ExistingFiles = FileMode.ExistingFiles
 
-    class AcceptMode(int):
+    class AcceptMode(IntEnum):
         '''AcceptMode
 
         .. autosummary::

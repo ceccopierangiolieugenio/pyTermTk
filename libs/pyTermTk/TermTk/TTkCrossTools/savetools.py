@@ -20,34 +20,22 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-__all__ = [
-        'ttkCrossOpen',
-        'ttkCrossSave', 'ttkCrossSaveAs',
-        'TTkEncoding', 'ImageData',
-        'ttkConnectDragOpen',
-        'ttkEmitDragOpen', 'ttkEmitFileOpen']
+from __future__ import annotations
+
+__all__ = ['TTkCrossTools', '_TTkEncoding']
 
 import os
 import importlib.util
-import json
+from enum import Enum
 from dataclasses import dataclass
+
+from typing import Callable,Optional,List,Tuple,Dict,Any,Protocol,Type,TypeAlias
 
 from TermTk import pyTTkSlot, pyTTkSignal
 from TermTk import TTkLog
 from TermTk import TTkMessageBox, TTkFileDialogPicker, TTkHelper, TTkString, TTkK, TTkColor
 
-class ImageData:
-    size:list[int,int] = (0,0)
-    data:list[list[list[int,int,int,int]]] = []
-
-ttkCrossOpen       = None
-ttkCrossSave       = None
-ttkCrossSaveAs     = None
-ttkEmitDragOpen    = None
-ttkEmitFileOpen    = None
-ttkConnectDragOpen = None
-
-class TTkEncoding(str):
+class _TTkEncoding(str, Enum):
     TEXT             = "text"
     TEXT_PLAIN       = "text/plain"
     TEXT_PLAIN_UTF8  = "text/plain;charset=utf-8"
@@ -58,112 +46,124 @@ class TTkEncoding(str):
     IMAGE_SVG = 'image/svg+xml'
     IMAGE_JPG = 'image/jpeg'
 
+@dataclass
+class _CB_Data_Save():
+    name:str
+
+@dataclass
+class _CB_Data_Open():
+    name:str
+    data:Any
+
+
 if importlib.util.find_spec('pyodideProxy'):
     TTkLog.info("Using 'pyodideProxy' as clipboard manager")
-    import pyodideProxy
-    ttkDragOpen    = {}
-    ttkFileOpen    = pyTTkSignal(dict)
+    import pyodideProxy  # type: ignore[import-not-found]
+    ttkDragOpen:Dict[_TTkEncoding,pyTTkSignal] = {}
+    ttkFileOpen    = pyTTkSignal(_CB_Data_Open)
 
-    def _open(path, encoding, filter, cb=None):
+    def _open(path:str, encoding:_TTkEncoding, filter:str, cb: Optional[TTkCrossTools.TTkCross_Callback_Open] = None) -> None:
         if not cb: return
         ttkFileOpen.connect(cb)
         pyodideProxy.openFile(encoding)
 
-    def _save(filePath, content, encoding, filter=None, cb=lambda _d:None):
+    def _save(filePath: str, content: str, encoding: _TTkEncoding) -> None:
         pyodideProxy.saveFile(os.path.basename(filePath), content, encoding)
 
-    def _connectDragOpen(encoding, cb):
-        if encoding not in ttkDragOpen:
-            ttkDragOpen[encoding] = pyTTkSignal(dict)
-        return ttkDragOpen[encoding].connect(cb)
+    def _saveAs(filePath:str, content:str, encoding:_TTkEncoding, filter:str, cb: Optional[TTkCrossTools.TTkCross_Callback_Save] = None) -> None:
+        return _save(
+            filePath=filePath,
+            content=content,
+            encoding=encoding
+        )
 
-    def _emitDragOpen(encoding, data):
-        if encoding.startswith(TTkEncoding.IMAGE):
+    def _emitDragOpen(encoding: _TTkEncoding, data: _CB_Data_Open) -> None:
+        if encoding.startswith(_TTkEncoding.IMAGE):
             from PIL import Image
             import io
-            im = Image.open(io.BytesIO(data['data']))
-            data['data'] = im
-        for do in [ttkDragOpen[e] for e in ttkDragOpen if encoding.startswith(e)]:
-            do.emit(data)
+            im = Image.open(io.BytesIO(data.data))
+            data.data = im
+        for _drag_open in [ttkDragOpen[e] for e in ttkDragOpen if encoding.startswith(e)]:
+            _drag_open.emit(data)
 
-    def _emitFileOpen(encoding, data):
-        if encoding.startswith(TTkEncoding.IMAGE):
+    def _emitFileOpen(encoding: _TTkEncoding, data: _CB_Data_Open) -> None:
+        if encoding.startswith(_TTkEncoding.IMAGE):
             from PIL import Image
             import io
             # TTkLog.debug(data['data'])
             # TTkLog.debug(type(data['data']))
             # Image.open(data['data'])
-            im = Image.open(io.BytesIO(data['data']))
+            im = Image.open(io.BytesIO(data.data))
             # TTkLog.debug(f"{im.size}")
-            data['data'] = im
+            data.data = im
         ttkFileOpen.emit(data)
         ttkFileOpen.clear()
 
-    ttkCrossOpen    = _open
-    ttkCrossSave    = _save
-    ttkCrossSaveAs  = _save
-    ttkEmitDragOpen = _emitDragOpen
-    ttkEmitFileOpen = _emitFileOpen
-    ttkConnectDragOpen  = _connectDragOpen
+    def _connectDragOpen(encoding: _TTkEncoding, cb: TTkCrossTools.TTkCross_Callback_Open) -> None:
+        if encoding not in ttkDragOpen:
+            ttkDragOpen[encoding] = pyTTkSignal(_CB_Data_Open)
+        return ttkDragOpen[encoding].connect(cb)
 
 else:
-    def _crossDecoder_text(fileName) :
+    def _crossDecoder_text(fileName: str) -> str:
         with open(fileName) as fp:
             return fp.read()
-    def _crossDecoder_json(fileName) :
+
+    def _crossDecoder_json(fileName: str) -> str:
         with open(fileName) as fp:
             # return json.load(fp)
             return fp.read()
-    def _crossDecoder_image(fileName):
+
+    def _crossDecoder_image(fileName: str) -> Any:
         from PIL import Image
         pilImage = Image.open(fileName)
         # pilImage = pilImage.convert('RGBA')
-        # pilData = list(pilImage.getdata())
+        # pilData = List(pilImage.getdata())
         # data = ImageData()
         # w,h = data.size = pilImage.size
         # data.data = [pilData[i:i+w] for i in range(0, len(pilData), w)]
         return pilImage
 
     _crossDecoder = {
-        TTkEncoding.TEXT             : _crossDecoder_text ,
-        TTkEncoding.TEXT_PLAIN       : _crossDecoder_text ,
-        TTkEncoding.TEXT_PLAIN_UTF8  : _crossDecoder_text ,
-        TTkEncoding.APPLICATION      : _crossDecoder_json ,
-        TTkEncoding.APPLICATION_JSON : _crossDecoder_json ,
-        TTkEncoding.IMAGE            : _crossDecoder_image ,
-        TTkEncoding.IMAGE_PNG        : _crossDecoder_image ,
-        TTkEncoding.IMAGE_SVG        : _crossDecoder_image ,
-        TTkEncoding.IMAGE_JPG        : _crossDecoder_image ,
+        _TTkEncoding.TEXT             : _crossDecoder_text ,
+        _TTkEncoding.TEXT_PLAIN       : _crossDecoder_text ,
+        _TTkEncoding.TEXT_PLAIN_UTF8  : _crossDecoder_text ,
+        _TTkEncoding.APPLICATION      : _crossDecoder_json ,
+        _TTkEncoding.APPLICATION_JSON : _crossDecoder_json ,
+        _TTkEncoding.IMAGE            : _crossDecoder_image ,
+        _TTkEncoding.IMAGE_PNG        : _crossDecoder_image ,
+        _TTkEncoding.IMAGE_SVG        : _crossDecoder_image ,
+        _TTkEncoding.IMAGE_JPG        : _crossDecoder_image ,
     }
 
-    def _open(path, encoding:TTkEncoding, filter:str, cb=None):
+    def _open(path:str, encoding:_TTkEncoding, filter:str, cb: Optional[TTkCrossTools.TTkCross_Callback_Open] = None) -> None:
         if not cb: return
-        if encoding.startswith(TTkEncoding.IMAGE):
+        if encoding.startswith(_TTkEncoding.IMAGE):
             if not importlib.util.find_spec('PIL'): return
-        def __openFile(fileName):
+        def __openFile(fileName: str) -> None:
             _decoder = _crossDecoder.get(encoding,lambda _:None)
             content = _decoder(fileName)
-            cb({'name':fileName, 'data':content})
+            cb(TTkCrossTools.CB_Data_Open(name=fileName, data=content))
         filePicker = TTkFileDialogPicker(pos = (3,3), size=(100,30), caption="Open", path=path, fileMode=TTkK.FileMode.ExistingFile ,filter=filter)
         filePicker.pathPicked.connect(__openFile)
         TTkHelper.overlay(None, filePicker, 5, 5, True)
 
-    def _save(filePath, content, encoding):
+    def _save(filePath:str, content:str, encoding:_TTkEncoding) -> None:
         TTkLog.info(f"Saving to: {filePath}")
         with open(filePath,'w') as fp:
             fp.write(content)
 
-    def _saveAs(filePath, content, encoding, filter, cb=lambda _d:None):
-        def _approveFile(fileName):
+    def _saveAs(filePath:str, content:str, encoding:_TTkEncoding, filter:str, cb: Optional[TTkCrossTools.TTkCross_Callback_Save] = None) -> None:
+        def _approveFile(fileName: str) -> None:
             if os.path.exists(fileName):
                 @pyTTkSlot(TTkMessageBox.StandardButton)
                 def _cb(btn):
                     if btn == TTkMessageBox.StandardButton.Save:
-                        ttkCrossSave(fileName,content,encoding)
+                        _save(fileName,content,encoding)
                     elif btn == TTkMessageBox.StandardButton.Cancel:
                         return
                     if cb:
-                        cb({'name':fileName})
+                        cb(TTkCrossTools.CB_Data_Save(name=fileName))
                 messageBox = TTkMessageBox(
                     text= (
                         TTkString( f'A file named "{os.path.basename(fileName)}" already exists.\nDo you want to replace it?', TTkColor.BOLD) +
@@ -173,9 +173,9 @@ else:
                 messageBox.buttonSelected.connect(_cb)
                 TTkHelper.overlay(None, messageBox, 5, 5, True)
             else:
-                ttkCrossSave(fileName,content,encoding)
+                _save(fileName,content,encoding)
                 if cb:
-                    cb({'name':fileName})
+                    cb(TTkCrossTools.CB_Data_Save(name=fileName))
         filePicker = TTkFileDialogPicker(
                         size=(100,30), path=filePath,
                         acceptMode=TTkK.AcceptMode.AcceptSave,
@@ -185,9 +185,77 @@ else:
         filePicker.pathPicked.connect(_approveFile)
         TTkHelper.overlay(None, filePicker, 5, 5, True)
 
-    ttkCrossOpen       = _open
-    ttkCrossSave       = _save
-    ttkCrossSaveAs     = _saveAs
-    ttkEmitDragOpen    = lambda a:None
-    ttkEmitFileOpen    = lambda a:None
-    ttkConnectDragOpen = lambda a,b:None
+    def _emitDragOpen(encoding: _TTkEncoding, data: _CB_Data_Open) -> None:
+        pass
+
+    def _emitFileOpen(encoding: _TTkEncoding, data: _CB_Data_Open) -> None:
+        pass
+
+    def _connectDragOpen(encoding: _TTkEncoding, cb: TTkCrossTools.TTkCross_Callback_Open) -> None:
+        pass
+
+
+class TTkCrossTools():
+    Encoding = _TTkEncoding
+    CB_Data_Save: TypeAlias = _CB_Data_Save
+    CB_Data_Open: TypeAlias = _CB_Data_Open
+
+    # Type alias for callback functions that receive file data
+    TTkCross_Callback: TypeAlias = Callable[[Dict[str, Any]], None]
+    TTkCross_Callback_Open: TypeAlias = Callable[[CB_Data_Open], None]
+    TTkCross_Callback_Save: TypeAlias = Callable[[CB_Data_Save], None]
+
+    class _OpenProtocol(Protocol):
+        def __call__(
+                self,
+                path: str,
+                encoding: _TTkEncoding,
+                filter: str,
+                cb: Optional[TTkCrossTools.TTkCross_Callback_Open] = None
+            ) -> None: ...
+
+    class _SaveProtocol(Protocol):
+        def __call__(
+                self,
+                filePath: str,
+                content: str,
+                encoding: _TTkEncoding
+            ) -> None: ...
+
+    class _SaveAsProtocol(Protocol):
+        def __call__(
+                self,
+                filePath: str,
+                content: str,
+                encoding: _TTkEncoding,
+                filter: str,
+                cb: Optional[TTkCrossTools.TTkCross_Callback_Save] = None
+            ) -> None: ...
+
+    class _EmitDragOpenProtocol(Protocol):
+        def __call__(
+                self,
+                encoding: _TTkEncoding,
+                data: _CB_Data_Open
+            ) -> None: ...
+
+    class _EmitFileOpenProtocol(Protocol):
+        def __call__(
+                self,
+                encoding: _TTkEncoding,
+                data: _CB_Data_Open
+            ) -> None: ...
+
+    class _ConnectDragOpenProtocol(Protocol):
+        def __call__(
+                self,
+                encoding: _TTkEncoding,
+                cb: TTkCrossTools.TTkCross_Callback_Open
+            ) -> None: ...
+
+    open: _OpenProtocol = _open
+    save: _SaveProtocol = _save
+    saveAs: _SaveAsProtocol = _saveAs
+    ttkEmitDragOpen: _EmitDragOpenProtocol = _emitDragOpen
+    ttkEmitFileOpen: _EmitFileOpenProtocol = _emitFileOpen
+    ttkConnectDragOpen: _ConnectDragOpenProtocol = _connectDragOpen
