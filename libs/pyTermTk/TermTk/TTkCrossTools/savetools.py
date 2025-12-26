@@ -114,7 +114,10 @@ from typing import Callable,Optional,List,Tuple,Dict,Any,Protocol,Type
 try:
     from typing import TypeAlias
 except ImportError:
-    from typing_extensions import TypeAlias
+    try:
+        from typing_extensions import TypeAlias
+    except ImportError:
+        TypeAlias = type  # Fallback for Python < 3.10 without typing_extensions
 
 from TermTk import pyTTkSlot, pyTTkSignal
 from TermTk import TTkLog
