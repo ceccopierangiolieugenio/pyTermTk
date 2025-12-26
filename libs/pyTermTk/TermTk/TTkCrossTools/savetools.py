@@ -20,6 +20,86 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+'''savetools.py
+
+Cross-platform file operations and clipboard management for pyTermTk.
+
+This module provides a unified interface for file I/O operations that work seamlessly
+across different platforms, including native desktop environments and web-based
+Pyodide/WASM deployments. It automatically detects the runtime environment and
+adapts its behavior accordingly.
+
+Key Features:
+    - **Cross-platform file operations**: Open, save, and saveAs methods that work
+      identically on desktop and web platforms
+    - **Multiple encoding support**: Text, JSON, and image formats with automatic
+      decoding and encoding
+    - **Drag and drop integration**: Native drag-drop support in web environments
+    - **File dialog integration**: Automatic file picker dialogs on desktop with
+      JavaScript-based file selection in browsers
+    - **Image handling**: PIL/Pillow integration for image file operations
+    - **Type-safe callbacks**: Protocol-based type hints for callback functions
+
+Platform Detection:
+    The module automatically detects whether it's running in a Pyodide/WASM environment
+    by checking for the 'pyodideProxy' module. Based on this detection, it provides
+    platform-specific implementations while maintaining a consistent API.
+
+    - **Desktop mode**: Uses native file dialogs (:py:class:`TTkFileDialogPicker`) and
+      standard Python file I/O
+    - **Web mode**: Uses JavaScript interop via pyodideProxy for browser-based file
+      selection and download
+
+Usage Example:
+    .. code-block:: python
+
+        from TermTk.TTkCrossTools import TTkCrossTools
+
+        # Open a text file
+        def handle_open(data: TTkCrossTools.CB_Data_Open):
+            print(f"Opened: {data.name}")
+            print(f"Content: {data.data}")
+
+        TTkCrossTools.open(
+            path=".",
+            encoding=TTkCrossTools.Encoding.TEXT_PLAIN,
+            filter="Text Files (*.txt)",
+            cb=handle_open
+        )
+
+        # Save a file
+        TTkCrossTools.save(
+            filePath="output.txt",
+            content="Hello, World!",
+            encoding=TTkCrossTools.Encoding.TEXT_PLAIN
+        )
+
+        # Save with dialog
+        def handle_save(data: TTkCrossTools.CB_Data_Save):
+            print(f"Saved to: {data.name}")
+
+        TTkCrossTools.saveAs(
+            filePath="output.json",
+            content='{"key": "value"}',
+            encoding=TTkCrossTools.Encoding.APPLICATION_JSON,
+            filter="JSON Files (*.json)",
+            cb=handle_save
+        )
+
+Supported Encodings:
+    See :py:class:`TTkCrossTools.Encoding` for the full list of supported MIME types and
+    encoding formats.
+
+Callback Data Structures:
+    - :py:class:`_CB_Data_Open`: Contains file name and decoded content
+    - :py:class:`_CB_Data_Save`: Contains the saved file name
+
+See Also:
+    - :py:class:`TTkCrossTools`: Main API class
+    - :py:class:`TTkCrossTools.Encoding`: Encoding type definitions
+    - :py:class:`TTkFileDialogPicker`: Native file dialog widget
+'''
+
 from __future__ import annotations
 
 __all__ = ['TTkCrossTools', '_TTkEncoding']
@@ -41,6 +121,31 @@ from TermTk import TTkLog
 from TermTk import TTkMessageBox, TTkFileDialogPicker, TTkHelper, TTkString, TTkK, TTkColor
 
 class _TTkEncoding(str, Enum):
+    ''' Encoding types for cross-platform file operations.
+
+    Defines MIME types and encoding identifiers used by :py:class:`TTkCrossTools`
+    for file operations. These encodings determine how file content is decoded
+    when opening and encoded when saving.
+
+    Text Encodings:
+        - **TEXT**: Generic text encoding
+        - **TEXT_PLAIN**: Plain text MIME type
+        - **TEXT_PLAIN_UTF8**: UTF-8 encoded plain text
+
+    Application Encodings:
+        - **APPLICATION**: Generic application data
+        - **APPLICATION_JSON**: JSON format with automatic parsing
+
+    Image Encodings:
+        - **IMAGE**: Generic image format
+        - **IMAGE_PNG**: PNG image format
+        - **IMAGE_SVG**: SVG vector image format
+        - **IMAGE_JPG**: JPEG image format
+
+    Note:
+        Image encodings require PIL/Pillow to be installed. When opening image
+        files, the decoded data will be a PIL Image object.
+    '''
     TEXT             = "text"
     TEXT_PLAIN       = "text/plain"
     TEXT_PLAIN_UTF8  = "text/plain;charset=utf-8"
@@ -51,12 +156,75 @@ class _TTkEncoding(str, Enum):
     IMAGE_SVG = 'image/svg+xml'
     IMAGE_JPG = 'image/jpeg'
 
+class _OpenProtocol(Protocol):
+    def __call__(
+            self,
+            path: str,
+            encoding: _TTkEncoding,
+            filter: str,
+            cb: Optional[TTkCrossTools.TTkCross_Callback_Open] = None
+        ) -> None: ...
+
+class _SaveProtocol(Protocol):
+    def __call__(
+            self,
+            filePath: str,
+            content: str,
+            encoding: _TTkEncoding
+        ) -> None: ...
+
+class _SaveAsProtocol(Protocol):
+    def __call__(
+            self,
+            filePath: str,
+            content: str,
+            encoding: _TTkEncoding,
+            filter: str,
+            cb: Optional[TTkCrossTools.TTkCross_Callback_Save] = None
+        ) -> None: ...
+
+class _EmitDragOpenProtocol(Protocol):
+    def __call__(
+            self,
+            encoding: _TTkEncoding,
+            data: _CB_Data_Open
+        ) -> None: ...
+
+class _EmitFileOpenProtocol(Protocol):
+    def __call__(
+            self,
+            encoding: _TTkEncoding,
+            data: _CB_Data_Open
+        ) -> None: ...
+
+class _ConnectDragOpenProtocol(Protocol):
+    def __call__(
+            self,
+            encoding: _TTkEncoding,
+            cb: TTkCrossTools.TTkCross_Callback_Open
+        ) -> None: ...
+
 @dataclass
 class _CB_Data_Save():
+    ''' Callback data for save operations.
+
+    :param name: The full path or name of the saved file
+    :type name: str
+    '''
     name:str
 
 @dataclass
 class _CB_Data_Open():
+    ''' Callback data for open/load operations.
+
+    :param name: The full path or name of the opened file
+    :type name: str
+    :param data: The decoded file content. Type depends on the encoding:
+                 - Text encodings: str
+                 - JSON encodings: str (raw JSON content)
+                 - Image encodings: PIL.Image.Image object
+    :type data: Any
+    '''
     name:str
     data:Any
 
@@ -201,6 +369,82 @@ else:
 
 
 class TTkCrossTools():
+    ''' Cross-platform file operations and clipboard management.
+
+    Provides a unified API for file I/O operations across desktop and web platforms.
+    Automatically adapts to the runtime environment (native Python or Pyodide/WASM)
+    and provides appropriate file dialogs and file handling mechanisms.
+
+    Class Attributes:
+        Encoding: Alias for :py:class:`_TTkEncoding` enum
+        CB_Data_Save: Type alias for save callback data
+        CB_Data_Open: Type alias for open callback data
+        TTkCross_Callback: Generic callback type
+        TTkCross_Callback_Open: Callback type for open operations
+        TTkCross_Callback_Save: Callback type for save operations
+
+    Methods:
+        open: Open a file with automatic dialog and decoding
+        save: Save content to a file
+        saveAs: Save with file picker dialog
+        ttkEmitDragOpen: Emit drag-drop open events (web only)
+        ttkEmitFileOpen: Emit file open events (web only)
+        ttkConnectDragOpen: Connect to drag-drop events (web only)
+
+    Platform Behavior:
+        **Desktop Mode**:
+            - Uses :py:class:`TTkFileDialogPicker` for file selection
+            - Direct filesystem access via Python's built-in file operations
+            - Automatic confirmation dialogs for overwrite operations
+
+        **Web Mode (Pyodide)**:
+            - Uses JavaScript file input elements via pyodideProxy
+            - Downloads trigger browser's save dialog
+            - Drag-drop integration for file loading
+
+    Usage Example:
+        .. code-block:: python
+
+            # Open a text file
+            def on_open(data: TTkCrossTools.CB_Data_Open):
+                print(f"File: {data.name}")
+                print(f"Content: {data.data}")
+
+            TTkCrossTools.open(
+                path="/home/user",
+                encoding=TTkCrossTools.Encoding.TEXT_PLAIN,
+                filter="Text Files (*.txt);;All Files (*)",
+                cb=on_open
+            )
+
+            # Save with confirmation
+            def on_save(data: TTkCrossTools.CB_Data_Save):
+                print(f"Saved to: {data.name}")
+
+            TTkCrossTools.saveAs(
+                filePath="document.txt",
+                content="Hello, World!",
+                encoding=TTkCrossTools.Encoding.TEXT_PLAIN,
+                filter="Text Files (*.txt)",
+                cb=on_save
+            )
+
+            # Open an image
+            def on_image(data: TTkCrossTools.CB_Data_Open):
+                pil_image = data.data  # PIL.Image.Image object
+                print(f"Image size: {pil_image.size}")
+
+            TTkCrossTools.open(
+                path=".",
+                encoding=TTkCrossTools.Encoding.IMAGE_PNG,
+                filter="PNG Images (*.png)",
+                cb=on_image
+            )
+
+    Note:
+        Image operations require PIL/Pillow to be installed. The library will
+        gracefully handle missing dependencies by skipping image operations.
+    '''
     Encoding = _TTkEncoding
     CB_Data_Save: TypeAlias = _CB_Data_Save
     CB_Data_Open: TypeAlias = _CB_Data_Open
@@ -210,53 +454,7 @@ class TTkCrossTools():
     TTkCross_Callback_Open: TypeAlias = Callable[[CB_Data_Open], None]
     TTkCross_Callback_Save: TypeAlias = Callable[[CB_Data_Save], None]
 
-    class _OpenProtocol(Protocol):
-        def __call__(
-                self,
-                path: str,
-                encoding: _TTkEncoding,
-                filter: str,
-                cb: Optional[TTkCrossTools.TTkCross_Callback_Open] = None
-            ) -> None: ...
 
-    class _SaveProtocol(Protocol):
-        def __call__(
-                self,
-                filePath: str,
-                content: str,
-                encoding: _TTkEncoding
-            ) -> None: ...
-
-    class _SaveAsProtocol(Protocol):
-        def __call__(
-                self,
-                filePath: str,
-                content: str,
-                encoding: _TTkEncoding,
-                filter: str,
-                cb: Optional[TTkCrossTools.TTkCross_Callback_Save] = None
-            ) -> None: ...
-
-    class _EmitDragOpenProtocol(Protocol):
-        def __call__(
-                self,
-                encoding: _TTkEncoding,
-                data: _CB_Data_Open
-            ) -> None: ...
-
-    class _EmitFileOpenProtocol(Protocol):
-        def __call__(
-                self,
-                encoding: _TTkEncoding,
-                data: _CB_Data_Open
-            ) -> None: ...
-
-    class _ConnectDragOpenProtocol(Protocol):
-        def __call__(
-                self,
-                encoding: _TTkEncoding,
-                cb: TTkCrossTools.TTkCross_Callback_Open
-            ) -> None: ...
 
     open: _OpenProtocol = _open
     save: _SaveProtocol = _save
