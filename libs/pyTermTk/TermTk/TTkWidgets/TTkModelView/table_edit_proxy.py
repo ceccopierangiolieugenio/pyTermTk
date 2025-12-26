@@ -158,7 +158,7 @@ class TTkCellListType(TTkCellListTypeBase):
     def value(self) -> Any:
         return self._value
 
-    def serValue(self, val: Any) -> None:
+    def setValue(self, val: Any) -> None:
         '''
         Set the value
 
@@ -253,6 +253,12 @@ class TTkTableProxyEditWidget(TTkWidget):
         self.close()
 
     def isModal(self) -> bool:
+        '''
+        Check if the editor should be displayed modally.
+
+        :return: True if the editor requires modal display, False otherwise
+        :rtype: bool
+        '''
         return False
 
 
