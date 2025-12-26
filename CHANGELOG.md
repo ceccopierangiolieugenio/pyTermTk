@@ -1,5 +1,33 @@
 # Changelog
 
+## [0.49.0-a0](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/pyTermTk-v0.48.1-a0...pyTermTk-v0.49.0-a0) (2025-12-26)
+
+
+### Fixes
+
+* **combobox:** add widget if editable ([#567](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/567)) ([648189f](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/648189fde2e82cb1ca08c9a93faaccb8fe1e0c39))
+* **combobox:** allow adding to layout of overlay ([#547](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/547)) ([29922c8](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/29922c8b309324d56c2861f3ce8041107dd02694))
+* **list:** do not reset the position after focus ([#564](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/564)) ([465ca4c](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/465ca4c39cb02a25aee05ce21f23ed13cf6cfa66))
+* **scrollbar:** show in small viewport ([#515](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/515)) ([f861681](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/f861681faef595d3dd6a9d77515b8fdfba72c298))
+* **tab:** focus widget using keypress ([#556](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/556)) ([f7218f7](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/f7218f7db54ba091caf33cdd9ace8391f57be596))
+* **tabwidget:** emit button clicked signal last ([#545](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/545)) ([3d98553](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/3d98553ca8308349567a046df8aa0b70953a4700))
+* **tree:** invert SortOrder on header clicked ([#557](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/557)) ([9630c30](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/9630c30d44cfd6cd155dfda4e2c0e317929e119b))
+
+
+### Features
+
+* **keypressview:** exclude mouse move events ([#566](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/566)) ([dd25671](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/dd256711ae1f66206d6e1ecdac8986ae30d89df3))
+
+
+### Chores
+
+* **combobox:** add tests ([#570](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/570)) ([02fe83a](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/02fe83ade1a20768cacd6828a93213aaf4905137))
+* **crossTools:** improve typing ([#571](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/571)) ([ebd13f9](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/ebd13f94c5513daa356547a05a9ca93c2bd946e8))
+* improve typing ([99925ad](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/99925ad874f322cd83a78df1345ec9d06142dbbd))
+* improve typing ([#562](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/562)) ([b066ee0](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/b066ee0ef3c7831aa59dfcf492ac9f2595b0bdca))
+* improve typing ([#572](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/572)) ([db386ca](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/db386ca52a29fde1eedc46b19a28cd1017e882a5))
+* **tabwidget:** default highlighted to the selected tab ([#563](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/563)) ([5c4e3d3](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/5c4e3d3f63e66889306b3ef2de1582a57c8c2072))
+
 ## [0.48.1-a0](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/pyTermTk-v0.48.0-a.0...pyTermTk-v0.48.1-a0) (2025-11-10)
 
 
