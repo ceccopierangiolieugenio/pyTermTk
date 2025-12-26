@@ -216,18 +216,20 @@ class TTkTable(TTkAbstractScrollArea):
         '''
         .. seealso:: this method is forwarded to :py:meth:`TTkTableWidget.isUndoAvailable`
 
-        isUndoAvailable
+        Returns True if undo is available, False otherwise.
 
-        :return: bool
+        :return: True if undo is available
+        :rtype: bool
         '''
         return self._tableView.isUndoAvailable()
     def isRedoAvailable(self) -> bool:
         '''
         .. seealso:: this method is forwarded to :py:meth:`TTkTableWidget.isRedoAvailable`
 
-        isRedoAvailable
+        Returns True if redo is available, False otherwise.
 
-        :return: bool
+        :return: True if redo is available
+        :rtype: bool
         '''
         return self._tableView.isRedoAvailable()
     @pyTTkSlot()

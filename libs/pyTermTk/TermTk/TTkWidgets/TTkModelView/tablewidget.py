@@ -58,22 +58,37 @@ class TTkHeaderView():
 
     @pyTTkSlot(bool)
     def setVisible(self, visible: bool) -> None:
-        '''setVisible'''
+        '''
+        Sets the visibility of the header.
+
+        :param visible: True to show the header, False to hide it
+        :type visible: bool
+        '''
         if self._visible == visible: return
         self._visible = visible
         self.visibilityUpdated.emit(visible)
 
     @pyTTkSlot()
     def show(self) -> None:
-        '''show'''
+        '''
+        Shows the header by setting its visibility to True.
+        '''
         self.setVisible(True)
 
     @pyTTkSlot()
     def hide(self) -> None:
-        '''hide'''
+        '''
+        Hides the header by setting its visibility to False.
+        '''
         self.setVisible(False)
 
     def isVisible(self) -> bool:
+        '''
+        Returns True if the header is visible, False otherwise.
+
+        :return: the visibility status
+        :rtype: bool
+        '''
         return self._visible
 
 _ClipboardTableData = List[List[Tuple[int,int,Any]]]
@@ -564,17 +579,19 @@ class TTkTableWidget(TTkAbstractScrollView):
 
     def isUndoAvailable(self) -> bool:
         '''
-        isUndoAvailable
+        Returns True if undo is available, False otherwise.
 
-        :return: bool
+        :return: True if undo is available
+        :rtype: bool
         '''
         return self._snapshotId > 0
 
     def isRedoAvailable(self) -> bool:
         '''
-        isRedoAvailable
+        Returns True if redo is available, False otherwise.
 
-        :return: bool
+        :return: True if redo is available
+        :rtype: bool
         '''
         return self._snapshotId < len(self._snapshot)
 
