@@ -22,6 +22,8 @@
 
 __all__ = ['TTkMessageBox']
 
+from enum import IntEnum, Flag
+
 from TermTk.TTkCore.cfg import TTkCfg
 from TermTk.TTkCore.signal import pyTTkSignal,pyTTkSlot
 from TermTk.TTkCore.color import TTkColor
@@ -37,7 +39,7 @@ from TermTk.TTkWidgets.label import TTkLabel
 from TermTk.TTkWidgets.button import TTkButton
 
 class TTkMessageBox(TTkWindow):
-    class Icon(int):
+    class Icon(IntEnum):
         NoIcon      = 0
         '''the message box does not have any icon.'''
         Question    = 4
@@ -49,7 +51,7 @@ class TTkMessageBox(TTkWindow):
         Critical    = 3
         '''an icon indicating that the message represents a critical problem.'''
 
-    class StandardButton(int):
+    class StandardButton(Flag):
         Ok       = 0x00000400
         '''An "OK" button defined with the AcceptRole.'''
         Open     = 0x00002000
