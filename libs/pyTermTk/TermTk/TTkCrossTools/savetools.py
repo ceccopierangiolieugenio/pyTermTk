@@ -29,7 +29,12 @@ import importlib.util
 from enum import Enum
 from dataclasses import dataclass
 
-from typing import Callable,Optional,List,Tuple,Dict,Any,Protocol,Type,TypeAlias
+from typing import Callable,Optional,List,Tuple,Dict,Any,Protocol,Type
+
+try:
+    from typing import TypeAlias
+except ImportError:
+    from typing_extensions import TypeAlias
 
 from TermTk import pyTTkSlot, pyTTkSignal
 from TermTk import TTkLog
