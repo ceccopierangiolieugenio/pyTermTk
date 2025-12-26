@@ -24,12 +24,15 @@ __all__=['TTkTableModelCSV']
 
 import csv
 
+from typing import Tuple,List,Optional,cast
+
 from TermTk.TTkCore.constant import TTkK
+from TermTk.TTkCore.string import TTkStringType
 from TermTk.TTkWidgets.TTkModelView.tablemodellist import TTkTableModelList
 
 class TTkTableModelCSV(TTkTableModelList):
     '''
-    :py:class:`TTkTableModelCSV` extends :py:class:`TTkTableModelList` with cvs loading helpers.
+    :py:class:`TTkTableModelCSV` extends :py:class:`TTkTableModelList` with csv loading helpers.
 
     You can address the csv file through the Filename (filename) or the FileDescriptor (fd).
 
@@ -47,7 +50,7 @@ class TTkTableModelCSV(TTkTableModelList):
     '''
 
     def __init__(self, *,
-                 filename:str=None,
+                 filename:Optional[str]=None,
                  fd=None) -> None:
         '''
         :param filename: the csv filename, if missing the file descriptor is used instead.
@@ -56,7 +59,9 @@ class TTkTableModelCSV(TTkTableModelList):
         :param fd: the FileDescriptor
         :type fd: io, optional
         '''
-        data, head, idx = [['']], [], []
+        data:List[List[TTkStringType]] = [['']]
+        head:List[TTkStringType] = []
+        idx:List[TTkStringType] = []
         if filename:
             with open(filename, "r") as fd:
                 data, head, idx = self._csvImport(fd)
@@ -64,8 +69,10 @@ class TTkTableModelCSV(TTkTableModelList):
             data, head, idx = self._csvImport(fd)
         super().__init__(data=data,header=head,indexes=idx)
 
-    def _csvImport(self, fd) -> tuple[list,list,list[list]]:
-        data, head, idx = [], [], []
+    def _csvImport(self, fd) -> Tuple[List[List[TTkStringType]],List[TTkStringType],List[TTkStringType]]:
+        data:List[List[TTkStringType]] = []
+        head:List[TTkStringType] = []
+        idx:List[TTkStringType] = []
         sniffer = csv.Sniffer()
         try:
             has_header = sniffer.has_header(fd.read(2048))
@@ -74,7 +81,7 @@ class TTkTableModelCSV(TTkTableModelList):
         fd.seek(0)
         csvreader = csv.reader(fd)
         for row in csvreader:
-            data.append(row)
+            data.append(list(row))
         if has_header:
             head = data.pop(0)
         # check if the first column include an index:

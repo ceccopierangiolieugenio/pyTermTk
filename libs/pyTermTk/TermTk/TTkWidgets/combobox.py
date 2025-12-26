@@ -33,6 +33,7 @@ from TermTk.TTkCore.canvas import TTkCanvas
 from TermTk.TTkCore.TTkTerm.inputkey import TTkKeyEvent
 from TermTk.TTkCore.TTkTerm.inputmouse import TTkMouseEvent
 from TermTk.TTkLayouts.gridlayout import TTkGridLayout
+from TermTk.TTkWidgets.widget import TTkWidget
 from TermTk.TTkWidgets.container import TTkContainer
 from TermTk.TTkWidgets.list_ import TTkList
 from TermTk.TTkWidgets.lineedit import TTkLineEdit
@@ -90,7 +91,7 @@ class _TTkComboBoxPopup(TTkResizableFrame):
         super().__init__(**kwargs|{'layout':TTkGridLayout()})
         # Create internal list with search disabled - we'll render search text manually
         self._list:TTkList = TTkList(parent=self, showSearch=False)
-        self._list.addItems(items)
+        self._list.addItems(list(items))
         # Trigger repaint when search changes to update our custom search overlay
         self._list.searchModified.connect(self.update)
 
@@ -103,7 +104,9 @@ class _TTkComboBoxPopup(TTkResizableFrame):
 
     def keyEvent(self, evt:TTkKeyEvent) -> bool:
         '''Forward all key events to the list viewport for navigation and search'''
-        return self._list.viewport().keyEvent(evt)
+        if (viewport := self._list.viewport()) and isinstance(viewport, TTkWidget):
+            return viewport.keyEvent(evt)
+        return False
 
     def paintEvent(self, canvas:TTkCanvas) -> None:
         '''Custom paint event that overlays search text on top of the frame.
@@ -180,7 +183,9 @@ class TTkComboBox(TTkContainer):
     '''
 
     _list:List[str]
+    _lineEdit:Optional[TTkLineEdit]
     _popupFrame:Optional[_TTkComboBoxPopup]
+
     def __init__(self, *,
                  list:Optional[List[str]] = None,
                  index:int = -1,
