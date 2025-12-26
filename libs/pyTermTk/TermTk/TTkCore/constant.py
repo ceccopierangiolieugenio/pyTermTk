@@ -60,7 +60,7 @@ class TTkConstant:
         ColorModifier = 0x08
         '''The :py:class:`TTkColor` include a color modifier based on :py:class:`TTkColorModifier`'''
 
-    class FocusPolicy(int, Flag):
+    class FocusPolicy(Flag):
         '''
         This Class type defines the various policies a widget
         can have with respect to acquiring keyboard focus.

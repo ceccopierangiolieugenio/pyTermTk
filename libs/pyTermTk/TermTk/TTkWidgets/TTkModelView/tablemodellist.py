@@ -22,14 +22,15 @@
 
 __all__=['TTkTableModelList']
 
-from typing import Any
+from typing import Any,List,Optional
 
+from TermTk.TTkCore.string import TTkString, TTkStringType
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkAbstract.abstracttablemodel import TTkAbstractTableModel, TTkModelIndex
 
 class _TTkModelIndexList(TTkModelIndex):
     __slots__ = ('_col','_rowId','_rowCb')
-    def __init__(self, col:int, rowId:list, rowCb) -> None:
+    def __init__(self, col:int, rowId:List, rowCb) -> None:
         self._col   = col
         self._rowId = rowId
         self._rowCb = rowCb
@@ -50,35 +51,35 @@ class _TTkModelIndexList(TTkModelIndex):
 class TTkTableModelList(TTkAbstractTableModel):
     '''
     :py:class:`TTkTableModelList` extends :py:class:`TTkAbstractTableModel`,
-    including a basic model with a 2d list data structure
+    including a basic model with a 2d List data structure
 
     '''
 
     __slots__ = ('_data','_dataOriginal', '_hheader', '_vheader')
 
     def __init__(self, *,
-                 data:list[list[object]]=None,
-                 header:list[str]=None,
-                 indexes:list[str]=None) -> None:
+                 data:Optional[List[List[Any]]]=None,
+                 header:Optional[List[TTkStringType]]=None,
+                 indexes:Optional[List[TTkStringType]]=None) -> None:
         '''
         :param data: the 2D List model for the view to present.
-        :type data: list[list]
+        :type data: List[List]
 
         :param header: the header labels, defaults to the column number.
-        :type header: list[str], optional
+        :type header: List[str], optional
 
         :param indexes: the index labels, defaults to the line number.
-        :type indexes: list[str], optional
+        :type indexes: List[str], optional
         '''
         self._data = self._dataOriginal = data if data else []
         self._hheader = header  if header  else []
         self._vheader = indexes if indexes else []
         super().__init__()
 
-    def modelList(self) -> list[list]:
+    def modelList(self) -> List[List]:
         return self._data
 
-    def setModelList(self, modelList:list[list]) -> None:
+    def setModelList(self, modelList:List[List]) -> None:
         if modelList == self._data: return
         self._data = modelList
         self.modelChanged.emit()
@@ -102,18 +103,18 @@ class TTkTableModelList(TTkAbstractTableModel):
             return None
         return col_data[col]
 
-    def setData(self, row:int, col:int, data:object) -> None:
+    def setData(self, row:int, col:int, data:object) -> bool:
         self._data[row][col] = data
         self.dataChanged.emit((row,col),(1,1))
         return True
 
-    def headerData(self, num:int, orientation:int):
+    def headerData(self, num:int, orientation:TTkK.Direction) -> TTkString:
         if orientation == TTkK.HORIZONTAL:
             if self._hheader:
-                return self._hheader[num]
+                return TTkString(self._hheader[num])
         if orientation == TTkK.VERTICAL:
             if self._vheader:
-                return self._vheader[num]
+                return TTkString(self._vheader[num])
         return super().headerData(num, orientation)
 
     def flags(self, row:int, col:int) -> TTkK.ItemFlag:

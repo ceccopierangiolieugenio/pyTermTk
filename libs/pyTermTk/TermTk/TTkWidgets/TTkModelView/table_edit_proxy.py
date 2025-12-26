@@ -166,7 +166,7 @@ class TTkCellListType(TTkCellListTypeBase):
         :type val: Any
         '''
         if val not in self._items:
-            raise ValueError(f"{val} not included in {self._list}")
+            raise ValueError(f"{val} not included in {self._items}")
         self._value = val
 
     def factory(self, value:Any, items:List[Any]) -> TTkCellListTypeBase:
@@ -323,7 +323,8 @@ class _ListBaseProxy(TTkResizableFrame, TTkTableProxyEditWidget):
     def setFocus(self) -> None:
         ''' Set focus to the internal list widget
         '''
-        return self._list.viewport().setFocus()
+        if (viewport := self._list.viewport()) and isinstance(viewport, TTkWidget):
+            viewport.setFocus()
 
     def keyEvent(self, evt:TTkKeyEvent) -> bool:
         return self._list.keyEvent(evt=evt)
@@ -343,15 +344,15 @@ class _ListBaseProxy(TTkResizableFrame, TTkTableProxyEditWidget):
         sb = _ListBaseProxy(items=data.items(), value=data)
         return sb
 
-    def getCellData(self) -> Union[float, int]:
+    def getCellData(self) -> TTkCellListTypeBase:
         ''' Get the current selected value from the list
 
         :return: The selected item value
         :rtype: Union[float, int]
         '''
-        self.dataChanged.emit(self._value.factory(
+        return self._value.factory(
             value=self._list.selectedItems()[0].data(),
-            items=self._items))
+            items=self._items)
 
 class _BoolListProxy(_ListBaseProxy):
     ''' Boolean editor for table cells
@@ -385,7 +386,7 @@ class _BoolListProxy(_ListBaseProxy):
         sb = _BoolListProxy(value=value, items=[True,False])
         return sb
 
-    def getCellData(self) -> Union[float, int]:
+    def getCellData(self) -> Any:
         ''' Get the current boolean value from the list
 
         :return: The selected boolean value (True or False)

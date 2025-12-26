@@ -35,7 +35,7 @@ class TTkTable(TTkAbstractScrollArea):
     __doc__ = '''
     :py:class:`TTkTable` is a container widget which place :py:class:`TTkTableWidget` in a scrolling area with on-demand scroll bars.
 
-    ''' + TTkTableWidget.__doc__
+    ''' + str(TTkTableWidget.__doc__)
 
     classStyle = TTkTableWidget.classStyle
 
@@ -115,7 +115,7 @@ class TTkTable(TTkAbstractScrollArea):
         .. seealso:: this method is forwarded to :py:meth:`TTkTableWidget.cellChanged`
 
         This signal is emitted whenever the data of the item in the cell specified by row and column has changed.
-        
+
         :param row: the row
         :type row: int
         :param col: the column
@@ -129,7 +129,7 @@ class TTkTable(TTkAbstractScrollArea):
 
         This signal is emitted whenever a cell in the table is clicked.
         The row and column specified is the cell that was clicked.
-        
+
         :param row: the row
         :type row: int
         :param col: the column
@@ -143,7 +143,7 @@ class TTkTable(TTkAbstractScrollArea):
 
         This signal is emitted whenever a cell in the table is double clicked.
         The row and column specified is the cell that was double clicked.
-        
+
         :param row: the row
         :type row: int
         :param col: the column
@@ -157,7 +157,7 @@ class TTkTable(TTkAbstractScrollArea):
 
         This signal is emitted when the mouse cursor enters a cell.
         The cell is specified by row and column.
-        
+
         :param row: the row
         :type row: int
         :param col: the column
@@ -172,7 +172,7 @@ class TTkTable(TTkAbstractScrollArea):
         This signal is emitted whenever the current cell changes.
         The cell specified by **prevRow** and **prevCol** is the cell that previously had the focus,
         the cell specified by **currRow** and **currCol** is the new current cell.
-        
+
         :param currRow: the current row
         :type currRow: int
         :param currColumn: the current column
