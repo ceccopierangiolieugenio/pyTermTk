@@ -117,6 +117,7 @@ except ImportError:
     try:
         from typing_extensions import TypeAlias
     except ImportError:
+        # TODO: Remove this workaround for Python 3.9
         TypeAlias = type  # Fallback for Python < 3.10 without typing_extensions
 
 from TermTk import pyTTkSlot, pyTTkSignal
