@@ -151,7 +151,12 @@ class TTkTomInspector(TTkContainer):
         self.setLayout(layout)
 
         self._domTree = TTkTree()
-        self._domTree.setHeaderLabels(["Object", "Class", "Visibility", "Layout"])
+        self._domTree.setHeaderLabels([
+            TTkString("Object"),
+            TTkString("Class"),
+            TTkString("Visibility"),
+            TTkString("Layout")
+        ])
         if TTkHelper._rootWidget:
             self._domTree.addTopLevelItem(TTkTomInspector._getTomTreeItem(TTkHelper._rootWidget._widgetItem))
 

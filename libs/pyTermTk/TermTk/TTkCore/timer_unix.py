@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-__all__ = ['TTkTimer']
+__all__ = []
 
 from typing import Optional,Callable
 
@@ -28,8 +28,9 @@ import threading
 
 from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
 from TermTk.TTkCore.helper import TTkHelper
+from TermTk.TTkCore.timer_interface import _TTkTimer_Interface
 
-class TTkTimer(threading.Thread):
+class _TTkTimer_Unix(threading.Thread, _TTkTimer_Interface):
     __slots__ = (
         'timeout', '_delay',
         '_timer', '_quit', '_start',
@@ -51,14 +52,14 @@ class TTkTimer(threading.Thread):
         super().__init__(name=name)
         TTkHelper.quitEvent.connect(self.quit)
 
-    def quit(self):
+    def quit(self) -> None:
         TTkHelper.quitEvent.disconnect(self.quit)
         self.timeout.clear()
         self._quit.set()
         self._timer.set()
         self._start.set()
 
-    def run(self):
+    def run(self) -> None:
         try:
             while not self._quit.is_set():
                 self._start.wait()
@@ -73,7 +74,7 @@ class TTkTimer(threading.Thread):
                 raise e
 
     @pyTTkSlot(float)
-    def start(self, sec:float=0.0):
+    def start(self, sec:float=0.0) -> None:
         self._delay = sec
         self._timer.set()
         self._timer.clear()
@@ -82,5 +83,5 @@ class TTkTimer(threading.Thread):
             super().start()
 
     @pyTTkSlot()
-    def stop(self):
+    def stop(self) -> None:
         self._timer.set()

@@ -39,6 +39,13 @@
 [tool.setuptools.packages.find]
     where = ["."]
 
+[project.optional-dependencies]
+    test = [
+        "pytest>=8.3.4",
+        "flake8>=7.2.0",
+        "mypy>=1.15.0"
+    ]
+
 [tool.setuptools.dynamic]
     version = {attr = "TermTk.__version__"}
 
