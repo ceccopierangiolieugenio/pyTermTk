@@ -503,7 +503,8 @@ class TTkAbstractScrollViewGridLayout(TTkGridLayout, TTkAbstractScrollViewInterf
             return
         self._excludeEvent = True
         for widget in self.iterWidgets():
-            widget.viewMoveTo(x,y)
+            if isinstance(widget, TTkAbstractScrollViewInterface):
+                widget.viewMoveTo(x,y)
         self._excludeEvent = False
         self._viewOffsetX = x
         self._viewOffsetY = y
@@ -595,9 +596,10 @@ class TTkAbstractScrollViewGridLayout(TTkGridLayout, TTkAbstractScrollViewInterf
         '''
         w,h=0,0
         for widget in self.iterWidgets():
-            ww,wh = widget.viewFullAreaSize()
-            w = max(w,ww)
-            h = max(h,wh)
+            if isinstance(widget, TTkAbstractScrollViewInterface):
+                ww,wh = widget.viewFullAreaSize()
+                w = max(w,ww)
+                h = max(h,wh)
         return w,h
 
     # Override this function
@@ -609,9 +611,10 @@ class TTkAbstractScrollViewGridLayout(TTkGridLayout, TTkAbstractScrollViewInterf
         '''
         w,h=0,0
         for widget in self.iterWidgets():
-            ww,wh = widget.viewDisplayedSize()
-            w = max(w,ww)
-            h = max(h,wh)
+            if isinstance(widget, TTkAbstractScrollViewInterface):
+                ww,wh = widget.viewDisplayedSize()
+                w = max(w,ww)
+                h = max(h,wh)
         return w,h
 
     def getViewOffsets(self) -> Tuple[int,int]:

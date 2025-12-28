@@ -55,10 +55,10 @@ jobs:
         tools/check.import.sh
 
     - name: Install dependencies
+      shell: bash
       run: |
         python -m pip install --upgrade pip
-        python -m pip install flake8 pytest
-        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+        python -m pip install -e 'libs/pyTermTk[test]'
 
     - name: Lint with flake8
       run: |
