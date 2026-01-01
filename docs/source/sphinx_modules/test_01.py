@@ -23,16 +23,16 @@ if True or TYPE_CHECKING:
     from sphinx.writers.html5 import HTML5Translator
 
 
-def test_process_signature(app, what, name, obj, options, sig, ret_ann):
-    '''Callback function to provide new signatures.'''
-    print(f"{app=}\n{what=}\n{name=}\n{obj=}\n{options=}\n{sig=}\n{ret_ann=}")
-    return '\n'.join(["a","b","c"]), "Pipppo Pippero"
+# def test_process_signature(app, what, name, obj, options, sig, ret_ann):
+#     '''Callback function to provide new signatures.'''
+#     print(f"{app=}\n{what=}\n{name=}\n{obj=}\n{options=}\n{sig=}\n{ret_ann=}")
+#     return '\n'.join(["a","b","c"]), "Pipppo Pippero"
 
-def test_process_docstring(app, what, name, obj, options, lines:list[str]):
-    '''Callback function to provide overloaded signatures.'''
-    print(f"{app=}\n{what=}\n{name=}\n{obj=}\n{options=}\n{lines=}")
-    for i,line in enumerate(lines):
-        lines[i] = line.replace("Table","PIPPO")
+# def test_process_docstring(app, what, name, obj, options, lines:list[str]):
+#     '''Callback function to provide overloaded signatures.'''
+#     print(f"{app=}\n{what=}\n{name=}\n{obj=}\n{options=}\n{lines=}")
+#     for i,line in enumerate(lines):
+#         lines[i] = line.replace("Table","PIPPO")
 
 class TermTkMethod(PyMethod):
     option_spec: ClassVar[OptionSpec] = PyMethod.option_spec.copy()
