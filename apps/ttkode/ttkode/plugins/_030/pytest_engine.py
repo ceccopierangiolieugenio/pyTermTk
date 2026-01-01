@@ -67,7 +67,7 @@ class PytestEngine():
     def _scan_thread(self):
         with self._scan_lock:
             dirname = os.path.dirname(__file__)
-            script_file = Path(dirname) / '_main_scan.py'
+            script_file = Path(dirname) / 'scripts' / '_main_scan.py'
             script = script_file.read_text()
             # Run the script in a subprocess and capture output
             process = subprocess.Popen(
@@ -103,7 +103,7 @@ class PytestEngine():
 
 
     def run_all_tests(self):
-        self.run_tests('tests')
+        self.run_tests('.')
 
     def run_tests(self, test_path:str):
         threading.Thread(target=self._run_tests_thread, args=(test_path,)).start()
@@ -111,7 +111,7 @@ class PytestEngine():
     def _run_tests_thread(self, test_path:str):
         with self._test_lock:
             dirname = os.path.dirname(__file__)
-            script_file = Path(dirname) / '_main_tests.py'
+            script_file = Path(dirname) / 'scripts' / '_main_tests.py'
             script = script_file.read_text()
 
             # Run the script in a subprocess with streaming output
