@@ -1,0 +1,169 @@
+# MIT License
+#
+# Copyright (c) 2025 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+__all__ = ['PytestEngine', 'ScanItem']
+
+import os
+import sys
+import json
+import threading
+import subprocess
+from dataclasses import dataclass, asdict, fields
+from typing import Dict, Any, Optional, List
+
+import TermTk as ttk
+
+
+def _strip_result(result: str) -> str:
+    lines = result.splitlines()
+    indent = min(len(line) - len(line.lstrip()) for line in lines if line.strip())
+    result = "\n".join(line[indent:] for line in lines)
+    return result.lstrip('\n')
+
+@dataclass
+class ScanItem():
+    nodeId: str
+
+class PytestEngine():
+    __slots__ = (
+        '_scan_lock',
+        'itemScanned','testResultReady',
+        'errorReported',
+        'endScan', 'endTest')
+
+    def __init__(self):
+        self.itemScanned = ttk.pyTTkSignal(ScanItem)
+        self.testResultReady = ttk.pyTTkSignal()
+        self.errorReported = ttk.pyTTkSignal(str)
+        self.endScan = ttk.pyTTkSignal()
+        self.endTest = ttk.pyTTkSignal()
+        self._scan_lock = threading.RLock()
+
+    def scan(self) -> Dict:
+        threading.Thread(target=self._scan_thread).start()
+
+    def _scan_thread(self):
+        with self._scan_lock:
+            dirname = os.path.dirname(__file__)
+            script = _strip_result(f"""
+                # I need this extra line to allow the debugger to inject the code
+                def main():
+                    import sys, json, pytest
+
+                    sys.path.append('{dirname}/..')
+                    from _030.pytest_glue import ResultCollector_ItemCollected
+
+                    collector = ResultCollector_ItemCollected()
+                    pytest.main(['--collect-only', '-p', 'no:terminal', '.'], plugins=[collector])
+
+                    # Print results as JSON to stdout
+                    # print(json.dumps(collector.results))
+                main()
+            """)
+
+            # Run the script in a subprocess and capture output
+            process = subprocess.Popen(
+                [sys.executable, "-c", script],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True,
+                bufsize=1,  # Line buffered
+                universal_newlines=True
+            )
+
+            def read_stdout():
+                for line in iter(process.stdout.readline, ''):
+                    self.itemScanned.emit(ScanItem(nodeId=line.strip()))
+                process.stdout.close()
+
+            def read_stderr():
+                for line in iter(process.stderr.readline, ''):
+                    self.errorReported.emit(line)
+                process.stderr.close()
+
+            # Start threads to read stdout and stderr
+            stdout_thread = threading.Thread(target=read_stdout)
+            stderr_thread = threading.Thread(target=read_stderr)
+
+            stdout_thread.start()
+            stderr_thread.start()
+
+            # Wait for process to complete
+            process.wait()
+
+            self.endScan.emit()
+
+            # # Wait for threads to finish
+            # stdout_thread.join()
+            # stderr_thread.join()
+
+            # stdout_content = ''.join(stdout_lines)
+            # stderr_content = ''.join(stderr_lines)
+
+            # # Parse the JSON results from stdout
+            # try:
+            #     return items
+            # except json.JSONDecodeError:
+            #     ttk.TTkLog.error(f"Error parsing results: {process.stdout}")
+            #     ttk.TTkLog.error(f"Stderr: {process.stderr}")
+            # except Exception as e:
+            #     ttk.TTkLog.error(str(e))
+
+            # self.endScan.emit()
+
+
+    @staticmethod
+    def run_tests() -> Dict:
+        dirname = os.path.dirname(__file__)
+        script = _strip_result(f"""
+            # I need this extra line to allow the debugger to inject the code
+            def main():
+                import sys, json, pytest
+
+                sys.path.append('{dirname}/..')
+                from _030.pytest_glue import ResultCollector_Logreport
+
+                collector = ResultCollector_Logreport()
+                pytest.main(['-p', 'no:terminal', 'tests/'], plugins=[collector])
+
+                # Print results as JSON to stdout
+                print(json.dumps(collector.results))
+            main()
+        """)
+
+        # Run the script in a subprocess and capture output
+        process = subprocess.run(
+            [sys.executable, "-c", script],
+            capture_output=True,
+            text=True
+        )
+
+        # Parse the JSON results from stdout
+        try:
+            return json.loads(process.stdout)
+        except json.JSONDecodeError:
+            ttk.TTkLog.error(f"Error parsing results: {process.stdout}")
+            ttk.TTkLog.error(f"Stderr: {process.stderr}")
+        except Exception as e:
+            ttk.TTkLog.error(str(e))
+
+        return {}
