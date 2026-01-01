@@ -20,34 +20,31 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-__all__:list[str] = []
+import pytest
 
-import os, sys
+from dataclasses import dataclass, asdict, fields
+from typing import Dict, Any, Optional, List, Literal
 
-current_dir = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, current_dir)
+class ResultCollector_Logreport:
+    def __init__(self):
+        self.results:Dict[str,Any] = []
 
-import TermTk as ttk
+    def pytest_runtest_logreport(self, report:pytest.TestReport) -> None:
+        if report.when == "call":
+            self.results.append({
+                "nodeid": report.nodeid,
+                "outcome": report.outcome,
+                "duration": report.duration,
+                "longrepr": str(report.longrepr) if report.failed else None
+            })
 
-import ttkode
+class ResultCollector_ItemCollected:
+    def __init__(self):
+        self.results:Dict[str,Any] = []
 
-from _030.pytest_widget import PyTestWidget
-
-_icon:str = (
-    "╒╦╕\n"
-    "╶╨╴")
-
-ttkode.TTkodePlugin(
-    name="PyTest Plugin",
-    widgets = [
-            ttkode.TTkodePluginWidgetPanel(
-            panelName='Test Results',
-            widget=(_tr:=ttk.TTkTextEdit(readOnly=True))
-        ),
-        ttkode.TTkodePluginWidgetActivity(
-            activityName='Testing',
-            widget=PyTestWidget(testResults=_tr),
-            icon=ttk.TTkString(_icon)
-        )
-    ]
-)
+    def pytest_itemcollected(self, item:pytest.Item) -> None:
+        # Called during --collect-only
+        print(item.nodeid)
+        self.results.append({
+            "nodeid": item.nodeid
+        })
