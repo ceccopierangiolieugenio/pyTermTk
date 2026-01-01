@@ -20,18 +20,20 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-__all__ = ['PytestEngine', 'ScanItem']
+__all__ = ['PytestEngine', 'ScanItem', 'TestResult']
 
 import os
 import sys
 import json
 import threading
 import subprocess
+from pathlib import Path
 from dataclasses import dataclass, asdict, fields
 from typing import Dict, Any, Optional, List
 
 import TermTk as ttk
 
+from _030.pytest_data import TestResult
 
 def _strip_result(result: str) -> str:
     lines = result.splitlines()
@@ -45,18 +47,19 @@ class ScanItem():
 
 class PytestEngine():
     __slots__ = (
-        '_scan_lock',
+        '_scan_lock', '_test_lock',
         'itemScanned','testResultReady',
         'errorReported',
         'endScan', 'endTest')
 
     def __init__(self):
         self.itemScanned = ttk.pyTTkSignal(ScanItem)
-        self.testResultReady = ttk.pyTTkSignal()
+        self.testResultReady = ttk.pyTTkSignal(TestResult)
         self.errorReported = ttk.pyTTkSignal(str)
         self.endScan = ttk.pyTTkSignal()
         self.endTest = ttk.pyTTkSignal()
         self._scan_lock = threading.RLock()
+        self._test_lock = threading.RLock()
 
     def scan(self) -> Dict:
         threading.Thread(target=self._scan_thread).start()
@@ -64,25 +67,11 @@ class PytestEngine():
     def _scan_thread(self):
         with self._scan_lock:
             dirname = os.path.dirname(__file__)
-            script = _strip_result(f"""
-                # I need this extra line to allow the debugger to inject the code
-                def main():
-                    import sys, json, pytest
-
-                    sys.path.append('{dirname}/..')
-                    from _030.pytest_glue import ResultCollector_ItemCollected
-
-                    collector = ResultCollector_ItemCollected()
-                    pytest.main(['--collect-only', '-p', 'no:terminal', '.'], plugins=[collector])
-
-                    # Print results as JSON to stdout
-                    # print(json.dumps(collector.results))
-                main()
-            """)
-
+            script_file = Path(dirname) / '_main_scan.py'
+            script = script_file.read_text()
             # Run the script in a subprocess and capture output
             process = subprocess.Popen(
-                [sys.executable, "-c", script],
+                [sys.executable, "-c", script, dirname],
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
                 text=True,
@@ -112,58 +101,54 @@ class PytestEngine():
 
             self.endScan.emit()
 
-            # # Wait for threads to finish
-            # stdout_thread.join()
-            # stderr_thread.join()
 
-            # stdout_content = ''.join(stdout_lines)
-            # stderr_content = ''.join(stderr_lines)
+    def run_all_tests(self):
+        self.run_tests('tests')
 
-            # # Parse the JSON results from stdout
-            # try:
-            #     return items
-            # except json.JSONDecodeError:
-            #     ttk.TTkLog.error(f"Error parsing results: {process.stdout}")
-            #     ttk.TTkLog.error(f"Stderr: {process.stderr}")
-            # except Exception as e:
-            #     ttk.TTkLog.error(str(e))
+    def run_tests(self, test_path:str):
+        threading.Thread(target=self._run_tests_thread, args=(test_path,)).start()
 
-            # self.endScan.emit()
+    def _run_tests_thread(self, test_path:str):
+        with self._test_lock:
+            dirname = os.path.dirname(__file__)
+            script_file = Path(dirname) / '_main_tests.py'
+            script = script_file.read_text()
 
+            # Run the script in a subprocess with streaming output
+            process = subprocess.Popen(
+                [sys.executable, "-c", script, dirname, test_path],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True,
+                bufsize=1,  # Line buffered
+                universal_newlines=True
+            )
 
-    @staticmethod
-    def run_tests() -> Dict:
-        dirname = os.path.dirname(__file__)
-        script = _strip_result(f"""
-            # I need this extra line to allow the debugger to inject the code
-            def main():
-                import sys, json, pytest
+            def read_stdout():
+                for line in iter(process.stdout.readline, ''):
+                    line = line.strip()
+                    if line:
+                        try:
+                            result_dict = json.loads(line)
+                            result = TestResult(**result_dict)
+                            self.testResultReady.emit(result)
+                        except (json.JSONDecodeError, KeyError) as e:
+                            ttk.TTkLog.error(f"Error parsing test result: {line}")
+                process.stdout.close()
 
-                sys.path.append('{dirname}/..')
-                from _030.pytest_glue import ResultCollector_Logreport
+            def read_stderr():
+                for line in iter(process.stderr.readline, ''):
+                    self.errorReported.emit(line)
+                process.stderr.close()
 
-                collector = ResultCollector_Logreport()
-                pytest.main(['-p', 'no:terminal', 'tests/'], plugins=[collector])
+            # Start threads to read stdout and stderr
+            stdout_thread = threading.Thread(target=read_stdout)
+            stderr_thread = threading.Thread(target=read_stderr)
 
-                # Print results as JSON to stdout
-                print(json.dumps(collector.results))
-            main()
-        """)
+            stdout_thread.start()
+            stderr_thread.start()
 
-        # Run the script in a subprocess and capture output
-        process = subprocess.run(
-            [sys.executable, "-c", script],
-            capture_output=True,
-            text=True
-        )
+            # Wait for process to complete
+            process.wait()
 
-        # Parse the JSON results from stdout
-        try:
-            return json.loads(process.stdout)
-        except json.JSONDecodeError:
-            ttk.TTkLog.error(f"Error parsing results: {process.stdout}")
-            ttk.TTkLog.error(f"Stderr: {process.stderr}")
-        except Exception as e:
-            ttk.TTkLog.error(str(e))
-
-        return {}
+            self.endTest.emit()
