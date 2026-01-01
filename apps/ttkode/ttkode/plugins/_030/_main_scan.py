@@ -1,6 +1,6 @@
 # MIT License
 #
-# Copyright (c) 2025 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
+# Copyright (c) 2026 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -20,31 +20,14 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import pytest
+def main() -> None:
+    import sys, pytest
 
-from dataclasses import asdict
-from typing import Dict, Any
+    dirname = sys.argv[1]
 
-from _030.pytest_data import TestResult
+    sys.path.append(f'{dirname}/..')
+    from _030.pytest_glue import ResultCollector_ItemCollected
 
-class ResultCollector_Logreport:
-    def pytest_runtest_logreport(self, report:pytest.TestReport) -> None:
-        if report.when == "call":
-            result = TestResult(
-                nodeId=report.nodeid,
-                outcome=report.outcome,
-                duration=report.duration,
-                longrepr=str(report.longrepr) if report.failed else None
-            )
-            # Print result immediately for real-time streaming
-            import json
-            print(json.dumps(asdict(result)), flush=True)
-
-
-class ResultCollector_ItemCollected:
-    def __init__(self):
-        self.results:Dict[str,Any] = []
-
-    def pytest_itemcollected(self, item:pytest.Item) -> None:
-        # Called during --collect-only
-        print(item.nodeid)
+    collector = ResultCollector_ItemCollected()
+    pytest.main(['--collect-only', '-p', 'no:terminal', '.'], plugins=[collector])
+main()

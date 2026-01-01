@@ -22,13 +22,6 @@
 
 __all__ = ['PyTestWidget']
 
-import io
-import os
-import sys
-import json
-import pytest
-import subprocess
-
 from typing import Dict, List, Any, Optional
 
 from pygments import highlight
@@ -41,13 +34,19 @@ from ttkode import ttkodeProxy
 from ttkode.app.ttkode import TTKodeFileWidgetItem
 
 from .pytest_tree import _testStatus, TestTreeItemPath, TestTreeItemMethod
-from .pytest_engine import PytestEngine, ScanItem
+from .pytest_engine import PytestEngine, ScanItem, TestResult
 
 def _strip_result(result: str) -> str:
     lines = result.splitlines()
     indent = min(len(line) - len(line.lstrip()) for line in lines if line.strip())
     result = "\n".join(line[indent:] for line in lines)
     return result.lstrip('\n')
+
+_out_map = {
+    'passed': ttk.TTkString('PASS', ttk.TTkColor.GREEN)+ttk.TTkColor.RST,
+    'failed': ttk.TTkString('FAIL', ttk.TTkColor.RED)+ttk.TTkColor.RST
+}
+_error_color = ttk.TTkColor.fgbg('#FFFF00',"#FF0000")
 
 class PyTestWidget(ttk.TTkContainer):
     __slots__ = (
@@ -67,49 +66,26 @@ class PyTestWidget(ttk.TTkContainer):
         layout.addWidget(res_tree:=ttk.TTkTree(), 1,0,1,2)
         res_tree.setHeaderLabels(["Tests"])
 
-
-        testResults.setText('Ciaoooo Testsssss\nPippo')
+        testResults.setText('Info Tests')
 
         self._res_tree = res_tree
 
         btn_scan.clicked.connect(self._scan)
         btn_run.clicked.connect(self._run_tests)
+        self._test_engine.testResultReady.connect(self._test_updated)
+
+    def _get_node_from_path(self, _n:TestTreeItemPath, _p:str) -> Optional[TestTreeItemPath]:
+        for _c in _n.children():
+            if isinstance(_c, TestTreeItemPath) and _c.path() == _p:
+                return _c
+            if _cc:= self._get_node_from_path(_n=_c, _p=_p):
+                return _cc
+        return None
 
     @ttk.pyTTkSlot()
     def _scan(self):
         self._res_tree.clear()
         self._test_results.clear()
-
-        # _tree = {}
-        # def _add_node(_node:str)->None:
-        #     _full_path,_leaf = _node.split('::')
-        #     _loop_tree = _tree
-        #     for _path in _full_path.split('/'):
-        #         if _path not in _loop_tree:
-        #             _loop_tree[_path] = {}
-        #         _loop_tree = _loop_tree[_path]
-        #     _loop_tree[_leaf] = '_node'
-
-        # for _r in results:
-        #     self._test_results.append(f"{_r['nodeid']}")
-        #     _add_node(_r['nodeid'])
-
-        # def _iter_tree(_node:Dict,_path:str) -> List[ttk.TTkTreeWidgetItem]:
-        #     _ret  = []
-        #     for _n,_content in _node.items():
-        #         if isinstance(_content, str):
-        #             _test_call = f"{_path}::{_n}"
-        #             _ret_node = TestTreeItemMethod([ttk.TTkString(_n)],test_call=_test_call)
-        #         elif isinstance(_content, dict):
-        #             _node_path = f"{_path}/{_n}" if _path else _n
-        #             _ret_node = TestTreeItemPath([ttk.TTkString(_n)], path=_node_path, expanded=True)
-        #             _ret_node.addChildren(_iter_tree(_content,_node_path))
-        #         _ret.append(_ret_node)
-        #     return _ret
-
-        # self._test_results.append(f"{_tree}")
-        # self._res_tree.addTopLevelItems(_iter_tree(_tree,''))
-        # self._res_tree.resizeColumnToContents(0)
 
         def _get_or_add_path_in_node(_n:TestTreeItemPath, _p:str, _name:str) -> TestTreeItemPath:
             for _c in _n.children():
@@ -153,42 +129,40 @@ class PyTestWidget(ttk.TTkContainer):
         self._test_engine.scan()
 
 
+    def _mark_node(self, _nodeid:str, outcome:str) -> None:
+        status = {
+            'passed' : _testStatus.Pass,
+            'failed' : _testStatus.Fail,
+        }.get(outcome, _testStatus.Undefined)
+        def _recurse_node(_n:ttk.TTkTreeWidgetItem):
+            for _c in _n.children():
+                # ttk.TTkLog.debug(_c.data(0))
+                if isinstance(_c, TestTreeItemPath) and _nodeid.startswith(_c.path()):
+                    _c.setTestStatus(status)
+                elif isinstance(_c, TestTreeItemMethod) and _nodeid.startswith(_c.test_call()):
+                    _c.setTestStatus(status)
+                _recurse_node(_c)
+        _recurse_node(self._res_tree.invisibleRootItem())
+
+
+    @ttk.pyTTkSlot(TestResult)
+    def _test_updated(self, test:TestResult) -> None:
+        self._mark_node(_nodeid=test.nodeId, outcome=test.outcome)
+
+        _outcome = _out_map.get(test.outcome, test.outcome)
+        self._test_results.append(f"{test.nodeId}: " + _outcome + f" ({test.duration:.2f}s)")
+        if test.outcome == 'failed':
+            self._test_results.append(ttk.TTkString("◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤ ↳ Error: ◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤", ttk.TTkColor.RED))
+            _code = test.longrepr
+            _code_str = ttk.TTkString(highlight(_code, PythonLexer(), TerminalTrueColorFormatter(style='material')))
+            _code_h_err = [
+                _l.setColor(_error_color) if _l._text.startswith('E') else _l
+                for _l in _code_str.split('\n')]
+            self._test_results.append(ttk.TTkString('\n').join(_code_h_err))
+            self._test_results.append(ttk.TTkString("◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤", ttk.TTkColor.RED))
+
+
     @ttk.pyTTkSlot()
-    def _run_tests(self):
+    def _run_tests(self) -> None:
         self._test_results.clear()
-
-        def _mark_node(_nodeid:str, outcome:str):
-            status = {
-                'passed' : _testStatus.Pass,
-                'failed' : _testStatus.Fail,
-            }.get(outcome, _testStatus.Undefined)
-            def _recurse_node(_n:ttk.TTkTreeWidgetItem):
-                for _c in _n.children():
-                    # ttk.TTkLog.debug(_c.data(0))
-                    if isinstance(_c, TestTreeItemPath) and _nodeid.startswith(_c.path()):
-                        _c.setTestStatus(status)
-                    elif isinstance(_c, TestTreeItemMethod) and _nodeid.startswith(_c.test_call()):
-                        _c.setTestStatus(status)
-                    _recurse_node(_c)
-            _recurse_node(self._res_tree.invisibleRootItem())
-
-        results = PytestEngine.run_tests()
-        _out_map = {
-            'passed': ttk.TTkString('PASS', ttk.TTkColor.GREEN)+ttk.TTkColor.RST,
-            'failed': ttk.TTkString('FAIL', ttk.TTkColor.RED)+ttk.TTkColor.RST
-        }
-        _error_color = ttk.TTkColor.fgbg('#FFFF00',"#FF0000")
-        for _r in results:
-            _outcome = _out_map.get(_r['outcome'], _r['outcome'])
-            self._test_results.append(f"{_r['nodeid']}: " + _outcome + f" ({_r['duration']:.2f}s)")
-            _mark_node(_r['nodeid'], _r['outcome'])
-            if _r['outcome'] == 'failed':
-                self._test_results.append(ttk.TTkString("◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤ ↳ Error: ◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤", ttk.TTkColor.RED))
-                _code = _r['longrepr']
-                _code_str = ttk.TTkString(highlight(_code, PythonLexer(), TerminalTrueColorFormatter(style='material')))
-                _code_h_err = [
-                    _l.setColor(_error_color) if _l._text.startswith('E') else _l
-                    for _l in _code_str.split('\n')]
-                self._test_results.append(ttk.TTkString('\n').join(_code_h_err))
-                self._test_results.append(ttk.TTkString("◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤", ttk.TTkColor.RED))
-
+        self._test_engine.run_all_tests()
