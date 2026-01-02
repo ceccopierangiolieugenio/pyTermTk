@@ -26,7 +26,9 @@ def main() -> None:
     dirname = sys.argv[1]
 
     sys.path.append(f'{dirname}/..')
-    from _030.pytest_glue import ResultCollector_ItemCollected
+    sys.path.append(f'{dirname}/scripts')
+
+    from _glue_lib import ResultCollector_ItemCollected
 
     collector = ResultCollector_ItemCollected()
     pytest.main(['--collect-only', '-p', 'no:terminal', '.'], plugins=[collector])

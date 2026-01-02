@@ -30,7 +30,9 @@ def main() -> None:
     # test_path = "tests/pytest/test_005_tree.py::test_tree_show_hide"
 
     sys.path.append(f'{dirname}/..')
-    from _030.pytest_glue import ResultCollector_Logreport
+    sys.path.append(f'{dirname}/scripts')
+
+    from _glue_lib import ResultCollector_Logreport
 
     collector = ResultCollector_Logreport()
     pytest.main(['-p', 'no:terminal', test_path], plugins=[collector])
