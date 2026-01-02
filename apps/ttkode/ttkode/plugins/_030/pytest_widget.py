@@ -151,6 +151,11 @@ class PyTestWidget(ttk.TTkContainer):
 
         _outcome = _out_map.get(test.outcome, test.outcome)
         self._test_results.append(f"{test.nodeId}: " + _outcome + f" ({test.duration:.2f}s)")
+
+        for (_s_name,_s_content) in test.sections:
+            self._test_results.append(ttk.TTkString(_s_name, ttk.TTkColor.GREEN))
+            self._test_results.append(_s_content)
+
         if test.outcome == 'failed':
             self._test_results.append(ttk.TTkString("◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤ ↳ Error: ◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤", ttk.TTkColor.RED))
             _code = test.longrepr

@@ -23,7 +23,7 @@
 __all__ = ['TestResult']
 
 from dataclasses import dataclass
-from typing import Optional
+from typing import Optional,List,Tuple
 
 @dataclass
 class TestResult():
@@ -31,3 +31,4 @@ class TestResult():
     outcome: str
     duration: float
     longrepr: Optional[str]
+    sections: List[Tuple[str,str]]
