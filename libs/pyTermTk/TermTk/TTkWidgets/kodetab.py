@@ -244,13 +244,15 @@ class TTkKodeTab(TTkSplitter):
         self.tabAdded = pyTTkSignal(TTkTabWidget, int)
         self._barType = barType
 
+        closable = kwargs.pop('closable', False)
+
         super().__init__(**kwargs|{'layout':TTkGridLayout()})
 
         self.setStyle(_splitter_NERD_1_style)
         kwargs.pop('parent',None)
         kwargs.pop('visible',None)
         # self.layout().addWidget(splitter := TTkSplitter())
-        self._lastKodeTabWidget = kt = _TTkKodeTab(baseWidget=self, barType=self._barType, **kwargs)
+        self._lastKodeTabWidget = kt = _TTkKodeTab(baseWidget=self, barType=self._barType, **kwargs|{'closable':closable})
         self._lastKodeTabWidget._dropEventProxy = self._dropEventProxy
         self.addWidget(self._lastKodeTabWidget)
         kt.kodeTabCloseRequested.connect(self._handleKodeTabCloseRequested)
