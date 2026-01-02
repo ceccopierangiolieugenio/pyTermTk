@@ -32,17 +32,29 @@ class ResultCollector_Logreport:
     def pytest_runtest_logreport(self, report:pytest.TestReport) -> None:
         if report.when == "call":
             result = TestResult(
-                nodeId=report.nodeid,
-                outcome=report.outcome,
-                duration=report.duration,
-                sections=list(report.sections),
-                longrepr=str(report.longrepr) if report.failed else None
+                nodeId = report.nodeid,
+                outcome = report.outcome,
+                duration = report.duration,
+                sections = list(report.sections),
+                longrepr = str(report.longrepr) if report.failed else None,
+                location = report.location
             )
+
+            # print('REPORT: -------')
             # print(report)
+            # print('SECTIONS: -------')
             # for s in report.sections:
             #     print('sec',s[0])
             #     print('cont',s[1])
-            # Print result immediately for real-time streaming
+            # print('LONGREPR: -------')
+            # print(report.longrepr)
+            # print('LOCATION: -------')
+            # print(1,report.location[0])
+            # print(2,report.location[1])
+            # print(3,report.location[2])
+            # # Print result immediately for real-time streaming
+            # print('RET: -------')
+
             print(json.dumps(asdict(result)), flush=True)
 
 
