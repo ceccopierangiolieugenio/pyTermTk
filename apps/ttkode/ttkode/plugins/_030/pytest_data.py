@@ -32,3 +32,4 @@ class TestResult():
     duration: float
     longrepr: Optional[str]
     sections: List[Tuple[str,str]]
+    location: tuple[str, int | None, str]
