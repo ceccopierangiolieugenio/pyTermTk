@@ -29,7 +29,6 @@ def main() -> None:
     sys.path.append(f'{dirname}/..')
     from _030.pytest_glue import ResultCollector_Logreport
 
-
     collector = ResultCollector_Logreport()
     pytest.main(['-p', 'no:terminal', test_path], plugins=[collector])
 main()

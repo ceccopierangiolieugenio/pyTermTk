@@ -20,6 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+import json
 import pytest
 
 from dataclasses import asdict
@@ -34,10 +35,14 @@ class ResultCollector_Logreport:
                 nodeId=report.nodeid,
                 outcome=report.outcome,
                 duration=report.duration,
+                sections=list(report.sections),
                 longrepr=str(report.longrepr) if report.failed else None
             )
+            # print(report)
+            # for s in report.sections:
+            #     print('sec',s[0])
+            #     print('cont',s[1])
             # Print result immediately for real-time streaming
-            import json
             print(json.dumps(asdict(result)), flush=True)
 
 
