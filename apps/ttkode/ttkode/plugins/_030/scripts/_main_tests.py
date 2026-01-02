@@ -26,6 +26,9 @@ def main() -> None:
     dirname = sys.argv[1]
     test_path = sys.argv[2]
 
+    # dirname = "apps/ttkode/ttkode/plugins/_030"
+    # test_path = "tests/pytest/test_005_tree.py::test_tree_show_hide"
+
     sys.path.append(f'{dirname}/..')
     from _030.pytest_glue import ResultCollector_Logreport
 

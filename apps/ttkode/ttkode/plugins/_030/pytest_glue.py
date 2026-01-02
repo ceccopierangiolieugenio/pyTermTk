@@ -20,6 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+import sys
 import json
 import pytest
 
@@ -28,7 +29,18 @@ from typing import Dict, Any
 
 from _030.pytest_data import TestResult
 
+class _Highlighter():
+    _highlight = None
+
+class _Dummy():
+    _tw = _Highlighter()
+
 class ResultCollector_Logreport:
+    def pytest_configure(self, config:pytest.Config):
+        config.pluginmanager.register(_Dummy(), "terminalreporter")
+        # config.option.verbose = 2
+
+
     def pytest_runtest_logreport(self, report:pytest.TestReport) -> None:
         if report.when == "call":
             result = TestResult(
@@ -39,6 +51,20 @@ class ResultCollector_Logreport:
                 longrepr = str(report.longrepr) if report.failed else None,
                 location = report.location
             )
+
+            # Print detailed output for failed tests (like terminal plugin does)
+            # if report.failed and report.longrepr:
+            #     print(f"\n{'='*70}")
+            #     print(f"FAILED: {report.nodeid}")
+            #     print(f"{'='*70}")
+            #     print(report.longrepr)
+            #     print()
+
+            # # Print captured output sections
+            # if report.sections:
+            #     for section_name, section_content in report.sections:
+            #         print(f"\n{'-'*70} {section_name} {'-'*70}")
+            #         print(section_content)
 
             # print('REPORT: -------')
             # print(report)
