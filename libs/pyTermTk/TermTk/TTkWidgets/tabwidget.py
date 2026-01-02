@@ -263,7 +263,7 @@ class _TTkTabColorButton(TTkWidget):
                  **kwargs) -> None:
         self.tcbClicked = pyTTkSignal(_TTkTabColorButton)
         self._tabStatus = tabStatus
-        super().__init__(forwardStyle=True, **kwargs)
+        super().__init__(**kwargs)
 
     def mouseReleaseEvent(self, evt:TTkMouseEvent) -> bool:
         self.tcbClicked.emit(self)
