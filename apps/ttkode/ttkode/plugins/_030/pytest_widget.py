@@ -144,6 +144,13 @@ class PyTestWidget(ttk.TTkContainer):
                 _recurse_node(_c)
         _recurse_node(self._res_tree.invisibleRootItem())
 
+    def _clear_nodes(self) -> None:
+        status = _testStatus.Undefined
+        def _recurse_node(_n:ttk.TTkTreeWidgetItem):
+            for _c in _n.children():
+                _c.setTestStatus(status)
+                _recurse_node(_c)
+        _recurse_node(self._res_tree.invisibleRootItem())
 
     @ttk.pyTTkSlot(TestResult)
     def _test_updated(self, test:TestResult) -> None:
@@ -169,5 +176,6 @@ class PyTestWidget(ttk.TTkContainer):
 
     @ttk.pyTTkSlot()
     def _run_tests(self) -> None:
+        self._clear_nodes()
         self._test_results.clear()
         self._test_engine.run_all_tests()
