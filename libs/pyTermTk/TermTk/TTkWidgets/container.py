@@ -465,7 +465,7 @@ class TTkContainer(TTkWidget):
                         self._padl, self._padt,
                         self._width   - self._padl - self._padr,
                         self._height  - self._padt - self._padb)
-            self.rootLayout().update()
+            self.rootLayout().update(repaint=repaint, updateLayout=updateLayout)
 
     def getWidgetByName(self, name: str) -> Optional[TTkWidget]:
         '''
