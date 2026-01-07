@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.48.2-a0](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/ttkDesigner-v0.48.1-a0...ttkDesigner-v0.48.2-a0) (2026-01-07)
+
+
+### Fixes
+
+* crash on the menu editor ([6927fd4](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/6927fd401af169dcc2592b57171de892763d9647))
+
 ## [0.48.1-a0](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/ttkDesigner-v0.41.5-a.54...ttkDesigner-v0.48.1-a0) (2025-11-10)
 
 
