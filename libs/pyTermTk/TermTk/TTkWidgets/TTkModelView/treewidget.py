@@ -708,7 +708,7 @@ class TTkTreeWidget(TTkAbstractScrollView):
             return True
         return False
 
-    def mouseMoveEvent(self, evt) -> None:
+    def mouseMoveEvent(self, evt) -> bool:
         y = evt.y
         _, oy = self.getViewOffsets()
         # Handle Header Events
@@ -722,6 +722,11 @@ class TTkTreeWidget(TTkAbstractScrollView):
             self.update()
             return True
         return True
+
+    def leaveEvent(self) -> None:
+        if self._hoverItem is not None:
+            self._hoverItem = None
+            self.update()
 
     @pyTTkSlot()
     def _alignWidgets(self) -> None:
