@@ -228,7 +228,7 @@ class TTkTreeWidget(TTkAbstractScrollView):
                   '_header', '_columnsPos',
                   '_selectionMode',
                   '_hoverItem',
-                  '_selectedId', '_selected', '_separatorSelected',
+                  '_selected', '_separatorSelected',
                   '_sortColumn', '_sortOrder', '_sortingEnabled',
                   '_dndMode',
                   # Signals
@@ -272,7 +272,6 @@ class TTkTreeWidget(TTkAbstractScrollView):
         self._dndMode = dragDropMode
         self._hoverItem = None
         self._selected = []
-        self._selectedId = None
         self._separatorSelected = None
         self._sortingEnabled=sortingEnabled
         self._sortColumn = -1
@@ -571,7 +570,6 @@ class TTkTreeWidget(TTkAbstractScrollView):
                     self.itemExpanded.emit(item)
                 else:
                     self.itemCollapsed.emit(item)
-            self._selectedId = y
             self._selected = [item]
             col = -1
             for i, c in enumerate(self._columnsPos):
@@ -647,7 +645,6 @@ class TTkTreeWidget(TTkAbstractScrollView):
                     _multiSelect = self._selectionMode == TTkK.SelectionMode.MultiSelection
                     if not ( bool(evt.mod & TTkK.ControlModifier) and _multiSelect ):
                         self._selected.clear()
-                    self._selectedId = y
                     # Unselect Items if already selected in multiselect mode
                     if item in self._selected and _multiSelect:
                         self._selected.remove(item)
@@ -723,10 +720,11 @@ class TTkTreeWidget(TTkAbstractScrollView):
             return True
         return True
 
-    def leaveEvent(self) -> None:
+    def leaveEvent(self, evt:TTkMouseEvent) -> bool:
         if self._hoverItem is not None:
             self._hoverItem = None
             self.update()
+        return True
 
     @pyTTkSlot()
     def _alignWidgets(self) -> None:
