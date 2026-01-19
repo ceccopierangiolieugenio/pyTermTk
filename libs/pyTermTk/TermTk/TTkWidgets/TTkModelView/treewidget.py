@@ -211,6 +211,7 @@ class TTkTreeWidget(TTkAbstractScrollView):
                     'lineColor': TTkColor.fg("#444444"),
                     'lineHeightColor': TTkColor.fg("#666666"),
                     'headerColor': TTkColor.fg("#ffffff")+TTkColor.bg("#444444")+TTkColor.BOLD,
+                    'hoveredColor': TTkColor.bg('#0088FF'),
                     'selectedColor': TTkColor.fg("#ffff88")+TTkColor.bg("#000066")+TTkColor.BOLD,
                     'separatorColor': TTkColor.fg("#444444")},
                 'disabled':    {
@@ -218,6 +219,7 @@ class TTkTreeWidget(TTkAbstractScrollView):
                     'lineColor': TTkColor.fg("#888888"),
                     'lineHeightColor': TTkColor.fg("#666666"),
                     'headerColor': TTkColor.fg("#888888"),
+                    'hoveredColor': TTkColor.bg('#777777'),
                     'selectedColor': TTkColor.fg("#888888"),
                     'separatorColor': TTkColor.fg("#888888")},
             }
@@ -225,6 +227,7 @@ class TTkTreeWidget(TTkAbstractScrollView):
     __slots__ = ( '_rootItem',
                   '_header', '_columnsPos',
                   '_selectionMode',
+                  '_hoverItem',
                   '_selectedId', '_selected', '_separatorSelected',
                   '_sortColumn', '_sortOrder', '_sortingEnabled',
                   '_dndMode',
@@ -233,6 +236,7 @@ class TTkTreeWidget(TTkAbstractScrollView):
                   )
 
     _selected:List[TTkTreeWidgetItem]
+    _hoverItem:Optional[TTkTreeWidgetItem]
     _rootItem:_RootWidgetItem
     _separatorSelected:Optional[int]
 
@@ -266,6 +270,7 @@ class TTkTreeWidget(TTkAbstractScrollView):
         self._itemCollapsed     = pyTTkSignal(TTkTreeWidgetItem)
         self._selectionMode = selectionMode
         self._dndMode = dragDropMode
+        self._hoverItem = None
         self._selected = []
         self._selectedId = None
         self._separatorSelected = None
@@ -581,6 +586,27 @@ class TTkTreeWidget(TTkAbstractScrollView):
     def focusOutEvent(self) -> None:
         self._separatorSelected = None
 
+    def itemAt(self, pos:int) -> Optional[TTkTreeWidgetItem]:
+        '''
+        Return the item at the vertical position
+
+        :param pos: y coordinate
+        :type pos: int
+
+        :return: The item at the (pos) position if available
+        :rtype: :py:class:`TTkTreeWidgetItem` or None if no item is available
+        '''
+        y = pos
+        _, oy = self.getViewOffsets()
+        # Handle Header Events
+        if y == 0:
+            return None
+        # Handle Tree/Table Events
+        y += oy-1
+        if  _item_at := self._rootItem._item_at(y):
+            return _item_at[2]
+        return None
+
     def mousePressEvent(self, evt:TTkMouseEvent) -> bool:
         x,y = evt.x, evt.y
         ox, oy = self.getViewOffsets()
@@ -682,6 +708,21 @@ class TTkTreeWidget(TTkAbstractScrollView):
             return True
         return False
 
+    def mouseMoveEvent(self, evt) -> None:
+        y = evt.y
+        _, oy = self.getViewOffsets()
+        # Handle Header Events
+        if y == 0:
+            return True
+        # Handle Tree/Table Events
+        y += oy-1
+        if  _item_at := self._rootItem._item_at(y):
+            item  = _item_at[2]
+            self._hoverItem = item
+            self.update()
+            return True
+        return True
+
     @pyTTkSlot()
     def _alignWidgets(self) -> None:
         self.layout().clear()
@@ -721,6 +762,7 @@ class TTkTreeWidget(TTkAbstractScrollView):
         lineColor= style['lineColor']
         lineHeightColor= style['lineHeightColor']
         headerColor= style['headerColor']
+        hoveredColor=style['hoveredColor']
         selectedColor= style['selectedColor']
         separatorColor= style['separatorColor']
 
@@ -763,4 +805,6 @@ class TTkTreeWidget(TTkAbstractScrollView):
                     _text=_data[_yi]
                 if _i in self._selected:
                     _text = (_text + ' '*_width).completeColor(selectedColor)
+                elif _i is self._hoverItem:
+                    _text = (_text + ' '*_width).completeColor(hoveredColor)
                 canvas.drawTTkString(text=_text,pos=(_lx-x,_y+1),width=_width)
