@@ -566,11 +566,8 @@ class TTkTreeWidget(TTkAbstractScrollView):
                     self.itemExpanded.emit(item)
                 else:
                     self.itemCollapsed.emit(item)
-            for _s in self._selected:
-                _s.setSelected(False)
             self._selectedId = y
             self._selected = [item]
-            item.setSelected(True)
             col = -1
             for i, c in enumerate(self._columnsPos):
                 if x < c:
@@ -623,17 +620,13 @@ class TTkTreeWidget(TTkAbstractScrollView):
                 if self._selectionMode in (TTkK.SelectionMode.SingleSelection,TTkK.SelectionMode.MultiSelection):
                     _multiSelect = self._selectionMode == TTkK.SelectionMode.MultiSelection
                     if not ( bool(evt.mod & TTkK.ControlModifier) and _multiSelect ):
-                        for _s in self._selected:
-                            _s.setSelected(False)
                         self._selected.clear()
                     self._selectedId = y
                     # Unselect Items if already selected in multiselect mode
                     if item in self._selected and _multiSelect:
                         self._selected.remove(item)
-                        item.setSelected(False)
                     else:
                         self._selected.append(item)
-                        item.setSelected(True)
             col = -1
             for i, c in enumerate(self._columnsPos):
                 if x < c:
@@ -768,6 +761,6 @@ class TTkTreeWidget(TTkAbstractScrollView):
                     _text=_icon+_data[_yi]
                 else: # Other columns
                     _text=_data[_yi]
-                if _i.isSelected():
+                if _i in self._selected:
                     _text = (_text + ' '*_width).completeColor(selectedColor)
                 canvas.drawTTkString(text=_text,pos=(_lx-x,_y+1),width=_width)
