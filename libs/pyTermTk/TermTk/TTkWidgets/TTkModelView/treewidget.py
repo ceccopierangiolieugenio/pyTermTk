@@ -708,16 +708,14 @@ class TTkTreeWidget(TTkAbstractScrollView):
     def mouseMoveEvent(self, evt) -> bool:
         y = evt.y
         _, oy = self.getViewOffsets()
-        # Handle Header Events
-        if y == 0:
-            return True
-        # Handle Tree/Table Events
         y += oy-1
         if  _item_at := self._rootItem._item_at(y):
             item  = _item_at[2]
             self._hoverItem = item
             self.update()
-            return True
+        elif self._hoverItem is not None:
+            self._hoverItem = None
+            self.update()
         return True
 
     def leaveEvent(self, evt:TTkMouseEvent) -> bool:
