@@ -127,7 +127,7 @@ class _ToggleButton(ttk.TTkButton):
             canvas.drawChar(pos=(1,0),char='▶')
 
 class _MatchTreeWidgetItem(TTKodeFileWidgetItem):
-    __slots__ = ('_match','_line','_file')
+    __slots__ = ('_match')
     _match:str
     def __init__(self, *args, match:str, **kwargs):
         self._match = match

@@ -27,7 +27,7 @@ import pytest
 from dataclasses import asdict
 from typing import Dict, Any
 
-from _030.pytest_data import TestResult
+from _030.pytest_data import PTP_TestResult, PTP_ScanResult
 
 class _Highlighter():
     _highlight = None
@@ -43,7 +43,7 @@ class ResultCollector_Logreport:
 
     def pytest_runtest_logreport(self, report:pytest.TestReport) -> None:
         if report.when == "call":
-            result = TestResult(
+            result = PTP_TestResult(
                 nodeId = report.nodeid,
                 outcome = report.outcome,
                 duration = report.duration,
@@ -90,4 +90,11 @@ class ResultCollector_ItemCollected:
 
     def pytest_itemcollected(self, item:pytest.Item) -> None:
         # Called during --collect-only
-        print(item.nodeid)
+        relfspath, lineno, testname = item.location
+        result = PTP_ScanResult(
+            nodeId=item.nodeid,
+            path=relfspath,
+            lineno=lineno,
+            testname=testname
+        )
+        print(json.dumps(asdict(result)), flush=True)

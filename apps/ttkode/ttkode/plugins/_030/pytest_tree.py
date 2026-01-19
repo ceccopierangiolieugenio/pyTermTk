@@ -22,9 +22,13 @@
 
 from __future__ import annotations
 
+__all__ = ['PTP_TreeItem', 'PTP_TreeItemPath', 'PTP_TreeItemMethod']
+
 from enum import IntEnum
 
 import TermTk as ttk
+
+from ttkode.app.ttkode import TTKodeFileWidgetItem
 
 class _testStatus(IntEnum):
     Pass = 0x01
@@ -40,7 +44,7 @@ _statusMarks = {
 def _toMark(status:_testStatus) -> ttk.TTkString:
     return _statusMarks.get(status, ttk.TTkString('- '))
 
-class TestTreeItem(ttk.TTkTreeWidgetItem):
+class PTP_TreeItem(TTKodeFileWidgetItem):
     __slots__ = ('_testStatus')
     def __init__(self, *args, testStatus:_testStatus=_testStatus.Undefined, **kwargs):
         self._testStatus = testStatus
@@ -55,20 +59,16 @@ class TestTreeItem(ttk.TTkTreeWidgetItem):
         self._testStatus = status
         self.dataChanged.emit()
 
-class TestTreeItemPath(TestTreeItem):
-    __slots__ = ('_path')
-    def __init__(self, *args, path:str, **kwargs):
-        self._path = path
-        super().__init__(*args, **kwargs)
+class PTP_TreeItemPath(PTP_TreeItem):
+    pass
 
-    def path(self) -> str:
-        return self._path
-
-class TestTreeItemMethod(TestTreeItem):
+class PTP_TreeItemMethod(PTP_TreeItem):
     __slots__ = ('_test_call')
-    def __init__(self, *args, test_call:str, **kwargs):
-        self._test_call = test_call
-        super().__init__(*args, **kwargs)
+    def __init__(self, *args, **kwargs):
+        path_method = kwargs.pop('path','')
+        path = path_method.split('::')[0]
+        mathods = path_method.split('::')[1:]
+        super().__init__(*args, **kwargs|{'path':path})
 
     def test_call(self) -> str:
         return self._test_call

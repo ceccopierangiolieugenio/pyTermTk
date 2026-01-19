@@ -20,16 +20,23 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-__all__ = ['TestResult']
+__all__ = ['PTP_TestResult', 'PTP_ScanResult']
 
 from dataclasses import dataclass
 from typing import Optional,List,Tuple
 
 @dataclass
-class TestResult():
+class PTP_TestResult():
     nodeId: str
     outcome: str
     duration: float
     longrepr: Optional[str]
     sections: List[Tuple[str,str]]
     location: tuple[str, int | None, str]
+
+@dataclass
+class PTP_ScanResult():
+    nodeId: str
+    path:str
+    lineno:int
+    testname:str

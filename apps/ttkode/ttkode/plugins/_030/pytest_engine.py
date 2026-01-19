@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-__all__ = ['PytestEngine', 'ScanItem', 'TestResult']
+__all__ = ['PTP_Engine']
 
 import os
 import sys
@@ -33,7 +33,7 @@ from typing import Dict, Any, Optional, List
 
 import TermTk as ttk
 
-from _030.pytest_data import TestResult
+from _030.pytest_data import PTP_TestResult, PTP_ScanResult
 
 def _strip_result(result: str) -> str:
     lines = result.splitlines()
@@ -41,11 +41,7 @@ def _strip_result(result: str) -> str:
     result = "\n".join(line[indent:] for line in lines)
     return result.lstrip('\n')
 
-@dataclass
-class ScanItem():
-    nodeId: str
-
-class PytestEngine():
+class PTP_Engine():
     __slots__ = (
         '_scan_lock', '_test_lock',
         'itemScanned','testResultReady',
@@ -53,8 +49,8 @@ class PytestEngine():
         'endScan', 'endTest')
 
     def __init__(self):
-        self.itemScanned = ttk.pyTTkSignal(ScanItem)
-        self.testResultReady = ttk.pyTTkSignal(TestResult)
+        self.itemScanned = ttk.pyTTkSignal(PTP_ScanResult)
+        self.testResultReady = ttk.pyTTkSignal(PTP_TestResult)
         self.errorReported = ttk.pyTTkSignal(str)
         self.endScan = ttk.pyTTkSignal()
         self.endTest = ttk.pyTTkSignal()
@@ -81,7 +77,14 @@ class PytestEngine():
 
             def read_stdout():
                 for line in iter(process.stdout.readline, ''):
-                    self.itemScanned.emit(ScanItem(nodeId=line.strip()))
+                    line = line.strip()
+                    if line:
+                        try:
+                            result_dict = json.loads(line)
+                            result = PTP_ScanResult(**result_dict)
+                            self.itemScanned.emit(result)
+                        except (json.JSONDecodeError, KeyError) as e:
+                            ttk.TTkLog.error(f"Error parsing test result: {line}")
                 process.stdout.close()
 
             def read_stderr():
@@ -130,7 +133,7 @@ class PytestEngine():
                     if line:
                         try:
                             result_dict = json.loads(line)
-                            result = TestResult(**result_dict)
+                            result = PTP_TestResult(**result_dict)
                             self.testResultReady.emit(result)
                         except (json.JSONDecodeError, KeyError) as e:
                             ttk.TTkLog.error(f"Error parsing test result: {line}")
