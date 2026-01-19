@@ -22,7 +22,7 @@
 
 __all__ = ['TTkTreeWidget']
 
-from typing import List,Tuple,Optional
+from typing import Any, List, Tuple, Optional
 
 from TermTk.TTkCore.cfg import TTkCfg
 from TermTk.TTkCore.log import TTkLog
@@ -131,8 +131,9 @@ class TTkTreeWidget(TTkAbstractScrollView):
     The tree can have a header that contains a section for each column in the widget.
     It is easiest to set up the labels for each section by supplying a list of strings with :meth:`setHeaderLabels`.
 
-    The items in the tree can be sorted by column according to a predefined sort order.
-    If sorting is enabled, the user can sort the items by clicking on a column header.
+    The items in the tree can be sorted by column according to their :meth:`sortData` or provided by :meth:`sortKey`,
+    which by default simply gets text strings from the items to use as a reference key for the sorting.
+    If sorting is enabled, the user can sort the items and choose the sort order by clicking on a column header.
     Sorting can be enabled or disabled by calling setSortingEnabled().
     The isSortingEnabled() function indicates whether sorting is enabled.
     '''
@@ -226,7 +227,7 @@ class TTkTreeWidget(TTkAbstractScrollView):
                   '_header', '_columnsPos',
                   '_selectionMode',
                   '_selectedId', '_selected', '_separatorSelected',
-                  '_sortColumn', '_sortOrder', '_sortingEnabled',
+                  '_sortColumn', '_sortOrder', '_sortKey', '_sortingEnabled',
                   '_dndMode',
                   # Signals
                   '_itemChanged', '_itemClicked', '_itemDoubleClicked', '_itemExpanded', '_itemCollapsed', '_itemActivated'
@@ -250,7 +251,7 @@ class TTkTreeWidget(TTkAbstractScrollView):
         '''
         :param header: define the header labels of each column, defaults to []
         :type header: List[:py:class:`TTkString`], optional
-        :param sortingEnabled: enable the column sorting, defaults to False
+        :param sortingEnabled: enable the column sorting, defaults to True
         :type sortingEnabled: bool, optional
         :param selectionMode: This property controls whether the user can select one or many items, defaults to :py:class:`TTkK.SelectionMode.SingleSelection`.
         :type selectionMode: :py:class:`TTkK.SelectionMode`, optional
@@ -272,6 +273,7 @@ class TTkTreeWidget(TTkAbstractScrollView):
         self._sortingEnabled=sortingEnabled
         self._sortColumn = -1
         self._sortOrder = TTkK.AscendingOrder
+        self._sortKey = self.sortKey
         self._rootItem = _RootWidgetItem()
         super().__init__(**kwargs)
         self.setHeaderLabels(header)
@@ -474,9 +476,24 @@ class TTkTreeWidget(TTkAbstractScrollView):
         self._sortColumn = col
         self._sortOrder = order
         self._rootItem.dataChanged.disconnect(self._refreshCache)
-        self._rootItem.sortChildren(col, order)
+        self._rootItem.sortChildren(col, order, key=self._sortKey)
         self._rootItem.dataChanged.connect(self._refreshCache)
         self._refreshCache()
+
+    def sortKey(self, item:TTkTreeWidgetItem) -> Any:
+        '''
+        Returns data from each item during sorting. Reimplement this to use
+        alternative data values as reference for the internal sort function.
+
+        By default, the plain text strings of each :py:class:`TTkTreeWidgetItem`
+        are used by the sorting key even if those data are numeric or otherwise.
+
+        :param item: the item being sorted by the sort iterator
+        :type item: TTkTreeWidgetItem
+
+        :rtype: Any
+        '''
+        return item.sortData(self._sortColumn)
 
     def columnWidth(self, column:int) -> int:
         '''
