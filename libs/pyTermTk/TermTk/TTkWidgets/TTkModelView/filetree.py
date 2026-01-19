@@ -304,6 +304,19 @@ class TTkFileTree(TTkTree):
         :rtype: :py:class:`TTkTreeWidgetItem`
         '''
         return self._fileTreeWidget.invisibleRootItem()
+    def itemAt(self, pos:int) -> Optional[TTkTreeWidgetItem]:
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkFileTreeWidget.itemAt`
+
+        Return the item at the vertical position
+
+        :param pos: y coordinate
+        :type pos: int
+
+        :return: The item at the (pos) position if available
+        :rtype: :py:class:`TTkTreeWidgetItem` or None if no item is available
+        '''
+        return self._fileTreeWidget.itemAt(pos=pos)
     def addTopLevelItem(self, item:TTkTreeWidgetItem) -> None:
         '''
         .. seealso:: this method is forwarded to :py:meth:`TTkFileTreeWidget.addTopLevelItem`
