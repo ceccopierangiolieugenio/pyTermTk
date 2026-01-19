@@ -271,7 +271,6 @@ class TTkTreeWidgetItem(TTkAbstractItemModel):
     def __init__(self, *args,
                  parent:Optional[TTkTreeWidgetItem]=None,
                  expanded:bool=False,
-                 selected:bool=False,
                  hidden:bool=False,
                  icon:TTkStringType='',
                  childIndicatorPolicy:TTkK.ChildIndicatorPolicy =TTkK.ChildIndicatorPolicy.DontShowIndicatorWhenChildless,
