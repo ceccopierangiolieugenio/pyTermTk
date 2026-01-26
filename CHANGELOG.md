@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.50.0-a0](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/pyTermTk-v0.49.0-a0...pyTermTk-v0.50.0-a0) (2026-01-26)
+
+
+### ⚠ BREAKING CHANGES
+
+* **tree:** The following APIs have been removed from TTkTreeWidgetItem:
+    - `isSelected()` method - use `TTkTreeWidget.selectedItems()` to check selection
+    - `setSelected(bool)` method - selection is now managed by TTkTreeWidget  
+    - `selected` parameter in constructor - no longer supported
+
+### Chores
+
+* **tree:** mouse hover support ([#583](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/583)) ([cda68f2](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/cda68f278a815effe500b9316de6f359e6eb14df))
+* **tree:** remove selected status from the treeWidgetItem ([#584](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/584)) ([b434b33](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/b434b330f9ccf47f6ba4443f667d48fa9565df64))
+
 ## [0.49.0-a0](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/pyTermTk-v0.48.1-a0...pyTermTk-v0.49.0-a0) (2026-01-07)
 
 
