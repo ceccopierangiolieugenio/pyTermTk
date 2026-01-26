@@ -97,7 +97,7 @@ class PTP_PyTestWidget(ttk.TTkContainer):
             line = item.node().lineNumber
             ttkodeProxy.openFile(file, line)
 
-    def _get_node_from_path(self, _n:PTP_TreeItem, _p:str) -> Optional[PTP_TreeItem]:
+    def _get_node_from_path(self, _n:ttk.TTkTreeWidgetItem, _p:str) -> Optional[PTP_TreeItem]:
         for _c in _n.children():
             if isinstance(_c, PTP_TreeItem) and _c.test_id() == _p:
                 return _c
@@ -110,7 +110,7 @@ class PTP_PyTestWidget(ttk.TTkContainer):
         self._res_tree.clear()
         self._test_results.clear()
 
-        def _get_or_add_path_in_node(_n:PTP_TreeItem, _p:str, _name:str, _node:PTP_ScanResult) -> PTP_TreeItem:
+        def _get_or_add_path_in_node(_n:ttk.TTkTreeWidgetItem, _p:str, _name:str, _node:PTP_ScanResult) -> PTP_TreeItem:
             for _c in _n.children():
                 if isinstance(_c, PTP_TreeItem) and _c.test_id() == _p:
                     return _c
@@ -128,7 +128,7 @@ class PTP_PyTestWidget(ttk.TTkContainer):
             _node_id_split = _node.nodeId.split('::')
             _full_test_path = _node_id_split[0]
             _leaves = _node_id_split[1:]
-            _tree_node = self._res_tree.invisibleRootItem()
+            _tree_node: ttk.TTkTreeWidgetItem = self._res_tree.invisibleRootItem()
             _full_composite_test_path = ''
             ttk.TTkLog.debug(_node_id_split)
             ttk.TTkLog.debug(_full_test_path)
