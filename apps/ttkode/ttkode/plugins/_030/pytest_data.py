@@ -1,6 +1,6 @@
 # MIT License
 #
-# Copyright (c) 2025 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
+# Copyright (c) 2026 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -20,34 +20,36 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-__all__:list[str] = []
+__all__ = ['PTP_TestResult', 'PTP_ScanResult', 'PTP_Node']
 
-import os, sys
+from dataclasses import dataclass
+from typing import Optional,List,Tuple
 
-current_dir = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, current_dir)
+@dataclass
+class PTP_Node():
+    nodeId: str
+    filename: str
+    lineNumber:int = 0
 
-import TermTk as ttk
+@dataclass
+class PTP_TestResult():
+    nodeId: str
+    outcome: str
+    duration: float
+    longrepr: Optional[str]
+    sections: List[Tuple[str,str]]
+    location: tuple[str, int | None, str]
 
-import ttkode
+@dataclass
+class PTP_ScanResult():
+    nodeId: str
+    path:str
+    lineno:int
+    testname:str
 
-from _030.pytest_widget import PTP_PyTestWidget
-
-_icon:str = (
-    "╒╦╕\n"
-    "╶╨╴")
-
-ttkode.TTkodePlugin(
-    name="PyTest Plugin",
-    widgets = [
-            ttkode.TTkodePluginWidgetPanel(
-            panelName='Test Results',
-            widget=(_tr:=ttk.TTkTextEdit(readOnly=True))
-        ),
-        ttkode.TTkodePluginWidgetActivity(
-            activityName='Testing',
-            widget=PTP_PyTestWidget(testResults=_tr),
-            icon=ttk.TTkString(_icon)
+    def get_node(self) -> PTP_Node:
+        return PTP_Node(
+            nodeId=self.nodeId,
+            filename=self.path,
+            lineNumber=self.lineno
         )
-    ]
-)

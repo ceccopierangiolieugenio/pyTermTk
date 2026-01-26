@@ -1,6 +1,6 @@
 # MIT License
 #
-# Copyright (c) 2025 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
+# Copyright (c) 2026 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -20,34 +20,16 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-__all__:list[str] = []
+def main() -> None:
+    import sys, pytest
 
-import os, sys
+    dirname = sys.argv[1]
 
-current_dir = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, current_dir)
+    sys.path.append(f'{dirname}/..')
+    sys.path.append(f'{dirname}/scripts')
 
-import TermTk as ttk
+    from _glue_lib import ResultCollector_ItemCollected
 
-import ttkode
-
-from _030.pytest_widget import PTP_PyTestWidget
-
-_icon:str = (
-    "╒╦╕\n"
-    "╶╨╴")
-
-ttkode.TTkodePlugin(
-    name="PyTest Plugin",
-    widgets = [
-            ttkode.TTkodePluginWidgetPanel(
-            panelName='Test Results',
-            widget=(_tr:=ttk.TTkTextEdit(readOnly=True))
-        ),
-        ttkode.TTkodePluginWidgetActivity(
-            activityName='Testing',
-            widget=PTP_PyTestWidget(testResults=_tr),
-            icon=ttk.TTkString(_icon)
-        )
-    ]
-)
+    collector = ResultCollector_ItemCollected()
+    pytest.main(['--collect-only', '-p', 'no:terminal', '.'], plugins=[collector])
+main()
