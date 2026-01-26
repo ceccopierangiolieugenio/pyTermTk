@@ -20,10 +20,16 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-__all__ = ['PTP_TestResult', 'PTP_ScanResult']
+__all__ = ['PTP_TestResult', 'PTP_ScanResult', 'PTP_Node']
 
 from dataclasses import dataclass
 from typing import Optional,List,Tuple
+
+@dataclass
+class PTP_Node():
+    nodeId: str
+    filename: str
+    lineNumber:int = 0
 
 @dataclass
 class PTP_TestResult():
@@ -40,3 +46,10 @@ class PTP_ScanResult():
     path:str
     lineno:int
     testname:str
+
+    def get_node(self) -> PTP_Node:
+        return PTP_Node(
+            nodeId=self.nodeId,
+            filename=self.path,
+            lineNumber=self.lineno
+        )

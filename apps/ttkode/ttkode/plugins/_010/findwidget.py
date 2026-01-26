@@ -36,7 +36,7 @@ import TermTk as ttk
 import os
 import fnmatch
 
-from ttkode import ttkodeProxy
+from ttkode.proxy import ttkodeProxy
 from ttkode.app.ttkode import TTKodeFileWidgetItem
 
 import mimetypes

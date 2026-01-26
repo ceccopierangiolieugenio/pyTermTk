@@ -30,11 +30,15 @@ from pygments.formatters import TerminalTrueColorFormatter
 
 import TermTk as ttk
 
-from ttkode import ttkodeProxy
+from ttkode.proxy import ttkodeProxy
 from ttkode.app.ttkode import TTKodeFileWidgetItem
 
-from .pytest_tree import _testStatus, PTP_TreeItemPath, PTP_TreeItemMethod
+from .pytest_tree import (
+    _testStatus,
+    PTP_TreeItem, PTP_TreeItemPath, PTP_TreeItemMethod,
+    PTP_Tree, PTP_Action)
 from .pytest_engine import PTP_Engine, PTP_TestResult, PTP_ScanResult
+from .pytest_data import PTP_Node
 
 def _strip_result(result: str) -> str:
     lines = result.splitlines()
@@ -52,7 +56,7 @@ class PTP_PyTestWidget(ttk.TTkContainer):
     __slots__ = (
         '_test_engine',
         '_res_tree','_test_results')
-    _res_tree:ttk.TTkTree
+    _res_tree:PTP_Tree
     _test_results:ttk.TTkTextEdit
 
     def __init__(self, testResults=ttk.TTkTextEdit, **kwargs):
@@ -63,7 +67,7 @@ class PTP_PyTestWidget(ttk.TTkContainer):
 
         layout.addWidget(btn_scan:=ttk.TTkButton(text="Scan", border=False), 0,0)
         layout.addWidget(btn_run:=ttk.TTkButton(text="Run", border=False), 0,1)
-        layout.addWidget(res_tree:=ttk.TTkTree(dragDropMode=ttk.TTkK.DragDropMode.AllowDrag), 1,0,1,2)
+        layout.addWidget(res_tree:=PTP_Tree(dragDropMode=ttk.TTkK.DragDropMode.AllowDrag), 1,0,1,2)
         res_tree.setHeaderLabels(["Tests"])
 
         testResults.setText('Info Tests')
@@ -74,16 +78,28 @@ class PTP_PyTestWidget(ttk.TTkContainer):
         btn_run.clicked.connect(self._run_tests)
         self._test_engine.testResultReady.connect(self._test_updated)
 
-    @ttk.pyTTkSlot(ttk.TTkTreeWidgetItem, int)
-    def _activated(self, item:ttk.TTkTreeWidgetItem, _):
+        res_tree.actionPressed.connect(self._tree_action_pressed)
+        res_tree.itemActivated.connect(self._tree_item_activated)
+
+    @ttk.pyTTkSlot(PTP_Action)
+    def _tree_action_pressed(self, action:PTP_Action) -> None:
+        item = action.item
+        if isinstance(item, PTP_TreeItem):
+            self._mark_node(item.test_id(), outcome='undefined')
+            self._test_results.clear()
+            self._test_engine.run_tests(item.test_id())
+
+    @ttk.pyTTkSlot(PTP_TreeItem, int)
+    def _tree_item_activated(self, item:PTP_TreeItem, _):
+        ttk.TTkLog.debug(item)
         if isinstance(item, PTP_TreeItemMethod):
-            file = item.path()
-            line = item.lineNumber()
+            file = item.node().filename
+            line = item.node().lineNumber
             ttkodeProxy.openFile(file, line)
 
-    def _get_node_from_path(self, _n:PTP_TreeItemPath, _p:str) -> Optional[PTP_TreeItemPath]:
+    def _get_node_from_path(self, _n:PTP_TreeItem, _p:str) -> Optional[PTP_TreeItem]:
         for _c in _n.children():
-            if isinstance(_c, PTP_TreeItemPath) and _c.path() == _p:
+            if isinstance(_c, PTP_TreeItem) and _c.test_id() == _p:
                 return _c
             if _cc:= self._get_node_from_path(_n=_c, _p=_p):
                 return _cc
@@ -94,30 +110,38 @@ class PTP_PyTestWidget(ttk.TTkContainer):
         self._res_tree.clear()
         self._test_results.clear()
 
-        def _get_or_add_path_in_node(_n:PTP_TreeItemPath, _p:str, _name:str) -> PTP_TreeItemPath:
+        def _get_or_add_path_in_node(_n:PTP_TreeItem, _p:str, _name:str, _node:PTP_ScanResult) -> PTP_TreeItem:
             for _c in _n.children():
-                if isinstance(_c, PTP_TreeItemPath) and _c.path() == _p:
+                if isinstance(_c, PTP_TreeItem) and _c.test_id() == _p:
                     return _c
-            _n.addChild(_c:=PTP_TreeItemPath([ttk.TTkString(_name)], path=_p, expanded=True))
+            _ptp_node = _node.get_node()
+            if _node.nodeId==_p: # This is the leaf test
+                _n.addChild(_c:=PTP_TreeItemMethod(test_id=_p, name=_name, node=_ptp_node, expanded=True))
+            else:
+                _n.addChild(_c:=PTP_TreeItemPath(test_id=_p, name=_name, node=_ptp_node, expanded=True))
             return _c
 
         @ttk.pyTTkSlot(PTP_ScanResult)
         def _add_node(_node:PTP_ScanResult)->None:
+            ttk.TTkLog.debug(_node)
             self._test_results.append(_node.nodeId)
             _node_id_split = _node.nodeId.split('::')
-            _full_path = _node_id_split[0]
+            _full_test_path = _node_id_split[0]
             _leaves = _node_id_split[1:]
             _tree_node = self._res_tree.invisibleRootItem()
-            _full_composite_path = ''
-            for _path in _full_path.split('/'):
-                if _full_composite_path:
-                    _full_composite_path = '/'.join([_full_composite_path,_path])
+            _full_composite_test_path = ''
+            ttk.TTkLog.debug(_node_id_split)
+            ttk.TTkLog.debug(_full_test_path)
+            for _test_path in _full_test_path.split('/'):
+                if _full_composite_test_path:
+                    _full_composite_test_path = '/'.join([_full_composite_test_path,_test_path])
                 else:
-                    _full_composite_path = _path
-                _tree_node = _get_or_add_path_in_node(_tree_node, _full_composite_path, _path)
+                    _full_composite_test_path = _test_path
+                ttk.TTkLog.debug(_full_composite_test_path)
+                _tree_node = _get_or_add_path_in_node(_n=_tree_node, _p=_full_composite_test_path, _name=_test_path, _node=_node)
             for _leaf in _leaves:
-                _full_composite_path = '::'.join([_full_composite_path,_leaf])
-                _tree_node = _get_or_add_path_in_node(_tree_node, _full_composite_path, _leaf)
+                _full_composite_test_path = '::'.join([_full_composite_test_path,_leaf])
+                _tree_node = _get_or_add_path_in_node(_n=_tree_node, _p=_full_composite_test_path, _name=_leaf, _node=_node)
                 # _tree_node = _tree_node.addChild(TestTreeItemMethod([ttk.TTkString(_leaf)],test_call=_node.nodeId))
 
         @ttk.pyTTkSlot(str)
@@ -135,7 +159,6 @@ class PTP_PyTestWidget(ttk.TTkContainer):
 
         self._test_engine.scan()
 
-
     def _mark_node(self, _nodeid:str, outcome:str) -> None:
         status = {
             'passed' : _testStatus.Pass,
@@ -144,20 +167,25 @@ class PTP_PyTestWidget(ttk.TTkContainer):
         def _recurse_node(_n:ttk.TTkTreeWidgetItem):
             for _c in _n.children():
                 # ttk.TTkLog.debug(_c.data(0))
-                if isinstance(_c, PTP_TreeItemPath) and _nodeid.startswith(_c.path()):
-                    _c.setTestStatus(status)
-                elif isinstance(_c, PTP_TreeItemMethod) and _nodeid.startswith(_c.test_call()):
+                if isinstance(_c, PTP_TreeItemPath):
+                    if _nodeid.startswith(_c.test_id()):
+                        if not ( _c.testStatus() == _testStatus.Fail and status == _testStatus.Pass ):
+                            _c.setTestStatus(status)
+                    elif _c.test_id().startswith(_nodeid):
+                        _c.setTestStatus(status)
+                elif isinstance(_c, PTP_TreeItemMethod) and _nodeid.startswith(_c.test_id()):
                     _c.setTestStatus(status)
                 _recurse_node(_c)
         _recurse_node(self._res_tree.invisibleRootItem())
 
-    def _clear_nodes(self) -> None:
+    def _clear_nodes(self, node:Optional[PTP_TreeItem] = None) -> None:
         status = _testStatus.Undefined
         def _recurse_node(_n:ttk.TTkTreeWidgetItem):
             for _c in _n.children():
-                _c.setTestStatus(status)
+                if isinstance(_c, PTP_TreeItem):
+                    _c.setTestStatus(status)
                 _recurse_node(_c)
-        _recurse_node(self._res_tree.invisibleRootItem())
+        _recurse_node(node if node else self._res_tree.invisibleRootItem())
 
     @ttk.pyTTkSlot(PTP_TestResult)
     def _test_updated(self, test:PTP_TestResult) -> None:
