@@ -22,4 +22,6 @@
 
 __all__ = ['TTkResizableFrameProperties']
 
-TTkResizableFrameProperties = {'properties':{}, 'signals':{}, 'slots':{}}
+from typing import Dict
+
+TTkResizableFrameProperties:Dict[str,Dict] = {'properties':{}, 'signals':{}, 'slots':{}}

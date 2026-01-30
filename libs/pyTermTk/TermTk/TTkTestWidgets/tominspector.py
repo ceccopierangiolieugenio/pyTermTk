@@ -22,6 +22,8 @@
 
 __all__ = ['TTkTomInspector']
 
+from typing import List
+
 from TermTk.TTkCore.cfg import TTkCfg
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.helper import TTkHelper
@@ -75,6 +77,7 @@ class _DetailGridView(TTkAbstractScrollView):
 
 class _DetailLazyFormView(TTkAbstractScrollView):
     __slots__ = ('_gridLayout', '_lazyRows', '_lastRow')
+    _lazyRows:List[List]
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         self.setPadding(1,0,0,0)
@@ -148,8 +151,14 @@ class TTkTomInspector(TTkContainer):
         self.setLayout(layout)
 
         self._domTree = TTkTree()
-        self._domTree.setHeaderLabels(["Object", "Class", "Visibility", "Layout"])
-        self._domTree.addTopLevelItem(TTkTomInspector._getTomTreeItem(TTkHelper._rootWidget._widgetItem))
+        self._domTree.setHeaderLabels([
+            TTkString("Object"),
+            TTkString("Class"),
+            TTkString("Visibility"),
+            TTkString("Layout")
+        ])
+        if TTkHelper._rootWidget:
+            self._domTree.addTopLevelItem(TTkTomInspector._getTomTreeItem(TTkHelper._rootWidget._widgetItem))
 
         self._detail = TTkFrame()
 

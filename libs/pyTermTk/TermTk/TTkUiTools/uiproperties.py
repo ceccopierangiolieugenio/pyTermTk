@@ -22,6 +22,8 @@
 
 __all__ = ['TTkUiProperties']
 
+from typing import Dict
+
 from TermTk.TTkLayouts import *
 from TermTk.TTkWidgets import *
 
@@ -66,7 +68,7 @@ from .properties.datetime import *
 # Layouts
 from .properties.layout import *
 
-TTkUiProperties = {
+TTkUiProperties:Dict[str,Dict] = {
     # Widgets
         TTkButton.__name__         : TTkButtonProperties,
         TTkCheckbox.__name__       : TTkCheckboxProperties,

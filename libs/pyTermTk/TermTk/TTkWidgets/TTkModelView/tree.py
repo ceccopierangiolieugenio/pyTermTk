@@ -25,7 +25,7 @@ __all__ = ['TTkTree']
 from typing import List,Optional
 
 from TermTk.TTkCore.constant import TTkK
-from TermTk.TTkCore.string import TTkString
+from TermTk.TTkCore.string import TTkString, TTkStringType
 from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
 from TermTk.TTkWidgets.TTkModelView.treewidget import TTkTreeWidget
 from TermTk.TTkWidgets.TTkModelView.treewidgetitem import TTkTreeWidgetItem
@@ -48,7 +48,7 @@ class TTkTree(TTkAbstractScrollArea):
             'sortColumn', 'sortItems',
             'dragDropMode', 'setDragDropMode',
             'expandAll', 'collapseAll',
-            'invisibleRootItem',
+            'invisibleRootItem', 'itemAt',
             # 'appendItem', 'setAlignment', 'setColumnColors', 'setColumnSize', 'setHeader',
             'addTopLevelItem', 'addTopLevelItems', 'takeTopLevelItem', 'topLevelItem', 'indexOfTopLevelItem', 'selectedItems', 'clear']
     )
@@ -247,6 +247,19 @@ class TTkTree(TTkAbstractScrollArea):
         :rtype: :py:class:`TTkTreeWidgetItem`
         '''
         return self._treeView.invisibleRootItem()
+    def itemAt(self, pos:int) -> Optional[TTkTreeWidgetItem]:
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkTreeWidget.itemAt`
+
+        Return the item at the vertical position
+
+        :param pos: y coordinate
+        :type pos: int
+
+        :return: The item at the (pos) position if available
+        :rtype: :py:class:`TTkTreeWidgetItem` or None if no item is available
+        '''
+        return self._treeView.itemAt(pos=pos)
     def addTopLevelItem(self, item:TTkTreeWidgetItem) -> None:
         '''
         .. seealso:: this method is forwarded to :py:meth:`TTkTreeWidget.addTopLevelItem`

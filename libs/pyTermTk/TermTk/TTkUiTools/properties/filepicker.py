@@ -22,11 +22,13 @@
 
 __all__ = ['TTkFileButtonPickerProperties']
 
+from typing import Dict
+
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkWidgets.TTkPickers.filepicker import TTkFileButtonPicker
 
-TTkFileButtonPickerProperties = {
+TTkFileButtonPickerProperties:Dict[str,Dict] = {
     'properties' : {
         'Path' : {
                 'init': {'name':'path',                    'type':str },

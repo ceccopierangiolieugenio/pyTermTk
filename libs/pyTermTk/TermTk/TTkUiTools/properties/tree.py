@@ -22,12 +22,14 @@
 
 __all__ = ['TTkTreeProperties']
 
+from typing import Dict
+
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkWidgets.TTkModelView.tree import TTkTree
 from TermTk.TTkWidgets.TTkModelView.treewidget import TTkTreeWidget
 from TermTk.TTkWidgets.TTkModelView.treewidgetitem import TTkTreeWidgetItem
 
-TTkTreeProperties = {
+TTkTreeProperties:Dict[str,Dict] = {
     'properties'  : {
         'Sorting' : {
                 'init': {'name':'sortingEnabled',                     'type':bool } ,

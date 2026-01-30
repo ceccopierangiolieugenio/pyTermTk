@@ -22,11 +22,13 @@
 
 __all__ = ['TTkWidgetProperties']
 
+from typing import Dict
+
 from TermTk.TTkCore.string import TTkString
 from TermTk.TTkLayouts.layout import TTkLayout
 from TermTk.TTkWidgets.widget import TTkWidget
 
-TTkWidgetProperties = {
+TTkWidgetProperties:Dict[str,Dict] = {
     'properties' : {
         'Name' : {
                 'init': {'name':'name',           'type':str } ,

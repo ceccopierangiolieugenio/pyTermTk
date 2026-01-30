@@ -69,10 +69,14 @@ class TTkKeyPressView(TTkWidget):
     def _addMouse(self, evt):
               # return f"MouseEvent ({self.x},{self.y}) {self.key2str()} {self.evt2str()} {self.mod2str()} tap:{self.tap} - {self.raw}"
         # text = f"M:{(evt.x,evt.y)} {evt.key2str().replace('Button','')} {evt.evt2str().replace('Release','').replace('Press','')} {evt.mod2str().replace('NoModifier','')}"
+        if evt.key==TTkMouseEvent.NoButton: return
         tap = " "
+        if evt.tap==1: tap=" Click "
         if evt.tap==2: tap=" DoubleClick "
         if evt.tap==3: tap=" TripleClick "
         if evt.tap>3:  tap=f" {evt.tap} Clicks "
+        if evt.evt==TTkMouseEvent.Drag: tap=" Drag "
+        if evt.evt==TTkMouseEvent.Release: tap+="Release "
 
         text = f"M:{(evt.x,evt.y)} {evt.key2str().replace('Button','')}{tap}{evt.mod2str().replace('NoModifier','')}"
         self._keys.append([1,text,0x100])

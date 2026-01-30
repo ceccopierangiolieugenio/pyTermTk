@@ -28,7 +28,7 @@ from TermTk.TTkCore.canvas import TTkCanvas
 from .superobj.superwidgetmenubutton import SuperWidgetMenuButton
 
 
-class _MenuItem(ttk.TTkWidget):
+class _MenuItem(ttk.TTkContainer):
     ''' Generic Control Button for the MenuEditor
 
         [Menu[+][x]

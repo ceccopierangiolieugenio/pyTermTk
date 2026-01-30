@@ -212,6 +212,7 @@ class TTkTreeWidget(TTkAbstractScrollView):
                     'lineColor': TTkColor.fg("#444444"),
                     'lineHeightColor': TTkColor.fg("#666666"),
                     'headerColor': TTkColor.fg("#ffffff")+TTkColor.bg("#444444")+TTkColor.BOLD,
+                    'hoveredColor': TTkColor.bg('#0088FF'),
                     'selectedColor': TTkColor.fg("#ffff88")+TTkColor.bg("#000066")+TTkColor.BOLD,
                     'separatorColor': TTkColor.fg("#444444")},
                 'disabled':    {
@@ -219,6 +220,7 @@ class TTkTreeWidget(TTkAbstractScrollView):
                     'lineColor': TTkColor.fg("#888888"),
                     'lineHeightColor': TTkColor.fg("#666666"),
                     'headerColor': TTkColor.fg("#888888"),
+                    'hoveredColor': TTkColor.bg('#777777'),
                     'selectedColor': TTkColor.fg("#888888"),
                     'separatorColor': TTkColor.fg("#888888")},
             }
@@ -226,7 +228,8 @@ class TTkTreeWidget(TTkAbstractScrollView):
     __slots__ = ( '_rootItem',
                   '_header', '_columnsPos',
                   '_selectionMode',
-                  '_selectedId', '_selected', '_separatorSelected',
+                  '_hoverItem',
+                  '_selected', '_separatorSelected',
                   '_sortColumn', '_sortOrder', '_sortKey', '_sortingEnabled',
                   '_dndMode',
                   # Signals
@@ -234,6 +237,7 @@ class TTkTreeWidget(TTkAbstractScrollView):
                   )
 
     _selected:List[TTkTreeWidgetItem]
+    _hoverItem:Optional[TTkTreeWidgetItem]
     _rootItem:_RootWidgetItem
     _separatorSelected:Optional[int]
 
@@ -267,8 +271,8 @@ class TTkTreeWidget(TTkAbstractScrollView):
         self._itemCollapsed     = pyTTkSignal(TTkTreeWidgetItem)
         self._selectionMode = selectionMode
         self._dndMode = dragDropMode
+        self._hoverItem = None
         self._selected = []
-        self._selectedId = None
         self._separatorSelected = None
         self._sortingEnabled=sortingEnabled
         self._sortColumn = -1
@@ -583,11 +587,7 @@ class TTkTreeWidget(TTkAbstractScrollView):
                     self.itemExpanded.emit(item)
                 else:
                     self.itemCollapsed.emit(item)
-            for _s in self._selected:
-                _s.setSelected(False)
-            self._selectedId = y
             self._selected = [item]
-            item.setSelected(True)
             col = -1
             for i, c in enumerate(self._columnsPos):
                 if x < c:
@@ -600,6 +600,27 @@ class TTkTreeWidget(TTkAbstractScrollView):
 
     def focusOutEvent(self) -> None:
         self._separatorSelected = None
+
+    def itemAt(self, pos:int) -> Optional[TTkTreeWidgetItem]:
+        '''
+        Return the item at the vertical position
+
+        :param pos: y coordinate
+        :type pos: int
+
+        :return: The item at the (pos) position if available
+        :rtype: :py:class:`TTkTreeWidgetItem` or None if no item is available
+        '''
+        y = pos
+        _, oy = self.getViewOffsets()
+        # Handle Header Events
+        if y == 0:
+            return None
+        # Handle Tree/Table Events
+        y += oy-1
+        if  _item_at := self._rootItem._item_at(y):
+            return _item_at[2]
+        return None
 
     def mousePressEvent(self, evt:TTkMouseEvent) -> bool:
         x,y = evt.x, evt.y
@@ -640,17 +661,12 @@ class TTkTreeWidget(TTkAbstractScrollView):
                 if self._selectionMode in (TTkK.SelectionMode.SingleSelection,TTkK.SelectionMode.MultiSelection):
                     _multiSelect = self._selectionMode == TTkK.SelectionMode.MultiSelection
                     if not ( bool(evt.mod & TTkK.ControlModifier) and _multiSelect ):
-                        for _s in self._selected:
-                            _s.setSelected(False)
                         self._selected.clear()
-                    self._selectedId = y
                     # Unselect Items if already selected in multiselect mode
                     if item in self._selected and _multiSelect:
                         self._selected.remove(item)
-                        item.setSelected(False)
                     else:
                         self._selected.append(item)
-                        item.setSelected(True)
             col = -1
             for i, c in enumerate(self._columnsPos):
                 if x < c:
@@ -706,6 +722,25 @@ class TTkTreeWidget(TTkAbstractScrollView):
             return True
         return False
 
+    def mouseMoveEvent(self, evt) -> bool:
+        y = evt.y
+        _, oy = self.getViewOffsets()
+        y += oy-1
+        if  _item_at := self._rootItem._item_at(y):
+            item  = _item_at[2]
+            self._hoverItem = item
+            self.update()
+        elif self._hoverItem is not None:
+            self._hoverItem = None
+            self.update()
+        return True
+
+    def leaveEvent(self, evt:TTkMouseEvent) -> bool:
+        if self._hoverItem is not None:
+            self._hoverItem = None
+            self.update()
+        return True
+
     @pyTTkSlot()
     def _alignWidgets(self) -> None:
         self.layout().clear()
@@ -745,6 +780,7 @@ class TTkTreeWidget(TTkAbstractScrollView):
         lineColor= style['lineColor']
         lineHeightColor= style['lineHeightColor']
         headerColor= style['headerColor']
+        hoveredColor=style['hoveredColor']
         selectedColor= style['selectedColor']
         separatorColor= style['separatorColor']
 
@@ -785,6 +821,8 @@ class TTkTreeWidget(TTkAbstractScrollView):
                     _text=_icon+_data[_yi]
                 else: # Other columns
                     _text=_data[_yi]
-                if _i.isSelected():
+                if _i in self._selected:
                     _text = (_text + ' '*_width).completeColor(selectedColor)
+                elif _i is self._hoverItem:
+                    _text = (_text + ' '*_width).completeColor(hoveredColor)
                 canvas.drawTTkString(text=_text,pos=(_lx-x,_y+1),width=_width)

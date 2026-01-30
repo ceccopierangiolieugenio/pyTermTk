@@ -22,12 +22,13 @@
 
 __all__ = ['TTkTableProperties']
 
+from typing import Dict
+
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkWidgets.TTkModelView.table import TTkTable
 from TermTk.TTkWidgets.TTkModelView.tablewidget import TTkTableWidget, TTkHeaderView
 
-
-TTkTableProperties = {
+TTkTableProperties:Dict[str,Dict] = {
     'properties'  : {
         'H Header' : {
                 'init': {'name':'hHeader',                             'type':bool } ,

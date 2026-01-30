@@ -22,12 +22,13 @@
 
 __all__ = ['TTkListProperties']
 
+from typing import Dict
+
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkWidgets.list_ import TTkList
 from TermTk.TTkWidgets.listwidget import TTkListWidget, TTkAbstractListItem
 
-
-TTkListProperties = {
+TTkListProperties:Dict[str,Dict] = {
     'properties' : {
         'Selection Mode' : {
             'init': {'name':'selectionMode', 'type':'singleflag',

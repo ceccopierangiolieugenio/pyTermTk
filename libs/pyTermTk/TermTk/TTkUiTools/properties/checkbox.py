@@ -22,11 +22,13 @@
 
 __all__ = ['TTkCheckboxProperties']
 
+from typing import Dict
+
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.string import TTkString
 from TermTk.TTkWidgets.checkbox import TTkCheckbox
 
-TTkCheckboxProperties = {
+TTkCheckboxProperties:Dict[str,Dict] = {
     'properties' : {
        'Text' : {
                 'init': {'name':'text', 'type':'singleLineTTkString' } ,

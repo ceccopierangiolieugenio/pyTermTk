@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.48.2-a0](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/theDumbPaintTool-v0.48.1-a0...theDumbPaintTool-v0.48.2-a0) (2026-01-07)
+
+
+### Chores
+
+* **crossTools:** improve typing ([#571](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/571)) ([ebd13f9](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/ebd13f94c5513daa356547a05a9ca93c2bd946e8))
+
 ## [0.48.1-a0](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/theDumbPaintTool-v0.41.10-a.54...theDumbPaintTool-v0.48.1-a0) (2025-11-10)
 
 

@@ -60,7 +60,7 @@ class TTkConstant:
         ColorModifier = 0x08
         '''The :py:class:`TTkColor` include a color modifier based on :py:class:`TTkColorModifier`'''
 
-    class FocusPolicy(int, Flag):
+    class FocusPolicy(Flag):
         '''
         This Class type defines the various policies a widget
         can have with respect to acquiring keyboard focus.
@@ -169,7 +169,7 @@ class TTkConstant:
     HORIZONTAL = Direction.HORIZONTAL
     VERTICAL   = Direction.VERTICAL
 
-    class ScrollBarPolicy(int):
+    class ScrollBarPolicy(IntEnum):
         ScrollBarAsNeeded  =  0x00
         ScrollBarAlwaysOff =  0x01
         ScrollBarAlwaysOn  =  0x02
@@ -471,7 +471,7 @@ class TTkConstant:
     CENTER_ALIGN = Alignment.CENTER_ALIGN
     JUSTIFY      = Alignment.JUSTIFY
 
-    class FileMode(int):
+    class FileMode(IntEnum):
         '''FileMode
 
         .. autosummary::
@@ -492,7 +492,7 @@ class TTkConstant:
     # Directory     = FileMode.Directory
     # ExistingFiles = FileMode.ExistingFiles
 
-    class AcceptMode(int):
+    class AcceptMode(IntEnum):
         '''AcceptMode
 
         .. autosummary::
@@ -543,7 +543,7 @@ class TTkConstant:
         ClearAndSelect = Clear | Select
         '''A combination of Clear and Select, provided for convenience.'''
 
-    class ItemFlag(int):
+    class ItemFlag(Flag):
         ''':py:class:`ItemFlag` describes the properties of an item
 
         .. autosummary::

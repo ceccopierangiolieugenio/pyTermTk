@@ -127,8 +127,8 @@ class PaintTemplate(ttk.TTkAppTemplate):
             glbls.clearSnapshot()
             glbls.saveSnapshot()
 
-        ttk.ttkConnectDragOpen(ttk.TTkEncoding.APPLICATION_JSON, self._openDragData)
-        ttk.ttkConnectDragOpen(ttk.TTkEncoding.IMAGE, self._openImageData)
+        ttk.TTkCrossTools.ttkConnectDragOpen(ttk.TTkCrossTools.Encoding.APPLICATION_JSON, self._openDragData)
+        ttk.TTkCrossTools.ttkConnectDragOpen(ttk.TTkCrossTools.Encoding.IMAGE, self._openImageData)
 
         ttk.TTkShortcut(ttk.TTkK.CTRL | ttk.TTkK.Key_Z).activated.connect(glbls.undo)
         ttk.TTkShortcut(ttk.TTkK.CTRL | ttk.TTkK.Key_Y).activated.connect(glbls.redo)
@@ -147,56 +147,68 @@ class PaintTemplate(ttk.TTkAppTemplate):
 
     @ttk.pyTTkSlot()
     def _open(self):
-        ttk.ttkCrossOpen(
+        ttk.TTkCrossTools.open(
                 path='.',
-                encoding=ttk.TTkEncoding.APPLICATION_JSON,
+                encoding=ttk.TTkCrossTools.Encoding.APPLICATION_JSON,
                 filter="DumbPaintTool Files (*.DPT.json);;Json Files (*.json);;All Files (*)",
                 cb=self._openDragData)
 
     @ttk.pyTTkSlot()
     def _openImage(self):
-        ttk.ttkCrossOpen(
+        ttk.TTkCrossTools.open(
                 path='.',
-                encoding=ttk.TTkEncoding.IMAGE,
+                encoding=ttk.TTkCrossTools.Encoding.IMAGE,
                 filter="Images (*.png *.jpg *.gif *.ico);;All Files (*)",
                 cb=self._openImageData)
 
     @ttk.pyTTkSlot()
     def _save(self):
         doc = self._parea.exportDocument()
-        ttk.ttkCrossSave(glbls.fileName(), json.dumps(doc, indent=1), ttk.TTkEncoding.APPLICATION_JSON)
+        ttk.TTkCrossTools.save(
+            filePath=glbls.fileName(),
+            content=json.dumps(doc, indent=1),
+            encoding=ttk.TTkCrossTools.Encoding.APPLICATION_JSON)
 
     @ttk.pyTTkSlot()
     def _saveAs(self):
         doc = self._parea.exportDocument()
-        ttk.ttkCrossSaveAs(glbls.fileName(), json.dumps(doc, indent=1), ttk.TTkEncoding.APPLICATION_JSON,
-                           filter="DumbPaintTool Files (*.DPT.json);;Json Files (*.json);;All Files (*)",
-                           cb=lambda _d:glbls.setFilename(_d['name']))
+        ttk.TTkCrossTools.saveAs(
+            filePath=glbls.fileName(),
+            content=json.dumps(doc, indent=1),
+            encoding=ttk.TTkCrossTools.Encoding.APPLICATION_JSON,
+            filter="DumbPaintTool Files (*.DPT.json);;Json Files (*.json);;All Files (*)",
+            cb=lambda _d:glbls.setFilename(_d.name))
 
     @ttk.pyTTkSlot()
     def _saveAsAnsi(self):
         image = self._parea.exportImage()
         text = ttk.TTkString(image)
-        ttk.ttkCrossSaveAs(glbls.fileName(), text.toAnsi(), ttk.TTkEncoding.TEXT_PLAIN_UTF8,
-                           filter="Ansi text Files (*.Ansi.txt);;Text Files (*.txt);;All Files (*)")
+        ttk.TTkCrossTools.saveAs(
+            filePath=glbls.fileName(),
+            content=text.toAnsi(),
+            encoding=ttk.TTkCrossTools.Encoding.TEXT_PLAIN_UTF8,
+            filter="Ansi text Files (*.Ansi.txt);;Text Files (*.txt);;All Files (*)")
 
     @ttk.pyTTkSlot()
     def _saveAsAscii(self):
         image = self._parea.exportImage()
         text = ttk.TTkString(image)
-        ttk.ttkCrossSaveAs('untitled.DPT.ASCII.txt', text.toAscii(), ttk.TTkEncoding.TEXT_PLAIN_UTF8,
-                           filter="ASCII Text Files (*.ASCII.txt);;Text Files (*.txt);;All Files (*)")
+        ttk.TTkCrossTools.saveAs(
+            filePath='untitled.DPT.ASCII.txt',
+            content=text.toAscii(),
+            encoding=ttk.TTkCrossTools.Encoding.TEXT_PLAIN_UTF8,
+            filter="ASCII Text Files (*.ASCII.txt);;Text Files (*.txt);;All Files (*)")
 
-    @ttk.pyTTkSlot(dict)
-    def _openImageData(self, data):
-        newWindow = ImportImage(data['data'])
+    @ttk.pyTTkSlot(ttk.TTkCrossTools.CB_Data_Open)
+    def _openImageData(self, data:ttk.TTkCrossTools.CB_Data_Open):
+        newWindow = ImportImage(data.data)
         newWindow.exportedImage.connect(self._parea.pasteEvent)
         ttk.TTkHelper.overlay(None, newWindow, 10, 4, modal=True)
 
-    @ttk.pyTTkSlot(dict)
-    def _openDragData(self, data):
-        dd = json.loads(data['data'])
-        glbls.setFilename(data['name'])
+    @ttk.pyTTkSlot(ttk.TTkCrossTools.CB_Data_Open)
+    def _openDragData(self, data:ttk.TTkCrossTools.CB_Data_Open):
+        dd = json.loads(data.data)
+        glbls.setFilename(data.name)
         if 'layers' in dd:
             self.importDocument(dd)
         else:
