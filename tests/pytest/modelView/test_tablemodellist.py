@@ -514,7 +514,7 @@ def test_integration_with_table_widget():
     assert isinstance(model.rowCount(), int)
     assert isinstance(model.columnCount(), int)
     assert isinstance(model.data(0, 0), (str, int, float, type(None)))
-    assert isinstance(model.flags(0, 0), int)  # Flags are integer bitmasks
+    assert isinstance(model.flags(0, 0), ttk.TTkK.ItemFlag)  # Flags are integer bitmasks
 
 
 if __name__ == '__main__':

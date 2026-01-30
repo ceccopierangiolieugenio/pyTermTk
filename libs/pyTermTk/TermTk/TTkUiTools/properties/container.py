@@ -22,11 +22,13 @@
 
 __all__ = ['TTkContainerProperties']
 
+from typing import Dict
+
 from TermTk.TTkCore.string import TTkString
 from TermTk.TTkLayouts.layout import TTkLayout
 from TermTk.TTkWidgets.container import TTkContainer
 
-TTkContainerProperties = {
+TTkContainerProperties:Dict[str,Dict] = {
     'properties' : {
         'Padding': {
                 'get':  { 'cb':TTkContainer.getPadding,    'type': [

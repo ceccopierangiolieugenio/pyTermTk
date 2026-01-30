@@ -11,13 +11,13 @@
     ]
     requires-python = ">=3.9"
     dependencies = [
-        'GitPython==3.1.44'
+        'GitPython==3.1.47'
     ]
 
 [project.optional-dependencies]
     social = [
         'discord.py==2.5.2',
-        'requests==2.32.5',
+        'requests==2.33.0',
         'requests_oauthlib==2.0.0'
     ]
 

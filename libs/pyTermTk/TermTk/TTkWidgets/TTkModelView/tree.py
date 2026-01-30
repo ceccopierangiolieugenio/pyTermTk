@@ -25,7 +25,7 @@ __all__ = ['TTkTree']
 from typing import List,Optional
 
 from TermTk.TTkCore.constant import TTkK
-from TermTk.TTkCore.string import TTkString
+from TermTk.TTkCore.string import TTkString, TTkStringType
 from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
 from TermTk.TTkWidgets.TTkModelView.treewidget import TTkTreeWidget
 from TermTk.TTkWidgets.TTkModelView.treewidgetitem import TTkTreeWidgetItem
@@ -35,7 +35,7 @@ class TTkTree(TTkAbstractScrollArea):
     __doc__ = '''
     :py:class:`TTkTree` is a container widget which place :py:class:`TTkTreeWidget` in a scrolling area with on-demand scroll bars.
 
-    ''' + TTkTreeWidget.__doc__
+    ''' + (TTkTreeWidget.__doc__ or '')
 
     _ttk_forward = _ForwardData(
         forwardClass=TTkTreeWidget ,
@@ -47,8 +47,10 @@ class TTkTree(TTkAbstractScrollArea):
             'setColumnWidth', 'resizeColumnToContents',
             'sortColumn', 'sortItems',
             'dragDropMode', 'setDragDropMode',
+            'setSelectionMode',
+            'clearSelection', 'setCurrentItem', 'selectItem', 'deselectItem',
             'expandAll', 'collapseAll',
-            'invisibleRootItem',
+            'invisibleRootItem', 'itemAt',
             # 'appendItem', 'setAlignment', 'setColumnColors', 'setColumnSize', 'setHeader',
             'addTopLevelItem', 'addTopLevelItems', 'takeTopLevelItem', 'topLevelItem', 'indexOfTopLevelItem', 'selectedItems', 'clear']
     )
@@ -217,6 +219,55 @@ class TTkTree(TTkAbstractScrollArea):
         setDragDropMode
         '''
         return self._treeView.setDragDropMode(dndMode=dndMode)
+    def setSelectionMode(self, mode:TTkK.SelectionMode) -> None:
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkTreeWidget.setSelectionMode`
+
+        Sets the current selection model to the given selectionModel.
+
+        :param mode: the selection mode used in this tree
+        :type mode: :py:class:`TTkK.SelectionMode`
+        '''
+        return self._treeView.setSelectionMode(mode=mode)
+    def clearSelection(self) -> None:
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkTreeWidget.clearSelection`
+
+        Deselects all selected items.
+        '''
+        return self._treeView.clearSelection()
+    def setCurrentItem(self, item:Optional[TTkTreeWidgetItem]) -> None:
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkTreeWidget.setCurrentItem`
+
+        Selects the specified item as the current one.
+
+        :param item: the item to be selected, None clears the selection
+        :type item: :py:class:`TTkTreeWidgetItem` or None
+        '''
+        return self._treeView.setCurrentItem(item=item)
+    def selectItem(self, item:TTkTreeWidgetItem) -> None:
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkTreeWidget.selectItem`
+
+        Adds the specified item to the current selection.
+
+        In single selection mode this replaces the previous selection.
+
+        :param item: the item to be selected
+        :type item: :py:class:`TTkTreeWidgetItem`
+        '''
+        return self._treeView.selectItem(item=item)
+    def deselectItem(self, item:TTkTreeWidgetItem) -> None:
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkTreeWidget.deselectItem`
+
+        Removes the specified item from the current selection.
+
+        :param item: the item to be deselected
+        :type item: :py:class:`TTkTreeWidgetItem`
+        '''
+        return self._treeView.deselectItem(item=item)
     @pyTTkSlot()
     def expandAll(self) -> None:
         '''
@@ -247,6 +298,19 @@ class TTkTree(TTkAbstractScrollArea):
         :rtype: :py:class:`TTkTreeWidgetItem`
         '''
         return self._treeView.invisibleRootItem()
+    def itemAt(self, pos:int) -> Optional[TTkTreeWidgetItem]:
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkTreeWidget.itemAt`
+
+        Return the item at the vertical position
+
+        :param pos: y coordinate
+        :type pos: int
+
+        :return: The item at the (pos) position if available
+        :rtype: :py:class:`TTkTreeWidgetItem` or None if no item is available
+        '''
+        return self._treeView.itemAt(pos=pos)
     def addTopLevelItem(self, item:TTkTreeWidgetItem) -> None:
         '''
         .. seealso:: this method is forwarded to :py:meth:`TTkTreeWidget.addTopLevelItem`

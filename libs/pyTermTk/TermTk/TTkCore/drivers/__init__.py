@@ -5,7 +5,17 @@ if importlib.util.find_spec('pyodideProxy'):
     from .pyodide import *
     from .term_pyodide import *
 
-elif platform.system() == 'Linux':
+elif platform.system() == 'Windows':
+    from .windows import *
+    from .term_windows import *
+
+elif platform.system() == 'Darwin':
+    from .unix import *
+    from .term_unix_darwin import *
+
+else:
+    # print(platform.system())
+    # ('Linux', 'OpenBSD', 'FreeBSD', 'NetBSD', 'Haiku', 'SunOS')
     import os
 
     if os.environ.get("TERMTK_GPM",False):
@@ -19,12 +29,3 @@ elif platform.system() == 'Linux':
         else:
             # from .term_unix import *
             from .term_unix_linux import *
-
-elif platform.system() == 'Darwin':
-    from .unix import *
-    # from .term_unix import *
-    from .term_unix_darwin import *
-
-elif platform.system() == 'Windows':
-    from .windows import *
-    from .term_windows import *

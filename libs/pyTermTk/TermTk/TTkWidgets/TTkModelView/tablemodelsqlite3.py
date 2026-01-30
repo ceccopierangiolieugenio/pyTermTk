@@ -20,20 +20,28 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
+
 __all__=['TTkTableModelSQLite3']
 
 import sqlite3
 import threading
 
-from typing import Any
+from typing import Any,Dict,List
 
 from TermTk.TTkCore.log import TTkLog
+from TermTk.TTkCore.string import TTkString
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkAbstract.abstracttablemodel import TTkAbstractTableModel, TTkModelIndex
 
 class _TTkModelIndexSQLite3(TTkModelIndex):
     __slots__ = ('_col','_rowId','_sqModel')
-    def __init__(self, col:int, rowId:str, sqModel) -> None:
+
+    _col:int
+    _rowId:str
+    _sqModel:TTkTableModelSQLite3
+
+    def __init__(self, col:int, rowId:str, sqModel:TTkTableModelSQLite3) -> None:
         self._col     = col
         self._rowId   = rowId
         self._sqModel = sqModel
@@ -44,11 +52,11 @@ class _TTkModelIndexSQLite3(TTkModelIndex):
     def col(self) -> int:
         return self._col
 
-    def data(self) -> object:
+    def data(self) -> Any:
         return self._sqModel.data(row=self.row(),col=self.col())
 
-    def setData(self, data: object) -> None:
-        return self._sqModel.setData(row=self.row(),col=self.col(),data=data)
+    def setData(self, data: Any) -> None:
+        self._sqModel.setData(row=self.row(),col=self.col(),data=data)
 
 class TTkTableModelSQLite3(TTkAbstractTableModel):
     '''
@@ -59,7 +67,7 @@ class TTkTableModelSQLite3(TTkAbstractTableModel):
 
     In This example i assume i have a database named **sqlite.database.db** which contain a table **users**
 
-    Please refer to `test.ui.032.table.10.sqlite.py <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tests/t.ui/test.ui.032.table.10.sqlite.py>`_ for  working eample.
+    Please refer to `test.ui.032.table.10.sqlite.py <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tests/t.ui/test.ui.032.table.10.sqlite.py>`_ for  working example.
 
     .. code-block:: python
 
@@ -84,6 +92,8 @@ class TTkTableModelSQLite3(TTkAbstractTableModel):
         '_sort', '_sortColumn',
         '_sqliteMutex',
         '_idMap')
+
+    _idMap:Dict[str,int]
 
     def __init__(self, *,
                  fileName:str,
@@ -143,7 +153,7 @@ class TTkTableModelSQLite3(TTkAbstractTableModel):
                 f"SELECT {self._key} FROM {self._table} "
                 f"{self._sort} "
                 f"LIMIT 1 OFFSET {row}")
-            key = None if not (_fetch:=res.fetchone()) else _fetch[0]
+            key:str = '' if not (_fetch:=res.fetchone()) else _fetch[0]
             return _TTkModelIndexSQLite3(col=col,rowId=key,sqModel=self)
 
     def data(self, row:int, col:int) -> Any:
@@ -154,7 +164,7 @@ class TTkTableModelSQLite3(TTkAbstractTableModel):
                 f"LIMIT 1 OFFSET {row}")
             return None if not (_fetch:=res.fetchone()) else _fetch[0]
 
-    def setData(self, row:int, col:int, data:object) -> None:
+    def setData(self, row:int, col:int, data:object) -> bool:
         with self._sqliteMutex:
             res = self._cur.execute(
                 f"SELECT {self._key} FROM {self._table} "
@@ -170,7 +180,7 @@ class TTkTableModelSQLite3(TTkAbstractTableModel):
                 self._refreshIdMap()
         return True
 
-    def headerData(self, num:int, orientation:int):
+    def headerData(self, num:int, orientation:TTkK.Direction) -> TTkString:
         if orientation == TTkK.HORIZONTAL:
             if self._columns:
                 return self._columns[num]

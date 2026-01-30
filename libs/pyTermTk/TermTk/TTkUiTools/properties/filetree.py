@@ -22,12 +22,14 @@
 
 __all__ = ['TTkFileTreeProperties']
 
+from typing import Dict
+
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkWidgets.TTkModelView.filetree import TTkFileTree
 from TermTk.TTkWidgets.TTkModelView.filetreewidget import TTkFileTreeWidget
 from TermTk.TTkWidgets.TTkModelView.treewidgetitem import TTkTreeWidgetItem
 
-TTkFileTreeProperties = {
+TTkFileTreeProperties:Dict[str,Dict] = {
     'properties'  : {
         'Path' : {
                 'init': {'name':'path',                       'type':str } ,

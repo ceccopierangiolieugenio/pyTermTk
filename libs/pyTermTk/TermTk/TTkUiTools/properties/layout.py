@@ -22,9 +22,11 @@
 
 __all__ = ['TTkLayoutProperties']
 
+from typing import Dict
+
 from TermTk.TTkLayouts.layout import TTkLayout
 
-TTkLayoutProperties = {
+TTkLayoutProperties:Dict[str,Dict] = {
     'properties' : {
         'Geometry' : {
                 'get':  { 'cb':TTkLayout.geometry,    'type': [

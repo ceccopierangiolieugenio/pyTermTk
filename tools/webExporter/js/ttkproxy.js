@@ -228,12 +228,24 @@ class TTkProxy {
 
             def ttk_dragOpen(data):
               data = data.to_py()
-              ttk.ttkEmitDragOpen(data['type'],data)
+              ttk.TTkCrossTools.ttkEmitDragOpen(
+                      data['type'],
+                      ttk.TTkCrossTools.CB_Data_Open(
+                          name=data['name'],
+                          data=data['data'],
+                      )
+                  )
               # ttk_log(f"{type(data.to_py())=}, {str(data.to_py())}")
 
             def ttk_fileOpen(data):
               data = data.to_py()
-              ttk.ttkEmitFileOpen(data['type'],data)
+              ttk.TTkCrossTools.ttkEmitFileOpen(
+                      data['type'],
+                      ttk.TTkCrossTools.CB_Data_Open(
+                          name=data['name'],
+                          data=data['data'],
+                      )
+                  )
               # ttk_log(f"{type(data.to_py())=}, {str(data.to_py())}")
 
             def ttk_input(val):

@@ -1,7 +1,11 @@
 # Build the Docker
 ```bash
-_GITHUB_TOKEN=<your_github_runner_token>
-docker build --build-arg RUNNER_TOKEN=${_GITHUB_TOKEN} -t github-runner .
+# This is in case you want to build the Docker with the token embedded
+# Require to change the Dockerfile
+#   _GITHUB_TOKEN=<your_github_runner_token>
+#   docker build --build-arg RUNNER_TOKEN=${_GITHUB_TOKEN} -t github-runner .
+
+docker build -t github-runner .
 ```
 
 # Run the runner

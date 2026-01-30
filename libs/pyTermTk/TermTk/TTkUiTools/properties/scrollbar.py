@@ -22,10 +22,12 @@
 
 __all__ = ['TTkScrollBarProperties']
 
+from typing import Dict
+
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkWidgets.scrollbar import TTkScrollBar
 
-TTkScrollBarProperties = {
+TTkScrollBarProperties:Dict[str,Dict] = {
     'properties' : {
         'Orientation' : {
                 'init': {'name':'orientation', 'type':'singleflag',

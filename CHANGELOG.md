@@ -1,5 +1,34 @@
 # Changelog
 
+## [0.49.0-a0](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/pyTermTk-v0.48.1-a0...pyTermTk-v0.49.0-a0) (2026-01-07)
+
+
+### Fixes
+
+* **combobox:** add widget if editable ([#567](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/567)) ([648189f](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/648189fde2e82cb1ca08c9a93faaccb8fe1e0c39))
+* **list:** do not reset the position after focus ([#564](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/564)) ([465ca4c](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/465ca4c39cb02a25aee05ce21f23ed13cf6cfa66))
+* **scrollbar:** show in small viewport ([#515](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/515)) ([f861681](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/f861681faef595d3dd6a9d77515b8fdfba72c298))
+* visibility propagation ([#575](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/575)) ([c050f44](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/c050f44beb6b46fdf7ff7a14436496117204702a))
+
+
+### Features
+
+* **keypressview:** exclude mouse move events ([#566](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/566)) ([dd25671](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/dd256711ae1f66206d6e1ecdac8986ae30d89df3))
+
+
+### Chores
+
+* **combobox:** add tests ([#570](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/570)) ([02fe83a](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/02fe83ade1a20768cacd6828a93213aaf4905137))
+* **crossTools:** improve typing ([#571](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/571)) ([ebd13f9](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/ebd13f94c5513daa356547a05a9ca93c2bd946e8))
+* improve typing ([9a04879](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/9a04879d7333a64e92ffcb675ef7da920a868d3d))
+* improve typing ([99925ad](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/99925ad874f322cd83a78df1345ec9d06142dbbd))
+* improve typing ([#562](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/562)) ([b066ee0](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/b066ee0ef3c7831aa59dfcf492ac9f2595b0bdca))
+* improve typing ([#572](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/572)) ([db386ca](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/db386ca52a29fde1eedc46b19a28cd1017e882a5))
+* improve typing and tests ([#573](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/573)) ([4577969](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/457796908fbdb0a20244cb35592e7d90b9e248d9))
+* removed unrequired field ([caf1832](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/caf1832d92716129456579049d61d84aaabcf99c))
+* **tabButton:** removed unrequired field ([eec5698](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/eec56985823c472b2b92d1b20330c1126b7da356))
+* **tabwidget:** default highlighted to the selected tab ([#563](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/563)) ([5c4e3d3](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/5c4e3d3f63e66889306b3ef2de1582a57c8c2072))
+
 ## [0.48.1-a0](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/pyTermTk-v0.48.0-a.0...pyTermTk-v0.48.1-a0) (2025-11-10)
 
 

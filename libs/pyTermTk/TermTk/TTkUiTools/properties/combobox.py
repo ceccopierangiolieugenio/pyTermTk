@@ -22,11 +22,13 @@
 
 __all__ = ['TTkComboBoxProperties']
 
+from typing import Dict
+
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.string import TTkString
 from TermTk.TTkWidgets.combobox import TTkComboBox
 
-TTkComboBoxProperties = {
+TTkComboBoxProperties:Dict[str,Dict] = {
     'properties' : {
         'Editable' : {
                 'init': {'name':'editable', 'type':bool } ,

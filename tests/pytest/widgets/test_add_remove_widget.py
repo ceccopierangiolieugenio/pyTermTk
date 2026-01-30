@@ -39,10 +39,10 @@ def test_add_widget_to_container():
     assert widget1.parentWidget() is None
     assert widget2.parentWidget() is None
 
-    container.addWidget(widget1)
+    container.layout().addWidget(widget1)
     assert widget1.parentWidget() is container
 
-    container.addWidget(widget2)
+    container.layout().addWidget(widget2)
     assert widget2.parentWidget() is container
 
 def test_add_widget_to_container_02():
@@ -65,10 +65,10 @@ def test_remove_widget_from_container():
     container = ttk.TTkContainer()
     widget = ttk.TTkWidget()
 
-    container.addWidget(widget)
+    container.layout().addWidget(widget)
     assert widget.parentWidget() is container
 
-    container.removeWidget(widget)
+    container.layout().removeWidget(widget)
     assert widget.parentWidget() is None
 
 def test_remove_widget_from_container_02():
@@ -80,7 +80,7 @@ def test_remove_widget_from_container_02():
     widget = ttk.TTkWidget(parent=container)
 
     assert widget.parentWidget() is container
-    container.removeWidget(widget)
+    container.layout().removeWidget(widget)
     assert widget.parentWidget() is None
 
 def test_gridlayout_add_remove():
@@ -240,12 +240,12 @@ def test_move_widget_between_containers():
     container2 = ttk.TTkContainer()
     widget = ttk.TTkWidget()
 
-    container1.addWidget(widget)
+    container1.layout().addWidget(widget)
     assert widget.parentWidget() is container1
 
     # Move to second container
-    container1.removeWidget(widget)
-    container2.addWidget(widget)
+    container1.layout().removeWidget(widget)
+    container2.layout().addWidget(widget)
 
     assert widget.parentWidget() is container2
 

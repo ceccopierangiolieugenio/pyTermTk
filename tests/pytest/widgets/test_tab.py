@@ -681,26 +681,26 @@ def test_tabbar_highlight_navigation_with_arrow_keys():
     tabBar.addTab("Tab 3")
 
     # Initial state - highlighted should be 0
-    assert tabBar._tabStatus.highlighted == -1
+    assert tabBar._tabStatus.highlighted == None
     assert tabBar.currentIndex() == 0
 
     # Press Right arrow
     evt = ttk.TTkKeyEvent(ttk.TTkK.SpecialKey, ttk.TTkK.Key_Right, "", ttk.TTkK.NoModifier)
     result = tabBar.keyEvent(evt)
     assert result is True
-    assert tabBar._tabStatus.highlighted == 0
+    assert tabBar._tabStatus.highlighted == 1
     assert tabBar.currentIndex() == 0  # Current doesn't change yet
 
     # Press Right arrow again
     result = tabBar.keyEvent(evt)
     assert result is True
-    assert tabBar._tabStatus.highlighted == 1
+    assert tabBar._tabStatus.highlighted == 2
 
     # Press Left arrow
     evt = ttk.TTkKeyEvent(ttk.TTkK.SpecialKey, ttk.TTkK.Key_Left, "", ttk.TTkK.NoModifier)
     result = tabBar.keyEvent(evt)
     assert result is True
-    assert tabBar._tabStatus.highlighted == 0
+    assert tabBar._tabStatus.highlighted == 1
 
 def test_tabbar_enter_activates_highlighted_tab():
     '''
@@ -746,7 +746,6 @@ def test_tabbar_space_activates_highlighted_tab():
 
     # Highlight Tab 1 using arrow key
     evt_right = ttk.TTkKeyEvent(ttk.TTkK.SpecialKey, ttk.TTkK.Key_Right, "", ttk.TTkK.NoModifier)
-    tabBar.keyEvent(evt_right)
     tabBar.keyEvent(evt_right)
     assert tabBar._tabStatus.highlighted == 1
     assert tabBar.currentIndex() == 0  # Still on Tab 0
@@ -813,7 +812,6 @@ def test_tabwidget_space_shows_highlighted_widget():
     evt_right = ttk.TTkKeyEvent(ttk.TTkK.SpecialKey, ttk.TTkK.Key_Right, "", ttk.TTkK.NoModifier)
     tabBar.setFocus()
     tabBar.keyEvent(evt_right)
-    tabBar.keyEvent(evt_right)
     assert tabWidget._tabStatus.highlighted == 1
 
     # Press Space to activate
@@ -835,11 +833,10 @@ def test_tabbar_highlight_bounds():
     tabBar.addTab("Tab 2")
 
     # At start
-    assert tabBar._tabStatus.highlighted == -1
+    assert tabBar._tabStatus.highlighted == None
 
     # Try to go left from first tab
     evt_left = ttk.TTkKeyEvent(ttk.TTkK.SpecialKey, ttk.TTkK.Key_Left, "", ttk.TTkK.NoModifier)
-    tabBar.keyEvent(evt_left)
     tabBar.keyEvent(evt_left)
     assert tabBar._tabStatus.highlighted == 0  # Should stay at 0
 

@@ -22,8 +22,8 @@
 
 __all__ = ['TTkTextDocument']
 
-from typing import TYPE_CHECKING, Optional, Union
-from threading import Lock
+from typing import TYPE_CHECKING, Optional
+from threading import RLock
 
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
@@ -143,7 +143,7 @@ class TTkTextDocument():
         )
     def __init__(self, *, text:TTkStringType=_default_init_text) -> None:
         from TermTk.TTkGui.textcursor import TTkTextCursor
-        self._docMutex = Lock()
+        self._docMutex = RLock()
         self.cursorPositionChanged = pyTTkSignal(TTkTextCursor)
         self.contentsChange = pyTTkSignal(int,int,int) # int line, int linesRemoved, int linesAdded
         self.contentsChanged = pyTTkSignal()
@@ -233,10 +233,49 @@ class TTkTextDocument():
             self._snap._nextDiff = None
 
     def lineCount(self):
-        return len(self._dataLines)
+        with self._docMutex:
+            ret = len(self._dataLines)
+            return ret
 
     def characterCount(self):
-        return sum([len(x) for x in self._dataLines])+self.lineCount()
+        with self._docMutex:
+            ret = sum([len(x) for x in self._dataLines])+len(self._dataLines)
+            return ret
+
+    def dataLine(self, line:int) -> Optional[TTkString]:
+        '''Return a data line in a thread-safe way.
+
+        :param line: line index.
+        :type line: int
+        :return: the requested line or None if out of range.
+        :rtype: Optional[:py:class:`TTkString`]
+        '''
+        with self._docMutex:
+            if 0 <= line < len(self._dataLines):
+                ret = self._dataLines[line]
+            else:
+                ret = None
+            return ret
+
+    def dataLines(self, lineRange:Optional[slice]=None) -> list[TTkString]:
+        '''Return data lines in a thread-safe way.
+
+        :param lineRange: optional slice selecting a subset of lines.
+        :type lineRange: Optional[slice]
+        :return: the internal lines list or a sliced list.
+        :rtype: List[:py:class:`TTkString`]
+
+        .. note::
+            This method does not copy the full document when ``lineRange`` is
+            ``None``. The returned object is mutable and reflects live document
+            updates.
+        '''
+        with self._docMutex:
+            if lineRange is not None:
+                ret = self._dataLines[lineRange]
+            else:
+                ret = self._dataLines
+            return ret
 
     def clear(self):
         self.setText(self._default_init_text)
@@ -245,12 +284,11 @@ class TTkTextDocument():
         remLines = len(self._dataLines)
         if not isinstance(text, str) and not isinstance(text,TTkString):
             text=str(text)
-        self._acquire()
-        self._dataLines = [TTkString(t) for t in text.split('\n')]
-        self._modified = False
-        self._lastSnap = self._dataLines.copy()
-        self._snap = TTkTextDocument._snapshot(self._lastCursor, None, None)
-        self._release()
+        with self._docMutex:
+            self._dataLines = [TTkString(t) for t in text.split('\n')]
+            self._modified = False
+            self._lastSnap = self._dataLines.copy()
+            self._snap = TTkTextDocument._snapshot(self._lastCursor, None, None)
         self.contentsChanged.emit()
         self.contentsChange.emit(0,remLines,len(self._dataLines))
         self._snapChanged = None
@@ -260,13 +298,12 @@ class TTkTextDocument():
             text = TTkString() + text
         if len(self._dataLines) == 1 and self._dataLines[0] == TTkString(TTkTextDocument._default_init_text):
             return self.setText(text)
-        self._acquire()
-        oldLines = len(self._dataLines)
-        self._dataLines += text.split('\n')
-        self._modified = False
-        self._lastSnap = self._dataLines.copy()
-        self._snap = TTkTextDocument._snapshot(self._lastCursor, None, None)
-        self._release()
+        with self._docMutex:
+            oldLines = len(self._dataLines)
+            self._dataLines += text.split('\n')
+            self._modified = False
+            self._lastSnap = self._dataLines.copy()
+            self._snap = TTkTextDocument._snapshot(self._lastCursor, None, None)
         self.contentsChanged.emit()
         self.contentsChange.emit(oldLines,0,len(self._dataLines)-oldLines)
         self._snapChanged = None
@@ -332,12 +369,11 @@ class TTkTextDocument():
             (not next and not self._snap._prevDiff) ):
             return None
 
-        self._acquire()
-        if next:
-            self._snap = self._snap.getNextSnap(self._dataLines)
-        else:
-            self._snap = self._snap.getPrevSnap(self._dataLines)
-        self._release()
+        with self._docMutex:
+            if next:
+                self._snap = self._snap.getNextSnap(self._dataLines)
+            else:
+                self._snap = self._snap.getPrevSnap(self._dataLines)
 
         self._lastSnap = self._dataLines.copy()
         self._lastCursor = self._snap._cursor.copy()

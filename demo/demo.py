@@ -40,7 +40,7 @@ from  showcase.windowsflags  import demoWindowsFlags
 from  showcase.formwidgets02 import demoFormWidgets
 from  showcase.scrollarea01  import demoScrollArea01
 from  showcase.scrollarea02  import demoScrollArea02
-from  showcase.list          import demoList
+from  showcase.list_          import demoList
 from  showcase.menubar       import demoMenuBar
 from  showcase.filepicker    import demoFilePicker
 from  showcase.colorpicker   import demoColorPicker
@@ -172,7 +172,7 @@ def demoShowcase(root=None, border=True):
     tabWidgets = ttk.TTkTabWidget(parent=mainFrame, border=False, visible=False)
     tabWidgets.addTab(demoFormWidgets(), " Form Test ", 'showcase/formwidgets02.py')
     tabWidgets.addTab(demoTextEdit(),    " Text Edit ", 'showcase/textedit.py')
-    tabWidgets.addTab(demoList(),        " List Test ", 'showcase/list.py')
+    tabWidgets.addTab(demoList(),        " List Test ", 'showcase/list_.py')
     tabWidgets.addTab(demoTree(),        " Tree Test",  'showcase/tree.py')
     tabWidgets.addTab(demoTTkTable(),    " Table Test", 'showcase/table.py')
     tabWidgets.addTab(demoTab(),         " Tab Test ",  'showcase/tab.py')

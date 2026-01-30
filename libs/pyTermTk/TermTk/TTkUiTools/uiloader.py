@@ -23,6 +23,7 @@
 __all__ = ['TTkUiLoader','TTkUiSignature']
 
 import json
+from typing import Optional,Union,Dict,Any,Callable,Protocol
 
 from TermTk import TTkLog
 from TermTk import TTkCfg, TTkK, TTkColor
@@ -31,7 +32,201 @@ from TermTk.TTkWidgets import *
 from TermTk.TTkTestWidgets import *
 from TermTk.TTkUiTools.uiproperties import TTkUiProperties
 
+
 TTkUiSignature = "TTkUi/Document"
+
+
+class _LoadDict_Protocol(Protocol):
+    def __call__(
+            self,
+            ui:Dict[str,Any],
+            baseWidget:Optional[TTkWidget]=None,
+            args:Optional[Dict[str,Any]]=None,
+        ) -> Optional[Union[TTkWidget,TTkLayout]]: ...
+
+class _Convert_Protocol(Protocol):
+    def __call__(
+            self,
+            ui:Dict[str,Any],
+        ) -> Dict[str,Any]: ...
+
+
+def _setMenuButton(_menuButtonProp, _menuButton:TTkMenuButton):
+    if 'submenu' in _menuButtonProp:
+        for _sm in _menuButtonProp['submenu']:
+            if _sm == 'spacer':
+                _menuButton.addSpacer()
+                continue
+            _btn = _menuButton.addMenu(text=_sm['params']['Text'], checkable=_sm['params']['Checkable'], checked=_sm['params']['Checked'])
+            _btn.setName(_sm['params']['Name'])
+            _btn.setToolTip(_sm['params']['ToolTip'])
+            _setMenuButton(_sm,_btn)
+
+
+def _setMenuBar(_menuBarProp, _menuBar:TTkMenuBarLayout):
+    def __addMenu(__prop, __alignment):
+        for _bp in __prop:
+            _btn = _menuBar.addMenu(text=_bp['params']['Text'], checkable=_bp['params']['Checkable'], checked=_bp['params']['Checked'], alignment=__alignment)
+            _btn.setName(_bp['params']['Name'])
+            _btn.setToolTip(_bp['params']['ToolTip'])
+            _setMenuButton(_bp, _btn)
+
+    if 'left' in _menuBarProp:   __addMenu(_menuBarProp['left'],   TTkK.LEFT_ALIGN)
+    if 'center' in _menuBarProp: __addMenu(_menuBarProp['center'], TTkK.CENTER_ALIGN)
+    if 'right' in _menuBarProp:  __addMenu(_menuBarProp['right'],  TTkK.RIGHT_ALIGN)
+
+
+
+def _getLayout(_layprop:Dict, _baseWidget:Optional[TTkWidget]=None) -> TTkLayout:
+    properties:Dict = {}
+    ttkClass = globals()[_layprop['class']]
+    for cc in reversed(ttkClass.__mro__):
+        if cc.__name__ in TTkUiProperties:
+            properties |= TTkUiProperties[cc.__name__]['properties']
+
+    setters = []
+    layout:TTkLayout = ttkClass()
+
+    for pname in _layprop['params']:
+        if 'set' in properties[pname]:
+            setp = properties[pname]['set']
+            setcb = setp['cb']
+            value:Any
+            if setp['type'] is TTkLayout:
+                value = layout
+            elif setp['type'] is TTkColor:
+                value = TTkColor.ansi(_layprop['params'][pname])
+            else:
+                value = _layprop['params'][pname]
+            setters.append({
+                        'cb':setcb,
+                        'value': value,
+                        'multi':type(setp['type']) is list})
+
+    # Init params that don't have a constrictor
+    for s in setters:
+        if s['multi']:
+            s['cb'](layout, *s['value'])
+        else:
+            s['cb'](layout, s['value'])
+
+    for c in _layprop['children']:
+        row = c.get('row', 0)
+        col = c.get('col', 0)
+        rowspan = c.get('rowspan', 1)
+        colspan = c.get('colspan', 1)
+        if   isinstance(layout, TTkGridLayout):
+            if issubclass(globals()[c['class']],TTkLayout):
+                l = _getLayout(c)
+                TTkGridLayout.addItem(layout, l, row, col, rowspan, colspan)
+            else:
+                w = _getWidget(c)
+                TTkGridLayout.addWidget(layout, w, row, col, rowspan, colspan)
+        else:
+            if issubclass(globals()[c['class']],TTkLayout):
+                l = _getLayout(c)
+                l._row, l._col = row, col
+                l._rowspan, l._colspan = rowspan, colspan
+                layout.addItem(l)
+            else:
+                w = _getWidget(c)
+                layout.addWidget(w)
+    return layout
+
+
+def _getWidget(_widProp:Dict[str,Any], _baseWidget:Optional[TTkWidget]=None, _args=None) -> TTkWidget:
+    properties:Dict[str,Any] = {}
+    ttkClass = globals()[_widProp['class']]
+    for cc in reversed(ttkClass.__mro__):
+        if cc.__name__ in TTkUiProperties:
+            properties |= TTkUiProperties[cc.__name__]['properties']
+
+    # Init params used in the constructors
+    kwargs = {} if _args is None else _args
+
+    # Init params to be configured with the setter
+    setters = []
+    layout = _getLayout(_widProp['layout']) if 'layout' in _widProp else TTkLayout()
+
+    # Process the widget params
+    for pname in _widProp['params']:
+        if pname not in properties: continue
+        if 'init' in properties[pname]:
+            initp = properties[pname]['init']
+            name = initp['name']
+            value:Any
+            if initp['type'] is TTkLayout:
+                value = layout
+            elif initp['type'] is TTkColor:
+                value = TTkColor.ansi(_widProp['params'][pname])
+            else:
+                value = _widProp['params'][pname]
+            # TTkLog.debug(f"{name=} {value=}")
+            if name not in kwargs:
+                kwargs |= {name: value}
+        elif 'set' in properties[pname]:
+            setp = properties[pname]['set']
+            setcb = setp['cb']
+            if setp['type'] is TTkLayout:
+                value = layout
+            elif setp['type'] is TTkColor:
+                value = TTkColor.ansi(_widProp['params'][pname])
+            else:
+                value = _widProp['params'][pname]
+            setters.append({
+                        'cb':setcb,
+                        'value': value,
+                        'multi':type(setp['type']) is list})
+
+    if _baseWidget is None:
+        widget = ttkClass(**kwargs)
+    else:
+        widget = _baseWidget
+        if issubclass(type(_baseWidget), ttkClass):
+            ttkClass.__init__(widget,**kwargs)
+        else:
+            error = f"Base Widget '{_baseWidget.__class__.__name__}' is not a subclass of '{ttkClass.__name__}'"
+            raise TypeError(error)
+
+    # Init params that don't have a constrictor
+    for s in setters:
+        if s['multi']:
+            s['cb'](widget, *s['value'])
+        else:
+            s['cb'](widget, s['value'])
+
+    # Process the optional menuBar params
+    if 'menuBar' in _widProp:
+        if 'top' in _widProp['menuBar']:
+            widget.setMenuBar(mb := TTkMenuBarLayout(), TTkK.TOP)
+            _setMenuBar(_widProp['menuBar']['top'], mb)
+        if 'bottom' in _widProp['menuBar']:
+            widget.setMenuBar(mb := TTkMenuBarLayout(), TTkK.BOTTOM)
+            _setMenuBar(_widProp['menuBar']['bottom'], mb)
+
+    # TTkLog.debug(widget)
+    return widget
+
+
+def _getSignal(sender, name):
+    for cc in reversed(type(sender).__mro__):
+        if cc.__name__ in TTkUiProperties:
+            if name not in TTkUiProperties[cc.__name__]['signals']:
+                continue
+            signame = TTkUiProperties[cc.__name__]['signals'][name]['name']
+            return getattr(sender,signame)
+    return None
+
+
+def _getSlot(receiver, name):
+    for cc in reversed(type(receiver).__mro__):
+        if cc.__name__ in TTkUiProperties:
+            if name not in TTkUiProperties[cc.__name__]['slots']:
+                continue
+            slotname = TTkUiProperties[cc.__name__]['slots'][name]['name']
+            return getattr(receiver,slotname)
+    return None
+
 
 class TTkUiLoader():
     '''TTkUiLoader
@@ -44,7 +239,7 @@ class TTkUiLoader():
     '''
 
     @staticmethod
-    def loadFile(filePath, baseWidget:TTkWidget=None, kwargs=None) -> TTkWidget:
+    def loadFile(filePath, baseWidget:Optional[TTkWidget]=None, kwargs=None) -> Optional[Union[TTkWidget,TTkLayout]]:
         '''load the file generated by ttkDesigner_
 
         :param filePath: the file path
@@ -61,7 +256,7 @@ class TTkUiLoader():
         return None
 
     @staticmethod
-    def loadJson(text, baseWidget:TTkWidget=None, kwargs=None) -> TTkWidget:
+    def loadJson(text, baseWidget:Optional[TTkWidget]=None, kwargs=None) -> Optional[Union[TTkWidget,TTkLayout]]:
         '''load the json representing the ui definition of the widget
 
         :param text: the representation of the widget in Json format
@@ -75,28 +270,32 @@ class TTkUiLoader():
         '''
         return TTkUiLoader.loadDict(json.loads(text), baseWidget, kwargs)
 
-    def _convert_2_0_2_to_2_1_0(ui):
+    @staticmethod
+    def _convert_2_0_2_to_2_1_0(ui:Dict[str,Any]) -> Dict[str,Any]:
         return {
             "type": TTkUiSignature,
             "version": "2.1.0",
             "connections" : ui['connections'],
             "tui": ui['tui'] }
 
-    def _convert_2_0_1_to_2_0_2(ui):
+    @staticmethod
+    def _convert_2_0_1_to_2_0_2(ui:Dict[str,Any]) -> Dict[str,Any]:
         return {
             "type": TTkUiSignature,
             "version": "2.0.2",
             "connections" : ui['connections'],
             "tui": ui['tui'] }
 
-    def _convert_2_0_0_to_2_0_2(ui):
+    @staticmethod
+    def _convert_2_0_0_to_2_0_2(ui:Dict[str,Any]) -> Dict[str,Any]:
         return {
             "type": TTkUiSignature,
             "version": "2.0.2",
             "connections" : ui['connections'],
             "tui": ui['tui'] }
 
-    def _convert_1_0_1_to_2_0_0(ui):
+    @staticmethod
+    def _convert_1_0_1_to_2_0_0(ui:Dict[str,Any]) -> Dict[str,Any]:
         def _processWidget(_wid):
             if issubclass(globals()[_wid['class']],TTkContainer):
                 if hasattr(_wid,'layout'):
@@ -117,24 +316,47 @@ class TTkUiLoader():
             "tui": tui }
 
     @staticmethod
-    def _loadDict_1_0_0(ui, *args, **kwargs) -> None:
-        ui = TTkUiLoader._convert_1_0_1_to_2_0_0(ui)
-        return TTkUiLoader._loadDict_2_0_0(ui, *args, **kwargs)
-
-    def _loadDict_2_0_0(ui, *args, **kwargs) -> None:
-        ui = TTkUiLoader._convert_2_0_0_to_2_0_2(ui)
-        return TTkUiLoader._loadDict_2_0_2(ui, *args, **kwargs)
-
-    def _loadDict_2_0_1(ui, *args, **kwargs) -> None:
-        ui = TTkUiLoader._convert_2_0_1_to_2_0_2(ui)
-        return TTkUiLoader._loadDict_2_0_2(ui, *args, **kwargs)
-
-    def _loadDict_2_0_2(ui, *args, **kwargs) -> None:
-        ui = TTkUiLoader._convert_2_0_2_to_2_1_0(ui)
-        return TTkUiLoader._loadDict_2_1_0(ui, *args, **kwargs)
+    def _loadDict_1_0_0(
+                ui:Dict[str,Any],
+                baseWidget:Optional[TTkWidget]=None,
+                args:Optional[Dict[str,Any]]=None,
+            ) -> Optional[Union[TTkWidget,TTkLayout]]:
+        ui = TTkUiLoader._convert_1_0_1_to_2_0_0(ui=ui)
+        return TTkUiLoader._loadDict_2_0_0(ui=ui, baseWidget=baseWidget, args=args)
 
     @staticmethod
-    def _loadDict_2_1_0(ui, baseWidget:TTkWidget=None, args=None):
+    def _loadDict_2_0_0(
+                ui:Dict[str,Any],
+                baseWidget:Optional[TTkWidget]=None,
+                args:Optional[Dict[str,Any]]=None,
+            ) -> Optional[Union[TTkWidget,TTkLayout]]:
+        ui = TTkUiLoader._convert_2_0_0_to_2_0_2(ui=ui)
+        return TTkUiLoader._loadDict_2_0_2(ui=ui, baseWidget=baseWidget, args=args)
+
+    @staticmethod
+    def _loadDict_2_0_1(
+                ui:Dict[str,Any],
+                baseWidget:Optional[TTkWidget]=None,
+                args:Optional[Dict[str,Any]]=None,
+            ) -> Optional[Union[TTkWidget,TTkLayout]]:
+        ui = TTkUiLoader._convert_2_0_1_to_2_0_2(ui=ui)
+        return TTkUiLoader._loadDict_2_0_2(ui=ui, baseWidget=baseWidget, args=args)
+
+    @staticmethod
+    def _loadDict_2_0_2(
+                ui:Dict[str,Any],
+                baseWidget:Optional[TTkWidget]=None,
+                args:Optional[Dict[str,Any]]=None,
+            ) -> Optional[Union[TTkWidget,TTkLayout]]:
+        ui = TTkUiLoader._convert_2_0_2_to_2_1_0(ui=ui)
+        return TTkUiLoader._loadDict_2_1_0(ui=ui, baseWidget=baseWidget, args=args)
+
+    @staticmethod
+    def _loadDict_2_1_0(
+                ui:Dict[str,Any],
+                baseWidget:Optional[TTkWidget]=None,
+                args:Optional[Dict[str,Any]]=None,
+            ) -> Optional[Union[TTkWidget,TTkLayout]]:
         if (
             ui['version'] != '2.1.0' or
             'type' not in ui or
@@ -142,193 +364,25 @@ class TTkUiLoader():
             TTkLog.error("Ui Format not valid")
             return None
 
-        def _setMenuButton(_menuButtonProp, _menuButton:TTkMenuButton):
-            if 'submenu' in _menuButtonProp:
-                for _sm in _menuButtonProp['submenu']:
-                    if _sm == 'spacer':
-                        _menuButton.addSpacer()
-                        continue
-                    _btn = _menuButton.addMenu(text=_sm['params']['Text'], checkable=_sm['params']['Checkable'], checked=_sm['params']['Checked'])
-                    _btn.setName(_sm['params']['Name'])
-                    _btn.setToolTip(_sm['params']['ToolTip'])
-                    _setMenuButton(_sm,_btn)
-
-        def _setMenuBar(_menuBarProp, _menuBar:TTkMenuBarLayout):
-            def __addMenu(__prop, __alignment):
-                for _bp in __prop:
-                    _btn = _menuBar.addMenu(text=_bp['params']['Text'], checkable=_bp['params']['Checkable'], checked=_bp['params']['Checked'], alignment=__alignment)
-                    _btn.setName(_bp['params']['Name'])
-                    _btn.setToolTip(_bp['params']['ToolTip'])
-                    _setMenuButton(_bp, _btn)
-
-            if 'left' in _menuBarProp:   __addMenu(_menuBarProp['left'],   TTkK.LEFT_ALIGN)
-            if 'center' in _menuBarProp: __addMenu(_menuBarProp['center'], TTkK.CENTER_ALIGN)
-            if 'right' in _menuBarProp:  __addMenu(_menuBarProp['right'],  TTkK.RIGHT_ALIGN)
-
-        def _getWidget(_widProp, _baseWidget:TTkWidget=None, _args=None):
-            properties = {}
-            ttkClass = globals()[_widProp['class']]
-            for cc in reversed(ttkClass.__mro__):
-                if cc.__name__ in TTkUiProperties:
-                    properties |= TTkUiProperties[cc.__name__]['properties']
-            # Init params used in the constructors
-            kwargs = {} if _args is None else _args
-            # Init params to be configured with the setter
-            setters = []
-            layout = _getLayout(_widProp['layout']) if 'layout' in _widProp else TTkLayout()
-            # Process the widget params
-            for pname in _widProp['params']:
-                if pname not in properties: continue
-                if 'init' in properties[pname]:
-                    initp = properties[pname]['init']
-                    name = initp['name']
-                    if initp['type'] is TTkLayout:
-                        value = layout
-                    elif initp['type'] is TTkColor:
-                        value = TTkColor.ansi(_widProp['params'][pname])
-                    else:
-                        value = _widProp['params'][pname]
-                    # TTkLog.debug(f"{name=} {value=}")
-                    if name not in kwargs:
-                        kwargs |= {name: value}
-                elif 'set' in properties[pname]:
-                    setp = properties[pname]['set']
-                    setcb = setp['cb']
-                    if setp['type'] is TTkLayout:
-                        value = layout
-                    elif setp['type'] is TTkColor:
-                        value = TTkColor.ansi(_widProp['params'][pname])
-                    else:
-                        value = _widProp['params'][pname]
-                    setters.append({
-                                'cb':setcb,
-                                'value': value,
-                                'multi':type(setp['type']) is list})
-
-            if _baseWidget is None:
-                widget = ttkClass(**kwargs)
-            else:
-                widget = _baseWidget
-                if issubclass(type(_baseWidget), ttkClass):
-                    ttkClass.__init__(widget,**kwargs)
-                else:
-                    error = f"Base Widget '{_baseWidget.__class__.__name__}' is not a subclass of '{ttkClass.__name__}'"
-                    raise TypeError(error)
-
-            # Init params that don't have a constrictor
-            for s in setters:
-                if s['multi']:
-                    s['cb'](widget, *s['value'])
-                else:
-                    s['cb'](widget, s['value'])
-
-            # Process the optional menuBar params
-            if 'menuBar' in _widProp:
-                if 'top' in _widProp['menuBar']:
-                    widget.setMenuBar(mb := TTkMenuBarLayout(), TTkK.TOP)
-                    _setMenuBar(_widProp['menuBar']['top'], mb)
-                if 'bottom' in _widProp['menuBar']:
-                    widget.setMenuBar(mb := TTkMenuBarLayout(), TTkK.BOTTOM)
-                    _setMenuBar(_widProp['menuBar']['bottom'], mb)
-
-            # TTkLog.debug(widget)
-            return widget
-
-        def _getLayout(_layprop, _baseWidget:TTkWidget=None):
-            properties = {}
-            ttkClass = globals()[_layprop['class']]
-            for cc in reversed(ttkClass.__mro__):
-                if cc.__name__ in TTkUiProperties:
-                    properties |= TTkUiProperties[cc.__name__]['properties']
-
-            setters = []
-            for pname in _layprop['params']:
-                if 'set' in properties[pname]:
-                    setp = properties[pname]['set']
-                    setcb = setp['cb']
-                    if setp['type'] is TTkLayout:
-                        value = layout
-                    elif setp['type'] is TTkColor:
-                        value = TTkColor.ansi(_layprop['params'][pname])
-                    else:
-                        value = _layprop['params'][pname]
-                    setters.append({
-                                'cb':setcb,
-                                'value': value,
-                                'multi':type(setp['type']) is list})
-
-            layout = globals()[_layprop['class']]()
-            # Init params that don't have a constrictor
-            for s in setters:
-                if s['multi']:
-                    s['cb'](layout, *s['value'])
-                else:
-                    s['cb'](layout, s['value'])
-
-            for c in _layprop['children']:
-                row = c.get('row', 0)
-                col = c.get('col', 0)
-                rowspan = c.get('rowspan', 1)
-                colspan = c.get('colspan', 1)
-                if   issubclass(ttkClass,TTkGridLayout):
-                    if issubclass(globals()[c['class']],TTkLayout):
-                        l = _getLayout(c)
-                        TTkGridLayout.addItem(layout,l,row,col,rowspan,colspan)
-                    else:
-                        w = _getWidget(c)
-                        TTkGridLayout.addWidget(layout,w,row,col,rowspan,colspan)
-                else:
-                    if issubclass(globals()[c['class']],TTkLayout):
-                        l = _getLayout(c)
-                        l._row, l._col = row, col
-                        l._rowspan, l._colspan = rowspan, colspan
-                        layout.addItem(l)
-                    else:
-                        w = _getWidget(c)
-                        w._row, w._col = row, col
-                        w._rowspan, w._colspan = rowspan, colspan
-                        layout.addWidget(w)
-            return layout
-
-        # TTkLog.debug(ui)
-
         if issubclass(globals()[ui['tui']['class']],TTkLayout):
-            widget =  _getLayout(ui['tui'], baseWidget)
+            ret_layout =  _getLayout(ui['tui'], baseWidget)
+            return ret_layout
         else:
-            widget =  _getWidget(ui['tui'], baseWidget, args)
-
-        def _getSignal(sender, name):
-            for cc in reversed(type(sender).__mro__):
-                if cc.__name__ in TTkUiProperties:
-                    if name not in TTkUiProperties[cc.__name__]['signals']:
-                        continue
-                    signame = TTkUiProperties[cc.__name__]['signals'][name]['name']
-                    return getattr(sender,signame)
-            return None
-
-        def _getSlot(receiver, name):
-            for cc in reversed(type(receiver).__mro__):
-                if cc.__name__ in TTkUiProperties:
-                    if name not in TTkUiProperties[cc.__name__]['slots']:
-                        continue
-                    slotname = TTkUiProperties[cc.__name__]['slots'][name]['name']
-                    return getattr(receiver,slotname)
-            return None
-
+            ret_widget =  _getWidget(ui['tui'], baseWidget, args)
 
         for conn in ui['connections']:
-            sender   = widget.getWidgetByName(conn['sender'])
-            receiver = widget.getWidgetByName(conn['receiver'])
+            sender   = ret_widget.getWidgetByName(conn['sender'])
+            receiver = ret_widget.getWidgetByName(conn['receiver'])
             signal = conn['signal']
             slot = conn['slot']
             if None in (sender,receiver): continue
             _getSignal(sender,signal).connect(_getSlot(receiver,slot))
 
-        return widget
+        return ret_widget
 
     @staticmethod
-    def normalise(ui):
-        cb = {'1.0.0' : TTkUiLoader._convert_1_0_1_to_2_0_0,
+    def normalise(ui:Dict[str,Any]) -> Dict[str,Any]:
+        cb:_Convert_Protocol = {'1.0.0' : TTkUiLoader._convert_1_0_1_to_2_0_0,
               '1.0.1' : TTkUiLoader._convert_1_0_1_to_2_0_0,
               '2.0.0' : TTkUiLoader._convert_2_0_0_to_2_0_2,
               '2.0.1' : TTkUiLoader._convert_2_0_1_to_2_0_2,
@@ -338,7 +392,7 @@ class TTkUiLoader():
         return cb(ui)
 
     @staticmethod
-    def loadDict(ui, baseWidget:TTkWidget=None, kwargs=None) -> TTkWidget:
+    def loadDict(ui:Dict[str,Any], baseWidget:Optional[TTkWidget]=None, kwargs=None) -> Optional[Union[TTkWidget,TTkLayout]]:
         '''load the dictionary representing the ui definition of the widget
 
         :param ui: the representation of the widget
@@ -350,15 +404,16 @@ class TTkUiLoader():
 
         :return: :py:class:`TTkWidget`
         '''
-        cb = {'1.0.0' : TTkUiLoader._loadDict_1_0_0,
-              '1.0.1' : TTkUiLoader._loadDict_1_0_0,
-              '2.0.0' : TTkUiLoader._loadDict_2_0_0,
-              '2.0.1' : TTkUiLoader._loadDict_2_0_1,
-              '2.0.2' : TTkUiLoader._loadDict_2_0_2,
-              '2.1.0' : TTkUiLoader._loadDict_2_1_0,
-              }.get(ui['version'], None)
-        if cb:
-            return cb(ui, baseWidget, kwargs)
-        msg = (f"The used pyTermTk ({TTkCfg.version}) is not able to load this tui version ({ui['version']})")
-        raise NotImplementedError(msg)
+        cb:Optional[_LoadDict_Protocol] = {
+                '1.0.0' : TTkUiLoader._loadDict_1_0_0,
+                '1.0.1' : TTkUiLoader._loadDict_1_0_0,
+                '2.0.0' : TTkUiLoader._loadDict_2_0_0,
+                '2.0.1' : TTkUiLoader._loadDict_2_0_1,
+                '2.0.2' : TTkUiLoader._loadDict_2_0_2,
+                '2.1.0' : TTkUiLoader._loadDict_2_1_0,
+            }.get(ui['version'])
+        if not cb:
+            msg = (f"The used pyTermTk ({TTkCfg.version}) is not able to load this tui version ({ui['version']})")
+            raise NotImplementedError(msg)
+        return cb(ui, baseWidget, kwargs)
 

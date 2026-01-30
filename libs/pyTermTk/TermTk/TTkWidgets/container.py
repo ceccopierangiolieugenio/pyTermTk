@@ -155,6 +155,16 @@ class TTkContainer(TTkWidget):
         self._layout.setParent(self)
         self.update(updateLayout=True)
 
+    def _getPendingMouseReleaseWidget(self) -> Optional[TTkWidget]:
+        if (_pw:=self.parentWidget()):
+            return _pw._getPendingMouseReleaseWidget()
+        return None
+
+    def _setPendingMouseReleaseWidget(self, widget:Optional[TTkWidget]) -> None:
+        if not (_pw:=self.parentWidget()):
+            return
+        _pw._setPendingMouseReleaseWidget(widget)
+
     def _getFocusWidget(self) -> Optional[TTkWidget]:
         if (_pw:=self.parentWidget()):
             return _pw._getFocusWidget()
@@ -465,7 +475,7 @@ class TTkContainer(TTkWidget):
                         self._padl, self._padt,
                         self._width   - self._padl - self._padr,
                         self._height  - self._padt - self._padb)
-            self.rootLayout().update()
+            self.rootLayout().update(repaint=repaint, updateLayout=updateLayout)
 
     def getWidgetByName(self, name: str) -> Optional[TTkWidget]:
         '''

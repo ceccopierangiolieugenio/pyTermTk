@@ -65,7 +65,7 @@ class TMouseEvents():
         :return: **True** if the event has been handled
         :rtype: bool
         '''
-        return False
+        return True
 
     def mouseDragEvent(self, evt:TTkMouseEvent) -> bool:
         '''

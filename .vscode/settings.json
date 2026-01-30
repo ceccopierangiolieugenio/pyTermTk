@@ -1,7 +1,8 @@
 {
     "python.testing.pytestArgs": [
+        "-vv", "--color=yes", "-s",
         "tests/pytest",
-         "-vv", "--color=yes", "-s"
+        "apps/",
     ],
     "python.testing.unittestEnabled": false,
     "python.testing.pytestEnabled": true,

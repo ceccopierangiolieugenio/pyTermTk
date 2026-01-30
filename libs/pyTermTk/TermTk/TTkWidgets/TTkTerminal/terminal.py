@@ -34,7 +34,7 @@ class TTkTerminal(TTkAbstractScrollArea):
     __doc__ = '''
     :py:class:`TTkTerminal` is a container widget which place :py:class:`TTkTerminalView` in a scrolling area with on-demand scroll bars.
 
-    ''' + TTkTerminalView.__doc__
+    ''' + (TTkTerminalView.__doc__ or '')
 
     _ttk_forward = _ForwardData(
         forwardClass=TTkTerminalView ,
@@ -114,7 +114,7 @@ class TTkTerminal(TTkAbstractScrollArea):
         to frward all the terminal events to the pty interface.
         
         :param data: the event data
-        :type data: str
+        :type data: bytes
         '''
         return self._terminalView.termData
     @property

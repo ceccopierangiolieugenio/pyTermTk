@@ -31,6 +31,8 @@ import TermTk as ttk
 
 import ttkode
 
+from _030.pytest_widget import PTP_PyTestWidget
+
 _icon:str = (
     "╒╦╕\n"
     "╶╨╴")
@@ -38,14 +40,14 @@ _icon:str = (
 ttkode.TTkodePlugin(
     name="PyTest Plugin",
     widgets = [
+            ttkode.TTkodePluginWidgetPanel(
+            panelName='Test Results',
+            widget=(_tr:=ttk.TTkTextEdit(readOnly=True))
+        ),
         ttkode.TTkodePluginWidgetActivity(
             activityName='Testing',
-            widget=ttk.TTkTestWidget(),
+            widget=PTP_PyTestWidget(testResults=_tr),
             icon=ttk.TTkString(_icon)
-        ),
-        ttkode.TTkodePluginWidgetPanel(
-            panelName='Test Results',
-            widget=ttk.TTkTestWidget()
         )
     ]
 )

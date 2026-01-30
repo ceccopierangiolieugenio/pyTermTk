@@ -135,10 +135,10 @@ class _TTkTreeChildren(TTkAbstractItemModel):
 
     def _addChild(self, parent:TTkTreeWidgetItem, child:TTkTreeWidgetItem):
         self._children.append(child)
-        child._parent = self._parent
-        child._sortOrder = self._parent._sortOrder
-        child._sortColumn = self._parent._sortColumn
-        child._sortKey = self._parent._sortKey
+        child._parent = parent
+        child._sortOrder = parent._sortOrder
+        child._sortColumn = parent._sortColumn
+        child._sortKey = parent._sortKey
         child.dataChanged.connect(self.emitDataChanged)
         child._sizeChanged.connect(self._childrenSizeChangedHandler)
 
@@ -166,6 +166,7 @@ class _TTkTreeChildren(TTkAbstractItemModel):
                  0<= index < len(self._children) ):
             return None
         child = self._children.pop(index)
+        child._parent = None
         child.dataChanged.disconnect(self.emitDataChanged)
         child._sizeChanged.disconnect(self._childrenSizeChangedHandler)
         self._childrenSizeChangedHandler(None, -child.size())
@@ -173,11 +174,13 @@ class _TTkTreeChildren(TTkAbstractItemModel):
         return child
 
     def takeChildren(self) -> List[TTkTreeWidgetItem]:
-        children = self._children
+        children = self._children.copy()
         for child in children:
+            child._parent = None
             child.dataChanged.disconnect(self.emitDataChanged)
             child._sizeChanged.disconnect(self._childrenSizeChangedHandler)
         self._childrenSizeChangedHandler(None, -self._total_size)
+        self._children = []
         self.emitDataChanged()
         return children
 
@@ -253,7 +256,7 @@ class TTkTreeWidgetItem(TTkAbstractItemModel):
 
     __slots__ = (
         '_parent', '_data', '_widgets', '_height', '_alignment',
-        '_children', '_expanded', '_selected', '_hidden',
+        '_children', '_expanded', '_hidden',
         '_childIndicatorPolicy', '_icon', '_defaultIcon',
         '_sortColumn', '_sortOrder', '_sortKey', '_hasWidgets',
         '_buffer', '_level',
@@ -274,7 +277,6 @@ class TTkTreeWidgetItem(TTkAbstractItemModel):
     def __init__(self, *args,
                  parent:Optional[TTkTreeWidgetItem]=None,
                  expanded:bool=False,
-                 selected:bool=False,
                  hidden:bool=False,
                  icon:TTkStringType='',
                  childIndicatorPolicy:TTkK.ChildIndicatorPolicy =TTkK.ChildIndicatorPolicy.DontShowIndicatorWhenChildless,
@@ -294,7 +296,6 @@ class TTkTreeWidgetItem(TTkAbstractItemModel):
         self._childIndicatorPolicy = childIndicatorPolicy
         self._defaultIcon = True
         self._expanded = expanded
-        self._selected = selected
         self._hidden = hidden
         self._sortColumn = -1
         self._sortOrder = TTkK.AscendingOrder
@@ -427,7 +428,7 @@ class TTkTreeWidgetItem(TTkAbstractItemModel):
             self._children = _TTkTreeChildren(self)
             self._children._childrenSizeChanged.connect(self._sizeChangedHandler)
             self._children.dataChanged.connect(self.emitDataChanged)
-        child = self._children.addChild(self, child)
+        self._children.addChild(self, child)
         self._setDefaultIcon()
 
     def addChildren(self, children:List[TTkTreeWidgetItem]) -> None:
@@ -435,7 +436,7 @@ class TTkTreeWidgetItem(TTkAbstractItemModel):
             self._children = _TTkTreeChildren(self)
             self._children._childrenSizeChanged.connect(self._sizeChangedHandler)
             self._children.dataChanged.connect(self.emitDataChanged)
-        children = self._children.addChildren(self, children)
+        self._children.addChildren(self, children)
         self._setDefaultIcon()
 
     def removeChild(self, child:TTkTreeWidgetItem) -> None:
@@ -571,9 +572,6 @@ class TTkTreeWidgetItem(TTkAbstractItemModel):
     def emitDataChanged(self) -> None:
         self.dataChanged.emit()
 
-    # def setDisabled(disabled):
-    #    pass
-
     def setExpanded(self, expand:bool) -> None:
         if self._expanded != expand and self._children:
             if expand:
@@ -584,17 +582,8 @@ class TTkTreeWidgetItem(TTkAbstractItemModel):
         self._setDefaultIcon()
         self.dataChanged.emit()
 
-    def setSelected(self, select:bool) -> None:
-        self._selected = select
-
-    # def isDisabled():
-    #     pass
-
     def isExpanded(self) -> bool:
         return self._expanded
-
-    def isSelected(self) -> bool:
-        return self._selected
 
     def size(self) -> int:
         if self._hidden:

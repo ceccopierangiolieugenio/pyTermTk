@@ -22,12 +22,14 @@
 
 __all__ = ['TTkLabelProperties']
 
+from typing import Dict
+
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkCore.string import TTkString
 from TermTk.TTkWidgets.label import TTkLabel
 
-TTkLabelProperties = {
+TTkLabelProperties:Dict[str,Dict] = {
     'properties' : {
         'Text' : {
                 'init': {'name':'text',         'type':TTkString },

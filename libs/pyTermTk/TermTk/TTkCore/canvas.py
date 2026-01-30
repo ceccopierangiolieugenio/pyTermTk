@@ -390,16 +390,15 @@ class TTkCanvas():
                 self._set(y,x+i, TTkCfg.theme.hscroll[1], color)
             for i in range(f,t): # Slider
                 self._set(y,x+i, TTkCfg.theme.hscroll[2], color)
-            self._set(y,x, TTkCfg.theme.hscroll[0], color)        # Left Arrow
             self._set(y,x+size-1, TTkCfg.theme.hscroll[3], color) # Right Arrow
+            self._set(y,x, TTkCfg.theme.hscroll[0], color)        # Left Arrow
         else:
             for i in range(y+1,y+size-1): # V line
                 self._set(y+i,x, TTkCfg.theme.vscroll[1], color)
             for i in range(f,t): # Slider
                 self._set(y+i,x, TTkCfg.theme.vscroll[2], color)
-            self._set(y,x, TTkCfg.theme.vscroll[0], color)        # Up Arrow
             self._set(y+size-1,x, TTkCfg.theme.vscroll[3], color) # Down Arrow
-        pass
+            self._set(y,x, TTkCfg.theme.vscroll[0], color)        # Up Arrow
 
     def drawTabMenuButton(
             self, pos, size, text, slim=False,
@@ -706,7 +705,7 @@ class TTkCanvas():
         # TTkLog.debug("pushToTerminal")
         lastcolor = TTkColor.RST
         for y in range(0, self._height):
-            ansi = lastcolor+TTkTerm.Cursor.moveTo(y+1,1)
+            ansi = str(lastcolor)+TTkTerm.Cursor.moveTo(y+1,1)
             for x in range(0, self._width):
                 ch = self._data[y][x]
                 color = self._colors[y][x]
@@ -802,7 +801,7 @@ class TTkCanvas():
                 empty=True
         # Reset the color at the end
         TTkTerm.push(TTkColor.RST)
-        if lastcolor._link:
+        if getattr(lastcolor, "_link", False):
             TTkTerm.push("\033]8;;\033\\")
         # Switch the buffer
         self._bufferedData, self._bufferedColors = data, colors

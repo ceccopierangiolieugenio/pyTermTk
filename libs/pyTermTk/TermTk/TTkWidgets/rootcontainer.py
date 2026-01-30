@@ -71,16 +71,27 @@ class _TTkRootContainer(TTkContainer):
     consumes the event, ensuring focus loops back to the first/last focusable widget.
     '''
     __slots__ = (
+        '_pendingMouseReleaseWidget',
         '_focusWidget',
         '_overlay')
 
+    _pendingMouseReleaseWidget:Optional[TTkWidget]
     _focusWidget:Optional[TTkWidget]
     _overlay:List[_TTkOverlay]
 
     def __init__(self, **kwargs) -> None:
+        self._pendingMouseReleaseWidget = None
         self._focusWidget = None
         self._overlay = []
         super().__init__(**kwargs)
+
+    def _getPendingMouseReleaseWidget(self) -> Optional[TTkWidget]:
+        return self._pendingMouseReleaseWidget
+
+    def _setPendingMouseReleaseWidget(self, widget:Optional[TTkWidget]) -> None:
+        if self._pendingMouseReleaseWidget is widget:
+            return
+        self._pendingMouseReleaseWidget = widget
 
     def _getFocusWidget(self) -> Optional[TTkWidget]:
         '''

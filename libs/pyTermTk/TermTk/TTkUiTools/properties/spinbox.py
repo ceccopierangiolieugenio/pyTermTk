@@ -22,9 +22,11 @@
 
 __all__ = ['TTkSpinBoxProperties']
 
+from typing import Dict
+
 from TermTk.TTkWidgets.spinbox import TTkSpinBox
 
-TTkSpinBoxProperties = {
+TTkSpinBoxProperties:Dict[str,Dict] = {
     'properties' : {
         'Value' : {
                 'init': {'name':'value',            'type':int } ,

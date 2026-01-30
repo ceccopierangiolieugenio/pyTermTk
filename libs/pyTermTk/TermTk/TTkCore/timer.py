@@ -23,9 +23,12 @@
 __all__ = ['TTkTimer']
 
 import importlib.util
+from typing import TYPE_CHECKING
+
+from .timer_interface import _TTkTimer_Interface as TTkTimer
 
 if importlib.util.find_spec('pyodideProxy'):
-    from .timer_pyodide import TTkTimer
+    from .timer_pyodide import _TTkTimer_Pyodide as TTkTimer
 else:
-    from .timer_unix import TTkTimer
+    from .timer_unix import _TTkTimer_Unix as TTkTimer
 

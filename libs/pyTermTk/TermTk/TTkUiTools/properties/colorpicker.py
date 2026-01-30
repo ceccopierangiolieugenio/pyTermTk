@@ -22,11 +22,13 @@
 
 __all__ = ['TTkColorButtonPickerProperties']
 
+from typing import Dict
+
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkWidgets.TTkPickers.colorpicker import TTkColorButtonPicker,TTkColorDialogPicker
 
-TTkColorButtonPickerProperties = {
+TTkColorButtonPickerProperties:Dict[str,Dict] = {
     'properties' : {
         'Color' : {
                 'init': {'name':'color',                     'type':TTkColor },

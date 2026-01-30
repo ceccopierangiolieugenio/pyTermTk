@@ -188,7 +188,7 @@ class TTkTerminalView(TTkAbstractScrollView, _TTkTerminal_CSI_DEC):
         to frward all the terminal events to the pty interface.
 
         :param data: the event data
-        :type data: str
+        :type data: bytes
         '''
         return self._termData
 
@@ -218,7 +218,7 @@ class TTkTerminalView(TTkAbstractScrollView, _TTkTerminal_CSI_DEC):
         self._terminalClosed = pyTTkSignal()
         self._titleChanged = pyTTkSignal(str)
         self._textSelected = pyTTkSignal(TTkString)
-        self._termData = pyTTkSignal(str)
+        self._termData = pyTTkSignal(bytes)
         self._termResized = pyTTkSignal(int,int)
 
         self._newSize = None
@@ -784,9 +784,9 @@ class TTkTerminalView(TTkAbstractScrollView, _TTkTerminal_CSI_DEC):
                         for __osc in escapeGenerator:
                             if __osc[0] == '\\': # ST (0x9c) (<ESC> \) as terminator
                                 return True, __osc[1:], __oscString
-                            ret, _slice = __checkOSCBell(__osc, __oscString)
-                            if ret:
-                                return ret, _slice, __oscString
+                            _ret, _slice = __checkOSCBell(__osc, __oscString)
+                            if _ret:
+                                return _ret, _slice, __oscString
                         return False, "", __oscString
 
                     ret, slice, oscString = __checkOSCBell(slice,oscString)
@@ -805,7 +805,7 @@ class TTkTerminalView(TTkAbstractScrollView, _TTkTerminal_CSI_DEC):
                             if not out: return (), ""
 
                             sout = out.split('\033')
-                            self._terminal.DCSstring += sout[0]
+                            oscString += sout[0]
                             escapeGenerator = (i for i in sout[1:])
                             ret, slice, oscString =  __processOSCEscapeGenerator(oscString)
                             if ret: break

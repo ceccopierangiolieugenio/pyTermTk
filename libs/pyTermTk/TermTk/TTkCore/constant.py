@@ -24,7 +24,7 @@ from __future__ import annotations
 
 __all__ = ['TTkConstant', 'TTkK']
 
-from enum import IntEnum, Flag
+from enum import Enum, IntEnum, Flag, auto
 
 class TTkConstant:
     '''Class container of all the constants used in :mod:`~TermTk`'''
@@ -60,7 +60,7 @@ class TTkConstant:
         ColorModifier = 0x08
         '''The :py:class:`TTkColor` include a color modifier based on :py:class:`TTkColorModifier`'''
 
-    class FocusPolicy(int, Flag):
+    class FocusPolicy(Flag):
         '''
         This Class type defines the various policies a widget
         can have with respect to acquiring keyboard focus.
@@ -169,7 +169,7 @@ class TTkConstant:
     HORIZONTAL = Direction.HORIZONTAL
     VERTICAL   = Direction.VERTICAL
 
-    class ScrollBarPolicy(int):
+    class ScrollBarPolicy(IntEnum):
         ScrollBarAsNeeded  =  0x00
         ScrollBarAlwaysOff =  0x01
         ScrollBarAlwaysOn  =  0x02
@@ -334,13 +334,12 @@ class TTkConstant:
     MiddleButton  = MouseKey.MiddleButton
     Wheel         = MouseKey.Wheel
 
-    class WrapMode(int):
+    class WrapMode(IntEnum):
         '''Those constants describes how text is wrapped in a document.
 
         .. autosummary::
           WordWrap
           WrapAnywhere
-          WrapAtWordBoundaryOrAnywhere
         '''
         # NoWrap        = 0x00
         # '''Text is not wrapped at all.'''
@@ -350,22 +349,40 @@ class TTkConstant:
         # '''Same as :py:class:`~TermTk.TTkCore.constant.TTkConstant.WrapMode.NoWrap`'''
         WrapAnywhere  = 0x03
         '''Text can be wrapped at any point on a line, even if it occurs in the middle of a word.'''
-        WrapAtWordBoundaryOrAnywhere = 0x04
-        '''If possible, wrapping occurs at a word boundary; otherwise it will occur at the appropriate point on the line, even in the middle of a word.'''
+        # WrapAtWordBoundaryOrAnywhere = 0x04
+        # '''If possible, wrapping occurs at a word boundary; otherwise it will occur at the appropriate point on the line, even in the middle of a word.'''
 
     # NoWrap       = WrapMode.NoWrap
     WordWrap     = WrapMode.WordWrap
     # ManualWrap   = WrapMode.ManualWrap
     WrapAnywhere = WrapMode.WrapAnywhere
-    WrapAtWordBoundaryOrAnywhere = WrapMode.WrapAtWordBoundaryOrAnywhere
+    # WrapAtWordBoundaryOrAnywhere = WrapMode.WrapAtWordBoundaryOrAnywhere
+
+    class WrapEngine(Enum):
+        '''Those constants describes which wrapping engine should be used
+
+        .. autosummary::
+          NoWrap
+          FullWrap
+          FastWrap
+          VimWrap
+        '''
+        NoWrap = auto()
+        '''No Wrapping'''
+        FullWrap = auto()
+        '''Full document Wrap at any change, Ideal for small documents (~300 Lines) [Precise] (Slow)'''
+        # FastWrap = auto()
+        # '''Chunk based document Wrap, Default wrap [Fast] (Scrolling position is estimated)'''
+        VimWrap = auto()
+        '''Wrap applied only in the displayed area, [Fastest] (the scrolling is snap to the beginning of the lines)'''
 
     class LineWrapMode(IntEnum):
         '''Those constants describes which wrapping status is required in the document
 
         .. autosummary::
-          NoWrapk
-          WidgetWidthk
-          FixedWidthk
+          NoWrap
+          WidgetWidth
+          FixedWidth
         '''
         NoWrap       =  0x00
         '''No Wrapping is applied'''
@@ -471,7 +488,7 @@ class TTkConstant:
     CENTER_ALIGN = Alignment.CENTER_ALIGN
     JUSTIFY      = Alignment.JUSTIFY
 
-    class FileMode(int):
+    class FileMode(IntEnum):
         '''FileMode
 
         .. autosummary::
@@ -492,7 +509,7 @@ class TTkConstant:
     # Directory     = FileMode.Directory
     # ExistingFiles = FileMode.ExistingFiles
 
-    class AcceptMode(int):
+    class AcceptMode(IntEnum):
         '''AcceptMode
 
         .. autosummary::
@@ -543,7 +560,7 @@ class TTkConstant:
         ClearAndSelect = Clear | Select
         '''A combination of Clear and Select, provided for convenience.'''
 
-    class ItemFlag(int):
+    class ItemFlag(Flag):
         ''':py:class:`ItemFlag` describes the properties of an item
 
         .. autosummary::

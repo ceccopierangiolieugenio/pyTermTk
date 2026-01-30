@@ -20,7 +20,7 @@
     # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
     # SOFTWARE.
 
-__all__ = []
+__all__:list[str] = []
 
 from TermTk.TTkCore.string import TTkString
 
@@ -111,9 +111,9 @@ class _TTkTerminalScreen_CSI():
         w,h = self._w,self._h
         if ps == 0:
             self._canvas.fill(char=' ', pos=(0,y+1),size=(w,h))
-            self._canvas.fill(char=' ', pos=(x,y),size=(w,1))
+            self._canvas.fill(char=' ', pos=(x,y),size=(w-x,1))
         elif ps == 1:
-            self._canvas.fill(char=' ', pos=(0,0),size=(w,y-1))
+            self._canvas.fill(char=' ', pos=(0,0),size=(w,y))
             self._canvas.fill(char=' ', pos=(0,y),size=(x,1))
         elif ps == 2:
             self._canvas.fill(char=' ', pos=(0,0),size=(w,h))
@@ -133,11 +133,11 @@ class _TTkTerminalScreen_CSI():
         x,y = self._terminalCursor
         w,h = self._w,self._h
         if ps == 0:
-            self._canvas.fill(char=' ', pos=(x,y),size=(w,1), color=self._color)
+            self._canvas.fill(char=' ', pos=(x,y),size=(w-x,1), color=self._color.withoutModifiers())
         elif ps == 1:
-            self._canvas.fill(char=' ', pos=(0,y),size=(x,1), color=self._color)
+            self._canvas.fill(char=' ', pos=(0,y),size=(x,1), color=self._color.withoutModifiers())
         elif ps == 2:
-            self._canvas.fill(char=' ', pos=(0,y),size=(w,1), color=self._color)
+            self._canvas.fill(char=' ', pos=(0,y),size=(w,1), color=self._color.withoutModifiers())
 
     # CSI ? Ps K
     #           Erase in Line (DECSEL), VT220.
@@ -155,8 +155,8 @@ class _TTkTerminalScreen_CSI():
         #TODO: Avoid this HACK
         baseData = [' ']*w
         baseColors = [self._color]*w
-        bkData   = self._canvas._data[-bkl:]
-        bkColors = self._canvas._colors[-bkl:]
+        bkData   = self._canvas._data[-bkl:]   if bkl else []
+        bkColors = self._canvas._colors[-bkl:] if bkl else []
         self._canvas._data[y:y]   = [baseData.copy() for _ in range(ps)]
         self._canvas._colors[y:y] = [baseColors.copy() for _ in range(ps)]
         self._canvas._data   = self._canvas._data[:h-bkl] + bkData

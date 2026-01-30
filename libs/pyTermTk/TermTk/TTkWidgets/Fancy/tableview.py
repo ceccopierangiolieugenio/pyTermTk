@@ -443,8 +443,8 @@ class TTkFancyTableView(TTkAbstractScrollView):
            self._viewOffsetY == y: # Nothong to do
             return
         self._excludeEvent = True
-        for widget in self.layout().iterWidgets():
-            widget.viewMoveTo(x,y)
+        # for widget in self.layout().iterWidgets():
+        #     widget.viewMoveTo(x,y)
         self._excludeEvent = False
         self._viewOffsetX = x
         self._viewOffsetY = y

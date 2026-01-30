@@ -22,17 +22,18 @@
 
 from __future__ import annotations
 
-__all__ = ['TTkTimer']
+__all__ = []
 
 from typing import Optional,Callable,Dict
 
 from TermTk.TTkCore.helper import TTkHelper
 from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
+from TermTk.TTkCore.timer_interface import _TTkTimer_Interface
 
-import pyodideProxy
+import pyodideProxy  # type: ignore[import-not-found]
 
-class TTkTimer():
-    _timers:Dict[int,TTkTimer] = {}
+class _TTkTimer_Pyodide(_TTkTimer_Interface):
+    _timers:Dict[int,_TTkTimer_Pyodide] = {}
     _uid = 0
 
     __slots__ = (
@@ -50,38 +51,38 @@ class TTkTimer():
         self._running = True
         self._timer = None
 
-        self._id = TTkTimer._uid
-        TTkTimer._uid +=1
-        TTkTimer._timers[self._id] = self
+        self._id = _TTkTimer_Pyodide._uid
+        _TTkTimer_Pyodide._uid +=1
+        _TTkTimer_Pyodide._timers[self._id] = self
 
     @staticmethod
-    def triggerTimerId(tid):
-        if tid in TTkTimer._timers:
+    def triggerTimerId(tid) -> None:
+        if tid in _TTkTimer_Pyodide._timers:
             # Little hack to avoid deadloop in pyodide
             if rw := TTkHelper._rootWidget:
                 rw._paintEvent.set()
-            TTkTimer._timers[tid].timeout.emit()
+            _TTkTimer_Pyodide._timers[tid].timeout.emit()
 
     @staticmethod
-    def pyodideQuit():
-        for timer in TTkTimer._timers:
-            TTkTimer._timers[timer].timeout.clearAll()
-            TTkTimer._timers[timer]._running = False
-            TTkTimer._timers[timer].quit()
-        TTkTimer._timers = {}
+    def pyodideQuit() -> None:
+        for timer in _TTkTimer_Pyodide._timers:
+            _TTkTimer_Pyodide._timers[timer].timeout.clearAll()
+            _TTkTimer_Pyodide._timers[timer]._running = False
+            _TTkTimer_Pyodide._timers[timer].quit()
+        _TTkTimer_Pyodide._timers = {}
 
-    def quit(self):
+    def quit(self) -> None:
         pass
 
     @pyTTkSlot(float)
-    def start(self, sec=0.0):
+    def start(self, sec=0.0) -> None:
         self.stop()
         if self._running:
             self._timer = pyodideProxy.setTimeout(int(sec*1000), self._id)
             # pyodideProxy.consoleLog(f"Timer {self._timer}")
 
     @pyTTkSlot()
-    def stop(self):
+    def stop(self) -> None:
         # pyodideProxy.consoleLog(f"Timer {self._timer}")
         if self._timer:
             pyodideProxy.stopTimeout(self._timer)

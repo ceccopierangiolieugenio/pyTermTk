@@ -27,6 +27,8 @@ __all__ = [
     'TTkDateFormProperties'
     ]
 
+from typing import Dict
+
 import datetime
 
 from TermTk.TTkCore.string import TTkString
@@ -36,7 +38,7 @@ from TermTk.TTkWidgets.datetime_date import TTkDate
 from TermTk.TTkWidgets.datetime_datetime import TTkDateTime
 from TermTk.TTkWidgets.datetime_date_form import TTkDateForm
 
-TTkTimeProperties = {
+TTkTimeProperties:Dict[str,Dict] = {
     'properties'  : {
         'Time' : {
                 'init': {'name':'time',        'type':datetime.time } ,
@@ -49,7 +51,7 @@ TTkTimeProperties = {
     }
 }
 
-TTkDateProperties = {
+TTkDateProperties:Dict[str,Dict] = {
     'properties'  : {
         'Date' : {
                 'init': {'name':'date',        'type':datetime.date } ,
@@ -62,7 +64,7 @@ TTkDateProperties = {
     }
 }
 
-TTkDateFormProperties = {
+TTkDateFormProperties:Dict[str,Dict] = {
     'properties'  : {
         'Date' : {
                 'init': {'name':'date',        'type':datetime.date } ,
@@ -75,7 +77,7 @@ TTkDateFormProperties = {
     }
 }
 
-TTkDateTimeProperties = {
+TTkDateTimeProperties:Dict[str,Dict] = {
     'properties'  : {
         'DateTime' : {
                 'init': {'name':'datetime',        'type':datetime.datetime } ,

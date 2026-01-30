@@ -1,5 +1,8 @@
 name: Testing
 
+permissions:
+  contents: read
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -13,7 +16,8 @@ on:
 jobs:
   test-autogen:
     name: Test AutoGen Code
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
+    # runs-on: self-hosted
     steps:
       - uses: actions/checkout@v4
         with:
@@ -33,8 +37,8 @@ jobs:
 
   test-pyTermTk:
     name: Test pyTermTk
-    # runs-on: ubuntu-latest
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
+    # runs-on: self-hosted
 
     strategy:
       fail-fast: false
@@ -55,32 +59,33 @@ jobs:
         tools/check.import.sh
 
     - name: Install dependencies
+      shell: bash
       run: |
         python -m pip install --upgrade pip
-        python -m pip install flake8 pytest
-        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+        python -m pip install uv
+        uv venv
+        uv pip install -e '.[test]'
 
     - name: Lint with flake8
       run: |
         # stop the build if there are Python syntax errors or undefined names
-        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics --exclude .venv,build,tmp
+        uv run flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics --exclude .venv,build,tmp
         # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
         # flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
 
     - name: pytest
       run: |
         DDDD=$(pwd)
-        pytest ${DDDD}/tests/pytest
+        uv run pytest ${DDDD}/tests/pytest
+        uv run pytest ${DDDD}/apps
 
     - name: Dumb Smoke Test
       run: |
         # To fix a folder permissin issue let's try to run the test from /tmp
         DDDD=$(pwd)
-        mkdir -p /tmp/Eugenio
-        cd /tmp/Eugenio
         # Download the input test
         mkdir -p tmp
         wget -O tmp/test.input.001.bin https://github.com/ceccopierangiolieugenio/binaryRepo/raw/master/pyTermTk/tests/test.input.001.bin
         wget -O tmp/test.input.002.bin https://github.com/ceccopierangiolieugenio/binaryRepo/raw/master/pyTermTk/tests/test.input.002.bin
         wget -O tmp/test.input.003.bin https://github.com/ceccopierangiolieugenio/binaryRepo/raw/master/pyTermTk/tests/test.input.003.bin
-        pytest ${DDDD}/tests/pytest/run_*
+        uv run pytest ${DDDD}/tests/pytest/run_*
