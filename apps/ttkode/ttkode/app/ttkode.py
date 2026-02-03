@@ -33,6 +33,7 @@ import TermTk as ttk
 from TermTk.TTkWidgets.tabwidget import _TTkNewTabWidgetDragData
 
 from .about import About
+from .command_palette.command_palette import TTKode_CommandPalette
 from .activitybar import TTKodeActivityBar
 
 class TTKodeWidget():
@@ -257,6 +258,9 @@ class TTKode(ttk.TTkGridLayout):
         def _showAboutTTk(btn):
             ttk.TTkHelper.overlay(None, ttk.TTkAbout(), 30,10)
 
+        appMenuBar.addMenu("TTKode", alignment=ttk.TTkK.CENTER_ALIGN).menuButtonClicked.connect(self.showCommandPalette)
+
+
         appMenuBar.addMenu("&Quit", alignment=ttk.TTkK.RIGHT_ALIGN).menuButtonClicked.connect(self._quit)
         helpMenu = appMenuBar.addMenu("&Help", alignment=ttk.TTkK.RIGHT_ALIGN)
         helpMenu.addMenu("About ...").menuButtonClicked.connect(_showAbout)
@@ -301,6 +305,7 @@ class TTKode(ttk.TTkGridLayout):
         self._kodeTab.kodeTabCloseRequested.connect(self._handleTabCloseRequested)
 
         ttk.TTkShortcut(ttk.TTkK.CTRL | ttk.TTkK.Key_S).activated.connect(self.saveLastDoc)
+        ttk.TTkShortcut(ttk.TTkK.CTRL | ttk.TTkK.Key_P).activated.connect(self.showCommandPalette)
 
 
     @ttk.pyTTkSlot(_TextDocument)
@@ -330,6 +335,12 @@ class TTKode(ttk.TTkGridLayout):
             ttk.TTkHelper.overlay(None, messageBox, 5, 5, True)
         else:
             ttk.TTkHelper.quit()
+
+    @ttk.pyTTkSlot()
+    def showCommandPalette(self):
+        w,h = self.size()
+        cp = TTKode_CommandPalette(size=(60,20))
+        ttk.TTkHelper.overlay(None, cp, w//2-30,0)
 
     @ttk.pyTTkSlot()
     def saveLastDoc(self):
