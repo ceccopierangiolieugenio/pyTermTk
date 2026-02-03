@@ -103,15 +103,11 @@ class _TTkTabStatus():
 
     @pyTTkSlot()
     def _highlightToTheRight(self) -> None:
-        if self.highlighted is None:
-            self.highlighted = self.currentIndex
         self.highlighted = min(self.highlighted+1,len(self.tabButtons)-1)
         self.statusUpdated.emit()
 
     @pyTTkSlot()
     def _andHighlightToTheLeft(self) -> None:
-        if self.highlighted is None:
-            self.highlighted = self.currentIndex
         self.highlighted = max(self.highlighted-1,0)
         self.statusUpdated.emit()
 
@@ -131,12 +127,6 @@ class _TTkTabStatus():
             if (self.currentIndex != index):
                 self.currentIndex = index
                 self.currentChanged.emit(index)
-            self.statusUpdated.emit()
-
-    @pyTTkSlot(int)
-    def _resetHighlighted(self) -> None:
-        if self.highlighted != -1:
-            self.highlighted = None
             self.statusUpdated.emit()
 
     def _insertButton(self, index:int, button:TTkTabButton) -> None:
@@ -856,6 +846,8 @@ class TTkTabBar(TTkContainer):
         return True
 
     def keyEvent(self, evt:TTkKeyEvent) -> bool:
+        if self._tabStatus.highlighted is None:
+            self._tabStatus.highlighted = self._tabStatus.currentIndex
         if evt.type == TTkK.SpecialKey:
             if evt.key == TTkK.Key_Right:
                 self._tabStatus._highlightToTheRight()
