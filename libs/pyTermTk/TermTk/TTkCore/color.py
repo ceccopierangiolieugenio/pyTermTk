@@ -425,6 +425,8 @@ class TTkColor:
 
     # self | other
     def __or__(self, other) -> TTkColor:
+        if self is other:
+            return self
         c = self.copy()
         c._clean = False
         return other + c
@@ -547,6 +549,8 @@ class _TTkColor_mod(TTkColor):
 
     # self | other
     def __or__(self, other) -> TTkColor:
+        if self is other:
+            return self
         c = self.copy()
         c._clean = False
         return other + c
@@ -560,7 +564,7 @@ class _TTkColor_mod(TTkColor):
         clean = self._clean
         fg  = other._fg or self._fg
         bg  = other._bg or self._bg
-        mod = self._mod + otherMod
+        mod = self._mod | otherMod
         colorMod = other._colorMod or self._colorMod
         return _TTkColor_mod(
                     fg=fg, bg=bg, mod=mod,
@@ -642,6 +646,8 @@ class _TTkColor_mod_link(_TTkColor_mod):
 
     # self | other
     def __or__(self, other) -> TTkColor:
+        if self is other:
+            return self
         c = self.copy()
         c._clean = False
         return other + c
@@ -656,7 +662,7 @@ class _TTkColor_mod_link(_TTkColor_mod):
         clean = self._clean
         fg  = other._fg or self._fg
         bg  = other._bg or self._bg
-        mod = self._mod + otherMod
+        mod = self._mod | otherMod
         link:str = self._link or otherLink
         colorMod = other._colorMod or self._colorMod
         return _TTkColor_mod_link(

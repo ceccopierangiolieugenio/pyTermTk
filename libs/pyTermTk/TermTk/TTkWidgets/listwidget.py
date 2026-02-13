@@ -20,173 +20,27 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
+
 __all__ = ['TTkAbstractListItem', 'TTkListWidget', 'TTkAbstractListItemType']
 
 from dataclasses import dataclass
-from typing import Union, Optional, List, Any
+from typing import Optional, List, Any, Tuple
 
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
 from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkCore.canvas import TTkCanvas
-from TermTk.TTkCore.string import TTkString,TTkStringType
+from TermTk.TTkCore.string import TTkString
 from TermTk.TTkCore.TTkTerm.inputkey import TTkKeyEvent
 from TermTk.TTkCore.TTkTerm.inputmouse import TTkMouseEvent
 from TermTk.TTkGui.drag import TTkDrag, TTkDnDEvent
 
 from TermTk.TTkWidgets.widget import TTkWidget
 from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollView
-
-class TTkAbstractListItem(TTkWidget):
-    '''TTkAbstractListItem:
-
-    Base class for items in a :py:class:`TTkListWidget`.
-
-    This widget represents a single selectable item that can be highlighted,
-    selected, and clicked. It supports custom styling for different states
-    (default, highlighted, selected, hover, disabled).
-
-    ::
-
-        ┌────────────────────┐
-        │ Normal Item        │  Default state
-        │ Highlighted Item   │  Highlighted (navigation)
-        │ Selected Item      │  Selected by user
-        └────────────────────┘
-
-    '''
-
-    classStyle = TTkWidget.classStyle | {
-                'default':     {'color': TTkColor.RST},
-                'highlighted': {'color': TTkColor.bg('#008855')+TTkColor.UNDERLINE},
-                'hover':       {'color': TTkColor.bg('#0088FF')},
-                'selected':    {'color': TTkColor.bg('#0055FF')},
-                'clicked':     {'color': TTkColor.fg('#FFFF00')},
-                'disabled':    {'color': TTkColor.fg('#888888')},
-            }
-
-    __slots__ = ('_text', '_selected', '_highlighted', '_data',
-                 '_lowerText', '_quickVisible',
-                 'listItemClicked')
-    def __init__(self, *, text:TTkStringType='', data=None, **kwargs) -> None:
-        '''
-        :param text: The display text for this item, defaults to ''
-        :type text: str or :py:class:`TTkString`, optional
-
-        :param data: Optional user data associated with this item, defaults to None
-        :type data: Any, optional
-        '''
-        self.listItemClicked = pyTTkSignal(TTkAbstractListItem)
-        '''
-        This signal is emitted when the item is clicked.
-
-        :param item: The item that was clicked
-        :type item: :py:class:`TTkAbstractListItem`
-        '''
-
-        self._selected = False
-        self._highlighted = False
-
-        if isinstance(text,str):
-            self._text = TTkString(text)
-        else:
-            self._text = text
-        self._lowerText = str(self._text).lower()
-        self._quickVisible = True
-        self._data  = data
-
-        super().__init__(**kwargs)
-
-        self.setFocusPolicy(TTkK.ParentFocus)
-
-    def text(self) -> TTkString:
-        '''
-        Returns the item's display text.
-
-        :return: The text displayed by this item
-        :rtype: :py:class:`TTkString`
-        '''
-        return self._text
-
-    def setText(self, text: str) -> None:
-        '''
-        Sets the item's display text.
-
-        :param text: The new text to display
-        :type text: str or :py:class:`TTkString`
-        '''
-        self._text = TTkString(text)
-        self._lowerText = str(self._text).lower()
-        self.update()
-
-    def data(self) -> Any:
-        '''
-        Returns the user data associated with this item.
-
-        :return: The custom data object
-        :rtype: Any
-        '''
-        return self._data
-
-    def setData(self, data: Any) -> None:
-        '''
-        Sets the user data associated with this item.
-
-        :param data: The custom data object to store
-        :type data: Any
-        '''
-        if self._data == data: return
-        self._data = data
-        self.update()
-
-    def mousePressEvent(self, evt: TTkMouseEvent) -> bool:
-        self.listItemClicked.emit(self)
-        return True
-
-    def _setSelected(self, selected: bool) -> None:
-        '''
-        Internal method to set the selected state.
-
-        :param selected: True to select, False to deselect
-        :type selected: bool
-        '''
-        if self._selected == selected: return
-        self._selected = selected
-        self._highlighted = not selected
-        self.update()
-
-    def _setHighlighted(self, highlighted: bool) -> None:
-        '''
-        Internal method to set the highlighted state.
-
-        :param highlighted: True to highlight, False to unhighlight
-        :type highlighted: bool
-        '''
-        if self._highlighted == highlighted: return
-        self._highlighted = highlighted
-        self.update()
-
-    def geometry(self):
-        if self._quickVisible:
-            return super().geometry()
-        else:
-            return 0,0,0,0
-
-    def paintEvent(self, canvas: TTkCanvas) -> None:
-        color = (style:=self.currentStyle())['color']
-        if self._highlighted:
-            color = color+self.style()['highlighted']['color']
-        if self._selected:
-            color = color+self.style()['selected']['color']
-        if style==self.style()['hover']:
-            color = color+self.style()['hover']['color']
-
-        w = self.width()
-
-        canvas.drawTTkString(pos=(0,0), width=w, color=color ,text=self._text)
-
-TTkAbstractListItemType = Union[TTkAbstractListItem, Any]
+from TermTk.TTkAbstract.abstract_list_item import _TTkAbstractListItem
+from TermTk.TTkWidgets.listwidget_item import TTkListItem, TTkAbstractListItemType, TTkAbstractListItem
 
 class TTkListWidget(TTkAbstractScrollView):
     '''TTkListWidget:
@@ -257,6 +111,18 @@ class TTkListWidget(TTkAbstractScrollView):
     - Signals for item selection and search events
     '''
 
+    classStyle = {
+        'default': {
+            'color':       TTkColor.RST,
+            'highlighted': TTkColor.bg("#004433"),
+            'hovered':     TTkColor.bg('#0088FF'),
+            'selected':    TTkColor.bg('#0055FF'),
+            'clicked':     TTkColor.fg('#FFFF00'),
+            'disabled':    TTkColor.fg('#888888'),
+            'searchColor': TTkColor.fg("#FFFF00")+TTkColor.UNDERLINE,
+        }
+    }
+
     @property
     def itemClicked(self) -> pyTTkSignal:
         '''
@@ -287,26 +153,25 @@ class TTkListWidget(TTkAbstractScrollView):
         '''
         return self._searchModified
 
-    classStyle = {
-        'default':{'searchColor': TTkColor.fg("#FFFF00") + TTkColor.UNDERLINE}}
-
     @dataclass(frozen=True)
     class _DropListData:
-        widget: TTkAbstractScrollView
-        items: list
+        widget: TTkListWidget
+        items: List[TTkAbstractListItem]
 
     __slots__ = ('_selectedItems', '_selectionMode',
-                 '_highlighted', '_items', '_filteredItems',
+                 '_hovered', '_highlighted', '_items', '_filteredItems',
                  '_dragPos', '_dndMode',
                  '_searchText', '_showSearch',
                  # Signals
                  '_itemClicked', '_textClicked', '_searchModified')
 
-    _items:List[TTkAbstractListItem]
     _showSearch:bool
-    _highlighted:Optional[TTkAbstractListItem]
+    _dragPos:Optional[Tuple[int,int]]
+    _items:List[TTkAbstractListItem]
     _selectedItems:List[TTkAbstractListItem]
     _filteredItems:List[TTkAbstractListItem]
+    _highlighted:Optional[TTkAbstractListItem]
+    _hovered:Optional[TTkAbstractListItem]
 
     def __init__(self, *,
                  items:List[TTkAbstractListItemType]=[],
@@ -335,6 +200,7 @@ class TTkListWidget(TTkAbstractScrollView):
         self._items = []
         self._filteredItems = self._items
         self._highlighted = None
+        self._hovered = None
         self._dragPos = None
         self._dndMode = dragDropMode
         self._searchText:str = ''
@@ -342,57 +208,34 @@ class TTkListWidget(TTkAbstractScrollView):
         # Init Super
         super().__init__(**kwargs)
         self.addItemsAt(items=items, pos=0)
-        self.viewChanged.connect(self._viewChangedHandler)
         self.setFocusPolicy(TTkK.ClickFocus | TTkK.TabFocus)
         self.searchModified.connect(self._searchModifiedHandler)
 
-    @pyTTkSlot()
-    def _viewChangedHandler(self):
-        x,y = self.getViewOffsets()
-        self.layout().setOffset(-x,-y)
-
-    @pyTTkSlot(TTkAbstractListItem)
-    def _labelSelectedHandler(self, label:TTkAbstractListItem):
-        if self._selectionMode == TTkK.SingleSelection:
-            for item in self._selectedItems:
-                item._setSelected(False)
-                item._setHighlighted(False)
-            self._selectedItems = [label]
-            label._setSelected(True)
-        elif self._selectionMode == TTkK.MultiSelection:
-            for item in self._selectedItems:
-                item._setHighlighted(False)
-            label._setSelected(not label._selected)
-            if label._selected:
-                self._selectedItems.append(label)
-            else:
-                self._selectedItems.remove(label)
-        if self._highlighted:
-            self._highlighted._setHighlighted(False)
-        label._setHighlighted(True)
-        self._highlighted = label
-        self.itemClicked.emit(label)
-        self.textClicked.emit(label.text())
-
     @pyTTkSlot(str)
     def _searchModifiedHandler(self) -> None:
-        if self._showSearch and self._searchText:
-            self.setPadding(1,0,0,0)
-        else:
-            self.setPadding(0,0,0,0)
-
         if self._searchText:
             text = self._searchText.lower()
             self._filteredItems = [i for i in self._items if text in i._lowerText]
-            for item in self._items:
-                item._quickVisible = text in item._lowerText
         else:
             self._filteredItems = self._items
-            for item in self._items:
-                item._quickVisible = True
-                item.setVisible(True)
+        self.viewChanged.emit()
+        self.update()
 
-        self._placeItems()
+    @pyTTkSlot()
+    def _itemChangedHandler(self):
+        self.viewChanged.emit()
+
+    def viewFullAreaSize(self) -> Tuple[int,int]:
+        ''' Return the full area size including padding
+
+        :return: the (width, height) of the full area
+        :rtype: tuple[int,int]
+        '''
+        width = 0
+        height = len(self._filteredItems) + ( 1 if self._showSearch and self._searchText else 0 )
+        if self._filteredItems:
+            width = max(_i.toTTkString().termWidth() for _i in self._filteredItems)
+        return width, height
 
     def search(self) -> str:
         '''
@@ -503,16 +346,6 @@ class TTkListWidget(TTkAbstractScrollView):
         '''
         return self._filteredItems
 
-    def resizeEvent(self, w:int, h:int) -> None:
-        maxw = 0
-        for item in self.layout().children():
-            maxw = max(maxw,item.minimumWidth())
-        maxw = max(self.width(),maxw)
-        for item in self.layout().children():
-            x,y,_,h = item.geometry()
-            item.setGeometry(x,y,maxw,h)
-        TTkAbstractScrollView.resizeEvent(self, w, h)
-
     def addItem(self, item:TTkAbstractListItemType, data:Any=None) -> None:
         '''
         Appends a single item to the end of the list.
@@ -533,19 +366,6 @@ class TTkListWidget(TTkAbstractScrollView):
         '''
         self.addItemsAt(items=items, pos=len(self._items))
 
-    def _placeItems(self) -> None:
-        '''
-        Internal method to position items in the layout.
-        '''
-        minw = self.width()
-        for item in self._items:
-            if item in self._filteredItems:
-                minw = max(minw,item.minimumWidth())
-        for y,item in enumerate(self._filteredItems):
-            item.setGeometry(0,y,minw,1)
-        self.viewChanged.emit()
-        self.update()
-
     def addItemAt(self, item:TTkAbstractListItemType, pos:int, data:Any=None) -> None:
         '''
         Inserts a single item at the specified position.
@@ -558,7 +378,7 @@ class TTkListWidget(TTkAbstractScrollView):
         :type data: Any, optional
         '''
         if isinstance(item, str) or isinstance(item, TTkString):
-            item = TTkAbstractListItem(text=item, data=data)
+            item = TTkListItem(text=item, data=data)
         self.addItemsAt([item],pos)
 
     def addItemsAt(self, items:List[TTkAbstractListItemType], pos:int) -> None:
@@ -570,22 +390,21 @@ class TTkListWidget(TTkAbstractScrollView):
         :param pos: The index position to insert at
         :type pos: int
         '''
-        items = [
-            _i if isinstance(_i, TTkAbstractListItem)
-            else TTkAbstractListItem(
+        list_items = [
+            _i if isinstance(_i, _TTkAbstractListItem)
+            else TTkListItem(
                     text=TTkString(_i if isinstance(_i,TTkString) else str(_i)),
                     data=_i)
             for _i in items
         ]
-        for item in items:
-            if not issubclass(type(item),TTkAbstractListItem):
+        for item in list_items:
+            if not isinstance(item,_TTkAbstractListItem):
                 TTkLog.error(f"{item=} is not an TTkAbstractListItem")
                 return
-        for item in items:
-            item.listItemClicked.connect(self._labelSelectedHandler)
-        self._items[pos:pos] = items
-        self.layout().addWidgets(items)
-        self._placeItems()
+        for item in list_items:
+            item.dataChanged.connect(self._itemChangedHandler)
+        self._items[pos:pos] = list_items
+        self._searchModifiedHandler()
 
     def indexOf(self, item:TTkAbstractListItemType) -> int:
         '''
@@ -596,7 +415,7 @@ class TTkListWidget(TTkAbstractScrollView):
         :return: The index of the item, or -1 if not found
         :rtype: int
         '''
-        if isinstance(item, TTkAbstractListItem):
+        if isinstance(item, _TTkAbstractListItem):
             return self._items.index(item)
         for i, it in enumerate(self._items):
             if it.data() == item or it.text() == item:
@@ -627,7 +446,7 @@ class TTkListWidget(TTkAbstractScrollView):
         to = max(min(to,len(self._items)-1),0)
         # Swap
         self._items[to] , self._items[fr] = self._items[fr] , self._items[to]
-        self._placeItems()
+        self._searchModifiedHandler()
 
     def removeItem(self, item:TTkAbstractListItem) -> None:
         '''
@@ -647,15 +466,13 @@ class TTkListWidget(TTkAbstractScrollView):
         '''
         self.layout().removeWidgets(items)
         for item in items.copy():
-            item.listItemClicked.disconnect(self._labelSelectedHandler)
-            item._setSelected(False)
-            item._setHighlighted(False)
+            item.dataChanged.disconnect(self._itemChangedHandler)
             self._items.remove(item)
             if item in self._selectedItems:
                 self._selectedItems.remove(item)
-            if item == self._highlighted:
+            if item is self._highlighted:
                 self._highlighted = None
-        self._placeItems()
+        self._searchModifiedHandler()
 
     def removeAt(self, pos:int) -> None:
         '''
@@ -684,7 +501,21 @@ class TTkListWidget(TTkAbstractScrollView):
         :param item: The item to select
         :type item: :py:class:`TTkAbstractListItem`
         '''
-        item.listItemClicked.emit(item)
+        if self._selectionMode is TTkK.SelectionMode.MultiSelection:
+            if item not in self._selectedItems:
+                self._selectedItems.append(item)
+        else:
+            self._selectedItems = [item]
+        self._itemClicked.emit(item)
+        self._textClicked.emit(item.text())
+
+    def _itemTriggered(self, item:TTkAbstractListItem) -> None:
+        if item in self._selectedItems:
+            index = self._selectedItems.index(item)
+            self._selectedItems.pop(index)
+            self.update()
+        else:
+            self.setCurrentItem(item)
 
     def _moveToHighlighted(self) -> None:
         '''
@@ -698,13 +529,49 @@ class TTkListWidget(TTkAbstractScrollView):
         elif index <= offy:
             self.viewMoveTo(offx, index)
 
+    def _to_list_coordinates(self, pos:Tuple[int,int]) -> Tuple[int,int]:
+        x,y = pos
+        ox,oy = self.getViewOffsets()
+        if self._showSearch and self._searchText:
+            y-=1
+        return (x+ox, y+oy)
+
+    def leaveEvent(self, evt):
+        self._hovered = None
+        self.update()
+        return True
+
+    def mouseMoveEvent(self, evt:TTkMouseEvent) -> bool:
+        x,y = self._to_list_coordinates(pos=(evt.x,evt.y))
+        self._hovered = None
+        if 0<y<len(self._filteredItems):
+            self._hovered = self._filteredItems[y]
+        self.update()
+        return True
+
     def mousePressEvent(self, evt:TTkMouseEvent) -> bool:
+        x,y = self._to_list_coordinates(pos=(evt.x,evt.y))
+
+        if 0<y<len(self._filteredItems):
+            self._highlighted = self._filteredItems[y]
+        self.update()
+        return True
+
+    def mouseReleaseEvent(self, evt:TTkMouseEvent):
+        if self._highlighted:
+            self._itemTriggered(self._highlighted)
+            self.update()
         return True
 
     def mouseDragEvent(self, evt:TTkMouseEvent) -> bool:
         if not(self._dndMode & TTkK.DragDropMode.AllowDrag):
             return False
-        if not (items:=self._selectedItems.copy()):
+        items = []
+        if self._selectionMode is TTkK.SelectionMode.MultiSelection:
+            items = self._selectedItems.copy()
+        if self._highlighted and self._highlighted not in items:
+            items.append(self._highlighted)
+        if not items:
             return True
         drag = TTkDrag()
         data =TTkListWidget._DropListData(widget=self,items=items)
@@ -734,9 +601,11 @@ class TTkListWidget(TTkAbstractScrollView):
         return False
 
     def dragMoveEvent(self, evt:TTkDnDEvent) -> bool:
-        offx,offy = self.getViewOffsets()
-        y=min(evt.y+offy,len(self._items))
-        self._dragPos = (offx+evt.x, y)
+        if not(self._dndMode & TTkK.DragDropMode.AllowDrop):
+            return False
+        x,y = self._to_list_coordinates(pos=(evt.x,evt.y))
+        y=max(0,min(y,len(self._items)))
+        self._dragPos = (x,y)
         self.update()
         return True
 
@@ -749,42 +618,40 @@ class TTkListWidget(TTkAbstractScrollView):
         if not(self._dndMode & TTkK.DragDropMode.AllowDrop):
             return False
         self._dragPos = None
-        if not issubclass(type(evt.data())  ,TTkListWidget._DropListData):
+        data = evt.data()
+        if not isinstance(data ,TTkListWidget._DropListData):
             return False
-        t,b,l,r = self.getPadding()
-        offx,offy = self.getViewOffsets()
-        wid   = evt.data().widget
-        items = evt.data().items
-        if wid and items:
-            wid.removeItems(items)
-            wid._searchModifiedHandler()
-            for it in items:
-                it.setCurrentStyle(it.style()['default'])
-            yPos = offy+evt.y-t
-            if self._filteredItems:
-                if yPos < 0:
-                    yPos = 0
-                elif yPos > len(self._filteredItems):
-                    yPos = len(self._items)
-                elif yPos == len(self._filteredItems):
-                    filteredItemAt = self._filteredItems[-1]
-                    yPos = self._items.index(filteredItemAt)+1
-                else:
-                    filteredItemAt = self._filteredItems[yPos]
-                    yPos = self._items.index(filteredItemAt)
-            else:
-                yPos = 0
-            self.addItemsAt(items,yPos)
-            self._searchModifiedHandler()
-            return True
-        return False
+
+        x,y = self._to_list_coordinates(pos=(evt.x,evt.y))
+
+        wid   = data.widget
+        items = data.items
+        if not (wid and items):
+            return False
+
+        wid.removeItems(items)
+        wid._searchModifiedHandler()
+
+        if y <= 0:
+            y = 0
+        elif y > len(self._filteredItems):
+            y = len(self._items)
+        elif y == len(self._filteredItems):
+            filteredItemAt = self._filteredItems[-1]
+            y = self._items.index(filteredItemAt)+1
+        else:
+            filteredItemAt = self._filteredItems[y]
+            y = self._items.index(filteredItemAt)
+
+        self.addItemsAt(items,y)
+        self._searchModifiedHandler()
+        return True
 
     def keyEvent(self, evt:TTkKeyEvent) -> bool:
         # if not self._highlighted: return False
         if ( not self._searchText and evt.type == TTkK.Character and evt.key==" " ) or \
            ( evt.type == TTkK.SpecialKey and evt.key == TTkK.Key_Enter ):
-            if self._highlighted:
-                self._highlighted.listItemClicked.emit(self._highlighted)
+            self._itemTriggered(self._highlighted)
 
         elif evt.type == TTkK.Character:
             # Add this char to the search text
@@ -809,7 +676,6 @@ class TTkListWidget(TTkAbstractScrollView):
             # Handle the arrow/movement keys
             index = 0
             if self._highlighted:
-                self._highlighted._setHighlighted(False)
                 if self._highlighted not in self._filteredItems:
                     self._highlighted = self._filteredItems[0]
                 index = self._filteredItems.index(self._highlighted)
@@ -837,45 +703,58 @@ class TTkListWidget(TTkAbstractScrollView):
                     self.update()
                     self.searchModified.emit(self._searchText)
             self._highlighted = self._filteredItems[index]
-            self._highlighted._setHighlighted(True)
             self._moveToHighlighted()
-
+            self.update()
         else:
             return False
         return True
 
     def focusInEvent(self):
         if not self._items: return
-        if not self._highlighted:
-            self._highlighted = self._items[0]
-        self._highlighted._setHighlighted(True)
+        if not self._highlighted and self._filteredItems:
+            self._highlighted = self._filteredItems[0]
 
     def focusOutEvent(self):
-        if self._highlighted:
-            self._highlighted._setHighlighted(False)
         self._dragPos = None
 
-    # Stupid hack to paint on top of the child widgets
-    def paintChildCanvas(self):
-        super().paintChildCanvas()
+    def paintEvent(self, canvas: TTkCanvas) -> None:
+        w,h = self.size()
+        ox,oy = self.getViewOffsets()
+        search_offset = 0
+
+        style = self.currentStyle()
+        color_base = style['color']
+        color_search = style['searchColor']
+        color_hovered = style['hovered']
+        color_selected = style['selected']
+        color_highlighted = style['highlighted']
+
+        if self._showSearch and self._searchText:
+            search_offset = 1
+            if len(self._searchText) > w:
+                text = TTkString("≼",TTkColor.BG_BLUE+TTkColor.FG_CYAN)+TTkString(self._searchText[-w+1:], color_search)
+            else:
+                text = TTkString(self._searchText, color_search)
+            canvas.drawTTkString(pos=(0,0),text=text, color=color_search, width=w)
+
+        for i,item in enumerate(self._filteredItems[oy:oy+h-search_offset], search_offset):
+            if item in self._selectedItems:
+                item_color = color_selected
+            elif item is self._highlighted:
+                item_color = color_highlighted
+            elif item is self._hovered:
+                item_color = color_hovered
+            else:
+                item_color = color_base
+            canvas.drawTTkString(text=item.toTTkString(), pos=(-ox,i), width=w+ox, color=item_color)
+
+        # Draw the drop visual feedback
         if self._dragPos:
-            canvas = self.getCanvas()
             x,y = self._dragPos
+            y+=search_offset
             offx,offy = self.getViewOffsets()
             p1 = (0,y-offy-1)
             p2 = (0,y-offy)
             canvas.drawText(pos=p1,text="╙─╼", color=TTkColor.fg("#FFFF00")+TTkColor.bg("#008855"))
             canvas.drawText(pos=p2,text="╓─╼", color=TTkColor.fg("#FFFF00")+TTkColor.bg("#008855"))
-
-    def paintEvent(self, canvas: TTkCanvas) -> None:
-        if self._showSearch and self._searchText:
-            w,h = self.size()
-            color = self.currentStyle()['searchColor']
-            if len(self._searchText) > w:
-                text = TTkString("≼",TTkColor.BG_BLUE+TTkColor.FG_CYAN)+TTkString(self._searchText[-w+1:],color)
-            else:
-                text = TTkString(self._searchText,color)
-            canvas.drawTTkString(pos=(0,0),text=text, color=color, width=w)
-
-
 

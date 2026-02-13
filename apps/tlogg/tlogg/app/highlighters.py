@@ -149,7 +149,7 @@ def highlightersFormLayout(win):
     listColors.itemClicked.connect(_listCallback)
 
     for i,color in enumerate(colors):
-        # ali = TTkAbstractListItem(text=color['pattern'],data=color)
+        # ali = TTkListItem(text=color['pattern'],data=color)
         listColors.addItem(item=color['pattern'],data=color)
 
     return leftRightLayout

@@ -22,28 +22,27 @@
 
 __all__ = ['TTkListProperties']
 
-from typing import Dict
+from typing import Dict, Any
 
 from TermTk.TTkCore.constant import TTkK
-from TermTk.TTkWidgets.list_ import TTkList
-from TermTk.TTkWidgets.listwidget import TTkListWidget, TTkAbstractListItem
+from TermTk.TTkWidgets.listwidget import TTkAbstractListItem
 
-TTkListProperties:Dict[str,Dict] = {
+TTkListProperties:Dict[str,Dict[str,Any]] = {
     'properties' : {
         'Selection Mode' : {
             'init': {'name':'selectionMode', 'type':'singleflag',
                      'flags':{
-                         'Single Seelction' : TTkK.SingleSelection,
+                         'Single Selection' : TTkK.SingleSelection,
                          'Multi Selection'  : TTkK.MultiSelection,
                      }},
             'get': {'cb':lambda w: w.selectionMode(), 'type':'singleflag',
                      'flags':{
-                         'Single Seelction' : TTkK.SingleSelection,
+                         'Single Selection' : TTkK.SingleSelection,
                          'Multi Selection'  : TTkK.MultiSelection,
                      }},
             'set': {'cb':lambda w,v: w.setSelectionMode(v), 'type':'singleflag',
                      'flags':{
-                         'Single Seelction' : TTkK.SingleSelection,
+                         'Single Selection' : TTkK.SingleSelection,
                          'Multi Selection'  : TTkK.MultiSelection,
                      }}},
         'DnD Mode' : {
