@@ -544,15 +544,14 @@ class TTkListWidget(TTkAbstractScrollView):
     def mouseMoveEvent(self, evt:TTkMouseEvent) -> bool:
         x,y = self._to_list_coordinates(pos=(evt.x,evt.y))
         self._hovered = None
-        if 0<y<len(self._filteredItems):
+        if 0<=y<len(self._filteredItems):
             self._hovered = self._filteredItems[y]
         self.update()
         return True
 
     def mousePressEvent(self, evt:TTkMouseEvent) -> bool:
         x,y = self._to_list_coordinates(pos=(evt.x,evt.y))
-
-        if 0<y<len(self._filteredItems):
+        if 0<=y<len(self._filteredItems):
             self._highlighted = self._filteredItems[y]
         self.update()
         return True

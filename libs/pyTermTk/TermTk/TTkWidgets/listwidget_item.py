@@ -30,7 +30,7 @@ from TermTk.TTkCore.string import TTkString,TTkStringType
 from TermTk.TTkAbstract.abstract_list_item import _TTkAbstractListItem
 
 class TTkListItem(_TTkAbstractListItem):
-    '''TTkAbstractListItem:
+    '''TTkListItem:
 
     Base class for items in a :py:class:`TTkListWidget`.
 
