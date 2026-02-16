@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.48.2-a0](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/ttkode-v0.48.1-a0...ttkode-v0.48.2-a0) (2026-02-16)
+
+
+### Chores
+
+* basic implementation of the tests plugin ([#588](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/588)) ([4a1825a](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/4a1825a8432ab86dc487401780afab918cc9c265))
+
 ## [0.48.1-a0](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/ttkode-v0.5.3-a.2...ttkode-v0.48.1-a0) (2025-11-10)
 
 
