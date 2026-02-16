@@ -96,7 +96,6 @@ class _TTkTabStatus():
     @pyTTkSlot()
     def _moveToTheLeft(self) -> None:
         self._setCurrentIndex(self.currentIndex-1)
-
     @pyTTkSlot()
     def _andMoveToTheRight(self) -> None:
         self._setCurrentIndex(self.currentIndex+1)
@@ -121,8 +120,12 @@ class _TTkTabStatus():
     #     index = self.tabButtons.index(button)
     #     self._setCurrentIndex(index)
 
+    def _selectHighlighted(self) -> None:
+        if self.highlighted is not None:
+            self._setCurrentIndex(self.highlighted)
+
     @pyTTkSlot(int)
-    def _setCurrentIndex(self, index) -> None:
+    def _setCurrentIndex(self, index:int) -> None:
         '''setCurrentIndex'''
         if ( ( 0 <= index < len(self.tabButtons) ) and
              ( self.currentIndex != index or
@@ -131,12 +134,6 @@ class _TTkTabStatus():
             if (self.currentIndex != index):
                 self.currentIndex = index
                 self.currentChanged.emit(index)
-            self.statusUpdated.emit()
-
-    @pyTTkSlot(int)
-    def _resetHighlighted(self) -> None:
-        if self.highlighted != -1:
-            self.highlighted = None
             self.statusUpdated.emit()
 
     def _insertButton(self, index:int, button:TTkTabButton) -> None:
@@ -865,7 +862,7 @@ class TTkTabBar(TTkContainer):
                 return True
         if ( evt.type == TTkK.Character and evt.key==" " ) or \
            ( evt.type == TTkK.SpecialKey and evt.key == TTkK.Key_Enter ):
-            self._tabStatus._setCurrentIndex(self._tabStatus.highlighted)
+            self._tabStatus._selectHighlighted()
             return True
         return False
 
