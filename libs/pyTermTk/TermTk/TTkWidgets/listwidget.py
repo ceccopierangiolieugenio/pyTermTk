@@ -464,7 +464,6 @@ class TTkListWidget(TTkAbstractScrollView):
         :param items: List of items to remove
         :type items: list[:py:class:`TTkAbstractListItem`]
         '''
-        self.layout().removeWidgets(items)
         for item in items.copy():
             item.dataChanged.disconnect(self._itemChangedHandler)
             self._items.remove(item)
