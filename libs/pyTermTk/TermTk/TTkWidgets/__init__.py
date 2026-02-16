@@ -21,6 +21,7 @@ from .label           import *
 from .lineedit        import *
 from .list_           import *
 from .listwidget      import *
+from .listwidget_item import *
 from .menubar         import *
 from .menu            import *
 from .radiobutton     import *

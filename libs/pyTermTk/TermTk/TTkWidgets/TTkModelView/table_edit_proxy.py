@@ -314,7 +314,7 @@ class _ListBaseProxy(TTkResizableFrame, TTkTableProxyEditWidget):
         ''' Handle item click event from the list
 
         :param item: The clicked list item
-        :type item: TTkAbstractListItem
+        :type item: :py:class:`TTkAbstractListItem`
         '''
         self.dataChanged.emit(self._value.factory(value=item.data(), items=self._items))
 
@@ -372,7 +372,7 @@ class _BoolListProxy(_ListBaseProxy):
         ''' Handle boolean item selection
 
         :param item: The clicked list item (True or False)
-        :type item: TTkAbstractListItem
+        :type item: :py:class:`TTkAbstractListItem`
         '''
         self.dataChanged.emit(item.data())
 

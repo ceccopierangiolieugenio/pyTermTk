@@ -49,7 +49,7 @@ class GitTTK(ttk.TTkAppTemplate):
 
         self._tableCommit = ttk.TTkFancyTable(selectColor=ttk.TTkColor.bg('#882200'))
         self._diffText:ttk.TTkTextEditView = ttk.TTkTextEdit(readOnly=False)
-        self._fileList:ttk.TTkListWidget = ttk.TTkList()
+        self._fileList:ttk.TTkList = ttk.TTkList()
         self._logView = ttk.TTkLogViewer()
 
         w,h = self.size()
