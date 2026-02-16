@@ -1,5 +1,28 @@
 # Changelog
 
+## [0.50.0-a0](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/pyTermTk-v0.49.0-a0...pyTermTk-v0.50.0-a0) (2026-02-16)
+
+
+### ⚠ BREAKING CHANGES
+
+* **list:** reworked the TTkList component ([#595](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/595))
+* **tree:** The following APIs have been removed from TTkTreeWidgetItem:
+    - `isSelected()` method - use `TTkTreeWidget.selectedItems()` to check selection
+    - `setSelected(bool)` method - selection is now managed by TTkTreeWidget  
+    - `selected` parameter in constructor - no longer supported
+
+### Fixes
+
+* **TTkTabBar:** currentIndex &lt;= highlighted TypeError ([#593](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/593)) ([c743c49](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/c743c492e88edbc7a6057b831bd829a0bc75beaa))
+
+
+### Chores
+
+* handle mouse move by default to avoid unwanted propagation ([#597](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/597)) ([eadfa70](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/eadfa70502596fc2deb01170caddf7b5f8db85fc))
+* **list:** reworked the TTkList component ([#595](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/595)) ([0f846e5](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/0f846e5c962f6c0b8422e73ad3022b8187edecf2))
+* **tree:** mouse hover support ([#583](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/583)) ([cda68f2](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/cda68f278a815effe500b9316de6f359e6eb14df))
+* **tree:** remove selected status from the treeWidgetItem ([#584](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/584)) ([b434b33](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/b434b330f9ccf47f6ba4443f667d48fa9565df64))
+
 ## [0.49.0-a0](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/pyTermTk-v0.48.1-a0...pyTermTk-v0.49.0-a0) (2026-01-07)
 
 
