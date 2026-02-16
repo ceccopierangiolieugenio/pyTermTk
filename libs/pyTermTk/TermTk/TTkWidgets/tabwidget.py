@@ -96,18 +96,21 @@ class _TTkTabStatus():
     @pyTTkSlot()
     def _moveToTheLeft(self) -> None:
         self._setCurrentIndex(self.currentIndex-1)
-
     @pyTTkSlot()
     def _andMoveToTheRight(self) -> None:
         self._setCurrentIndex(self.currentIndex+1)
 
     @pyTTkSlot()
     def _highlightToTheRight(self) -> None:
+        if self.highlighted is None:
+            self.highlighted = self.currentIndex
         self.highlighted = min(self.highlighted+1,len(self.tabButtons)-1)
         self.statusUpdated.emit()
 
     @pyTTkSlot()
     def _andHighlightToTheLeft(self) -> None:
+        if self.highlighted is None:
+            self.highlighted = self.currentIndex
         self.highlighted = max(self.highlighted-1,0)
         self.statusUpdated.emit()
 
@@ -117,8 +120,12 @@ class _TTkTabStatus():
     #     index = self.tabButtons.index(button)
     #     self._setCurrentIndex(index)
 
+    def _selectHighlighted(self) -> None:
+        if self.highlighted:
+            self._setCurrentIndex(self.highlighted)
+
     @pyTTkSlot(int)
-    def _setCurrentIndex(self, index) -> None:
+    def _setCurrentIndex(self, index:int) -> None:
         '''setCurrentIndex'''
         if ( ( 0 <= index < len(self.tabButtons) ) and
              ( self.currentIndex != index or
@@ -846,8 +853,6 @@ class TTkTabBar(TTkContainer):
         return True
 
     def keyEvent(self, evt:TTkKeyEvent) -> bool:
-        if self._tabStatus.highlighted is None:
-            self._tabStatus.highlighted = self._tabStatus.currentIndex
         if evt.type == TTkK.SpecialKey:
             if evt.key == TTkK.Key_Right:
                 self._tabStatus._highlightToTheRight()
@@ -857,7 +862,7 @@ class TTkTabBar(TTkContainer):
                 return True
         if ( evt.type == TTkK.Character and evt.key==" " ) or \
            ( evt.type == TTkK.SpecialKey and evt.key == TTkK.Key_Enter ):
-            self._tabStatus._setCurrentIndex(self._tabStatus.highlighted)
+            self._tabStatus._selectHighlighted()
             return True
         return False
 
