@@ -121,7 +121,7 @@ class _TTkTabStatus():
     #     self._setCurrentIndex(index)
 
     def _selectHighlighted(self) -> None:
-        if self.highlighted:
+        if self.highlighted is not None:
             self._setCurrentIndex(self.highlighted)
 
     @pyTTkSlot(int)
