@@ -329,11 +329,12 @@ class TTk(_TTkRootContainer):
             focusWidget.mouseEvent(nmevt)
         else:
             # Sometimes the release event is not retrieved
-            if ( focusWidget and
-                 focusWidget._pendingMouseRelease and
+            if ( (  _pmr:=self._getPendingMouseReleaseWidget() ) and
                  not TTkHelper.isDnD() ):
-                focusWidget.mouseEvent(mevt.clone(evt=TTkK.Release))
-                focusWidget._pendingMouseRelease = False
+                x,y = TTkHelper.absPos(_pmr)
+                rmevt = mevt.clone(evt=TTkK.Release, pos=(mevt.x-x, mevt.y-y))
+                _pmr.mouseEvent(rmevt)
+                self._setPendingMouseReleaseWidget(None)
             # Adding this Crappy logic to handle a corner case in the drop routine
             # where the mouse is leaving any widget able to handle the drop event
             if not self.mouseEvent(mevt):

@@ -113,7 +113,6 @@ class TTkWidget(TMouseEvents, TKeyEvents, TDragEvents):
         '_focus_policy',
         '_canvas', '_widgetItem',
         '_visible',
-        '_pendingMouseRelease',
         '_enabled',
         '_style', '_currentStyle',
         '_toolTip',
@@ -136,7 +135,6 @@ class TTkWidget(TMouseEvents, TKeyEvents, TDragEvents):
     _canvas:TTkCanvas
     _widgetItem:TTkWidgetItem
     _visible:bool
-    _pendingMouseRelease:bool
     _enabled:bool
     _style:Dict
     _currentStyle:Dict
@@ -230,7 +228,6 @@ class TTkWidget(TMouseEvents, TKeyEvents, TDragEvents):
         self._name = name if name else self.__class__.__name__
         self._parent = parent
 
-        self._pendingMouseRelease = False
 
         self._x, self._y = pos if pos else (x,y)
         self._width, self._height = size if size else (width,height)
@@ -510,7 +507,6 @@ class TTkWidget(TMouseEvents, TKeyEvents, TDragEvents):
             TTkHelper.toolTipClose()
 
         if evt.evt == TTkK.Release:
-            self._pendingMouseRelease = False
             self._processStyleEvent(TTkWidget._S_NONE)
             if self.mouseReleaseEvent(evt):
                 return True
@@ -525,13 +521,12 @@ class TTkWidget(TMouseEvents, TKeyEvents, TDragEvents):
                 w.setFocus()
                 w.raiseWidget()
             if evt.tap == 2 and self.mouseDoubleClickEvent(evt):
-                #self._pendingMouseRelease = True
                 return True
             if evt.tap > 1 and self.mouseTapEvent(evt):
                 return True
             if evt.tap == 1 and self.mousePressEvent(evt):
                 # TTkLog.debug(f"Click {self._name}")
-                self._pendingMouseRelease = True
+                self._setPendingMouseRelease()
                 return True
 
         if evt.key == TTkK.Wheel:
@@ -704,6 +699,12 @@ class TTkWidget(TMouseEvents, TKeyEvents, TDragEvents):
         TTkHelper.addUpdateWidget(self)
         if updateParent and self._parent is not None:
             self._parent.update(updateLayout=True)
+
+    def _setPendingMouseRelease(self) -> None:
+        '''Focus the widget'''
+        if not (_p:=self._parent):
+             return
+        _p._setPendingMouseReleaseWidget(self)
 
     @pyTTkSlot()
     def setFocus(self) -> None:
