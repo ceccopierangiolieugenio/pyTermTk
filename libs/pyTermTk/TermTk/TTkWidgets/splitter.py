@@ -168,6 +168,9 @@ class TTkSplitter(TTkContainer):
         if orientation == self._orientation: return
         if orientation not in (TTkK.HORIZONTAL, TTkK.VERTICAL): return
         self._orientation = orientation
+        w,h = self.size()
+        b = 2 if self._border else 0
+        self._processRefSizes(w-b,h-b)
         self._updateGeometries()
 
     def clean(self) -> None:
