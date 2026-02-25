@@ -127,6 +127,7 @@ class _TTkTerm(TTkTermBase):
     def _registerResizeCb(callback:Callable[[int,int],None]) -> None:
         _TTkTerm._sigWinChCb = callback
         # Dummy call to retrieve the terminal size
+        # signal only works in main thread of the main interpreter
         _TTkTerm._sigWinCh(signal.SIGWINCH, None)
         signal.signal(signal.SIGWINCH, _TTkTerm._sigWinCh)
     TTkTermBase.registerResizeCb = _registerResizeCb
