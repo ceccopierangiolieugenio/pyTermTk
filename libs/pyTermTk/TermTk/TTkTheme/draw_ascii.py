@@ -85,8 +85,8 @@ class TTkTheme():
     radiobox = (' ','X')
     checkbox = (' ','X','/')
 
-    hscroll = ('<','-','X','>')
-    vscroll = ('^','|','X','v')
+    hscroll = ('<','-','+','>')
+    vscroll = ('^','|','+','v')
 
     tree = (' ','+','-',' ',
             '|','|','v','^',)
