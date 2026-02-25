@@ -801,7 +801,7 @@ class TTkCanvas():
                 empty=True
         # Reset the color at the end
         TTkTerm.push(TTkColor.RST)
-        if lastcolor._link:
+        if getattr(lastcolor, "_link", False):
             TTkTerm.push("\033]8;;\033\\")
         # Switch the buffer
         self._bufferedData, self._bufferedColors = data, colors
