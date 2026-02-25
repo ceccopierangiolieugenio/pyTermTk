@@ -33,13 +33,8 @@ from typing import Generator,List,Tuple,Dict,Optional
 
 import TermTk as ttk
 
-import os
-import fnmatch
-
 from ttkode.proxy import ttkodeProxy
 from ttkode.app.ttkode import TTKodeFileWidgetItem
-
-import mimetypes
 
 def is_text_file(file_path, block_size=512):
     # Check MIME type
@@ -325,8 +320,6 @@ class FindWidget(ttk.TTkContainer):
             if not search_pattern:
                 self._results_tree.clear()
                 return
-            if self._search_thread:
-                self._search_thread.join()
             self._search_thread = Thread(
                 target=self._search_threading,
                 args=(search_pattern, include_patterns, exclude_patterns, replace_pattern))
