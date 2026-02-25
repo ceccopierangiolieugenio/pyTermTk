@@ -22,6 +22,7 @@
 
 import os
 import fnmatch
+from dataclasses import dataclass
 from threading import Thread,Event,Lock
 
 from pathlib import Path
@@ -30,6 +31,11 @@ from typing import List, Generator, Tuple, Optional
 import TermTk as ttk
 
 from ttkode.app.helpers.search_file import TTKode_SearchFile
+
+@dataclass
+class TTKode_CP_SearchFileItem():
+    file:Path
+    match_pattern:str
 
 class TTKode_CP_SearchFileThreading():
     __slots__ = (
@@ -50,7 +56,7 @@ class TTKode_CP_SearchFileThreading():
         self._search_thread = None
         self._search_lock = Lock()
         self._search_stop_event = Event()
-        self.search_results = ttk.pyTTkSignal(List[Path])
+        self.search_results = ttk.pyTTkSignal(List[TTKode_CP_SearchFileItem])
 
     @ttk.pyTTkSlot(str)
     def search(self, pattern:str) -> None:
@@ -75,10 +81,15 @@ class TTKode_CP_SearchFileThreading():
         for file in TTKode_SearchFile.getFilesFromPattern('.', pattern=search_pattern):
             if self._search_stop_event.is_set():
                 return
-            ret.append(file)
+            ret.append(
+                TTKode_CP_SearchFileItem(
+                    file=file,
+                    match_pattern=search_pattern
+                )
+            )
             if len(ret) >= items:
                 self.search_results.emit(ret)
-                items *= 2
+                items <<= 2
                 ret = []
         if ret:
             self.search_results.emit(ret)

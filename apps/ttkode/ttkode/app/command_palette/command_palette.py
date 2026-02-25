@@ -28,7 +28,7 @@ from typing import List, Tuple, Optional
 
 import TermTk as ttk
 
-from ttkode.app.command_palette.search_file_threading import TTKode_CP_SearchFileThreading
+from ttkode.app.command_palette.search_file_threading import TTKode_CP_SearchFileThreading, TTKode_CP_SearchFileItem
 from ttkode.app.command_palette.command_palette_items import TTKodeCommandPaletteListItem, TTKodeCommandPaletteListItemFile
 
 class _ListAction(Enum):
@@ -67,19 +67,23 @@ class _TTKodeCommandPaletteListWidget(ttk.TTkAbstractScrollView):
         self.viewMoveTo(0,0)
 
     def extend(self, items:List[TTKodeCommandPaletteListItem]):
-        if not self._highlight and items:
-            self._highlight = items[0]
         self._items.extend(items)
+        self._items = sorted(self._items, key=lambda x: x.sorted_key())
         self.viewChanged.emit()
         self.update()
 
     def _pushAction(self, action:_ListAction) -> None:
+        if not self._items:
+            return
         _highlight = self._highlight
+        if _highlight is None:
+            _highlight = self._items[0]
+            self._highlight = _highlight
+
         _items = self._items
         ox,oy = self.getViewOffsets()
         h = self.height()
-        if not _items:
-            return
+
         index = _items.index(_highlight) if _highlight in _items else None
         if action is _ListAction.UP:
             index = -1 if index is None else index-1
@@ -100,12 +104,22 @@ class _TTKodeCommandPaletteListWidget(ttk.TTkAbstractScrollView):
         self.viewMoveTo(ox,oy)
         self.update()
 
+    def mouseReleaseEvent(self, evt):
+        ox,oy = self.getViewOffsets()
+        x,y = evt.x,evt.y
+        y+=oy
+        _items = self._items
+        if 0 <= y < len(_items):
+            self.selected.emit(_items[y])
+        self.update()
+        return True
+
     def mouseMoveEvent(self, evt):
         ox,oy = self.getViewOffsets()
         x,y = evt.x,evt.y
         y+=oy
         _items = self._items
-        if len(_items) > y > 0:
+        if 0 <= y < len(_items):
             self._hovered = _items[y]
         else:
             self._hovered = None
@@ -122,10 +136,12 @@ class _TTKodeCommandPaletteListWidget(ttk.TTkAbstractScrollView):
         ox,oy = self.getViewOffsets()
         for i,item in enumerate(self._items[oy:oy+h]):
             color = ttk.TTkColor.RST
-            if item is self._highlight:
-                color = self._color_hilghlight
-            elif item is self._hovered:
+            if item is self._hovered:
                 color = self._color_hovered
+            elif item is self._highlight:
+                color = self._color_hilghlight
+            elif self._highlight is None and i == 0:
+                color = self._color_hilghlight
 
             text = item.toTTkString(width=w).completeColor(color)
             canvas.fill(pos=(0,i),size=(w,1),color=color)
@@ -176,9 +192,14 @@ class TTKode_CommandPalette(ttk.TTkResizableFrame):
         self._cpl.clean()
         self._sft.search(pattern=pattern.toAscii())
 
-    @ttk.pyTTkSlot(List[Path])
-    def _process_search_results(self, items:List[Path]):
-        items_path = [TTKodeCommandPaletteListItemFile(_f) for _f in items]
+    @ttk.pyTTkSlot(List[TTKode_CP_SearchFileItem])
+    def _process_search_results(self, items:List[TTKode_CP_SearchFileItem]):
+        items_path = [
+            TTKodeCommandPaletteListItemFile(
+                file=_f.file,
+                pattern=_f.match_pattern
+            ) for _f in items
+        ]
         ttk.TTkLog.debug('\n'.join([str(f) for f in items]))
         self._cpl.extend(items_path)
 

@@ -24,19 +24,33 @@ __all__ = ['TTKodeCommandPaletteListItem', 'TTKodeCommandPaletteListItemFile']
 
 from pathlib import Path
 
+from typing import Tuple, Any
+
 import TermTk as ttk
 
 class TTKodeCommandPaletteListItem():
     def toTTkString(self, width:int) -> ttk.TTkString:
         return ttk.TTkString()
-
+    def sorted_key(self) -> Tuple[int, Any]:
+        return (0,0)
 _colorDirectory = ttk.TTkColor.fg('#AAAAAA')
+_colorMatch = ttk.TTkColor.fg('#00AAAA')
 
 class TTKodeCommandPaletteListItemFile():
-    __slots__ = ('_file')
+    __slots__ = ('_file', '_key', '_pattern')
+    _pattern:str
     _file:Path
-    def __init__(self, file:Path):
+    _key:int
+    def __init__(self, file:Path, pattern:str):
         self._file = file
+        self._pattern = pattern
+        _match_ret = file.name.split(pattern)[-1]
+        _match_level = len(_match_ret)
+        _match_level += 0x10000 * _match_ret.count('/')
+        self._key = _match_level
+
+    def sorted_key(self) -> Tuple[int, Any]:
+        return (self._key, self._file.name.lower())
 
     def toTTkString(self, width:int) -> ttk.TTkString:
         file = self._file
@@ -47,6 +61,8 @@ class TTKodeCommandPaletteListItemFile():
             ttk.TTkString(ttk.TTkCfg.theme.fileIcon.getIcon(fileName), ttk.TTkCfg.theme.fileIconColor) +
             ttk.TTkString(" " + fileName + " ") + ttk.TTkString( folder, _colorDirectory )
         )
+
+        text = text.setColor(match=self._pattern, color=_colorMatch)
 
         if len(text) > width:
             text = text.substring(to=width-3) + '...'
