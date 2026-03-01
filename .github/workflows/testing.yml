@@ -74,6 +74,7 @@ jobs:
       run: |
         DDDD=$(pwd)
         pytest ${DDDD}/tests/pytest
+        pytest ${DDDD}/apps
 
     - name: Dumb Smoke Test
       run: |

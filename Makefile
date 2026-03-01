@@ -137,7 +137,7 @@ test: .venv
 	. .venv/bin/activate ; \
 	    flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics --exclude .venv,build,tmp,experiments ;
 	. .venv/bin/activate ; \
-        pytest tests/pytest
+        pytest tests/pytest apps
 	mkdir -p tmp
 	wget -O tmp/test.input.001.bin https://github.com/ceccopierangiolieugenio/binaryRepo/raw/master/pyTermTk/tests/test.input.001.bin
 	wget -O tmp/test.input.002.bin https://github.com/ceccopierangiolieugenio/binaryRepo/raw/master/pyTermTk/tests/test.input.002.bin

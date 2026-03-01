@@ -5,7 +5,7 @@ backports.tarfile==1.2.0
 beautifulsoup4==4.13.4
 build==1.2.2.post1
 certifi==2025.4.26
-cffi==1.17.1
+cffi
 charset-normalizer==3.4.2
 cryptography==46.0.5
 css-html-js-minify==2.5.5
