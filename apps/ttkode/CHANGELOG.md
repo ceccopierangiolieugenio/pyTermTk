@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.48.2-a0](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/ttkode-v0.48.1-a0...ttkode-v0.48.2-a0) (2026-03-01)
+
+
+### Chores
+
+* basic command palette implementation ([#598](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/598)) ([c5d0e51](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/c5d0e51aa4bd54f48c916618eb2708a7780fa149))
+* basic implementation of the tests plugin ([#588](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/588)) ([4a1825a](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/4a1825a8432ab86dc487401780afab918cc9c265))
+* create cleaner env ([#608](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/608)) ([cc30d71](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/cc30d7119de747dad1253a35d1cc3a2cf2384b80))
+* update tests ([#607](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/607)) ([ec15da9](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/ec15da97b85a6095e14b4e14c92682149a8cc49f))
+
 ## [0.48.1-a0](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/ttkode-v0.5.3-a.2...ttkode-v0.48.1-a0) (2025-11-10)
 
 
