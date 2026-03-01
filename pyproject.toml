@@ -1,0 +1,50 @@
+[build-system]
+    requires = ["setuptools>=45", "wheel"]
+    build-backend = "setuptools.build_meta"
+
+[project]
+    name = "pyTermTk-Env-Setup"
+    version = "0.0.0"
+    readme = {file = "README.md", content-type = "text/markdown"}
+    authors = [
+        {name = "Eugenio Parodi", email = "ceccopierangiolieugenio@googlemail.com"},
+    ]
+    description = "pyTermTk dev env"
+    requires-python = ">=3.9"
+
+    dependencies = [
+        'pyTermTk',
+        'TTKode',
+        'Tlogg',
+        'TTkDesigner',
+        'dumbPaintTool',
+    ]
+
+[project.urls]
+    Homepage      = "https://github.com/ceccopierangiolieugenio/pyTermTk"
+    Documentation = "https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/"
+    Repository    = "https://github.com/ceccopierangiolieugenio/pyTermTk.git"
+    Issues        = "https://github.com/ceccopierangiolieugenio/pyTermTk/issues"
+    Changelog     = "https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/libs/pyTermTk/CHANGELOG.md"
+
+[project.optional-dependencies]
+    test = [
+        "pytest>=8.3.4",
+        "flake8>=7.2.0",
+        "mypy>=1.15.0"
+    ]
+    docs = [
+        "Sphinx==8.2.3",
+        "sphinx-book-theme==1.1.4"
+    ]
+
+[tool.setuptools]
+    packages = []
+
+[tool.uv.sources]
+    pyTermTk = { path = "libs/pyTermTk", editable = true }
+    TTKode = { path = "apps/ttkode", editable = true }
+    Tlogg = { path = "apps/tlogg", editable = true }
+    TTkDesigner = { path = "apps/ttkDesigner", editable = true }
+    dumbPaintTool = { path = "apps/dumbPaintTool", editable = true }
+
