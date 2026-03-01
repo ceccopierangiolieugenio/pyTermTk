@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.49.0-a0](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/tlogg-v0.48.1-a0...tlogg-v0.49.0-a0) (2026-03-01)
+
+
+### ⚠ BREAKING CHANGES
+
+* **list:** reworked the TTkList component ([#595](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/595))
+
+### Chores
+
+* **list:** reworked the TTkList component ([#595](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/595)) ([0f846e5](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/0f846e5c962f6c0b8422e73ad3022b8187edecf2))
+
 ## [0.48.1-a0](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/tlogg-v0.7.1-a.0...tlogg-v0.48.1-a0) (2025-11-10)
 
 
