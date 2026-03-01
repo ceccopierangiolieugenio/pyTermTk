@@ -35,6 +35,7 @@ from TermTk.TTkWidgets.tabwidget import _TTkNewTabWidgetDragData
 from .about import About
 from .command_palette.command_palette import TTKode_CommandPalette
 from .activitybar import TTKodeActivityBar
+from .ttkode_terminal import TTkode_Terminal
 
 class TTKodeWidget():
     def closeRequested(self, tab:ttk.TTkTabWidget, num:int):
@@ -265,6 +266,8 @@ class TTKode(ttk.TTkGridLayout):
         helpMenu = appMenuBar.addMenu("&Help", alignment=ttk.TTkK.RIGHT_ALIGN)
         helpMenu.addMenu("About ...").menuButtonClicked.connect(_showAbout)
         helpMenu.addMenu("About ttk").menuButtonClicked.connect(_showAboutTTk)
+        helpMenu.addSpacer()
+        helpMenu.addMenu("&KeypressView").menuButtonClicked.connect(self._keypressview)
 
         fileTree = ttk.TTkFileTree(path='.', dragDropMode=ttk.TTkK.DragDropMode.AllowDrag, selectionMode=ttk.TTkK.SelectionMode.MultiSelection)
         self._activityBar = TTKodeActivityBar()
@@ -285,10 +288,7 @@ class TTKode(ttk.TTkGridLayout):
             menuBar=bottomMenuBar)
 
         _logViewer=ttk.TTkLogViewer()
-        _terminal=ttk.TTkTerminal(visible=False)
-
-        _th = ttk.TTkTerminalHelper(term=_terminal)
-        _th.runShell()
+        _terminal=TTkode_Terminal(visible=False)
 
         self._panel.addWidget(
             position=_Panel.Position.BOTTOM,
@@ -479,3 +479,13 @@ class TTKode(ttk.TTkGridLayout):
             newEvt.setData(newData)
             return newEvt
         return evt
+
+    @ttk.pyTTkSlot()
+    def _keypressview(self):
+        win = ttk.TTkWindow(
+                title="Mr Keypress 🔑🐁",
+                size=(70,7),
+                layout=(_l:=ttk.TTkGridLayout()),
+                flags=ttk.TTkK.WindowFlag.WindowMaximizeButtonHint|ttk.TTkK.WindowFlag.WindowCloseButtonHint)
+        _l.addWidget(ttk.TTkKeyPressView(maxHeight=3))
+        ttk.TTkHelper.overlay(None, win, 2, 2, toolWindow=True)
