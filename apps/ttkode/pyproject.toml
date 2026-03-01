@@ -1,51 +1,58 @@
 [build-system]
-requires = ["setuptools>=45", "wheel"]
-build-backend = "setuptools.build_meta"
+    requires = ["setuptools>=45", "wheel"]
+    build-backend = "setuptools.build_meta"
 
 [project]
-name = "ttkode"
-dynamic = ["version"]
-readme = {file = "README.md", content-type = "text/markdown"}
-authors = [
-    {name = "Eugenio Parodi", email = "ceccopierangiolieugenio@googlemail.com"},
-]
-description = "Terminal ToolKit Studio Code editor"
-requires-python = ">=3.9"
-license = {text = "MIT"}
-classifiers = [
-    "Programming Language :: Python :: 3",
-    "License :: OSI Approved :: MIT License",
-    "Operating System :: OS Independent",
-    "Development Status :: 3 - Alpha",
-    "Environment :: Console",
-    "Intended Audience :: Developers",
-    "Intended Audience :: Information Technology",
-    "Topic :: Terminals",
-    "Topic :: Software Development :: User Interfaces",
-]
-dependencies = [
-    'pyTermTk>=0.48.1-a0',
-    'pytest',
-    'appdirs',
-    'copykitten',
-    'pygments'
-]
-
-[project.urls]
-Homepage   = "https://github.com/ceccopierangiolieugenio/pyTermTk/tree/main/apps/ttkode"
-Repository = "https://github.com/ceccopierangiolieugenio/pyTermTk.git"
-Issues     = "https://github.com/ceccopierangiolieugenio/pyTermTk/issues"
-Changelog  = "https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/apps/ttkode/CHANGELOG.md"
-
-[project.scripts]
-ttkode = "ttkode.__main__:main"
-
-[tool.setuptools]
-packages = [
-    "ttkode", "ttkode.app",
-    "ttkode.plugins",
-    "ttkode.plugins._010",
+    name = "ttkode"
+    dynamic = ["version"]
+    readme = {file = "README.md", content-type = "text/markdown"}
+    authors = [
+        {name = "Eugenio Parodi", email = "ceccopierangiolieugenio@googlemail.com"},
+    ]
+    description = "Terminal ToolKit Studio Code editor"
+    requires-python = ">=3.9"
+    license = {text = "MIT"}
+    classifiers = [
+        "Programming Language :: Python :: 3",
+        "License :: OSI Approved :: MIT License",
+        "Operating System :: OS Independent",
+        "Development Status :: 3 - Alpha",
+        "Environment :: Console",
+        "Intended Audience :: Developers",
+        "Intended Audience :: Information Technology",
+        "Topic :: Terminals",
+        "Topic :: Software Development :: User Interfaces",
+    ]
+    dependencies = [
+        'pyTermTk>=0.48.1-a0',
+        'pytest',
+        'appdirs',
+        'copykitten',
+        'pygments'
     ]
 
+[project.optional-dependencies]
+    test = [
+        "pytest>=8.3.4",
+        "mypy>=1.15.0"
+    ]
+
+[project.urls]
+    Homepage   = "https://github.com/ceccopierangiolieugenio/pyTermTk/tree/main/apps/ttkode"
+    Repository = "https://github.com/ceccopierangiolieugenio/pyTermTk.git"
+    Issues     = "https://github.com/ceccopierangiolieugenio/pyTermTk/issues"
+    Changelog  = "https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/apps/ttkode/CHANGELOG.md"
+
+[project.scripts]
+    ttkode = "ttkode.__main__:main"
+
+[tool.setuptools]
+    packages = [
+        "ttkode", "ttkode.app",
+        "ttkode.plugins",
+        "ttkode.plugins._010",
+        "ttkode.plugins._030",
+        ]
+
 [tool.setuptools.dynamic]
-version = {attr = "ttkode.__version__"}
+    version = {attr = "ttkode.__version__"}
