@@ -30,6 +30,21 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../../../libs/pyTerm
 # Add the ttkode package path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
+# Reuse the pytest mocks used by the core test suite
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../../../tests/pytest'))
+
+from mock_term import Mock_TTkTerm
+from mock_input import Mock_TTkInput
+
+moduleTerm = type(sys)('TermTk.TTkCore.drivers.term_unix_common')
+moduleTerm._TTkTerm = Mock_TTkTerm
+
+moduleInput = type(sys)('TermTk.TTkCore.TTkTerm.input')
+moduleInput.TTkInput = Mock_TTkInput
+
+sys.modules['TermTk.TTkCore.drivers.term_unix_common'] = moduleTerm
+sys.modules['TermTk.TTkCore.TTkTerm.input'] = moduleInput
+
 @pytest.fixture(autouse=True)
 def reset_plugin_instances():
     """Reset plugin instances before each test to avoid state leakage."""
