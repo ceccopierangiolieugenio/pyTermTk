@@ -25,6 +25,7 @@ classifiers = [
 ]
 dependencies = [
     'pyTermTk>=0.48.1-a0',
+    'pytest',
     'appdirs',
     'copykitten',
     'pygments'
