@@ -367,7 +367,7 @@ class TTkTabButton(_TTkTabColorButton):
         if self._closable and y == offY and w-4<=x<w-1:
             self._closeButtonPressed = True
             self.update()
-            return False
+            return True
         return super().mouseReleaseEvent(evt)
 
     def mouseReleaseEvent(self, evt:TTkMouseEvent) -> bool:
@@ -379,7 +379,7 @@ class TTkTabButton(_TTkTabColorButton):
         elif self._closable and y == offY and w-4<=x<w-1 and self._closeButtonPressed:
             self.closeClicked.emit()
         self._closeButtonPressed = False
-        return False
+        return True
 
     def leaveEvent(self, evt):
         self._closeHovered = False

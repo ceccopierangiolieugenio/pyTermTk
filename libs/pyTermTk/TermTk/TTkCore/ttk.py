@@ -320,21 +320,15 @@ class TTk(_TTkRootContainer):
         #  - Drag
         #  - Release
         focusWidget = self._getFocusWidget()
-        if ( focusWidget is not None and
-             ( mevt.evt == TTkK.Drag or
-               mevt.evt == TTkK.Release ) and
-             not TTkHelper.isDnD()   ) :
-            x,y = TTkHelper.absPos(focusWidget)
+        pendingReleaseWidget = self._getPendingMouseReleaseWidget()
+
+        if ( pendingReleaseWidget is not None and
+             mevt.evt in (TTkK.Drag,TTkK.Release) and
+             not TTkHelper.isDnD() ) :
+            x,y = TTkHelper.absPos(pendingReleaseWidget)
             nmevt = mevt.clone(pos=(mevt.x-x, mevt.y-y))
-            focusWidget.mouseEvent(nmevt)
+            pendingReleaseWidget.mouseEvent(nmevt)
         else:
-            # Sometimes the release event is not retrieved
-            if ( (  _pmr:=self._getPendingMouseReleaseWidget() ) and
-                 not TTkHelper.isDnD() ):
-                x,y = TTkHelper.absPos(_pmr)
-                rmevt = mevt.clone(evt=TTkK.Release, pos=(mevt.x-x, mevt.y-y))
-                _pmr.mouseEvent(rmevt)
-                self._setPendingMouseReleaseWidget(None)
             # Adding this Crappy logic to handle a corner case in the drop routine
             # where the mouse is leaving any widget able to handle the drop event
             if not self.mouseEvent(mevt):
@@ -348,6 +342,7 @@ class TTk(_TTkRootContainer):
         # Clean the Drag and Drop in case of mouse release
         if mevt.evt == TTkK.Release:
             TTkHelper.dndEnd()
+            self._setPendingMouseReleaseWidget(None)
 
     def _time_event(self):
         # Event.{wait and clear} should be atomic,
