@@ -308,7 +308,7 @@ class TTkTabButton(_TTkTabColorButton):
     _closeHovered:bool
 
     def __init__(self, *,
-                 text:TTkString='',
+                 text:TTkStringType='',
                  data:object=None,
                  closable:bool=False,
                  **kwargs) -> None:
@@ -423,7 +423,7 @@ class TTkTabButton(_TTkTabColorButton):
 
         borderColor:TTkColor = style['borderColor']
         textColor:TTkColor   = style['color']
-        borderHighlightColors:Dict[str:TTkColor] = style['borderHighlightColors']
+        borderHighlightColors:Dict[str, TTkColor] = style['borderHighlightColors']
 
         w,h = self.size()
         offY = self._tabStatus.barType.offY()
