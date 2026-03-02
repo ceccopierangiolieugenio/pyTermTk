@@ -266,10 +266,6 @@ class _TTkTabColorButton(TTkWidget):
         self._tabStatus = tabStatus
         super().__init__(**kwargs)
 
-    def mouseReleaseEvent(self, evt:TTkMouseEvent) -> bool:
-        self.tcbClicked.emit(self)
-        return True
-
     def keyEvent(self, evt:TTkKeyEvent) -> bool:
         if ( evt.type == TTkK.Character and evt.key==" " ) or \
            ( evt.type == TTkK.SpecialKey and evt.key == TTkK.Key_Enter ):
@@ -368,7 +364,8 @@ class TTkTabButton(_TTkTabColorButton):
             self._closeButtonPressed = True
             self.update()
             return True
-        return super().mouseReleaseEvent(evt)
+        self.tcbClicked.emit(self)
+        return True
 
     def mouseReleaseEvent(self, evt:TTkMouseEvent) -> bool:
         x,y = evt.x,evt.y
@@ -618,7 +615,8 @@ class _TTkTabScrollerButton(_TTkTabColorButton):
     # This is a hack to force the action aftet the keypress
     # And not key release as normally happen to the button
     def mousePressEvent(self, evt:TTkMouseEvent) -> bool:
-        return super().mouseReleaseEvent(evt)
+        self.tcbClicked.emit(self)
+        return True
     def mouseReleaseEvent(self, evt:TTkMouseEvent) -> bool:
         return False
     def mouseTapEvent(self, evt:TTkMouseEvent) -> bool:
