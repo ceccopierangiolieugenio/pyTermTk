@@ -388,10 +388,12 @@ class TTkTabButton(_TTkTabColorButton):
         w,h = self.size()
         offY = self._tabStatus.barType.offY()
         if self._closable and y == offY and w-4<=x<w-1:
-            self._closeHovered = True
+            _new_closeHovered = True
         else:
-            self._closeHovered = False
-        self.update()
+            _new_closeHovered = False
+        if self._closeHovered != _new_closeHovered:
+            self._closeHovered = _new_closeHovered
+            self.update()
         return True
 
     def mouseDragEvent(self, evt:TTkMouseEvent) -> bool:
