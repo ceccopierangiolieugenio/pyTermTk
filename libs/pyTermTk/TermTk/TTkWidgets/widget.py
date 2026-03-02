@@ -701,7 +701,7 @@ class TTkWidget(TMouseEvents, TKeyEvents, TDragEvents):
             self._parent.update(updateLayout=True)
 
     def _setPendingMouseRelease(self) -> None:
-        '''Focus the widget'''
+        '''set the Pending Mouse Release Widget'''
         if not (_p:=self._parent):
              return
         _p._setPendingMouseReleaseWidget(self)
