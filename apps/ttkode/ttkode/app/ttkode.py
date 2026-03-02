@@ -75,9 +75,23 @@ class _TextDocument(ttk.TextDocumentHighlight):
 
     def getTabButtonStyle(self) -> dict:
         if self._changedStatus:
-            return {'default':{'closeGlyph':' ● '}}
+            return {
+                'default':{
+                    'closeGlyph': {
+                        'default':' ● ',
+                        'hovered':' ● '
+                    }
+                }
+            }
         else:
-            return {'default':{'closeGlyph':' □ '}}
+            return {
+                'default':{
+                    'closeGlyph': {
+                        'default':' ○ ',
+                        'hovered':' ○ '
+                    }
+                }
+            }
 
     def _handleContentChanged(self) -> None:
         '''A signal is emitted when the file status change, marking it as modified or not'''

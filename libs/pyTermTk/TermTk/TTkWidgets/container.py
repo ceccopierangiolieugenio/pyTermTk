@@ -155,6 +155,16 @@ class TTkContainer(TTkWidget):
         self._layout.setParent(self)
         self.update(updateLayout=True)
 
+    def _getPendingMouseReleaseWidget(self) -> Optional[TTkWidget]:
+        if (_pw:=self.parentWidget()):
+            return _pw._getPendingMouseReleaseWidget()
+        return None
+
+    def _setPendingMouseReleaseWidget(self, widget:Optional[TTkWidget]) -> None:
+        if not (_pw:=self.parentWidget()):
+            return
+        _pw._setPendingMouseReleaseWidget(widget)
+
     def _getFocusWidget(self) -> Optional[TTkWidget]:
         if (_pw:=self.parentWidget()):
             return _pw._getFocusWidget()

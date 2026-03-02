@@ -53,6 +53,12 @@ def demoTab(root=None, border=True):
     tabWidget1.addMenu("ZZ", ttk.TTkK.RIGHT)
     tabWidget1.addMenu("KK", ttk.TTkK.RIGHT)
 
+    @ttk.pyTTkSlot(int)
+    def _reportClose(num:int):
+        tabWidget1.removeTab(num)
+
+    tabWidget1.tabCloseRequested.connect(_reportClose)
+
     return tabWidget1
 
 def main():

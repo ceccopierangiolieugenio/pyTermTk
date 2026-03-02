@@ -172,6 +172,10 @@ _tabStyle:Dict[str,Any]  = {
             'default':     {'color': TTkColor.fgbg("#dddd88","#000044"),
                             'bgColor': TTkColor.fgbg("#000000","#8888aa"),
                             'borderColor': TTkColor.RST,
+                            'closeColor': {
+                                'default' : TTkColor.CYAN,
+                                'hovered' : TTkColor.YELLOW
+                            },
                             'borderHighlightColors': {
                                 'main' : TTkColor.fg('#00FFFF'),
                                 'fade' : TTkColor.fg('#88FF88'),
@@ -262,10 +266,6 @@ class _TTkTabColorButton(TTkWidget):
         self._tabStatus = tabStatus
         super().__init__(**kwargs)
 
-    def mouseReleaseEvent(self, evt:TTkMouseEvent) -> bool:
-        self.tcbClicked.emit(self)
-        return True
-
     def keyEvent(self, evt:TTkKeyEvent) -> bool:
         if ( evt.type == TTkK.Character and evt.key==" " ) or \
            ( evt.type == TTkK.SpecialKey and evt.key == TTkK.Key_Enter ):
@@ -280,17 +280,31 @@ class TTkTabButton(_TTkTabColorButton):
     classStyle = (
         _TTkTabColorButton.classStyle |
         { 'default': _TTkTabColorButton.classStyle['default'] |
-                    {'closeGlyph':' □ '} ,
+                    {
+                        'closeGlyph': {
+                            'default':' ○ ',
+                            'hovered':' ○ '
+                        }
+                    } ,
           'hover': _TTkTabColorButton.classStyle['hover'] |
-                    {'closeGlyph':' x '} } )
+                    {
+                        'closeGlyph':{
+                            'default':' □ ',
+                            'hovered':' ▣ '
+                        }
+                    }
+                }
+            )
 
     '''TTkTabButton'''
     __slots__ = (
-        '_data','_sideEnd', '_buttonStatus', '_closable',
+        '_data','_sideEnd', '_buttonStatus', '_closable', '_closeHovered',
         'closeClicked', '_closeButtonPressed', '_text')
 
+    _closeHovered:bool
+
     def __init__(self, *,
-                 text:TTkString='',
+                 text:TTkStringType='',
                  data:object=None,
                  closable:bool=False,
                  **kwargs) -> None:
@@ -299,6 +313,7 @@ class TTkTabButton(_TTkTabColorButton):
         self._buttonStatus = TTkK.Unchecked
         self._data = data
         self._closable = closable
+        self._closeHovered = False
         self.closeClicked = pyTTkSignal()
         super().__init__(**kwargs)
         self._closeButtonPressed = False
@@ -308,7 +323,7 @@ class TTkTabButton(_TTkTabColorButton):
         style = self.currentStyle()
         size = self.text().termWidth() + 2
         if self._closable:
-            size += len(style['closeGlyph'])
+            size += len(style['closeGlyph']['default'])
         self.resize(size, self._tabStatus.barType.vSize())
         self.setMinimumSize(size, self._tabStatus.barType.vSize())
         self.setMaximumSize(size, self._tabStatus.barType.vSize())
@@ -344,25 +359,42 @@ class TTkTabButton(_TTkTabColorButton):
         x,y = evt.x,evt.y
         w,h = self.size()
         self._closeButtonPressed = False
-        if  self._closable and evt.key == TTkK.MidButton:
-            self.closeClicked.emit()
-            return True
         offY = self._tabStatus.barType.offY()
         if self._closable and y == offY and w-4<=x<w-1:
             self._closeButtonPressed = True
+            self.update()
             return True
-        return super().mouseReleaseEvent(evt)
+        self.tcbClicked.emit(self)
+        return True
 
     def mouseReleaseEvent(self, evt:TTkMouseEvent) -> bool:
         x,y = evt.x,evt.y
         w,h = self.size()
         offY = self._tabStatus.barType.offY()
-        if self._closable and y == offY and w-4<=x<w-1 and self._closeButtonPressed:
-            self._closeButtonPressed = False
+        if  self._closable and evt.key == TTkK.MidButton:
             self.closeClicked.emit()
-            return False
+        elif self._closable and y == offY and w-4<=x<w-1 and self._closeButtonPressed:
+            self.closeClicked.emit()
         self._closeButtonPressed = False
-        return False
+        return True
+
+    def leaveEvent(self, evt):
+        self._closeHovered = False
+        self.update()
+        return super().leaveEvent(evt)
+
+    def mouseMoveEvent(self, evt):
+        x,y = evt.x,evt.y
+        w,h = self.size()
+        offY = self._tabStatus.barType.offY()
+        if self._closable and y == offY and w-4<=x<w-1:
+            _new_closeHovered = True
+        else:
+            _new_closeHovered = False
+        if self._closeHovered != _new_closeHovered:
+            self._closeHovered = _new_closeHovered
+            self.update()
+        return True
 
     def mouseDragEvent(self, evt:TTkMouseEvent) -> bool:
         drag = TTkDrag()
@@ -390,7 +422,7 @@ class TTkTabButton(_TTkTabColorButton):
 
         borderColor:TTkColor = style['borderColor']
         textColor:TTkColor   = style['color']
-        borderHighlightColors:TTkColor = style['borderHighlightColors']
+        borderHighlightColors:Dict[str, TTkColor] = style['borderHighlightColors']
 
         w,h = self.size()
         offY = self._tabStatus.barType.offY()
@@ -543,9 +575,14 @@ class TTkTabButton(_TTkTabColorButton):
         canvas.drawText(pos=(1,offY), text=self.text(), color=textColor)
 
         if self._closable:
-            closeGlyph = style['closeGlyph']
+            if self._closeHovered:
+                colorCloseHovered = textColor+style['closeColor']['hovered']
+                closeGlyph = style['closeGlyph']['hovered']
+            else:
+                colorCloseHovered = textColor+style['closeColor']['default']
+                closeGlyph = style['closeGlyph']['default']
             closeOff = len(closeGlyph)
-            canvas.drawText(pos=(w-closeOff-1,offY), text=closeGlyph, color=textColor)
+            canvas.drawText(pos=(w-closeOff-1,offY), text=closeGlyph, color=colorCloseHovered)
 
 class _TTkTabMenuButton(TTkMenuBarButton):
     def paintEvent(self, canvas: TTkCanvas) -> None:
@@ -580,7 +617,8 @@ class _TTkTabScrollerButton(_TTkTabColorButton):
     # This is a hack to force the action aftet the keypress
     # And not key release as normally happen to the button
     def mousePressEvent(self, evt:TTkMouseEvent) -> bool:
-        return super().mouseReleaseEvent(evt)
+        self.tcbClicked.emit(self)
+        return True
     def mouseReleaseEvent(self, evt:TTkMouseEvent) -> bool:
         return False
     def mouseTapEvent(self, evt:TTkMouseEvent) -> bool:
