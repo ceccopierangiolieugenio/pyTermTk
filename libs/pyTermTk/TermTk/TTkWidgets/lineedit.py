@@ -353,7 +353,7 @@ class TTkLineEdit(TTkWidget):
         ''' Paste text from the clipboard at the cursor position
         '''
         txt = self._clipboard.text()
-        self.pasteEvent(txt)
+        self.pasteEvent(str(txt))
 
     def pasteEvent(self, txt:str):
         ''' Handle paste event with custom text
