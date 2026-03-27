@@ -135,9 +135,9 @@ class _TTkTreeChildren(TTkAbstractItemModel):
 
     def _addChild(self, parent:TTkTreeWidgetItem, child:TTkTreeWidgetItem):
         self._children.append(child)
-        child._parent = self._parent
-        child._sortOrder = self._parent._sortOrder
-        child._sortColumn = self._parent._sortColumn
+        child._parent = parent
+        child._sortOrder = parent._sortOrder
+        child._sortColumn = parent._sortColumn
         child.dataChanged.connect(self.emitDataChanged)
         child._sizeChanged.connect(self._childrenSizeChangedHandler)
 
@@ -424,7 +424,7 @@ class TTkTreeWidgetItem(TTkAbstractItemModel):
             self._children = _TTkTreeChildren(self)
             self._children._childrenSizeChanged.connect(self._sizeChangedHandler)
             self._children.dataChanged.connect(self.emitDataChanged)
-        child = self._children.addChild(self, child)
+        self._children.addChild(self, child)
         self._setDefaultIcon()
 
     def addChildren(self, children:List[TTkTreeWidgetItem]) -> None:
@@ -432,7 +432,7 @@ class TTkTreeWidgetItem(TTkAbstractItemModel):
             self._children = _TTkTreeChildren(self)
             self._children._childrenSizeChanged.connect(self._sizeChangedHandler)
             self._children.dataChanged.connect(self.emitDataChanged)
-        children = self._children.addChildren(self, children)
+        self._children.addChildren(self, children)
         self._setDefaultIcon()
 
     def removeChild(self, child:TTkTreeWidgetItem) -> None:

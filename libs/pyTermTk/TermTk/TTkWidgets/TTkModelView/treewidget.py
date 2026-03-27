@@ -60,9 +60,9 @@ class _RootWidgetItem(TTkTreeWidgetItem):
         if not limited_page:
             return 0
         if column==0:
-            size = max(max(_l+_i.icon(column).termWidth()+_t.termWidth() for _t in _i.data(column).split('\n')) for _l,_y,_i in limited_page if not _y)
+            size = max((max(_l+_i.icon(column).termWidth()+_t.termWidth() for _t in _i.data(column).split('\n')) for _l,_y,_i in limited_page if not _y), default=1)
         else:
-            size = max(max((_i.icon(column)+_t).termWidth() for _t in _i.data(column).split('\n')) for _l,_y,_i in limited_page if not _y)
+            size = max((max((_i.icon(column)+_t).termWidth() for _t in _i.data(column).split('\n')) for _l,_y,_i in limited_page if not _y), default=1)
         return size-1
 
     def _get_page_root(self, index:int, size:int) -> List[Tuple[int,int,TTkTreeWidgetItem]]:
@@ -246,7 +246,7 @@ class TTkTreeWidget(TTkAbstractScrollView):
         items: List[TTkTreeWidgetItem]
 
     def __init__(self, *,
-                 header:List[TTkString]=[],
+                 header:Optional[List[TTkString]]=None,
                  sortingEnabled:bool=True,
                  selectionMode:TTkK.SelectionMode=TTkK.SelectionMode.SingleSelection,
                  dragDropMode:TTkK.DragDropMode=TTkK.DragDropMode.NoDragDrop,
@@ -278,7 +278,7 @@ class TTkTreeWidget(TTkAbstractScrollView):
         self._sortOrder = TTkK.AscendingOrder
         self._rootItem = _RootWidgetItem()
         super().__init__(**kwargs)
-        self.setHeaderLabels(header)
+        self.setHeaderLabels(header if header is not None else [])
         self.setMinimumHeight(1)
         self.setFocusPolicy(TTkK.ClickFocus)
         self.clear()

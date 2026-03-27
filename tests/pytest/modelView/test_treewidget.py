@@ -1,5 +1,4 @@
-import pytest
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.string import TTkString
 from TermTk.TTkWidgets.TTkModelView.treewidget import TTkTreeWidget
