@@ -61,7 +61,8 @@ jobs:
       shell: bash
       run: |
         python -m pip install --upgrade pip
-        python -m pip install -e '.[test]'
+        python -m pip install uv
+        uv pip install -e '.[test]'
 
     - name: Lint with flake8
       run: |
@@ -73,8 +74,8 @@ jobs:
     - name: pytest
       run: |
         DDDD=$(pwd)
-        pytest ${DDDD}/tests/pytest
-        pytest ${DDDD}/apps
+        uv pytest ${DDDD}/tests/pytest
+        uv pytest ${DDDD}/apps
 
     - name: Dumb Smoke Test
       run: |
@@ -87,4 +88,4 @@ jobs:
         wget -O tmp/test.input.001.bin https://github.com/ceccopierangiolieugenio/binaryRepo/raw/master/pyTermTk/tests/test.input.001.bin
         wget -O tmp/test.input.002.bin https://github.com/ceccopierangiolieugenio/binaryRepo/raw/master/pyTermTk/tests/test.input.002.bin
         wget -O tmp/test.input.003.bin https://github.com/ceccopierangiolieugenio/binaryRepo/raw/master/pyTermTk/tests/test.input.003.bin
-        pytest ${DDDD}/tests/pytest/run_*
+        uv pytest ${DDDD}/tests/pytest/run_*
