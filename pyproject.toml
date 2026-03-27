@@ -36,8 +36,8 @@
         "mypy>=1.15.0"
     ]
     docs = [
-        "Sphinx==8.2.3",
-        "sphinx-book-theme==1.1.4"
+        "Sphinx==8.2.3; python_version>='3.11'",
+        "sphinx-book-theme==1.1.4; python_version>='3.11'"
     ]
 
 [tool.setuptools]
