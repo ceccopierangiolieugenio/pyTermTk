@@ -47,6 +47,7 @@ class TTkTree(TTkAbstractScrollArea):
             'setColumnWidth', 'resizeColumnToContents',
             'sortColumn', 'sortItems',
             'dragDropMode', 'setDragDropMode',
+            'clearSelection', 'setCurrentItem', 'selectItem', 'deselectItem',
             'expandAll', 'collapseAll',
             'invisibleRootItem', 'itemAt',
             # 'appendItem', 'setAlignment', 'setColumnColors', 'setColumnSize', 'setHeader',
@@ -217,6 +218,45 @@ class TTkTree(TTkAbstractScrollArea):
         setDragDropMode
         '''
         return self._treeView.setDragDropMode(dndMode=dndMode)
+    def clearSelection(self) -> None:
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkTreeWidget.clearSelection`
+
+        Deselects all selected items.
+        '''
+        return self._treeView.clearSelection()
+    def setCurrentItem(self, item:Optional[TTkTreeWidgetItem]) -> None:
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkTreeWidget.setCurrentItem`
+
+        Selects the specified item as the current one.
+
+        :param item: the item to be selected, None clears the selection
+        :type item: :py:class:`TTkTreeWidgetItem` or None
+        '''
+        return self._treeView.setCurrentItem(item=item)
+    def selectItem(self, item:TTkTreeWidgetItem) -> None:
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkTreeWidget.selectItem`
+
+        Adds the specified item to the current selection.
+
+        In single selection mode this replaces the previous selection.
+
+        :param item: the item to be selected
+        :type item: :py:class:`TTkTreeWidgetItem`
+        '''
+        return self._treeView.selectItem(item=item)
+    def deselectItem(self, item:TTkTreeWidgetItem) -> None:
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkTreeWidget.deselectItem`
+
+        Removes the specified item from the current selection.
+
+        :param item: the item to be deselected
+        :type item: :py:class:`TTkTreeWidgetItem`
+        '''
+        return self._treeView.deselectItem(item=item)
     @pyTTkSlot()
     def expandAll(self) -> None:
         '''

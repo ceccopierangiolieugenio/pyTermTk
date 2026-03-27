@@ -274,6 +274,45 @@ class TTkFileTree(TTkTree):
         setDragDropMode
         '''
         return self._fileTreeWidget.setDragDropMode(dndMode=dndMode)
+    def clearSelection(self) -> None:
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkFileTreeWidget.clearSelection`
+
+        Deselects all selected items.
+        '''
+        return self._fileTreeWidget.clearSelection()
+    def setCurrentItem(self, item:Optional[TTkTreeWidgetItem]) -> None:
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkFileTreeWidget.setCurrentItem`
+
+        Selects the specified item as the current one.
+
+        :param item: the item to be selected, None clears the selection
+        :type item: :py:class:`TTkTreeWidgetItem` or None
+        '''
+        return self._fileTreeWidget.setCurrentItem(item=item)
+    def selectItem(self, item:TTkTreeWidgetItem) -> None:
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkFileTreeWidget.selectItem`
+
+        Adds the specified item to the current selection.
+
+        In single selection mode this replaces the previous selection.
+
+        :param item: the item to be selected
+        :type item: :py:class:`TTkTreeWidgetItem`
+        '''
+        return self._fileTreeWidget.selectItem(item=item)
+    def deselectItem(self, item:TTkTreeWidgetItem) -> None:
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkFileTreeWidget.deselectItem`
+
+        Removes the specified item from the current selection.
+
+        :param item: the item to be deselected
+        :type item: :py:class:`TTkTreeWidgetItem`
+        '''
+        return self._fileTreeWidget.deselectItem(item=item)
     @pyTTkSlot()
     def expandAll(self) -> None:
         '''

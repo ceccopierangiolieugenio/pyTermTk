@@ -165,6 +165,7 @@ class _TTkTreeChildren(TTkAbstractItemModel):
                  0<= index < len(self._children) ):
             return None
         child = self._children.pop(index)
+        child._parent = None
         child.dataChanged.disconnect(self.emitDataChanged)
         child._sizeChanged.disconnect(self._childrenSizeChangedHandler)
         self._childrenSizeChangedHandler(None, -child.size())
@@ -172,11 +173,13 @@ class _TTkTreeChildren(TTkAbstractItemModel):
         return child
 
     def takeChildren(self) -> List[TTkTreeWidgetItem]:
-        children = self._children
+        children = self._children.copy()
         for child in children:
+            child._parent = None
             child.dataChanged.disconnect(self.emitDataChanged)
             child._sizeChanged.disconnect(self._childrenSizeChangedHandler)
         self._childrenSizeChangedHandler(None, -self._total_size)
+        self._children = []
         self.emitDataChanged()
         return children
 

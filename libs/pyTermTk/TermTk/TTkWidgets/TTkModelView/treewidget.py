@@ -321,6 +321,7 @@ class TTkTreeWidget(TTkAbstractScrollView):
         if self._rootItem:
             self._rootItem.dataChanged.disconnect(self._refreshCache)
         self._rootItem = _RootWidgetItem()
+        self._selected = []
         self._rootItem.dataChanged.connect(self._refreshCache)
         self.sortItems(self._sortColumn, self._sortOrder)
         self.viewChanged.emit()
@@ -348,6 +349,24 @@ class TTkTreeWidget(TTkAbstractScrollView):
         self.viewChanged.emit()
         self.update()
 
+    def _itemInTree(self, item:TTkTreeWidgetItem) -> bool:
+        if not item:
+            return False
+        if item is self._rootItem:
+            return True
+        # Traverse up from the item to the root using parent chain
+        current = item
+        while current is not None:
+            if current is self._rootItem:
+                return True
+            current = current._parent
+        return False
+
+    def _pruneSelection(self) -> None:
+        if not self._selected:
+            return
+        self._selected = [_i for _i in self._selected if self._itemInTree(_i)]
+
     def takeTopLevelItem(self, index:int) -> Optional[TTkTreeWidgetItem]:
         '''
         Removes the top-level item at the given index in the tree and returns it, otherwise returns None;
@@ -358,6 +377,7 @@ class TTkTreeWidget(TTkAbstractScrollView):
         :rtype: Optional[:py:class:`TTkTreeWidgetItem`]
         '''
         ret = self._rootItem.takeChild(index)
+        self._pruneSelection()
         self.viewChanged.emit()
         self.update()
         return ret
@@ -396,7 +416,13 @@ class TTkTreeWidget(TTkAbstractScrollView):
         :param mode: the selection mode used in this tree
         :type mode: :py:class:`TTkK.SelectionMode`
         '''
+        self._pruneSelection()
         self._selectionMode = mode
+        if mode == TTkK.SelectionMode.NoSelection:
+            self.clearSelection()
+        elif mode == TTkK.SelectionMode.SingleSelection and len(self._selected) > 1:
+            self._selected = self._selected[:1]
+            self.update()
 
     def selectedItems(self) -> List[TTkTreeWidgetItem]:
         '''
@@ -404,9 +430,72 @@ class TTkTreeWidget(TTkAbstractScrollView):
 
         :rtype: List[:py:class:`TTkTreeWidgetItem`]
         '''
+        self._pruneSelection()
         if self._selected:
             return self._selected
         return []
+
+    def clearSelection(self) -> None:
+        '''
+        Deselects all selected items.
+        '''
+        if not self._selected:
+            return
+        self._selected = []
+        self.update()
+
+    def setCurrentItem(self, item:Optional[TTkTreeWidgetItem]) -> None:
+        '''
+        Selects the specified item as the current one.
+
+        :param item: the item to be selected, None clears the selection
+        :type item: :py:class:`TTkTreeWidgetItem` or None
+        '''
+        if item is None:
+            self.clearSelection()
+            return
+        if not self._itemInTree(item):
+            return
+        if self._selectionMode == TTkK.SelectionMode.NoSelection:
+            return
+        self._selected = [item]
+        self.update()
+
+    def selectItem(self, item:TTkTreeWidgetItem) -> None:
+        '''
+        Adds the specified item to the current selection.
+
+        In single selection mode this replaces the previous selection.
+
+        :param item: the item to be selected
+        :type item: :py:class:`TTkTreeWidgetItem`
+        '''
+        if not self._itemInTree(item):
+            return
+        if self._selectionMode == TTkK.SelectionMode.NoSelection:
+            return
+        if self._selectionMode == TTkK.SelectionMode.SingleSelection:
+            self._selected = [item]
+            self.update()
+            return
+        if item not in self._selected:
+            self._selected.append(item)
+            self.update()
+
+    def deselectItem(self, item:TTkTreeWidgetItem) -> None:
+        '''
+        Removes the specified item from the current selection.
+
+        :param item: the item to be deselected
+        :type item: :py:class:`TTkTreeWidgetItem`
+        '''
+        if not self._selected:
+            return
+        if item in self._selected:
+            self._selected.remove(item)
+            self.update()
+            return
+        self._pruneSelection()
 
     def setHeaderLabels(self, labels:List[TTkString]) -> None:
         '''
@@ -570,7 +659,7 @@ class TTkTreeWidget(TTkAbstractScrollView):
                     self.itemExpanded.emit(item)
                 else:
                     self.itemCollapsed.emit(item)
-            self._selected = [item]
+            self.setCurrentItem(item)
             col = -1
             for i, c in enumerate(self._columnsPos):
                 if x < c:
