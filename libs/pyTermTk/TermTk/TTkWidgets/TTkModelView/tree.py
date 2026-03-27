@@ -47,6 +47,7 @@ class TTkTree(TTkAbstractScrollArea):
             'setColumnWidth', 'resizeColumnToContents',
             'sortColumn', 'sortItems',
             'dragDropMode', 'setDragDropMode',
+            'setSelectionMode',
             'clearSelection', 'setCurrentItem', 'selectItem', 'deselectItem',
             'expandAll', 'collapseAll',
             'invisibleRootItem', 'itemAt',
@@ -218,6 +219,16 @@ class TTkTree(TTkAbstractScrollArea):
         setDragDropMode
         '''
         return self._treeView.setDragDropMode(dndMode=dndMode)
+    def setSelectionMode(self, mode:TTkK.SelectionMode) -> None:
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkTreeWidget.setSelectionMode`
+
+        Sets the current selection model to the given selectionModel.
+
+        :param mode: the selection mode used in this tree
+        :type mode: :py:class:`TTkK.SelectionMode`
+        '''
+        return self._treeView.setSelectionMode(mode=mode)
     def clearSelection(self) -> None:
         '''
         .. seealso:: this method is forwarded to :py:meth:`TTkTreeWidget.clearSelection`

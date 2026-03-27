@@ -274,6 +274,16 @@ class TTkFileTree(TTkTree):
         setDragDropMode
         '''
         return self._fileTreeWidget.setDragDropMode(dndMode=dndMode)
+    def setSelectionMode(self, mode:TTkK.SelectionMode) -> None:
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkFileTreeWidget.setSelectionMode`
+
+        Sets the current selection model to the given selectionModel.
+
+        :param mode: the selection mode used in this tree
+        :type mode: :py:class:`TTkK.SelectionMode`
+        '''
+        return self._fileTreeWidget.setSelectionMode(mode=mode)
     def clearSelection(self) -> None:
         '''
         .. seealso:: this method is forwarded to :py:meth:`TTkFileTreeWidget.clearSelection`
