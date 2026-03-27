@@ -132,6 +132,76 @@ class TestTTkTreeWidgetSelection:
         tree.setSelectionMode(TTkK.SelectionMode.MultiSelection)
         assert tree.selectionMode() == TTkK.SelectionMode.MultiSelection
 
+    def test_set_selection_mode_to_no_selection_clears(self):
+        """Test switching to NoSelection clears all selected items"""
+        tree = TTkTreeWidget(selectionMode=TTkK.SelectionMode.MultiSelection)
+        item1 = TTkTreeWidgetItem(["Item 1"])
+        item2 = TTkTreeWidgetItem(["Item 2"])
+        tree.addTopLevelItems([item1, item2])
+
+        tree.selectItem(item1)
+        tree.selectItem(item2)
+        assert len(tree.selectedItems()) == 2
+
+        tree.setSelectionMode(TTkK.SelectionMode.NoSelection)
+        assert tree.selectedItems() == []
+
+    def test_set_selection_mode_single_to_multi_preserves(self):
+        """Test switching from Single to Multi preserves the selected item"""
+        tree = TTkTreeWidget(selectionMode=TTkK.SelectionMode.SingleSelection)
+        item = TTkTreeWidgetItem(["Item"])
+        tree.addTopLevelItem(item)
+
+        tree.selectItem(item)
+        assert tree.selectedItems() == [item]
+
+        tree.setSelectionMode(TTkK.SelectionMode.MultiSelection)
+        assert tree.selectedItems() == [item]
+
+    def test_set_selection_mode_multi_to_single_one_item(self):
+        """Test switching Multi→Single with exactly one item keeps it"""
+        tree = TTkTreeWidget(selectionMode=TTkK.SelectionMode.MultiSelection)
+        item = TTkTreeWidgetItem(["Item"])
+        tree.addTopLevelItem(item)
+
+        tree.selectItem(item)
+        tree.setSelectionMode(TTkK.SelectionMode.SingleSelection)
+        assert tree.selectedItems() == [item]
+
+    def test_set_selection_mode_multi_to_single_empty(self):
+        """Test switching Multi→Single with no selection stays empty"""
+        tree = TTkTreeWidget(selectionMode=TTkK.SelectionMode.MultiSelection)
+        tree.addTopLevelItem(TTkTreeWidgetItem(["Item"]))
+
+        tree.setSelectionMode(TTkK.SelectionMode.SingleSelection)
+        assert tree.selectedItems() == []
+
+    def test_set_selection_mode_no_to_single(self):
+        """Test switching from NoSelection to Single allows selection again"""
+        tree = TTkTreeWidget(selectionMode=TTkK.SelectionMode.NoSelection)
+        item = TTkTreeWidgetItem(["Item"])
+        tree.addTopLevelItem(item)
+
+        tree.selectItem(item)
+        assert tree.selectedItems() == []
+
+        tree.setSelectionMode(TTkK.SelectionMode.SingleSelection)
+        tree.selectItem(item)
+        assert tree.selectedItems() == [item]
+
+    def test_set_selection_mode_trims_keeps_first(self):
+        """Test switching Multi→Single keeps the first selected item"""
+        tree = TTkTreeWidget(selectionMode=TTkK.SelectionMode.MultiSelection)
+        items = [TTkTreeWidgetItem([f"Item {i}"]) for i in range(5)]
+        tree.addTopLevelItems(items)
+
+        for item in items:
+            tree.selectItem(item)
+        assert len(tree.selectedItems()) == 5
+
+        tree.setSelectionMode(TTkK.SelectionMode.SingleSelection)
+        assert tree.selectedItems() == [items[0]]
+
     def test_programmatic_single_selection(self):
         """Test select/deselect API in single selection mode"""
         tree = TTkTreeWidget(selectionMode=TTkK.SelectionMode.SingleSelection)
