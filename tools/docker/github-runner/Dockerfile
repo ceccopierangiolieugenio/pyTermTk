@@ -26,8 +26,8 @@ USER ubuntu
 WORKDIR /home/ubuntu
 
 # x86-64
-RUN curl -o actions-runner-osx-x64-2.333.0.tar.gz -L https://github.com/actions/runner/releases/download/v2.333.0/actions-runner-osx-x64-2.333.0.tar.gz
-RUN echo "2b0ba7df7be9b9c36b4b86c19539b3a8be027ce926610b71606a6e445197094b  actions-runner-osx-x64-2.333.0.tar.gz" | shasum -a 256 -c
+RUN curl -o actions-runner-linux-x64-2.333.0.tar.gz -L https://github.com/actions/runner/releases/download/v2.333.0/actions-runner-linux-x64-2.333.0.tar.gz
+RUN echo "7ce6b3fd8f879797fcc252c2918a23e14a233413dc6e6ab8e0ba8768b5d54475  actions-runner-linux-x64-2.333.0.tar.gz" | shasum -a 256 -c
 
 # arm-64
 # RUN curl -o actions-runner-linux-arm64-2.323.0.tar.gz -L https://github.com/actions/runner/releases/download/v2.323.0/actions-runner-linux-arm64-2.323.0.tar.gz
