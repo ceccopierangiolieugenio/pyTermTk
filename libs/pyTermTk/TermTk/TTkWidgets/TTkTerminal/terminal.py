@@ -114,7 +114,7 @@ class TTkTerminal(TTkAbstractScrollArea):
         to frward all the terminal events to the pty interface.
         
         :param data: the event data
-        :type data: str
+        :type data: bytes
         '''
         return self._terminalView.termData
     @property

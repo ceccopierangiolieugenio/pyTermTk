@@ -72,6 +72,7 @@ class TTkTerminalHelper():
 
     __slots__ = ('_shell', '_fd', '_inout', '_pid',
                  '_quit_pipe', '_size', '_term',
+                 '_fdLock',
                  #Signals
                  'terminalClosed', 'dataOut')
     def __init__(self, *,
@@ -89,6 +90,7 @@ class TTkTerminalHelper():
         self._quit_pipe = None
         self._term = None
         self._size = (80,24)
+        self._fdLock = threading.Lock()
         TTkHelper.quitEvent.connect(self._quit)
         if term:
             self.attachTTkTerminal(term)
@@ -162,21 +164,24 @@ class TTkTerminalHelper():
         # if self._fd:
         #     s = struct.pack('HHHH', h, w, 0, 0)
         #     t = fcntl.ioctl(self._fd, termios.TIOCSWINSZ, s)
-        if self._fd and self._size != (width,height):
-            self._size = (width,height)
-            if width<=0 or height<=0: return
-            s = struct.pack('HHHH', height, width, 0, 0)
-            t = fcntl.ioctl(self._fd, termios.TIOCSWINSZ, s)
+        with self._fdLock:
+            if self._fd and self._size != (width,height):
+                self._size = (width,height)
+                if width<=0 or height<=0: return
+                s = struct.pack('HHHH', height, width, 0, 0)
+                t = fcntl.ioctl(self._fd, termios.TIOCSWINSZ, s)
 
-    @pyTTkSlot(str)
-    def push(self, data:str) -> None:
+    @pyTTkSlot(bytes)
+    def push(self, data:bytes) -> None:
         '''
         Send the data to the pty session
 
         :param data: the data
-        :type data: str
+        :type data: bytes
         '''
-        self._inout.write(data)
+        with self._fdLock:
+            if self._inout:
+                self._inout.write(data)
 
     @pyTTkSlot()
     def _quit(self):
@@ -186,12 +191,12 @@ class TTkTerminalHelper():
                 os.kill(pid,0)
                 os.kill(pid,15)
                 # os.kill(pid,9)
-            except:
+            except OSError:
                 pass
         if self._quit_pipe:
             try:
                 os.write(self._quit_pipe[1], b'quit')
-            except:
+            except OSError:
                 pass
 
     def loop(self) -> None:
@@ -212,10 +217,12 @@ class TTkTerminalHelper():
 
         while rs := select( [self._inout,self._quit_pipe[0]], [], [])[0]:
             if self._quit_pipe[0] in rs:
-                # os.close(self._quit_pipe[0])
-                os.close(self._quit_pipe[1])
-                # os.close(self._resize_pipe[0])
-                os.close(self._fd)
+                with self._fdLock:
+                    os.close(self._quit_pipe[0])
+                    os.close(self._quit_pipe[1])
+                    os.close(self._fd)
+                    self._fd = None
+                    self._inout = None
                 return
 
             if self._inout not in rs:
