@@ -23,7 +23,6 @@
 __all__ = []
 
 import collections
-import unicodedata
 from dataclasses import dataclass
 
 from typing import List
@@ -31,20 +30,8 @@ from typing import List
 from TermTk.TTkCore.canvas import TTkCanvas
 
 from TermTk.TTkCore.color import TTkColor
-from TermTk.TTkCore.log import TTkLog
-from TermTk.TTkCore.constant import TTkK
-from TermTk.TTkCore.cfg import TTkCfg
 from TermTk.TTkCore.string import TTkString
 from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
-from TermTk.TTkCore.helper import TTkHelper
-from TermTk.TTkGui.clipboard import TTkClipboard
-from TermTk.TTkGui.textwrap1 import TTkTextWrap
-from TermTk.TTkGui.textcursor import TTkTextCursor
-from TermTk.TTkGui.textdocument import TTkTextDocument
-from TermTk.TTkLayouts.gridlayout import TTkGridLayout
-from TermTk.TTkAbstract.abstractscrollarea import TTkAbstractScrollArea
-from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollView, TTkAbstractScrollViewGridLayout
-from TermTk.TTkWidgets.widget import TTkWidget
 
 from .terminal_screen_CSI import _TTkTerminalScreen_CSI
 from .terminal_screen_C1  import _TTkTerminalScreen_C1
@@ -216,7 +203,7 @@ class _TTkTerminalScreen(_TTkTerminalScreen_CSI, _TTkTerminalScreen_C1):
                     elif x>1:
                         self._canvas._data[y][x-2]  += ch
                 x+=l
-                self._terminalCursor = (x+l,y)
+                self._terminalCursor = (x,y)
                 self._canvasLineSize[y] = max(self._canvasLineSize[y],x)
             self._terminalCursor = (x,y)
 
