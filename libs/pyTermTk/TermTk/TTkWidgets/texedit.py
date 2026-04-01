@@ -107,7 +107,7 @@ class TTkTextEditRuler(TTkAbstractScrollView):
     def _wrapChanged(self) -> None:
         if not self._textWrap:
             return
-        dt = max(1,self._textWrap._lines[-1][0])
+        dt = max(1,self._textWrap.documentLineCount()-1)
         off  = self._startingNumber
         width = 2+max(len(str(int(dt+off))),len(str(int(off))))
         width += sum(self._markRulerSizes)
@@ -142,8 +142,12 @@ class TTkTextEditRuler(TTkAbstractScrollView):
             mx -= mk.width()
             if mx < 0:
                 break
-        if self._textWrap and my < len(self._textWrap._lines):
-            dt = self._textWrap._lines[my][0]
+        if self._textWrap:
+            rows = self._textWrap.screenRows(my, 1)
+        else:
+            rows = []
+        if rows:
+            dt = rows[0][0]
             mk.setState(dt, mk.nextState(mk.getState(dt)))
         else:
             mk.setState(my, mk.nextState(mk.getState(my)))
@@ -158,6 +162,7 @@ class TTkTextEditRuler(TTkAbstractScrollView):
         off  = self._startingNumber
         leftOff = sum(self._markRulerSizes)
         sum(self._markRulerSizes)
+        rows = self._textWrap.screenRows(oy, h, prefetch=h)
 
         style = self.currentStyle()
         color = style['color']
@@ -165,7 +170,7 @@ class TTkTextEditRuler(TTkAbstractScrollView):
         separatorColor = style['separatorColor']
 
         if self._textWrap:
-            for i, (dt, (fr, _)) in enumerate(self._textWrap._lines[oy:oy+h]):
+            for i, (dt, (fr, _)) in enumerate(rows):
                 if fr:
                     canvas.drawText(pos=(leftOff,i), text='<', width=w, color=wrapColor)
                 else:
@@ -179,12 +184,12 @@ class TTkTextEditRuler(TTkAbstractScrollView):
         ox = 0
         for mk in self._markRuler:
             if self._textWrap:
-                for i, (dt, (fr, _)) in enumerate(self._textWrap._lines[oy:oy+h]):
+                for i, (dt, (fr, _)) in enumerate(rows):
                     if not fr:
                         canvas.drawText(pos=(ox,i), text=mk.getTTkStr(dt+off))
             else:
                 for y in range(h):
-                    canvas.drawText(pos=(ox,y), text=mk.getTTkStr(dt+off))
+                    canvas.drawText(pos=(ox,y), text=mk.getTTkStr(y+oy+off))
             ox += mk.width()
 
 class TTkTextEditView(TTkAbstractScrollView):
@@ -514,6 +519,7 @@ class TTkTextEditView(TTkAbstractScrollView):
         self._textCursor = TTkTextCursor(document=self._textDocument)
         self._textWrap = TTkTextWrap(document=self._textDocument)
         self._textWrap.wrapChanged.connect(self.update)
+        self._textDocument.contentsChange.connect(self._textWrap.invalidateFromDataLine)
         self._textDocument.contentsChanged.connect(self._documentChanged)
         self._textDocument.cursorPositionChanged.connect(self._cursorPositionChanged)
         self._textDocument.undoAvailable.connect(self._undoAvailable)
@@ -527,6 +533,7 @@ class TTkTextEditView(TTkAbstractScrollView):
         :param document: the text document
         :type document: :py:class:`TTkTextDocument`
         '''
+        self._textDocument.contentsChange.disconnect(self._textWrap.invalidateFromDataLine)
         self._textDocument.contentsChanged.disconnect(self._documentChanged)
         self._textDocument.cursorPositionChanged.disconnect(self._cursorPositionChanged)
         self._textDocument.undoAvailable.disconnect(self._undoAvailable)
@@ -754,7 +761,9 @@ class TTkTextEditView(TTkAbstractScrollView):
 
     @pyTTkSlot()
     def _documentChanged(self) -> None:
-        self._rewrap()
+        self._updateSize()
+        self.viewChanged.emit()
+        self.update()
         self.textChanged.emit()
 
     def _rewrap(self) -> None:
@@ -1051,7 +1060,7 @@ class TTkTextEditView(TTkAbstractScrollView):
         lineColor = style['lineColor']
         backgroundColors = [self._textDocument._backgroundColor]*h
 
-        subLines = self._textWrap._lines[oy:oy+h]
+        subLines = self._textWrap.screenRows(oy, h, prefetch=h)
         if not subLines: return
         fr = subLines[0][0]
         to = subLines[-1][0]
@@ -1200,7 +1209,7 @@ class TTkTextEdit(TTkAbstractScrollArea):
 
         This signal is emitted if the current character color has changed,
         for example caused by a change of the cursor position.
-        
+
         :param color: the new color
         :type color: :py:class:`TTkColor`
         '''
@@ -1211,7 +1220,7 @@ class TTkTextEdit(TTkAbstractScrollArea):
         .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.cursorPositionChanged`
 
         This signal is emitted whenever the position of the cursor changed.
-        
+
         :param cursor: the cursor changed.
         :type cursor: :py:class:`TTkTextCursor`
         '''
@@ -1223,7 +1232,7 @@ class TTkTextEdit(TTkAbstractScrollArea):
 
         This signal is emitted whenever undo operations become available (available is true)
         or unavailable (available is false).
-        
+
         :param available: the availability of undo
         :type available: bool
         '''
@@ -1235,7 +1244,7 @@ class TTkTextEdit(TTkAbstractScrollArea):
 
         This signal is emitted whenever redo operations become available (available is true)
         or unavailable (available is false).
-        
+
         :param available: the availability of redo
         :type available: bool
         '''
