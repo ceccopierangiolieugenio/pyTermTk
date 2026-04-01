@@ -335,6 +335,9 @@ class TTkColor:
             ( TTkK.ColorType.Foreground    if self._fg        else TTkK.NONE ) |
             ( TTkK.ColorType.Background    if self._bg        else TTkK.NONE ) )
 
+    def withoutModifiers(self) -> TTkColor:
+        return self
+
     @staticmethod
     def rgb2hsl(rgb) -> Tuple[int,int,int]:
         r = rgb[0]/255
@@ -533,6 +536,9 @@ class _TTkColor_mod(TTkColor):
         return (
             super().colorType() |
             ( TTkK.ColorType.Modifier if self._mod else TTkK.NONE ))
+
+    def withoutModifiers(self) -> TTkColor:
+        return TTkColor(fg=self._fg, bg=self._bg)
 
     def __str__(self) -> str:
         if not self._buffer:
