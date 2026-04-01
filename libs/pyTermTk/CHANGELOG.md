@@ -1,5 +1,36 @@
 # Changelog
 
+## [0.50.0-a0](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/pyTermTk-v0.49.0-a0...pyTermTk-v0.50.0-a0) (2026-04-01)
+
+
+### ⚠ BREAKING CHANGES
+
+* **list:** reworked the TTkList component ([#595](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/595))
+* **tree:** The following APIs have been removed from TTkTreeWidgetItem:
+    - `isSelected()` method - use `TTkTreeWidget.selectedItems()` to check selection
+    - `setSelected(bool)` method - selection is now managed by TTkTreeWidget  
+    - `selected` parameter in constructor - no longer supported
+
+### Fixes
+
+* **canvas:** allow doubleBufferNew missing _link ([#600](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/600)) ([b0151d6](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/b0151d6d27e96eaca424bb53fb51a524a916dfac))
+* **canvas:** unbuffered pushToTerminal missing _clean ([#605](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/605)) ([6fa6961](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/6fa6961c282f5299c11cd97ee49be48d1ed56ab2))
+* **splitter:** process sizes in setOrientation() ([#601](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/601)) ([b07a5bc](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/b07a5bc5e12babaf1b8c70360b9955fe30bb355e))
+* **terminal:** remove color modifier for the VT100 Erase in Line ([#614](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/614)) ([2037345](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/20373458bd4a0ca29c85d8be0c095b144f5de65e))
+* **TTkLineEdit:** paste str ([#610](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/610)) ([0006afd](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/0006afdf5d38a496a27ec458f0838e70dbdb1ae8))
+* **TTkTabBar:** currentIndex &lt;= highlighted TypeError ([#593](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/593)) ([c743c49](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/c743c492e88edbc7a6057b831bd829a0bc75beaa))
+
+
+### Chores
+
+* handle mouse move by default to avoid unwanted propagation ([#597](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/597)) ([eadfa70](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/eadfa70502596fc2deb01170caddf7b5f8db85fc))
+* **list:** reworked the TTkList component ([#595](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/595)) ([0f846e5](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/0f846e5c962f6c0b8422e73ad3022b8187edecf2))
+* responsive tab close button ([#609](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/609)) ([19ab5df](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/19ab5df32cfeb80c575e7c8a2b64685b4c80a9e6))
+* **terminal:** tests and bugfixes ([#612](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/612)) ([0dbab3c](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/0dbab3c43b046c3bcd489cc8185b057acb57f8e7))
+* **tree:** add selection api ([#611](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/611)) ([bb9475a](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/bb9475a6c17ed90bdbed6cd2ca368e6267262d2a))
+* **tree:** mouse hover support ([#583](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/583)) ([cda68f2](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/cda68f278a815effe500b9316de6f359e6eb14df))
+* **tree:** remove selected status from the treeWidgetItem ([#584](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/584)) ([b434b33](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/b434b330f9ccf47f6ba4443f667d48fa9565df64))
+
 ## [0.49.0-a0](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/pyTermTk-v0.48.1-a0...pyTermTk-v0.49.0-a0) (2026-01-07)
 
 
