@@ -298,6 +298,36 @@ class TestTerminalCSIErase:
         self.screen._CSI_K_EL(2, None)
         assert _get_screen_text(self.screen, 0) == ""
 
+    def test_erase_to_right_preserves_fg_bg_but_removes_modifiers(self):
+        self.screen._terminalCursor = (0, 0)
+        self.screen._pushTxt("ABCDEFGHIJ")
+
+        styled = TTkColor.fg('#112233') + TTkColor.bg('#445566') + TTkColor.UNDERLINE + TTkColor.BOLD
+        self.screen.setColor(styled)
+        self.screen._terminalCursor = (5, 0)
+        self.screen._CSI_K_EL(0, None)
+
+        erased_color = self.screen._canvas._colors[0][5]
+        assert erased_color.fgToRGB() == (0x11, 0x22, 0x33)
+        assert erased_color.bgToRGB() == (0x44, 0x55, 0x66)
+        assert not erased_color.underline()
+        assert not erased_color.bold()
+
+    def test_erase_to_left_preserves_fg_bg_but_removes_modifiers(self):
+        self.screen._terminalCursor = (0, 0)
+        self.screen._pushTxt("ABCDEFGHIJ")
+
+        styled = TTkColor.fg('#aabbcc') + TTkColor.bg('#010203') + TTkColor.UNDERLINE + TTkColor.ITALIC
+        self.screen.setColor(styled)
+        self.screen._terminalCursor = (5, 0)
+        self.screen._CSI_K_EL(1, None)
+
+        erased_color = self.screen._canvas._colors[0][0]
+        assert erased_color.fgToRGB() == (0xaa, 0xbb, 0xcc)
+        assert erased_color.bgToRGB() == (0x01, 0x02, 0x03)
+        assert not erased_color.underline()
+        assert not erased_color.italic()
+
 
 class TestTerminalCSICharManipulation:
     '''Tests for CSI character insertion/deletion escape sequences.'''

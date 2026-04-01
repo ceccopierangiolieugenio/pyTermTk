@@ -133,11 +133,11 @@ class _TTkTerminalScreen_CSI():
         x,y = self._terminalCursor
         w,h = self._w,self._h
         if ps == 0:
-            self._canvas.fill(char=' ', pos=(x,y),size=(w-x,1), color=self._color)
+            self._canvas.fill(char=' ', pos=(x,y),size=(w-x,1), color=self._color.withoutModifiers())
         elif ps == 1:
-            self._canvas.fill(char=' ', pos=(0,y),size=(x,1), color=self._color)
+            self._canvas.fill(char=' ', pos=(0,y),size=(x,1), color=self._color.withoutModifiers())
         elif ps == 2:
-            self._canvas.fill(char=' ', pos=(0,y),size=(w,1), color=self._color)
+            self._canvas.fill(char=' ', pos=(0,y),size=(w,1), color=self._color.withoutModifiers())
 
     # CSI ? Ps K
     #           Erase in Line (DECSEL), VT220.
