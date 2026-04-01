@@ -125,7 +125,7 @@ def ttkStringData(self, row:int, col:int) -> TTkString:
     data = self.data(row,col)
     return TTkAbstractTableModel._dataToTTkString(data)
 
-def setGeometry(self, x: int, y: int, width: int, height: int):
+def setGeometry(self, x: int, y: int, width: int, height: int) -> None:
     ''' Resize and move the widget
 
     :param x: the horizontal position
@@ -203,6 +203,7 @@ i.e., whenever the user checks or unchecks it.
 
 **Key conventions**:
 - Use single quotes `'''` for docstrings
+- When adding Python code, type hints are required; use standard `typing` module types (or builtin generic types where equivalent) whenever possible
 - Include ASCII art for visual widgets showing borders/layout
 - Link to demo files with full GitHub URLs
 - Use `:py:class:` for cross-references to other classes
