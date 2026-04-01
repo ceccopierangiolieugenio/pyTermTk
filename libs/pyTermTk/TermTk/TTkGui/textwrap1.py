@@ -34,6 +34,11 @@ _WrapSlice = Tuple[int, Tuple[int, int]]
 _Checkpoint = Tuple[int, int]
 
 class TTkTextWrap():
+    '''TTkTextWrap:
+
+    Incremental text wrapping helper for :py:class:`TTkTextDocument`.
+    It maps document positions to wrapped screen rows and vice versa.
+    '''
     __slots__ = (
         '_lines', '_textDocument', '_tabSpaces',
         '_processedLines', '_lineStartY',
@@ -44,6 +49,12 @@ class TTkTextWrap():
         'wrapChanged'
         )
     def __init__(self, document:Optional[TTkTextDocument]=None) -> None:
+        '''Create a wrap manager bound to a text document.
+
+        :param document: optional source document; when omitted a new
+                         :py:class:`TTkTextDocument` is created.
+        :type document: Optional[:py:class:`TTkTextDocument`]
+        '''
         # signals
         self.wrapChanged = pyTTkSignal()
 
@@ -61,16 +72,28 @@ class TTkTextWrap():
         self.setDocument(document)
 
     def setDocument(self, document:TTkTextDocument) -> None:
+        '''Attach a new document and reset wrapping caches.
+
+        :param document: source text document.
+        :type document: :py:class:`TTkTextDocument`
+        '''
         self._textDocument = document
         self.rewrap()
 
     def disable(self) -> None:
+        '''Disable wrapping and expose each data line as one screen row.'''
         self._enable = False
 
     def enable(self) -> None:
+        '''Enable wrapping according to current width and mode.'''
         self._enable = True
 
     def size(self) -> int:
+        '''Return the estimated wrapped row count.
+
+        :return: wrapped size in screen rows.
+        :rtype: int
+        '''
         processedRows = self._lineStartY[-1] if self._lineStartY else 0
         rem = max(0, self.documentLineCount() - self._processedLines)
         if rem == 0:
@@ -82,29 +105,60 @@ class TTkTextWrap():
         return processedRows + max(rem, int(rem * avgRowsPerLine))
 
     def documentLineCount(self) -> int:
+        '''Return the number of logical data lines in the document.
+
+        :return: document line count.
+        :rtype: int
+        '''
         return len(self._textDocument._dataLines)
 
     def wrapWidth(self) -> int:
+        '''Return the current wrap width in terminal cells.
+
+        :return: wrap width.
+        :rtype: int
+        '''
         return self._wrapWidth
 
     def setWrapWidth(self, width:int) -> None:
+        '''Set wrap width and trigger a full rewrap.
+
+        :param width: target width in terminal cells.
+        :type width: int
+        '''
         self._wrapWidth = width
         self.rewrap()
 
     def wordWrapMode(self) -> TTkK.WordWrapMode:
+        '''Return the active word-wrap mode.
+
+        :return: current wrap mode.
+        :rtype: :py:class:`TTkK.WordWrapMode`
+        '''
         return self._wordWrapMode
 
     def setWordWrapMode(self, mode:TTkK.WordWrapMode) -> None:
+        '''Set the word-wrap mode and invalidate cached wrapping.
+
+        :param mode: new wrap mode.
+        :type mode: :py:class:`TTkK.WordWrapMode`
+        '''
         self._wordWrapMode = mode
         self.rewrap()
 
     def _invalidateAll(self) -> None:
+        '''Drop all cached wrapping state and checkpoints.'''
         self._lines = []
         self._processedLines = 0
         self._lineStartY = [0]
         self._checkpoints = [(0,0)]
 
     def _invalidateFromDataLine(self, line:int):
+        '''Invalidate cache from the given data line onward.
+
+        :param line: first logical line to invalidate.
+        :type line: int
+        '''
         line = max(0, min(line, self.documentLineCount()))
         if line == 0:
             self._invalidateAll()
@@ -121,10 +175,28 @@ class TTkTextWrap():
             self._checkpoints.append((line, y))
 
     def invalidateFromDataLine(self, line:int, _removed:int=0, _added:int=0) -> None:
+        '''Public invalidation entry point used by document change hooks.
+
+        :param line: first changed line in the source document.
+        :type line: int
+        :param _removed: number of removed lines (currently unused).
+        :type _removed: int
+        :param _added: number of added lines (currently unused).
+        :type _added: int
+        '''
         self._invalidateFromDataLine(line)
         self.wrapChanged.emit()
 
     def _wrapLine(self, dt:int, l:TTkString) -> List[_WrapSlice]:
+        '''Wrap one logical line into screen-row slices.
+
+        :param dt: document line index.
+        :type dt: int
+        :param l: line content.
+        :type l: :py:class:`TTkString`
+        :return: list of slices as ``(line, (from, to))`` tuples.
+        :rtype: List[Tuple[int, Tuple[int, int]]]
+        '''
         out: List[_WrapSlice] = []
         if not self._enable:
             out.append((dt,(0,len(l)+1)))
@@ -159,6 +231,13 @@ class TTkTextWrap():
         return out
 
     def _wrapLineCount(self, l:TTkString) -> int:
+        '''Count wrapped rows for a single logical line.
+
+        :param l: line content.
+        :type l: :py:class:`TTkString`
+        :return: number of wrapped rows.
+        :rtype: int
+        '''
         if not self._enable:
             return 1
 
@@ -189,6 +268,11 @@ class TTkTextWrap():
         return cnt
 
     def _materializeToDataLine(self, line:int) -> None:
+        '''Materialize wrapping metadata up to a logical data line.
+
+        :param line: last logical line to materialize.
+        :type line: int
+        '''
         line = max(0, min(line, self.documentLineCount()-1))
         while self._processedLines <= line and self._processedLines < self.documentLineCount():
             dt = self._processedLines
@@ -199,6 +283,13 @@ class TTkTextWrap():
                 self._checkpoints.append((self._processedLines, self._lineStartY[-1]))
 
     def _estimateDataLineForScreenY(self, y:int) -> int:
+        '''Estimate a logical line index for a target screen row.
+
+        :param y: target screen row.
+        :type y: int
+        :return: estimated logical line index.
+        :rtype: int
+        '''
         y = max(0, y)
         if self._processedLines <= 0 or not self._checkpoints:
             return min(y, self.documentLineCount()-1)
@@ -214,6 +305,11 @@ class TTkTextWrap():
         return max(0, min(estLine, self.documentLineCount()-1))
 
     def _materializeToScreenY(self, y:int) -> None:
+        '''Materialize wrapping metadata so that row ``y`` is addressable.
+
+        :param y: target screen row.
+        :type y: int
+        '''
         y = max(0, y)
         # If requested row is far away, use checkpoints to estimate a nearby data-line anchor.
         # This does not skip exact wrapping, but it provides a stable and cheap hint path used
@@ -232,11 +328,31 @@ class TTkTextWrap():
                 self._checkpoints.append((self._processedLines, self._lineStartY[-1]))
 
     def ensureScreenRows(self, y:int, h:int=1, prefetch:int=0) -> None:
+        '''Ensure wrapped metadata exists for a viewport range.
+
+        :param y: first requested screen row.
+        :type y: int
+        :param h: viewport height.
+        :type h: int
+        :param prefetch: additional rows to prefetch.
+        :type prefetch: int
+        '''
         if h <= 0:
             return
         self._materializeToScreenY(y + h - 1 + max(0, prefetch))
 
     def screenRows(self, y:int, h:int, prefetch:int=0) -> List[_WrapSlice]:
+        '''Return wrapped slices visible in the requested viewport.
+
+        :param y: first screen row.
+        :type y: int
+        :param h: number of rows to extract.
+        :type h: int
+        :param prefetch: optional prefetch budget.
+        :type prefetch: int
+        :return: wrapped row slices.
+        :rtype: List[Tuple[int, Tuple[int, int]]]
+        '''
         if h <= 0:
             return []
         y = max(0, y)
@@ -267,10 +383,20 @@ class TTkTextWrap():
         return out
 
     def rewrap(self) -> None:
+        '''Invalidate every wrapping cache and emit ``wrapChanged``.'''
         self._invalidateAll()
         self.wrapChanged.emit()
 
     def dataToScreenPosition(self, line:int, pos:int) -> Tuple[int, int]:
+        '''Map a document position to wrapped screen coordinates.
+
+        :param line: logical line index.
+        :type line: int
+        :param pos: character position in the logical line.
+        :type pos: int
+        :return: ``(x, y)`` wrapped screen coordinates.
+        :rtype: Tuple[int, int]
+        '''
         if line < 0:
             return 0, 0
         self._materializeToDataLine(line)
@@ -285,6 +411,15 @@ class TTkTextWrap():
         return 0, y1
 
     def screenToDataPosition(self, x:int, y:int) -> Tuple[int, int]:
+        '''Map wrapped screen coordinates to a document position.
+
+        :param x: horizontal screen coordinate.
+        :type x: int
+        :param y: vertical screen coordinate.
+        :type y: int
+        :return: ``(line, pos)`` document position.
+        :rtype: Tuple[int, int]
+        '''
         self._materializeToScreenY(y)
         if self._processedLines <= 0:
             return 0, 0
@@ -298,13 +433,14 @@ class TTkTextWrap():
         return dt, pos
 
     def normalizeScreenPosition(self, x:int, y:int) -> Tuple[int, int]:
-        '''
-        Return the widget position of the closest editable char
-        in:
-        x,y = widget relative position
-        alignRightTab = if true, align the position to the right of the tab space
-        return:
-        x,y = widget relative position aligned to the close editable char
+        '''Snap a screen position to the nearest editable character cell.
+
+        :param x: horizontal widget-relative coordinate.
+        :type x: int
+        :param y: vertical widget-relative coordinate.
+        :type y: int
+        :return: normalized ``(x, y)`` screen position.
+        :rtype: Tuple[int, int]
         '''
         self._materializeToScreenY(y)
         if self._processedLines <= 0:
