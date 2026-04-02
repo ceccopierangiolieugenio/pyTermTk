@@ -340,7 +340,7 @@ class TTkTextWrap():
         lineY = self._lineStartY[line]
         out: List[_WrapSlice] = []
 
-        while len(out) < h and line < self._processedLines:
+        while len(out) < h and line < self._processedLines and line < len(self._textDocument._dataLines):
             ranges = self._wrapLine(line, self._textDocument._dataLines[line])
             start = max(0, y-lineY)
             for i in range(start, len(ranges)):
