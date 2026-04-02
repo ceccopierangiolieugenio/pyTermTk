@@ -129,19 +129,19 @@ class TTkTextWrap():
         self._wrapWidth = width
         self.rewrap()
 
-    def wordWrapMode(self) -> TTkK.WordWrapMode:
+    def wordWrapMode(self) -> TTkK.WrapMode:
         '''Return the active word-wrap mode.
 
         :return: current wrap mode.
-        :rtype: :py:class:`TTkK.WordWrapMode`
+        :rtype: :py:class:`TTkK.WrapMode`
         '''
         return self._wordWrapMode
 
-    def setWordWrapMode(self, mode:TTkK.WordWrapMode) -> None:
+    def setWordWrapMode(self, mode:TTkK.WrapMode) -> None:
         '''Set the word-wrap mode and invalidate cached wrapping.
 
         :param mode: new wrap mode.
-        :type mode: :py:class:`TTkK.WordWrapMode`
+        :type mode: :py:class:`TTkK.WrapMode`
         '''
         self._wordWrapMode = mode
         self.rewrap()
