@@ -238,34 +238,7 @@ class TTkTextWrap():
         :return: number of wrapped rows.
         :rtype: int
         '''
-        if not self._enable:
-            return 1
-
-        w = self._wrapWidth
-        if w <= 0:
-            return 1
-
-        cur = l
-        if not len(cur):
-            return 1
-
-        cnt = 0
-        while len(cur):
-            fl = cur.tab2spaces(self._tabSpaces)
-            if fl.termWidth() <= w:
-                cnt += 1
-                break
-            to = max(1,cur.tabCharPos(w,self._tabSpaces))
-            if self._wordWrapMode == TTkK.WordWrap:
-                s = str(cur)
-                newTo = to
-                while newTo and ( s[newTo] != ' ' and s[newTo] != '\t' ):
-                    newTo -= 1
-                if newTo:
-                    to = newTo
-            cnt += 1
-            cur = cur.substring(to)
-        return cnt
+        return len(self._wrapLine(0, l))
 
     def _materializeToDataLine(self, line:int) -> None:
         '''Materialize wrapping metadata up to a logical data line.
