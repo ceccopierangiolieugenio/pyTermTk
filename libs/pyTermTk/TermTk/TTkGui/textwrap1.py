@@ -110,7 +110,11 @@ class TTkTextWrap():
         :return: document line count.
         :rtype: int
         '''
-        return len(self._textDocument._dataLines)
+        return self._textDocument.lineCount()
+
+    def _documentDataLine(self, line:int) -> Optional[TTkString]:
+        '''Get one document line through the document thread-safe API.'''
+        return self._textDocument.dataLine(line)
 
     def wrapWidth(self) -> int:
         '''Return the current wrap width in terminal cells.
@@ -249,7 +253,9 @@ class TTkTextWrap():
         line = max(0, min(line, self.documentLineCount()-1))
         while self._processedLines <= line and self._processedLines < self.documentLineCount():
             dt = self._processedLines
-            rows = self._wrapLineCount(self._textDocument._dataLines[dt])
+            if (docLine := self._documentDataLine(dt)) is None:
+                break
+            rows = self._wrapLineCount(docLine)
             self._processedLines += 1
             self._lineStartY.append(self._lineStartY[-1] + rows)
             if self._processedLines % self._checkpointStep == 0:
@@ -294,7 +300,9 @@ class TTkTextWrap():
                 self._materializeToDataLine(min(estLine, self._processedLines + self._checkpointStep))
         while self._lineStartY[-1] <= y and self._processedLines < self.documentLineCount():
             dt = self._processedLines
-            rows = self._wrapLineCount(self._textDocument._dataLines[dt])
+            if (docLine := self._documentDataLine(dt)) is None:
+                break
+            rows = self._wrapLineCount(docLine)
             self._processedLines += 1
             self._lineStartY.append(self._lineStartY[-1] + rows)
             if self._processedLines % self._checkpointStep == 0:
@@ -329,7 +337,7 @@ class TTkTextWrap():
         if h <= 0:
             return []
         y = max(0, y)
-        self.ensureScreenRows(y, h, prefetch=prefetch)
+        self._materializeToScreenY(y + h - 1 + max(0, prefetch))
         if self._processedLines <= 0:
             return []
 
@@ -340,8 +348,10 @@ class TTkTextWrap():
         lineY = self._lineStartY[line]
         out: List[_WrapSlice] = []
 
-        while len(out) < h and line < self._processedLines and line < len(self._textDocument._dataLines):
-            ranges = self._wrapLine(line, self._textDocument._dataLines[line])
+        while len(out) < h and line < self._processedLines:
+            if (docLine := self._documentDataLine(line)) is None:
+                break
+            ranges = self._wrapLine(line, docLine)
             start = max(0, y-lineY)
             for i in range(start, len(ranges)):
                 out.append(ranges[i])
@@ -370,16 +380,22 @@ class TTkTextWrap():
         :return: ``(x, y)`` wrapped screen coordinates.
         :rtype: Tuple[int, int]
         '''
-        if line < 0:
+        docLines = self.documentLineCount()
+        line = min(line, docLines-1)
+        if line < 0 :
             return 0, 0
         self._materializeToDataLine(line)
         if line >= self._processedLines:
             return 0, max(0, self.size()-1)
         y1 = self._lineStartY[line]
-        ranges = self._wrapLine(line, self._textDocument._dataLines[line])
+        if (docLine := self._documentDataLine(line)) is None:
+            return 0, y1
+        ranges = self._wrapLine(line, docLine)
         for i, (dt, (fr, to)) in enumerate(ranges):
             if dt == line and fr <= pos <= to:
-                l = self._textDocument._dataLines[dt].substring(fr,pos).tab2spaces(self._tabSpaces)
+                if (docLineDt := self._documentDataLine(dt)) is None:
+                    return 0, y1
+                l = docLineDt.substring(fr,pos).tab2spaces(self._tabSpaces)
                 return l.termWidth(), y1+i
         return 0, y1
 
@@ -399,10 +415,12 @@ class TTkTextWrap():
         y = max(0, min(y, self._lineStartY[-1]-1))
         dt = max(0, min(bisect_right(self._lineStartY, y)-1, self._processedLines-1))
         lineY = self._lineStartY[dt]
-        ranges = self._wrapLine(dt, self._textDocument._dataLines[dt])
+        if (docLine := self._documentDataLine(dt)) is None:
+            return 0, 0
+        ranges = self._wrapLine(dt, docLine)
         idx = max(0, min(y-lineY, len(ranges)-1))
         _, (fr, to) = ranges[idx]
-        pos = fr+self._textDocument._dataLines[dt].substring(fr,to).tabCharPos(x,self._tabSpaces)
+        pos = fr+docLine.substring(fr,to).tabCharPos(x,self._tabSpaces)
         return dt, pos
 
     def normalizeScreenPosition(self, x:int, y:int) -> Tuple[int, int]:
@@ -421,11 +439,13 @@ class TTkTextWrap():
         y = max(0,min(y,self._lineStartY[-1]-1))
         dt = max(0, min(bisect_right(self._lineStartY, y)-1, self._processedLines-1))
         lineY = self._lineStartY[dt]
-        ranges = self._wrapLine(dt, self._textDocument._dataLines[dt])
+        if (docLine := self._documentDataLine(dt)) is None:
+            return 0, y
+        ranges = self._wrapLine(dt, docLine)
         idx = max(0, min(y-lineY, len(ranges)-1))
         _, (fr, to) = ranges[idx]
         x = max(0,x)
-        s = self._textDocument._dataLines[dt].substring(fr,to)
+        s = docLine.substring(fr,to)
         x = s.tabCharPos(x, self._tabSpaces)
         x = s.substring(0,x).tab2spaces(self._tabSpaces).termWidth()
         return x, y

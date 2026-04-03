@@ -91,3 +91,40 @@ def test_size_estimate_grows_with_partial_materialization():
     assert initial >= 50
     assert after_first >= 50
     assert after_more >= after_first
+
+
+def test_data_to_screen_position_safe_after_document_shrink_before_invalidate():
+    doc, tw = _mk_wrap('line0\nline1\nline2', width=4)
+
+    tw.ensureScreenRows(0, 30)
+    assert tw._processedLines == 3
+
+    # Simulate signal ordering where the document shrinks before wrap invalidation runs.
+    doc.setText('only-one-line')
+
+    x, y = tw.dataToScreenPosition(2, 0)
+
+    assert x >= 0
+    assert y >= 0
+
+    doc.clear()
+
+    x, y = tw.dataToScreenPosition(2, 0)
+
+    assert x >= 0
+    assert y >= 0
+
+
+def test_screen_to_data_position_safe_after_document_shrink_with_stale_cache():
+    doc, tw = _mk_wrap('line0\nline1\nline2', width=4)
+
+    tw.ensureScreenRows(0, 30)
+    assert tw._processedLines == 3
+
+    # Shrink the document while wrap cache still contains stale processed lines.
+    doc.setText('x')
+
+    line, pos = tw.screenToDataPosition(0, 2)
+
+    assert line >= 0
+    assert pos >= 0
