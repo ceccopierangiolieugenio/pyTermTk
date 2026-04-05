@@ -45,6 +45,7 @@ class TTkTextWrap():
         '_checkpoints', '_checkpointStep',
         '_wordWrapMode', '_wrapWidth',
         '_enable',
+        '_wrapCache',
         # Signals
         'wrapChanged'
         )
@@ -66,6 +67,7 @@ class TTkTextWrap():
         self._checkpoints: List[_Checkpoint] = [(0,0)] # (processedDataLine, wrappedRows)
         self._tabSpaces: int = 4
         self._wrapWidth: int = 80
+        self._wrapCache: dict = {}
         self._wordWrapMode = TTkK.WrapAnywhere
         if not document:
             document = TTkTextDocument()
@@ -156,6 +158,7 @@ class TTkTextWrap():
         self._processedLines = 0
         self._lineStartY = [0]
         self._checkpoints = [(0,0)]
+        self._wrapCache = {}
 
     def _invalidateFromDataLine(self, line:int):
         '''Invalidate cache from the given data line onward.
@@ -175,6 +178,7 @@ class TTkTextWrap():
         self._lineStartY = self._lineStartY[:line+1]
         idx = bisect_right(self._checkpoints, (line, 10**18))
         self._checkpoints = self._checkpoints[:idx]
+        self._wrapCache = {k: v for k, v in self._wrapCache.items() if k < line}
         if self._checkpoints[-1] != (line, y):
             self._checkpoints.append((line, y))
 
@@ -201,6 +205,8 @@ class TTkTextWrap():
         :return: list of slices as ``(line, (from, to))`` tuples.
         :rtype: List[Tuple[int, Tuple[int, int]]]
         '''
+        if dt in self._wrapCache:
+            return self._wrapCache[dt]
         out: List[_WrapSlice] = []
         if not self._enable:
             out.append((dt,(0,len(l)+1)))
@@ -232,6 +238,7 @@ class TTkTextWrap():
             out.append((dt,(fr,fr+to)))
             cur = cur.substring(to)
             fr += to
+        self._wrapCache[dt] = out
         return out
 
     def _wrapLineCount(self, l:TTkString) -> int:
@@ -255,7 +262,7 @@ class TTkTextWrap():
             dt = self._processedLines
             if (docLine := self._documentDataLine(dt)) is None:
                 break
-            rows = self._wrapLineCount(docLine)
+            rows = len(self._wrapLine(dt, docLine))
             self._processedLines += 1
             self._lineStartY.append(self._lineStartY[-1] + rows)
             if self._processedLines % self._checkpointStep == 0:
@@ -302,7 +309,7 @@ class TTkTextWrap():
             dt = self._processedLines
             if (docLine := self._documentDataLine(dt)) is None:
                 break
-            rows = self._wrapLineCount(docLine)
+            rows = len(self._wrapLine(dt, docLine))
             self._processedLines += 1
             self._lineStartY.append(self._lineStartY[-1] + rows)
             if self._processedLines % self._checkpointStep == 0:

@@ -341,3 +341,65 @@ def test_setWrapWidth_resets_processed_lines_cache():
     tw.setWrapWidth(10)
 
     assert tw._processedLines == 0
+
+
+# ---------------------------------------------------------------------------
+# _wrapCache behaviour
+# ---------------------------------------------------------------------------
+
+def test_wrapLine_cache_returns_same_object_on_second_call():
+    doc, tw = _mk_wrap('abcdefghij\nxyz', width=4)
+    tw.ensureScreenRows(0, 10)
+
+    line0 = doc.dataLine(0)
+    first = tw._wrapLine(0, line0)
+    second = tw._wrapLine(0, line0)
+
+    assert first is second
+
+
+def test_invalidateAll_clears_wrap_cache():
+    _, tw = _mk_wrap('abcdefghij\nxyz', width=4)
+    tw.ensureScreenRows(0, 10)
+    assert len(tw._wrapCache) > 0
+
+    tw._invalidateAll()
+
+    assert tw._wrapCache == {}
+
+
+def test_invalidateFromDataLine_evicts_lines_ge_threshold():
+    _, tw = _mk_wrap('line0-abcdefghij\nline1-abcdefghij\nline2-abcdefghij', width=6)
+    tw.ensureScreenRows(0, 30)
+    assert 0 in tw._wrapCache
+    assert 1 in tw._wrapCache
+    assert 2 in tw._wrapCache
+
+    tw._invalidateFromDataLine(1)
+
+    assert 0 in tw._wrapCache
+    assert 1 not in tw._wrapCache
+    assert 2 not in tw._wrapCache
+
+
+def test_rewrap_clears_wrap_cache():
+    _, tw = _mk_wrap('abcdefghij', width=4)
+    tw.ensureScreenRows(0, 10)
+    assert len(tw._wrapCache) > 0
+
+    tw.rewrap()
+
+    assert tw._wrapCache == {}
+
+
+def test_screenRows_reuses_cached_wrapLine_results():
+    doc, tw = _mk_wrap('abcdefghij\nxyz', width=4)
+    tw.ensureScreenRows(0, 10)
+
+    cached_line0 = tw._wrapCache.get(0)
+    assert cached_line0 is not None
+
+    rows = tw.screenRows(0, 4)
+
+    assert tw._wrapCache[0] is cached_line0
+    assert rows[0] == (0, (0, 4))

@@ -98,7 +98,7 @@ def demoTextEdit(root=None, document=None):
 
     te.append(ttk.TTkString("Random TTkString Input Test\n",ttk.TTkColor.UNDERLINE+ttk.TTkColor.BOLD))
     _sss = ttk.TTkString('\n').join([ getUtfColoredSentence(3,10) for _ in range(500)])
-    for _ in range(10):
+    for _ in range(20):
         te.append(_sss)
 
     te.append(ttk.TTkString("-- The Very END --",ttk.TTkColor.UNDERLINE+ttk.TTkColor.BOLD))
@@ -262,11 +262,7 @@ def main():
     args = parser.parse_args()
     windowed = args.w
 
-    root = ttk.TTk(sigmask=(
-                    ttk.TTkTerm.Sigmask.CTRL_Q |
-                    ttk.TTkTerm.Sigmask.CTRL_S |
-                    ttk.TTkTerm.Sigmask.CTRL_Z |
-                    ttk.TTkTerm.Sigmask.CTRL_C ))
+    root = ttk.TTk()
     if windowed:
         rootTree = ttk.TTkWindow(parent=root,pos = (0,0), size=(70,40), title="Test Text Edit", layout=ttk.TTkGridLayout(), border=True)
     else:
