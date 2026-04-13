@@ -173,7 +173,9 @@ class TTkTextEditRuler(TTkAbstractScrollView):
         ox = 0
         for mk in self._markRuler:
             if self._textWrap:
-                for i, (dt, (fr, _)) in enumerate(rows):
+                for i, row in enumerate(rows):
+                    dt = row.line
+                    fr = row.start
                     if not fr:
                         canvas.drawText(pos=(ox,i), text=mk.getTTkStr(dt+off))
             else:
