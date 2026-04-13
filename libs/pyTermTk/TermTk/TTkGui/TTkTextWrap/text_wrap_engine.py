@@ -156,8 +156,6 @@ class _WrapEngine_Interface():
         :type y: int
         :param h: number of rows to retrieve.
         :type h: int
-        :param prefetch: optional extra rows to compute ahead.
-        :type prefetch: int
 
         :return: list of wrapped row descriptors.
         :rtype: List[:py:class:`_WrapLine`]
