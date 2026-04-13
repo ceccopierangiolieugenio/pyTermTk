@@ -22,9 +22,7 @@
 
 __all__ = ['TTkTextWrap']
 
-from enum import Enum, auto
-from bisect import bisect_right
-from dataclasses import dataclass
+
 from typing import List, Optional, Tuple
 
 from TermTk.TTkCore.constant import TTkK
@@ -38,9 +36,6 @@ from .text_wrap_engine_no_wrap import _WrapEngine_NoWrap
 from .text_wrap_engine_vim_wrap import _WrapEngine_VimWrap
 from .text_wrap_engine_fast_wrap import _WrapEngine_FastWrap
 from .text_wrap_engine_full_wrap import _WrapEngine_FullWrap
-
-_WrapSlice = Tuple[int, Tuple[int, int]]
-_Checkpoint = Tuple[int, int]
 
 class TTkTextWrap():
     '''TTkTextWrap:
@@ -162,7 +157,7 @@ class TTkTextWrap():
         :type h: int
 
         :return: wrapped row slices.
-        :rtype: List[Tuple[int, Tuple[int, int]]]
+        :rtype: List[:py:class:`_WrapLine`]
         '''
         if h <= 0:
             return []
