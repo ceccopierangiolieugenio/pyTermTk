@@ -23,13 +23,9 @@
 __all__:dict = []
 
 from bisect import bisect_left, bisect_right
-from dataclasses import dataclass
-from typing import List, Optional, Tuple
+from typing import List, Tuple
 
-from TermTk.TTkCore.constant import TTkK
-from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
-from TermTk.TTkCore.string import TTkString
-from TermTk.TTkGui.textdocument import TTkTextDocument
+from TermTk.TTkCore.signal import pyTTkSlot
 
 from .text_wrap import _WrapEngine_Interface
 from .text_wrap_data import _WrapLine, _WrapState
