@@ -52,13 +52,6 @@ class TTkTextWrap():
         '_wrapState',
         '_wrapEngine',
 
-        '_lines',
-        '_processedLines', '_lineStartY',
-        '_checkpoints', '_checkpointStep',
-        '_wordWrapMode',
-        '_enable',
-        '_wrapCache',
-
         # Signals
         'wrapChanged'
         )
@@ -84,14 +77,6 @@ class TTkTextWrap():
         )
         self._wrapEngine = _WrapEngine_NoWrap(state=self._wrapState)
 
-        self._enable: bool = False
-        self._lines: List[_WrapSlice] = [(0,(0,0))]
-        self._processedLines: int = 0
-        self._lineStartY: List[int] = [0]
-        self._checkpointStep: int = 256
-        self._checkpoints: List[_Checkpoint] = [(0,0)] # (processedDataLine, wrappedRows)
-        self._wrapCache: dict = {}
-
     def setDocument(self, document:TTkTextDocument) -> None:
         '''Attach a new document and reset wrapping caches.
 
@@ -113,14 +98,6 @@ class TTkTextWrap():
         self._wrapEngine.clean()
         self._wrapEngine = engine_class(state=self._wrapState)
         self.rewrap()
-
-    def disable(self) -> None:
-        '''Disable wrapping and expose each data line as one screen row.'''
-        self._enable = False
-
-    def enable(self) -> None:
-        '''Enable wrapping according to current width and mode.'''
-        self._enable = True
 
     def size(self) -> int:
         '''Return the estimated wrapped row count.
