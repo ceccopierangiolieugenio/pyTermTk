@@ -57,9 +57,8 @@ class TTkTextWrap():
     def __init__(self, document:TTkTextDocument) -> None:
         '''Create a wrap manager bound to a text document.
 
-        :param document: optional source document; when omitted a new
-                         :py:class:`TTkTextDocument` is created.
-        :type document: Optional[:py:class:`TTkTextDocument`]
+        :param document: the source text document to wrap.
+        :type document: :py:class:`TTkTextDocument`
         '''
         # signals
         self.wrapChanged = pyTTkSignal()
