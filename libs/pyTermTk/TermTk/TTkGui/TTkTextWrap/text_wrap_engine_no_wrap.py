@@ -39,7 +39,7 @@ class _WrapEngine_NoWrap(_WrapEngine_Interface):
         text_document = self._wrapState.textDocument
         data_line = text_document.dataLine(line)
         if 0 <= pos <= len(data_line) + 1:
-            l = text_document.dataLine(line).substring(0,pos).tab2spaces(self._wrapState.tabSpaces)
+            l = data_line.substring(0,pos).tab2spaces(self._wrapState.tabSpaces)
             return l.termWidth(), line
         return 0,0
 
