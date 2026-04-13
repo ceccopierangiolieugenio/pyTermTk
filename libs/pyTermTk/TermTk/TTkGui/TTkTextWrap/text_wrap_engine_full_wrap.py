@@ -23,25 +23,33 @@
 __all__:list = []
 
 from bisect import bisect_left, bisect_right
-from typing import List, Tuple
-
-from TermTk.TTkCore.signal import pyTTkSlot
+from typing import List, Tuple, Optional
 
 from .text_wrap import _WrapEngine_Interface
-from .text_wrap_data import _WrapLine, _WrapState
+from .text_wrap_data import _WrapLine, _ReWrapData
 
 class _BisectKeyLine:
     '''Helper to bisect _WrapLine list by the .line attribute.'''
     __slots__ = ('_buf',)
     _buf:List[_WrapLine]
     def __init__(self, buf:List[_WrapLine]):
-        '''Store the wrapped-line buffer used for key-based bisection.'''
+        '''Store the wrapped-line buffer used for key-based bisection.
+
+        :param buf: wrapped-row buffer.
+        :type buf: List[:py:class:`_WrapLine`]
+        '''
         self._buf = buf
     def __len__(self) -> int:
         '''Return the number of wrapped rows available for searching.'''
         return len(self._buf)
     def __getitem__(self, i) -> int:
-        '''Expose wrapped row line indices for ``bisect`` operations.'''
+        '''Expose wrapped-row line indices for ``bisect`` operations.
+
+        :param i: row index in the wrapped buffer.
+        :type i: int
+        :return: source document line index for the wrapped row.
+        :rtype: int
+        '''
         return self._buf[i].line
 
 class _WrapEngine_FullWrap(_WrapEngine_Interface):
@@ -51,14 +59,13 @@ class _WrapEngine_FullWrap(_WrapEngine_Interface):
     _buffer: List[_WrapLine]
 
     def __init__(self, state):
-        '''Initialize and subscribe to document content changes.'''
+        '''Initialize the internal wrapped-row buffer.
+
+        :param state: shared wrap state.
+        :type state: :py:class:`_WrapState`
+        '''
         self._buffer = []
         super().__init__(state)
-        self._wrapState.textDocument.contentsChange.connect(self.rewrap)
-
-    def clean(self):
-        '''Disconnect internal slots before replacing this engine instance.'''
-        self._wrapState.textDocument.contentsChange.disconnect(self.rewrap)
 
     def size(self) -> int:
         '''Return the number of wrapped rows currently cached.
@@ -68,16 +75,35 @@ class _WrapEngine_FullWrap(_WrapEngine_Interface):
         '''
         return len(self._buffer)
 
-    @pyTTkSlot()
-    def rewrap(self) -> None:
-        '''Rebuild the entire wrapped-row buffer from the document.'''
-        self._buffer = []
+    def rewrap(self, data: Optional[_ReWrapData]=None) -> None:
+        '''Update wrapped rows for a full or incremental document change.
 
+        :param data: optional incremental change descriptor. If omitted,
+                     the full wrapped buffer is rebuilt.
+        :type data: Optional[:py:class:`_ReWrapData`]
+        '''
         if not (w := self._wrapState.size):
             return
 
-        for i,l in enumerate(self._wrapState.textDocument._dataLines):
-            self._buffer.extend(self._wrapLine(w,i,l))
+        if isinstance(data, _ReWrapData):
+            line = data.line
+            added = data.added
+            removed = data.removed
+            changed:List[_WrapLine] = []
+
+            keys = _BisectKeyLine(self._buffer)
+            lo = bisect_left(keys, line)
+            hi = bisect_right(keys, line+removed-1, lo)
+
+            for i,l in enumerate(self._wrapState.textDocument._dataLines[line:line+added], start=line):
+                changed.extend(self._wrapLine(w,i,l))
+            for row in self._buffer[hi:]:
+                row.line += added - removed
+            self._buffer[lo:hi] = changed
+        else:
+            self._buffer = []
+            for i,l in enumerate(self._wrapState.textDocument._dataLines):
+                self._buffer.extend(self._wrapLine(w,i,l))
 
     def dataToScreenPosition(self, line:int, pos:int) -> Tuple[int, int]:
         '''Map source coordinates to screen coordinates using the full buffer.

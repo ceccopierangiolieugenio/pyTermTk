@@ -48,9 +48,8 @@ def _build_lines(lines_count: int = 2500, words_per_line: int = 90) -> list[str]
 
 
 def _mk_wrapper(doc: ttk.TTkTextDocument, mode: ttk.TTkK.WrapMode, width: int = 36) -> ttk.TTkTextWrap:
-    tw = ttk.TTkTextWrap()
-    tw.setDocument(doc)
-    tw.enable()
+    tw = ttk.TTkTextWrap(document=doc)
+    tw.setEngine(ttk.TTkK.WrapEngine.FullWrap)
     tw.setWrapWidth(width)
     tw.setWordWrapMode(mode)
     return tw

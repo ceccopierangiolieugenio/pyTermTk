@@ -22,10 +22,10 @@
 
 __all__:list = []
 
-from typing import List, Tuple
+from typing import List, Optional, Tuple
 
 from .text_wrap import _WrapEngine_Interface
-from .text_wrap_data import _WrapLine, _WrapState
+from .text_wrap_data import _ReWrapData, _WrapLine, _WrapState
 
 
 class _WrapEngine_NoWrap(_WrapEngine_Interface):
@@ -38,8 +38,12 @@ class _WrapEngine_NoWrap(_WrapEngine_Interface):
         '''
         return len(self._wrapState.textDocument._dataLines)
 
-    def rewrap(self) -> None:
-        '''No-op for no-wrap mode.'''
+    def rewrap(self, data: Optional[_ReWrapData]=None) -> None:
+        '''No-op for no-wrap mode.
+
+        :param data: optional change descriptor, ignored.
+        :type data: Optional[:py:class:`_ReWrapData`]
+        '''
         pass
 
     def dataToScreenPosition(self, line:int, pos:int) -> Tuple[int, int]:

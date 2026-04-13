@@ -29,6 +29,21 @@ from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkGui.textdocument import TTkTextDocument
 
 @dataclass
+class _ReWrapData():
+    '''Incremental rewrap change descriptor.
+
+    :param line: first changed line in the source document.
+    :type line: int
+    :param added: number of lines inserted at ``line``.
+    :type added: int
+    :param removed: number of lines removed at ``line``.
+    :type removed: int
+    '''
+    line:int
+    added:int
+    removed:int
+
+@dataclass
 class _WrapLine():
     '''A wrapped row fragment mapped to the source document line.
 

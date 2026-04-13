@@ -72,7 +72,7 @@ class TTkTextEditView(TTkAbstractScrollView):
         :type format: :py:class:`TTkK.SelectionFormat`
         :param color: The color used to specify the foreground/background color/mod for the selection.
         :type color: :py:class:`TTkColor`
-        :param cursor: A cursor that contains a selection in a :py:class:`QTextDocument`.
+        :param cursor: A cursor that contains a selection in a :py:class:`TTkTextDocument`.
         :type cursor: :py:class:`TTkTextCursor`
         '''
 
@@ -87,7 +87,7 @@ class TTkTextEditView(TTkAbstractScrollView):
 
         def color(self) -> TTkColor:
              '''
-             This propery holds the color that is used for the selection.
+               This property holds the color that is used for the selection.
 
              :rtype: :py:class:`TTkColor`
              '''
@@ -104,7 +104,7 @@ class TTkTextEditView(TTkAbstractScrollView):
 
         def format(self) -> TTkK.SelectionFormat:
              '''
-             This propery holds the format that is used to specify the type of selection.
+               This property holds the format that is used to specify the type of selection.
 
              :rtype: :py:class:`TTkK.SelectionFormat`
              '''
@@ -121,7 +121,7 @@ class TTkTextEditView(TTkAbstractScrollView):
 
         def cursor(self) -> TTkTextCursor:
              '''
-             This propery holds the fcursor that contains a selection in a :py:class:`QTextDocument`.
+               This property holds the cursor that contains a selection in a :py:class:`TTkTextDocument`.
 
              :rtype: :py:class:`TTkTextCursor`
              '''
@@ -235,10 +235,7 @@ class TTkTextEditView(TTkAbstractScrollView):
                  document:Optional[TTkTextDocument]=None,
                  **kwargs) -> None:
         '''
-        :param lineNumber: Show the line number on the left, defaults to **False**
-        :type lineNumber: bool, optional
-
-        :param readOnly: In a read-only text edit the user can only navigate through the text and select text; modifying the text is not possible, defaults to **True**
+        :param readOnly: In a read-only text edit the user can only navigate through the text and select text; modifying the text is not possible, defaults to **False**
         :type readOnly: bool, optional
 
         :param multiLine: In a multiline text edit the user can split the text in multiple lines, defaults to **True**
@@ -260,7 +257,7 @@ class TTkTextEditView(TTkAbstractScrollView):
         self._extraSelections:List[TTkTextEditView.ExtraSelection] = []
         self._hsize:int = 0
         self._lastWrapUsed  = 0
-        self._lineWrapMode = TTkK.NoWrap
+        self._lineWrapMode = TTkK.LineWrapMode.NoWrap
         self._replace = False
         self._clipboard = TTkClipboard()
         self._setDocument(document)
@@ -300,9 +297,9 @@ class TTkTextEditView(TTkAbstractScrollView):
 
     def toAnsi(self) -> str:
         '''
-        Returns the text of the text edit as ANSI test string.
+        Returns the text of the text edit as ANSI text string.
 
-        This string will insluce the ANSI escape codes for color and text formatting.
+        This string will include the ANSI escape codes for color and text formatting.
 
         :rtype: str
         '''
@@ -486,29 +483,30 @@ class TTkTextEditView(TTkAbstractScrollView):
         '''
         This property holds the line wrap mode
 
-        The default mode is :py:class:`TTkK.LineWrapMode.WidgetWidth` which
-        causes words to be wrapped at the right edge of the text edit.
-        Wrapping occurs at whitespace, keeping whole words intact.
+        The default mode is :py:class:`TTkK.LineWrapMode.NoWrap`.
 
         :rtype: :py:class:`TTkK.LineWrapMode`
         '''
         return self._lineWrapMode
 
-    def setLineWrapMode(self, mode:TTkK.LineWrapMode):
+    def setLineWrapMode(self, mode:TTkK.LineWrapMode, wrapEngine:TTkK.WrapEngine=TTkK.WrapEngine.FullWrap) -> None:
         '''
         Set the wrapping method
 
         :param mode: the line wrap mode
         :type mode: :py:class:`TTkK.LineWrapMode`
+        :param wrapEngine: the wrap engine used when wrapping is enabled
+        :type wrapEngine: :py:class:`TTkK.WrapEngine`
         '''
+        if self._lineWrapMode == mode:
+            return
         self._lineWrapMode = mode
         if mode == TTkK.LineWrapMode.NoWrap:
-            self._textWrap.setEngine(TTkK.WrapEngine.NoWrap)
+            self._textWrap.setEngine(wrapEngine=TTkK.WrapEngine.NoWrap)
+        elif mode == TTkK.LineWrapMode.WidgetWidth:
+            self._textWrap.setEngine(wrapEngine=wrapEngine, width=self.width())
         else:
-            self._textWrap.setEngine(TTkK.WrapEngine.FullWrap)
-            if mode == TTkK.LineWrapMode.WidgetWidth:
-                self._textWrap.setWrapWidth(self.width())
-        self._textWrap.rewrap()
+            self._textWrap.setEngine(wrapEngine=wrapEngine)
 
     @pyTTkSlot(TTkStringType)
     def setText(self, text:TTkStringType) -> None:
@@ -561,12 +559,12 @@ class TTkTextEditView(TTkAbstractScrollView):
     @pyTTkSlot(TTkStringType)
     def find(self, exp:TTkStringType) -> bool:
         '''
-        Search the match word in the document and place the cursor at the beginning of the matched word.
+        Search for text in the document and place the cursor at the beginning of the first match.
 
-        :param exp: The match word
+        :param exp: the expression to find
         :type exp: str or :py:class:`TTkString`
 
-        :return: `True` if the operation is successful, `False` otherwise
+        :return: ``True`` if the operation is successful, ``False`` otherwise
         :rtype: bool
         '''
         if not (cursor := self._textDocument.find(exp)):
@@ -612,7 +610,6 @@ class TTkTextEditView(TTkAbstractScrollView):
 
     @pyTTkSlot()
     def _documentChanged(self) -> None:
-        self._rewrap()
         self.textChanged.emit()
 
     def _rewrap(self) -> None:

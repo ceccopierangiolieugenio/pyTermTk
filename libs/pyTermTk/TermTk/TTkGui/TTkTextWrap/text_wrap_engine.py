@@ -22,13 +22,13 @@
 
 __all__:list = []
 
-from typing import List, Tuple
+from dataclasses import dataclass
+from typing import List, Tuple, Optional
 
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.string import TTkString
 
-from .text_wrap_data import _WrapLine, _WrapState
-
+from .text_wrap_data import _WrapLine, _WrapState, _ReWrapData
 
 class _WrapEngine_Interface():
     '''Base interface for text wrap engines.
@@ -57,15 +57,6 @@ class _WrapEngine_Interface():
         '''
         self._wrapState = state
 
-    def clean(self):
-        '''Release any resources acquired by this engine.
-
-        Subclasses that connect to document signals (e.g.
-        :py:class:`_WrapEngine_FullWrap`) override this to disconnect
-        before the engine is replaced.
-        '''
-        pass
-
     def size(self) -> int:
         '''Return the total number of wrapped screen rows.
 
@@ -78,7 +69,7 @@ class _WrapEngine_Interface():
         '''
         raise NotImplementedError()
 
-    def rewrap(self) -> None:
+    def rewrap(self, data: Optional[_ReWrapData]=None) -> None:
         '''Recompute wrapping for the entire document.
 
         Called when the wrap width, word-wrap mode, or the underlying

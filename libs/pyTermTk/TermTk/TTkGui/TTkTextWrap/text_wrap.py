@@ -26,11 +26,10 @@ __all__ = ['TTkTextWrap']
 from typing import List, Optional, Tuple
 
 from TermTk.TTkCore.constant import TTkK
-from TermTk.TTkCore.signal import pyTTkSignal
-from TermTk.TTkCore.string import TTkString
+from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
 from TermTk.TTkGui.textdocument import TTkTextDocument
 
-from .text_wrap_data import _WrapLine, _WrapState
+from .text_wrap_data import _WrapLine, _WrapState, _ReWrapData
 from .text_wrap_engine import _WrapEngine_Interface
 from .text_wrap_engine_no_wrap import _WrapEngine_NoWrap
 from .text_wrap_engine_vim_wrap import _WrapEngine_VimWrap
@@ -53,6 +52,13 @@ class TTkTextWrap():
 
     _wrapState: _WrapState
     _wrapEngine: _WrapEngine_Interface
+    wrapChanged: pyTTkSignal
+    '''
+    This signal is emitted whenever wrapped line mapping changes.
+
+    It is triggered after incremental updates from document edits and after
+    explicit full rewrap requests.
+    '''
 
     def __init__(self, document:TTkTextDocument) -> None:
         '''Create a wrap manager bound to a text document.
@@ -70,21 +76,20 @@ class TTkTextWrap():
             wordWrapMode=TTkK.WrapAnywhere,
         )
         self._wrapEngine = _WrapEngine_NoWrap(state=self._wrapState)
+        document.contentsChange.connect(self._documentContentsChange)
 
-    def setDocument(self, document:TTkTextDocument) -> None:
-        '''Attach a new document and reset wrapping caches.
+    @pyTTkSlot(int,int,int)
+    def _documentContentsChange(self, line:int, removed:int, added:int) -> None:
+        self._wrapEngine.rewrap(data=_ReWrapData(line,added,removed))
+        self.wrapChanged.emit()
 
-        :param document: source text document.
-        :type document: :py:class:`TTkTextDocument`
-        '''
-        self._wrapState.textDocument = document
-        self.rewrap()
-
-    def setEngine(self, engine:TTkK.WrapEngine) -> None:
+    def setEngine(self, engine:TTkK.WrapEngine, width:Optional[int]=None) -> None:
         '''Switch the wrapping backend implementation.
 
         :param engine: engine selector from :py:class:`TTkK.WrapEngine`.
         :type engine: :py:class:`TTkK.WrapEngine`
+        :param width: optional wrap width applied before switching engines.
+        :type width: Optional[int]
         '''
         engine_class = {
             TTkK.WrapEngine.FastWrap : _WrapEngine_FastWrap,
@@ -94,7 +99,8 @@ class TTkTextWrap():
         }.get(engine, _WrapEngine_NoWrap)
         if isinstance(self._wrapEngine, engine_class):
             return
-        self._wrapEngine.clean()
+        if width is not None:
+            self._wrapState.size = width
         self._wrapEngine = engine_class(state=self._wrapState)
         self.rewrap()
 
@@ -164,7 +170,11 @@ class TTkTextWrap():
         return self._wrapEngine.screenRows(y=y,h=h)
 
     def rewrap(self) -> None:
-        '''Force a complete wrap refresh and emit ``wrapChanged``.'''
+        '''Force a complete wrap refresh and emit ``wrapChanged``.
+
+        This invalidates any incremental wrapping cache maintained by the
+        active engine.
+        '''
         self._wrapEngine.rewrap()
         self.wrapChanged.emit()
 

@@ -23,13 +23,21 @@
 __all__:list = []
 
 from dataclasses import dataclass
-from typing import List, Tuple
+from typing import List, Optional, Tuple
 from .text_wrap import _WrapEngine_Interface
-from .text_wrap_data import _WrapLine, _WrapState
+from .text_wrap_data import _ReWrapData, _WrapLine, _WrapState
 
 @dataclass
 class _LastWindow():
-    '''Cache of the last wrapped viewport window.'''
+    '''Cache of the last wrapped viewport window.
+
+    :param y: first wrapped row of the cached viewport.
+    :type y: int
+    :param h: viewport height used to build the cache.
+    :type h: int
+    :param buffer: cached wrapped-row descriptors.
+    :type buffer: List[:py:class:`_WrapLine`]
+    '''
     y:int
     h:int
     buffer:List[_WrapLine]
@@ -41,7 +49,11 @@ class _WrapEngine_VimWrap(_WrapEngine_Interface):
     _lastWindow: _LastWindow
 
     def __init__(self, state):
-        '''Initialize the viewport cache for lazy wrapping.'''
+        '''Initialize the viewport cache for lazy wrapping.
+
+        :param state: shared wrap state.
+        :type state: :py:class:`_WrapState`
+        '''
         self._lastWindow = _LastWindow(y=0,h=0,buffer=[])
         super().__init__(state)
 
@@ -53,8 +65,12 @@ class _WrapEngine_VimWrap(_WrapEngine_Interface):
         '''
         return len(self._wrapState.textDocument._dataLines)
 
-    def rewrap(self) -> None:
-        '''No-op; wrapping is generated on demand by viewport.'''
+    def rewrap(self, data: Optional[_ReWrapData]=None) -> None:
+        '''No-op; wrapping is generated on demand by viewport.
+
+        :param data: optional change descriptor, ignored.
+        :type data: Optional[:py:class:`_ReWrapData`]
+        '''
         pass
 
     def dataToScreenPosition(self, line:int, pos:int) -> Tuple[int, int]:
