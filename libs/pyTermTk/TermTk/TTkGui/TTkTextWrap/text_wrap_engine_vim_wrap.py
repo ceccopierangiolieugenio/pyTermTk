@@ -48,7 +48,6 @@ class _WrapEngine_VimWrap(_WrapEngine_Interface):
     def __init__(self, state):
         self._lastWindow = _LastWindow(y=0,h=0,buffer=[])
         super().__init__(state)
-        self._wrapState.textDocument.contentsChange.connect(self.rewrap)
 
     def size(self) -> int:
         return len(self._wrapState.textDocument._dataLines)
