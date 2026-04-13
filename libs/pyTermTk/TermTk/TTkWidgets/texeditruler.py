@@ -149,7 +149,6 @@ class TTkTextEditRuler(TTkAbstractScrollView):
         w, h = self.size()
         off  = self._startingNumber
         leftOff = sum(self._markRulerSizes)
-        sum(self._markRulerSizes)
         rows = self._textWrap.screenRows(oy, h)
 
         style = self.currentStyle()
