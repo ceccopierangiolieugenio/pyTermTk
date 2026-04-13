@@ -28,29 +28,6 @@ from typing import List, Tuple, Optional
 from .text_wrap import _WrapEngine_Interface
 from .text_wrap_data import _WrapLine, _ReWrapData
 
-class _BisectKeyLine:
-    '''Helper to bisect _WrapLine list by the .line attribute.'''
-    __slots__ = ('_buf',)
-    _buf:List[_WrapLine]
-    def __init__(self, buf:List[_WrapLine]):
-        '''Store the wrapped-line buffer used for key-based bisection.
-
-        :param buf: wrapped-row buffer.
-        :type buf: List[:py:class:`_WrapLine`]
-        '''
-        self._buf = buf
-    def __len__(self) -> int:
-        '''Return the number of wrapped rows available for searching.'''
-        return len(self._buf)
-    def __getitem__(self, i) -> int:
-        '''Expose wrapped-row line indices for ``bisect`` operations.
-
-        :param i: row index in the wrapped buffer.
-        :type i: int
-        :return: source document line index for the wrapped row.
-        :rtype: int
-        '''
-        return self._buf[i].line
 
 class _WrapEngine_FullWrap(_WrapEngine_Interface):
     '''Eager wrap engine that maintains a full wrapped-row buffer.'''
@@ -91,9 +68,8 @@ class _WrapEngine_FullWrap(_WrapEngine_Interface):
             removed = data.removed
             changed:List[_WrapLine] = []
 
-            keys = _BisectKeyLine(self._buffer)
-            lo = bisect_left(keys, line)
-            hi = bisect_right(keys, line+removed-1, lo)
+            lo = bisect_left(self._buffer, line, key=lambda _wl:_wl.line)
+            hi = bisect_right(self._buffer, line+removed-1, lo, key=lambda _wl:_wl.line)
 
             for i,l in enumerate(self._wrapState.textDocument._dataLines[line:line+added], start=line):
                 changed.extend(self._wrapLine(w,i,l))
@@ -117,9 +93,8 @@ class _WrapEngine_FullWrap(_WrapEngine_Interface):
         :rtype: Tuple[int, int]
         '''
         text_document = self._wrapState.textDocument
-        keys = _BisectKeyLine(self._buffer)
-        lo = bisect_left(keys, line)
-        hi = bisect_right(keys, line, lo)
+        lo = bisect_left(self._buffer, line, key=lambda _wl:_wl.line)
+        hi = bisect_right(self._buffer, line, lo, key=lambda _wl:_wl.line)
         for i in range(lo, hi):
             row = self._buffer[i]
             if row.start <= pos <= row.stop:
