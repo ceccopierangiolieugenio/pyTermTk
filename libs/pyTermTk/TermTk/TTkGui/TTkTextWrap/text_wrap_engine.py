@@ -183,24 +183,22 @@ class _WrapEngine_Interface():
         tabSpaces = self._wrapState.tabSpaces
         wordWrapMode = self._wrapState.wordWrapMode
         fr = 0
-        to = 0
         if not len(_l): # if the line is empty append it
             ret.append(_WrapLine(_i,0,0))
             return ret
         while len(_l):
-            fl = _l.tab2spaces(tabSpaces)
-            if fl.termWidth() <= _w:
+            to = _l.tabCharPos(_w, tabSpaces)
+            if to >= len(_l):
                 ret.append(_WrapLine(_i,fr,fr+len(_l)+1))
                 return ret
-            else:
-                to = max(1,_l.tabCharPos(_w, tabSpaces))
-                if wordWrapMode == TTkK.WordWrap: # Find the index of the first white space
-                    s = str(_l)
-                    newTo = to
-                    while newTo and ( s[newTo] != ' ' and s[newTo] != '\t' ): newTo-=1
-                    if newTo: to = newTo
+            to = max(1,to)
+            if wordWrapMode == TTkK.WordWrap: # Find the index of the first white space
+                s = str(_l)
+                newTo = to
+                while newTo and ( s[newTo] != ' ' and s[newTo] != '\t' ): newTo-=1
+                if newTo: to = newTo
 
-                ret.append(_WrapLine(_i,fr,fr+to))
-                _l = _l.substring(to)
-                fr += to
+            ret.append(_WrapLine(_i,fr,fr+to))
+            _l = _l.substring(to)
+            fr += to
         return ret
