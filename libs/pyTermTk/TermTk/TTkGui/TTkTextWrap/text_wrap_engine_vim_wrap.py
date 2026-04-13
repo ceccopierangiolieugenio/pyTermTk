@@ -53,8 +53,7 @@ class _WrapEngine_VimWrap(_WrapEngine_Interface):
         if not (w := self._wrapState.size):
             return 0,0
         text_document = self._wrapState.textDocument
-        # documentLine = text_document._dataLines[line]
-        buffer = self._lastWindow.buffer # + [_WrapLine(line,0,len(documentLine)+1)]
+        buffer = self._lastWindow.buffer
         for i, row in enumerate(buffer):
             dt=row.line
             fr=row.start
