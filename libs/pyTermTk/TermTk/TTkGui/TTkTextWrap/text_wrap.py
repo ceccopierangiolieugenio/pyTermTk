@@ -110,10 +110,6 @@ class TTkTextWrap():
         '''
         return self._wrapState.textDocument.lineCount()
 
-    def _documentDataLine(self, line:int) -> Optional[TTkString]:
-        '''Get one document line through the document thread-safe API.'''
-        return self._wrapState.textDocument.dataLine(line)
-
     def wrapWidth(self) -> int:
         '''Return the current wrap width in terminal cells.
 
