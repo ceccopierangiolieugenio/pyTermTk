@@ -115,8 +115,48 @@ def test_get_lines_under_cursor_ignores_invalid_positions() -> None:
 
 def test_replace_text_is_bounded_to_current_line_when_no_selection() -> None:
     doc, cur = _mk_cursor('abc\ndef')
+    calls: list[tuple[int, int, int]] = []
+
+    def _on_change(line: int, removed: int, added: int) -> None:
+        calls.append((line, removed, added))
+
+    doc.contentsChange.connect(_on_change)
 
     cur.setPosition(line=0, pos=2)
     cur.replaceText('WXYZ')
 
     assert doc.toPlainText() == 'abWXYZ\ndef'
+    assert calls[-1] == (0, 1, 1)
+
+
+def test_insert_text_with_newline_emits_expected_contents_change_payload() -> None:
+    doc, cur = _mk_cursor('abc\ndef')
+    calls: list[tuple[int, int, int]] = []
+
+    def _on_change(line: int, removed: int, added: int) -> None:
+        calls.append((line, removed, added))
+
+    doc.contentsChange.connect(_on_change)
+
+    cur.setPosition(line=0, pos=1)
+    cur.insertText('\nXYZ')
+
+    assert doc.toPlainText() == 'a\nXYZbc\ndef'
+    assert calls[-1] == (0, 1, 2)
+
+
+def test_remove_selected_text_emits_expected_contents_change_payload() -> None:
+    doc, cur = _mk_cursor('hello world')
+    calls: list[tuple[int, int, int]] = []
+
+    def _on_change(line: int, removed: int, added: int) -> None:
+        calls.append((line, removed, added))
+
+    doc.contentsChange.connect(_on_change)
+
+    cur.setPosition(line=0, pos=6)
+    cur.setPosition(line=0, pos=11, moveMode=ttk.TTkTextCursor.KeepAnchor)
+    cur.removeSelectedText()
+
+    assert doc.toPlainText() == 'hello '
+    assert calls[-1] == (0, 1, 1)

@@ -162,6 +162,24 @@ def test_insertText_with_newline_splits_line():
     assert doc.toPlainText() == 'hello\nthere\nworld'
 
 
+def test_insertText_with_newline_emits_correct_contentsChange_signal():
+    doc = ttk.TTkTextDocument(text='hello\nworld')
+    cur = ttk.TTkTextCursor(document=doc)
+    cur.setPosition(line=0, pos=5)
+    cbLine, cbRem, cbAdd = -1, -1, -1
+
+    def _cb(a, b, c):
+        nonlocal cbLine, cbRem, cbAdd
+        cbLine, cbRem, cbAdd = a, b, c
+
+    doc.contentsChange.connect(_cb)
+    cur.insertText('\nthere')
+
+    assert cbLine == 0
+    assert cbRem == 1
+    assert cbAdd == 2
+
+
 def test_insertText_emits_contentsChange_signal():
     doc = ttk.TTkTextDocument(text='hello')
     cur = ttk.TTkTextCursor(document=doc)
@@ -179,6 +197,46 @@ def test_insertText_emits_contentsChange_signal():
     assert cbAdd  == 1
 
 
+def test_insertText_multi_cursor_emits_merged_contentsChange_signal():
+    doc = ttk.TTkTextDocument(text='aa\nbb\ncc')
+    cur = ttk.TTkTextCursor(document=doc)
+    cur.setPosition(line=0, pos=1)
+    cur.addCursor(line=2, pos=1)
+    cbLine, cbRem, cbAdd = -1, -1, -1
+
+    def _cb(a, b, c):
+        nonlocal cbLine, cbRem, cbAdd
+        cbLine, cbRem, cbAdd = a, b, c
+
+    doc.contentsChange.connect(_cb)
+    cur.insertText('X')
+
+    assert doc.toPlainText() == 'aXa\nbb\ncXc'
+    assert cbLine == 0
+    assert cbRem == 3
+    assert cbAdd == 3
+
+
+def test_insertText_multiline_multi_cursor_emits_merged_contentsChange_signal():
+    doc = ttk.TTkTextDocument(text='aa\nbb\ncc')
+    cur = ttk.TTkTextCursor(document=doc)
+    cur.setPosition(line=0, pos=1)
+    cur.addCursor(line=2, pos=1)
+    cbLine, cbRem, cbAdd = -1, -1, -1
+
+    def _cb(a, b, c):
+        nonlocal cbLine, cbRem, cbAdd
+        cbLine, cbRem, cbAdd = a, b, c
+
+    doc.contentsChange.connect(_cb)
+    cur.insertText('X\nY\nZ')
+
+    assert doc.toPlainText() == 'aX\nY\nZa\nbb\ncX\nY\nZc'
+    assert cbLine == 0
+    assert cbRem == 3
+    assert cbAdd == 7
+
+
 # ---------------------------------------------------------------------------
 # replaceText coverage
 # ---------------------------------------------------------------------------
@@ -189,6 +247,44 @@ def test_replaceText_replaces_forward_characters():
     cur.setPosition(line=0, pos=0)
     cur.replaceText('XY')
     assert doc.toPlainText() == 'XYcde'
+
+
+def test_replaceText_emits_correct_contentsChange_signal_without_selection():
+    doc = ttk.TTkTextDocument(text='abcde')
+    cur = ttk.TTkTextCursor(document=doc)
+    cur.setPosition(line=0, pos=0)
+    cbLine, cbRem, cbAdd = -1, -1, -1
+
+    def _cb(a, b, c):
+        nonlocal cbLine, cbRem, cbAdd
+        cbLine, cbRem, cbAdd = a, b, c
+
+    doc.contentsChange.connect(_cb)
+    cur.replaceText('XY')
+
+    assert cbLine == 0
+    assert cbRem == 1
+    assert cbAdd == 1
+
+
+def test_replaceText_emits_correct_contentsChange_signal_with_selection():
+    doc = ttk.TTkTextDocument(text='abcdef')
+    cur = ttk.TTkTextCursor(document=doc)
+    cur.setPosition(line=0, pos=1)
+    cur.setPosition(line=0, pos=4, moveMode=ttk.TTkTextCursor.KeepAnchor)
+    cbLine, cbRem, cbAdd = -1, -1, -1
+
+    def _cb(a, b, c):
+        nonlocal cbLine, cbRem, cbAdd
+        cbLine, cbRem, cbAdd = a, b, c
+
+    doc.contentsChange.connect(_cb)
+    cur.replaceText('XY')
+
+    assert doc.toPlainText() == 'aXYef'
+    assert cbLine == 0
+    assert cbRem == 1
+    assert cbAdd == 1
 
 
 # ---------------------------------------------------------------------------
@@ -253,8 +349,16 @@ def test_removeSelectedText_noop_without_selection():
     doc = ttk.TTkTextDocument(text='hello')
     cur = ttk.TTkTextCursor(document=doc)
     cur.setPosition(line=0, pos=2)
+    calls = []
+
+    def _cb(a, b, c):
+        calls.append((a, b, c))
+
+    doc.contentsChange.connect(_cb)
     cur.removeSelectedText()
+
     assert doc.toPlainText() == 'hello'
+    assert calls == []
 
 
 def test_removeSelectedText_updates_document_content():
