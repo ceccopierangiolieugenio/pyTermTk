@@ -145,7 +145,7 @@ class _WrapEngine_Interface():
         '''
         raise NotImplementedError()
 
-    def screenRows(self, y:int, h:int, prefetch:int=0) -> List[_WrapLine]:
+    def screenRows(self, y:int, h:int) -> List[_WrapLine]:
         '''Return the wrapped row slices for a viewport.
 
         Each returned :py:class:`_WrapLine` carries the source document

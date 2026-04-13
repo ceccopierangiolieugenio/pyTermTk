@@ -150,7 +150,7 @@ class TTkTextEditRuler(TTkAbstractScrollView):
         off  = self._startingNumber
         leftOff = sum(self._markRulerSizes)
         sum(self._markRulerSizes)
-        rows = self._textWrap.screenRows(oy, h, prefetch=h)
+        rows = self._textWrap.screenRows(oy, h)
 
         style = self.currentStyle()
         color = style['color']

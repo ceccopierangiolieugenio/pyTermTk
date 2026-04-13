@@ -153,15 +153,14 @@ class TTkTextWrap():
         self._wrapState.wordWrapMode = mode
         self.rewrap()
 
-    def screenRows(self, y:int, h:int, prefetch:int=0) -> List[_WrapLine]:
+    def screenRows(self, y:int, h:int) -> List[_WrapLine]:
         '''Return wrapped slices visible in the requested viewport.
 
         :param y: first screen row.
         :type y: int
         :param h: number of rows to extract.
         :type h: int
-        :param prefetch: optional prefetch budget.
-        :type prefetch: int
+
         :return: wrapped row slices.
         :rtype: List[Tuple[int, Tuple[int, int]]]
         '''
