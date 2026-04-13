@@ -22,7 +22,7 @@
 
 __all__:dict = []
 
-from bisect import bisect_right
+from bisect import bisect_left, bisect_right
 from dataclasses import dataclass
 from typing import List, Optional, Tuple
 
@@ -33,6 +33,17 @@ from TermTk.TTkGui.textdocument import TTkTextDocument
 
 from .text_wrap import _WrapEngine_Interface
 from .text_wrap_data import _WrapLine, _WrapState
+
+class _BisectKeyLine:
+    '''Helper to bisect _WrapLine list by the .line attribute.'''
+    __slots__ = ('_buf',)
+    _buf:List[_WrapLine]
+    def __init__(self, buf:List[_WrapLine]):
+        self._buf = buf
+    def __len__(self) -> int:
+        return len(self._buf)
+    def __getitem__(self, i) -> int:
+        return self._buf[i].line
 
 class _WrapEngine_FullWrap(_WrapEngine_Interface):
     __slots__ = ('_buffer')
@@ -62,14 +73,15 @@ class _WrapEngine_FullWrap(_WrapEngine_Interface):
 
     def dataToScreenPosition(self, line:int, pos:int) -> Tuple[int, int]:
         text_document = self._wrapState.textDocument
-        for i, row in enumerate(self._buffer):
-            dt=row.line
-            fr=row.start
-            to=row.stop
-            if dt == line and fr <= pos <= to:
-                l = text_document._dataLines[dt].substring(fr,pos).tab2spaces(self._wrapState.tabSpaces)
+        keys = _BisectKeyLine(self._buffer)
+        lo = bisect_left(keys, line)
+        hi = bisect_right(keys, line, lo)
+        for i in range(lo, hi):
+            row = self._buffer[i]
+            if row.start <= pos <= row.stop:
+                l = text_document._dataLines[line].substring(row.start, pos).tab2spaces(self._wrapState.tabSpaces)
                 return l.termWidth(), i
-        return 0,0
+        return 0, 0
 
     def screenToDataPosition(self, x:int, y:int) -> Tuple[int, int]:
         text_document = self._wrapState.textDocument
