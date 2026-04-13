@@ -502,11 +502,11 @@ class TTkTextEditView(TTkAbstractScrollView):
             return
         self._lineWrapMode = mode
         if mode == TTkK.LineWrapMode.NoWrap:
-            self._textWrap.setEngine(wrapEngine=TTkK.WrapEngine.NoWrap)
+            self._textWrap.setEngine(engine=TTkK.WrapEngine.NoWrap)
         elif mode == TTkK.LineWrapMode.WidgetWidth:
-            self._textWrap.setEngine(wrapEngine=wrapEngine, width=self.width())
+            self._textWrap.setEngine(engine=wrapEngine, width=self.width())
         else:
-            self._textWrap.setEngine(wrapEngine=wrapEngine)
+            self._textWrap.setEngine(engine=wrapEngine)
 
     @pyTTkSlot(TTkStringType)
     def setText(self, text:TTkStringType) -> None:
