@@ -31,7 +31,7 @@ from typing import List, Optional, Tuple
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkCore.string import TTkString, TTkStringType
-from TermTk.TTkGui.textwrap1 import TTkTextWrap
+from TermTk.TTkGui.TTkTextWrap.text_wrap import TTkTextWrap
 from TermTk.TTkGui.textdocument import TTkTextDocument
 
 

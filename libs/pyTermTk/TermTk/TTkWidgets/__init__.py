@@ -32,10 +32,13 @@ from .spacer          import *
 from .spinbox         import *
 from .tabwidget       import *
 from .kodetab         import *
-from .texedit         import *
 from .TTkModelView    import *
 from .TTkPickers      import *
 from .TTkTerminal     import *
+
+from .texedit         import *
+from .texeditview     import *
+from .texeditruler    import *
 
 from .datetime_time      import *
 from .datetime_date      import *

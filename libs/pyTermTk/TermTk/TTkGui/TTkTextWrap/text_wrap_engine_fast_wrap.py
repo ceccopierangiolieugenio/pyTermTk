@@ -1,6 +1,6 @@
 # MIT License
 #
-# Copyright (c) 2023 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
+# Copyright (c) 2022 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -20,12 +20,22 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+__all__:dict = []
 
-__all__ = ['TTkVT102']
+from bisect import bisect_right
+from dataclasses import dataclass
+from typing import List, Optional, Tuple
 
-class TTkVT102():
-    CLEAR         = "\033[2J\033[0;0f" # Clear screen and set cursor to position 0,0
-    ALT_SCREEN    = "\033[?1049h"                       #* Switch to alternate screen
-    NORMAL_SCREEN = "\033[?1049l"                       #* Switch to normal screen
+from TermTk.TTkCore.constant import TTkK
+from TermTk.TTkCore.signal import pyTTkSignal
+from TermTk.TTkCore.string import TTkString
+from TermTk.TTkGui.textdocument import TTkTextDocument
 
+from .text_wrap_data import _WrapLine, _WrapState
 
+from .text_wrap import _WrapEngine_Interface
+from .text_wrap_data import _WrapLine, _WrapState
+
+class _WrapEngine_FastWrap(_WrapEngine_Interface):
+    # Placeholder for a chunk based wrap engine
+    pass

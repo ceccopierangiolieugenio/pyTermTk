@@ -24,10 +24,11 @@
 
 from __future__ import annotations
 
-import sys, os
+import sys
 
 from dataclasses import dataclass
 from enum import Enum,Flag,auto
+from typing import NamedTuple
 import timeit
 
 from typing import List, Tuple, Iterator
@@ -89,7 +90,35 @@ class _DC3S():
     b:int
     c:int
 
+# Optimization approaches for keyword argument overhead
+
+# 1. Factory function (pre-baked positional)
+def _DC1S_factory(a: int, b: int, c: int) -> _DC1S:
+    return _DC1S(a, b, c)
+
+# 2. Direct object creation + setattr bypass
+def _DC1S_direct(a: int, b: int, c: int) -> _DC1S:
+    obj = object.__new__(_DC1S)
+    object.__setattr__(obj, 'a', a)
+    object.__setattr__(obj, 'b', b)
+    object.__setattr__(obj, 'c', c)
+    return obj
+
+# 3. Pre-cached init method
+_DC1S_init_method = _DC1S.__init__
+def _DC1S_cached(a: int, b: int, c: int) -> _DC1S:
+    obj = object.__new__(_DC1S)
+    _DC1S_init_method(obj, a, b, c)
+    return obj
+
+class _NT(NamedTuple):
+    a:int
+    b:int
+    c:int
+
+
 t1 = [(i,i,i)    for i in range(1000)]
+l1 = [[i,i,i]    for i in range(1000)]
 d1 = [{'a':i,'b':i,'c':i} for i in range(1000)]
 c = [_C(i,i,i)    for i in range(1000)]
 cs = [_CS(i,i,i)   for i in range(1000)]
@@ -99,29 +128,60 @@ dc2 = [_DC2(i,i,i)  for i in range(1000)]
 dc2s = [_DC2S(i,i,i) for i in range(1000)]
 dc3 = [_DC3(i,i,i)  for i in range(1000)]
 dc3s = [_DC3S(i,i,i) for i in range(1000)]
+nt = [_NT(i,i,i)  for i in range(1000)]
 
-def test_ti_1_Init_1(): return len([{'a':i,'b':i,'c':i}      for i in range(100)])
-def test_ti_1_Init_3(): return len([(i,i,i)      for i in range(100)])
-def test_ti_1_Init_4(): return len([_C(i,i,i)    for i in range(100)])
-def test_ti_1_Init_5(): return len([_CS(i,i,i)   for i in range(100)])
-def test_ti_1_Init_6_1(): return len([_DC1(i,i,i)  for i in range(100)])
-def test_ti_1_Init_6_2(): return len([_DC1S(i,i,i) for i in range(100)])
-def test_ti_1_Init_7_1(): return len([_DC2(i,i,i)  for i in range(100)])
-def test_ti_1_Init_7_2(): return len([_DC2S(i,i,i) for i in range(100)])
-def test_ti_1_Init_8_1(): return len([_DC3(i,i,i)  for i in range(100)])
-def test_ti_1_Init_8_2(): return len([_DC3S(i,i,i) for i in range(100)])
 
-def test_ti_2_Access_1(): return sum(i['a']+i['b']+i['c'] for i in d1)
-def test_ti_2_Access_2(): return sum(sum(i) for i in t1)
-def test_ti_2_Access_3(): return sum(i[0]+i[1]+i[2] for i in t1)
-def test_ti_2_Access_4(): return sum(i.a+i.b+i.c for i in c)
-def test_ti_2_Access_5(): return sum(i.a+i.b+i.c for i in cs)
-def test_ti_2_Access_6_1(): return sum(i.a+i.b+i.c for i in dc1)
-def test_ti_2_Access_6_2(): return sum(i.a+i.b+i.c for i in dc1s)
-def test_ti_2_Access_7_1(): return sum(i.a+i.b+i.c for i in dc2)
-def test_ti_2_Access_7_2(): return sum(i.a+i.b+i.c for i in dc2s)
-def test_ti_2_Access_8_1(): return sum(i.a+i.b+i.c for i in dc3)
-def test_ti_2_Access_8_2(): return sum(i.a+i.b+i.c for i in dc3s)
+lists = {
+    'tuple': t1,
+    'list': l1,
+    'dict': d1,
+    '_C': c,
+    '_CS': cs,
+    '_DC1': dc1,
+    '_DC1S': dc1s,
+    '_DC2': dc2,
+    '_DC2S': dc2s,
+    '_DC3': dc3,
+    '_NT': nt,
+}
+
+for name, lst in lists.items():
+    total = sum(sys.getsizeof(item) for item in lst)
+    avg = total / len(lst) if lst else 0
+    print(f"{name:10} - Total: {total:8} bytes, Avg per instance: {avg:6.1f} bytes")
+
+def test_ti_1_Init_01_0(): return len([{'a':i,'b':i,'c':i}      for i in range(100)])
+def test_ti_1_Init_02_0(): return len([[i,i,i]      for i in range(100)])
+def test_ti_1_Init_03_0(): return len([(i,i,i)      for i in range(100)])
+def test_ti_1_Init_04_0(): return len([_C(i,i,i)    for i in range(100)])
+def test_ti_1_Init_05_0(): return len([_CS(i,i,i)   for i in range(100)])
+def test_ti_1_Init_06_1(): return len([_DC1(i,i,i)  for i in range(100)])
+def test_ti_1_Init_06_2(): return len([_DC1S(i,i,i) for i in range(100)])
+def test_ti_1_Init_06_3(): return len([_DC1S(a=i,b=i,c=i) for i in range(100)])
+def test_ti_1_Init_07_1(): return len([_DC2(i,i,i)  for i in range(100)])
+def test_ti_1_Init_07_2(): return len([_DC2S(i,i,i) for i in range(100)])
+def test_ti_1_Init_08_1(): return len([_DC3(i,i,i)  for i in range(100)])
+def test_ti_1_Init_08_2(): return len([_DC3S(i,i,i) for i in range(100)])
+def test_ti_1_Init_09_1(): return len([_DC1S_factory(i,i,i) for i in range(100)])
+def test_ti_1_Init_09_2(): return len([_DC1S_direct(i,i,i) for i in range(100)])
+def test_ti_1_Init_09_3(): return len([_DC1S_cached(i,i,i) for i in range(100)])
+def test_ti_1_Init_10_1(): return len([_NT(i,i,i)  for i in range(100)])
+def test_ti_1_Init_10_2(): return len([_NT(a=i,b=i,c=i)  for i in range(100)])
+
+def test_ti_2_Access_01_0(): return sum(i['a']+i['b']+i['c'] for i in d1)
+def test_ti_2_Access_02_1(): return sum(sum(i) for i in l1)
+def test_ti_2_Access_02_2(): return sum(i[0]+i[1]+i[2] for i in l1)
+def test_ti_2_Access_03_1(): return sum(sum(i) for i in t1)
+def test_ti_2_Access_03_2(): return sum(i[0]+i[1]+i[2] for i in t1)
+def test_ti_2_Access_05_0(): return sum(i.a+i.b+i.c for i in c)
+def test_ti_2_Access_06_0(): return sum(i.a+i.b+i.c for i in cs)
+def test_ti_2_Access_07_1(): return sum(i.a+i.b+i.c for i in dc1)
+def test_ti_2_Access_07_2(): return sum(i.a+i.b+i.c for i in dc1s)
+def test_ti_2_Access_08_1(): return sum(i.a+i.b+i.c for i in dc2)
+def test_ti_2_Access_08_2(): return sum(i.a+i.b+i.c for i in dc2s)
+def test_ti_2_Access_09_1(): return sum(i.a+i.b+i.c for i in dc3)
+def test_ti_2_Access_09_2(): return sum(i.a+i.b+i.c for i in dc3s)
+def test_ti_2_Access_10_1(): return sum(i.a+i.b+i.c for i in nt)
 
 loop = 10000
 

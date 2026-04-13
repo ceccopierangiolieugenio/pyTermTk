@@ -1,6 +1,6 @@
 # MIT License
 #
-# Copyright (c) 2023 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
+# Copyright (c) 2022 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -20,12 +20,26 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+__all__:dict = []
 
-__all__ = ['TTkVT102']
+from dataclasses import dataclass
 
-class TTkVT102():
-    CLEAR         = "\033[2J\033[0;0f" # Clear screen and set cursor to position 0,0
-    ALT_SCREEN    = "\033[?1049h"                       #* Switch to alternate screen
-    NORMAL_SCREEN = "\033[?1049l"                       #* Switch to normal screen
+from TermTk.TTkCore.constant import TTkK
+
+from TermTk.TTkGui.textdocument import TTkTextDocument
+
+@dataclass
+class _WrapLine():
+    __slots__ = ('line', 'start', 'stop')
+    line:int
+    start: int
+    stop:int
 
 
+@dataclass
+class _WrapState():
+    __slots__ = ('textDocument', 'tabSpaces', 'size', 'wordWrapMode')
+    size: int
+    tabSpaces: int
+    textDocument: TTkTextDocument
+    wordWrapMode: TTkK.WrapMode
