@@ -30,6 +30,15 @@ from TermTk.TTkGui.textdocument import TTkTextDocument
 
 @dataclass
 class _WrapLine():
+    '''A wrapped row fragment mapped to the source document line.
+
+    :param line: zero-based source line index.
+    :type line: int
+    :param start: inclusive start character offset in the source line.
+    :type start: int
+    :param stop: exclusive stop character offset in the source line.
+    :type stop: int
+    '''
     __slots__ = ('line', 'start', 'stop')
     line:int
     start: int
@@ -38,6 +47,17 @@ class _WrapLine():
 
 @dataclass
 class _WrapState():
+    '''Shared mutable state used by wrap engine implementations.
+
+    :param size: wrapping width in terminal cells.
+    :type size: int
+    :param tabSpaces: tab expansion width.
+    :type tabSpaces: int
+    :param textDocument: source text document.
+    :type textDocument: :py:class:`TTkTextDocument`
+    :param wordWrapMode: wrapping mode selector.
+    :type wordWrapMode: :py:class:`TTkK.WrapMode`
+    '''
     __slots__ = ('textDocument', 'tabSpaces', 'size', 'wordWrapMode')
     size: int
     tabSpaces: int

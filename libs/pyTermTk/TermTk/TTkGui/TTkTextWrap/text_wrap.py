@@ -80,7 +80,12 @@ class TTkTextWrap():
         self._wrapState.textDocument = document
         self.rewrap()
 
-    def setEngine(self, engine:TTkK.WrapEngine):
+    def setEngine(self, engine:TTkK.WrapEngine) -> None:
+        '''Switch the wrapping backend implementation.
+
+        :param engine: engine selector from :py:class:`TTkK.WrapEngine`.
+        :type engine: :py:class:`TTkK.WrapEngine`
+        '''
         engine_class = {
             TTkK.WrapEngine.FastWrap : _WrapEngine_FastWrap,
             TTkK.WrapEngine.FullWrap : _WrapEngine_FullWrap,
@@ -159,6 +164,7 @@ class TTkTextWrap():
         return self._wrapEngine.screenRows(y=y,h=h)
 
     def rewrap(self) -> None:
+        '''Force a complete wrap refresh and emit ``wrapChanged``.'''
         self._wrapEngine.rewrap()
         self.wrapChanged.emit()
 

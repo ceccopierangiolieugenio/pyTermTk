@@ -24,32 +24,50 @@ __all__:list = []
 
 from dataclasses import dataclass
 from typing import List, Tuple
-
 from .text_wrap import _WrapEngine_Interface
 from .text_wrap_data import _WrapLine, _WrapState
 
 @dataclass
 class _LastWindow():
+    '''Cache of the last wrapped viewport window.'''
     y:int
     h:int
     buffer:List[_WrapLine]
 
 class _WrapEngine_VimWrap(_WrapEngine_Interface):
+    '''Lazy wrap engine optimized around the active viewport.'''
     __slots__ = ('_lastWindow')
 
     _lastWindow: _LastWindow
 
     def __init__(self, state):
+        '''Initialize the viewport cache for lazy wrapping.'''
         self._lastWindow = _LastWindow(y=0,h=0,buffer=[])
         super().__init__(state)
 
     def size(self) -> int:
+        '''Return the number of source lines.
+
+        :return: logical line count.
+        :rtype: int
+        '''
         return len(self._wrapState.textDocument._dataLines)
 
     def rewrap(self) -> None:
+        '''No-op; wrapping is generated on demand by viewport.'''
         pass
 
     def dataToScreenPosition(self, line:int, pos:int) -> Tuple[int, int]:
+        '''Map document coordinates using the cached window buffer.
+
+        :param line: source line index.
+        :type line: int
+        :param pos: source position within line.
+        :type pos: int
+
+        :return: ``(x, y)`` position if present in cache, else ``(0, 0)``.
+        :rtype: Tuple[int, int]
+        '''
         if not (w := self._wrapState.size):
             return 0,0
         text_document = self._wrapState.textDocument
@@ -64,6 +82,16 @@ class _WrapEngine_VimWrap(_WrapEngine_Interface):
         return 0,0
 
     def screenToDataPosition(self, x:int, y:int) -> Tuple[int, int]:
+        '''Map screen coordinates back to source coordinates.
+
+        :param x: horizontal coordinate.
+        :type x: int
+        :param y: vertical coordinate.
+        :type y: int
+
+        :return: ``(line, pos)`` from the cached viewport.
+        :rtype: Tuple[int, int]
+        '''
         dy = y - self._lastWindow.y
         if not (0 <= dy < self._lastWindow.h):
             return 0,0
@@ -76,6 +104,16 @@ class _WrapEngine_VimWrap(_WrapEngine_Interface):
         return dt, pos
 
     def normalizeScreenPosition(self, x:int, y:int) -> Tuple[int, int]:
+        '''Clamp a screen coordinate to a valid cached character cell.
+
+        :param x: horizontal coordinate.
+        :type x: int
+        :param y: vertical coordinate.
+        :type y: int
+
+        :return: normalized ``(x, y)``.
+        :rtype: Tuple[int, int]
+        '''
         y = max(0,min(y,self.size()-1))
         dy = y - self._lastWindow.y
         if not (0 <= dy < self._lastWindow.h):
@@ -92,6 +130,16 @@ class _WrapEngine_VimWrap(_WrapEngine_Interface):
         return x, y
 
     def screenRows(self, y:int, h:int) -> List[_WrapLine]:
+        '''Wrap and cache enough rows to satisfy a viewport request.
+
+        :param y: first viewport row.
+        :type y: int
+        :param h: viewport height.
+        :type h: int
+
+        :return: cached wrapped row descriptors.
+        :rtype: List[:py:class:`_WrapLine`]
+        '''
         if not (w := self._wrapState.size):
             return []
 

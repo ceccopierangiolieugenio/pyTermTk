@@ -25,5 +25,6 @@ __all__:list = []
 from .text_wrap import _WrapEngine_Interface
 
 class _WrapEngine_FastWrap(_WrapEngine_Interface):
+    '''Placeholder for the incremental/chunk-based wrap engine.'''
     # Placeholder for a chunk based wrap engine
     pass

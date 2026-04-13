@@ -35,30 +35,42 @@ class _BisectKeyLine:
     __slots__ = ('_buf',)
     _buf:List[_WrapLine]
     def __init__(self, buf:List[_WrapLine]):
+        '''Store the wrapped-line buffer used for key-based bisection.'''
         self._buf = buf
     def __len__(self) -> int:
+        '''Return the number of wrapped rows available for searching.'''
         return len(self._buf)
     def __getitem__(self, i) -> int:
+        '''Expose wrapped row line indices for ``bisect`` operations.'''
         return self._buf[i].line
 
 class _WrapEngine_FullWrap(_WrapEngine_Interface):
+    '''Eager wrap engine that maintains a full wrapped-row buffer.'''
     __slots__ = ('_buffer')
 
     _buffer: List[_WrapLine]
 
     def __init__(self, state):
+        '''Initialize and subscribe to document content changes.'''
         self._buffer = []
         super().__init__(state)
         self._wrapState.textDocument.contentsChange.connect(self.rewrap)
 
     def clean(self):
+        '''Disconnect internal slots before replacing this engine instance.'''
         self._wrapState.textDocument.contentsChange.disconnect(self.rewrap)
 
     def size(self) -> int:
+        '''Return the number of wrapped rows currently cached.
+
+        :return: wrapped row count.
+        :rtype: int
+        '''
         return len(self._buffer)
 
     @pyTTkSlot()
     def rewrap(self) -> None:
+        '''Rebuild the entire wrapped-row buffer from the document.'''
         self._buffer = []
 
         if not (w := self._wrapState.size):
@@ -68,6 +80,16 @@ class _WrapEngine_FullWrap(_WrapEngine_Interface):
             self._buffer.extend(self._wrapLine(w,i,l))
 
     def dataToScreenPosition(self, line:int, pos:int) -> Tuple[int, int]:
+        '''Map source coordinates to screen coordinates using the full buffer.
+
+        :param line: source line index.
+        :type line: int
+        :param pos: source character offset.
+        :type pos: int
+
+        :return: ``(x, y)`` wrapped coordinates.
+        :rtype: Tuple[int, int]
+        '''
         text_document = self._wrapState.textDocument
         keys = _BisectKeyLine(self._buffer)
         lo = bisect_left(keys, line)
@@ -80,6 +102,16 @@ class _WrapEngine_FullWrap(_WrapEngine_Interface):
         return 0, 0
 
     def screenToDataPosition(self, x:int, y:int) -> Tuple[int, int]:
+        '''Map wrapped screen coordinates back to source coordinates.
+
+        :param x: horizontal screen coordinate.
+        :type x: int
+        :param y: vertical wrapped-row coordinate.
+        :type y: int
+
+        :return: ``(line, pos)`` source coordinates.
+        :rtype: Tuple[int, int]
+        '''
         y = max(0,min(y,len(self._buffer)-1))
         text_document = self._wrapState.textDocument
         row = self._buffer[y]
@@ -90,6 +122,16 @@ class _WrapEngine_FullWrap(_WrapEngine_Interface):
         return dt, pos
 
     def normalizeScreenPosition(self, x:int, y:int) -> Tuple[int, int]:
+        '''Clamp coordinates to a valid character position in the buffer.
+
+        :param x: horizontal coordinate.
+        :type x: int
+        :param y: vertical coordinate.
+        :type y: int
+
+        :return: normalized ``(x, y)``.
+        :rtype: Tuple[int, int]
+        '''
         text_document = self._wrapState.textDocument
         y = max(0,min(y,self.size()-1))
         row = self._buffer[y]
@@ -103,4 +145,14 @@ class _WrapEngine_FullWrap(_WrapEngine_Interface):
         return x, y
 
     def screenRows(self, y:int, h:int) -> List[_WrapLine]:
+        '''Return a viewport slice from the precomputed wrapped buffer.
+
+        :param y: first wrapped row.
+        :type y: int
+        :param h: number of rows.
+        :type h: int
+
+        :return: wrapped row descriptors for the viewport.
+        :rtype: List[:py:class:`_WrapLine`]
+        '''
         return self._buffer[y:y+h]
