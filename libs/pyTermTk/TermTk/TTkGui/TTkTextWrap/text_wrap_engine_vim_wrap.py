@@ -66,7 +66,7 @@ class _WrapEngine_VimWrap(_WrapEngine_Interface):
             fr=row.start
             to=row.stop
             if dt == line and fr <= pos <= to:
-                l = text_document._dataLines[dt].substring(fr,pos).tab2spaces(self._wrapState.tabSpaces)
+                l = text_document.dataLine(dt).substring(fr,pos).tab2spaces(self._wrapState.tabSpaces)
                 return l.termWidth(), i+self._lastWindow.y
         return 0,0
 
@@ -79,7 +79,7 @@ class _WrapEngine_VimWrap(_WrapEngine_Interface):
         dt=row.line
         fr=row.start
         to=row.stop
-        pos = fr+text_document._dataLines[dt].substring(fr,to).tabCharPos(x,self._wrapState.tabSpaces)
+        pos = fr+text_document.dataLine(dt).substring(fr,to).tabCharPos(x,self._wrapState.tabSpaces)
         return dt, pos
 
     def normalizeScreenPosition(self, x:int, y:int) -> Tuple[int, int]:
@@ -93,7 +93,7 @@ class _WrapEngine_VimWrap(_WrapEngine_Interface):
         fr=row.start
         to=row.stop
         x = max(0,x)
-        s = text_document._dataLines[dt].substring(fr,to)
+        s = text_document.dataLine(dt).substring(fr,to)
         x = s.tabCharPos(x, self._wrapState.tabSpaces)
         x = s.substring(0,x).tab2spaces(self._wrapState.tabSpaces).termWidth()
         return x, y

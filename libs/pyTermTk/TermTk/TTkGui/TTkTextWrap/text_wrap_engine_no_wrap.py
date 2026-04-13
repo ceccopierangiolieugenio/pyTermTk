@@ -44,21 +44,21 @@ class _WrapEngine_NoWrap(_WrapEngine_Interface):
 
     def dataToScreenPosition(self, line:int, pos:int) -> Tuple[int, int]:
         text_document = self._wrapState.textDocument
-        data_line = text_document._dataLines[line]
+        data_line = text_document.dataLine(line)
         if 0 <= pos <= len(data_line) + 1:
-            l = text_document._dataLines[line].substring(0,pos).tab2spaces(self._wrapState.tabSpaces)
+            l = text_document.dataLine(line).substring(0,pos).tab2spaces(self._wrapState.tabSpaces)
             return l.termWidth(), line
         return 0,0
 
     def screenToDataPosition(self, x:int, y:int) -> Tuple[int, int]:
-        line = self._wrapState.textDocument._dataLines[y]
+        line = self._wrapState.textDocument.dataLine(y)
         pos = line.tabCharPos(x,self._wrapState.tabSpaces)
         return y, pos
 
     def normalizeScreenPosition(self, x:int, y:int) -> Tuple[int, int]:
         x = max(0,x)
         y = max(0,min(y,self.size()-1))
-        line = self._wrapState.textDocument._dataLines[y]
+        line = self._wrapState.textDocument.dataLine(y)
         x = line.tabCharPos(x, self._wrapState.tabSpaces)
         x = line.substring(0,x).tab2spaces(self._wrapState.tabSpaces).termWidth()
         return x, y
