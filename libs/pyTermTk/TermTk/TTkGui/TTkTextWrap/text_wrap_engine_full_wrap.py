@@ -84,6 +84,7 @@ class _WrapEngine_FullWrap(_WrapEngine_Interface):
         return 0, 0
 
     def screenToDataPosition(self, x:int, y:int) -> Tuple[int, int]:
+        y = max(0,min(y,len(self._buffer)-1))
         text_document = self._wrapState.textDocument
         row = self._buffer[y]
         dt=row.line
