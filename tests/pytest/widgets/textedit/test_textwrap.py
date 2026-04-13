@@ -28,11 +28,13 @@ sys.path.append(os.path.join(sys.path[0], '../../libs/pyTermTk'))
 
 import TermTk as ttk
 
+from TermTk.TTkGui.TTkTextWrap.text_wrap_data import _WrapLine
+
 
 def _mk_wrap(text: str, width: int = 4, word_wrap: bool = False):
     doc = ttk.TTkTextDocument(text=text)
     tw = ttk.TTkTextWrap(document=doc)
-    tw.enable()
+    tw.setEngine(ttk.TTkK.WrapEngine.FullWrap)
     tw.setWrapWidth(width)
     if word_wrap:
         tw.setWordWrapMode(ttk.TTkK.WordWrap)
@@ -47,10 +49,10 @@ def test_screen_rows_wrap_anywhere_visible_window():
     rows = tw.screenRows(0, 4)
 
     assert len(rows) == 4
-    assert rows[0] == (0, (0, 4))
-    assert rows[1] == (0, (4, 8))
-    assert rows[2] == (0, (8, 11))
-    assert rows[3] == (1, (0, 4))
+    assert rows[0] == _WrapLine(0, 0, 4)
+    assert rows[1] == _WrapLine(0, 4, 8)
+    assert rows[2] == _WrapLine(0, 8, 11)
+    assert rows[3] == _WrapLine(1, 0, 4)
 
 
 def test_data_to_screen_and_back_roundtrip():
@@ -63,43 +65,36 @@ def test_data_to_screen_and_back_roundtrip():
         assert dpos == pos
 
 
-def test_invalidate_from_data_line_drops_tail_prefix_cache():
-    _, tw = _mk_wrap('line0-abcdefghij\nline1-abcdefghij\nline2-abcdefghij', width=6)
+def test_rewrap_after_document_content_change():
+    doc, tw = _mk_wrap('line0-abcdefghij\nline1-abcdefghij\nline2-abcdefghij', width=6)
 
-    tw.ensureScreenRows(0, 30)
-    assert tw._processedLines == 3
-    before_rows = tw._lineStartY[-1]
+    size_before = tw.size()
+    assert size_before > 3  # lines wrap at width=6
 
-    tw.invalidateFromDataLine(1)
+    # Shrink the document; FullWrap re-wraps via contentsChange signal.
+    doc.setText('short')
 
-    assert tw._processedLines == 1
-    assert len(tw._lineStartY) == 2
-    assert tw._lineStartY[-1] < before_rows
-    assert tw._checkpoints[-1][0] == 1
-    assert tw._checkpoints[-1][1] == tw._lineStartY[-1]
+    assert tw.size() < size_before
+    rows = tw.screenRows(0, 5)
+    assert len(rows) >= 1
+    assert rows[0].line == 0
 
 
-def test_size_estimate_grows_with_partial_materialization():
+def test_size_returns_correct_total_wrapped_row_count():
     _, tw = _mk_wrap(('abcdefghij\n' * 50).rstrip('\n'), width=4)
 
-    initial = tw.size()
-    tw.ensureScreenRows(0, 6)
-    after_first = tw.size()
-    tw.ensureScreenRows(40, 6)
-    after_more = tw.size()
-
-    assert initial >= 50
-    assert after_first >= 50
-    assert after_more >= after_first
+    # FullWrap eagerly wraps everything; size() is always exact.
+    # 'abcdefghij' (10 chars) at width=4 → 3 screen rows per data line.
+    # 50 data lines → 150 screen rows.
+    assert tw.size() == 150
 
 
-def test_data_to_screen_position_safe_after_document_shrink_before_invalidate():
+def test_data_to_screen_position_safe_after_document_shrink():
     doc, tw = _mk_wrap('line0\nline1\nline2', width=4)
 
-    tw.ensureScreenRows(0, 30)
-    assert tw._processedLines == 3
+    assert tw.size() > 0
 
-    # Simulate signal ordering where the document shrinks before wrap invalidation runs.
+    # Shrink the document; the engine re-wraps automatically.
     doc.setText('only-one-line')
 
     x, y = tw.dataToScreenPosition(2, 0)
@@ -115,13 +110,12 @@ def test_data_to_screen_position_safe_after_document_shrink_before_invalidate():
     assert y >= 0
 
 
-def test_screen_to_data_position_safe_after_document_shrink_with_stale_cache():
+def test_screen_to_data_position_safe_after_document_shrink():
     doc, tw = _mk_wrap('line0\nline1\nline2', width=4)
 
-    tw.ensureScreenRows(0, 30)
-    assert tw._processedLines == 3
+    assert tw.size() > 0
 
-    # Shrink the document while wrap cache still contains stale processed lines.
+    # Shrink the document; the engine re-wraps automatically.
     doc.setText('x')
 
     line, pos = tw.screenToDataPosition(0, 2)
@@ -134,7 +128,9 @@ def test_screen_to_data_position_safe_after_document_shrink_with_stale_cache():
 # WordWrap mode
 # ---------------------------------------------------------------------------
 
-# TODO: Investigate and implement the correct wrap behavior for the word wrap in case of whitespces
+# TODO: Investigate and implement the correct wrap behavior for
+#       the word wrap in case of whitespces
+
 # def test_word_wrap_breaks_at_space_boundary():
 #     # 'abcdef ghij': space at position 6, 'g' at position 7.
 #     # WrapAnywhere cuts at column 8 (mid-word, leaving 'hij' on the next row).
@@ -178,18 +174,17 @@ def test_screen_to_data_position_safe_after_document_shrink_with_stale_cache():
 # ---------------------------------------------------------------------------
 
 def test_disable_mode_exposes_each_line_as_one_screen_row():
-    # When wrapping is *not* enabled each data line is one screen row regardless
-    # of width.
+    # When wrapping is *not* enabled (NoWrap engine, the default) each data
+    # line is one screen row regardless of width.
     doc = ttk.TTkTextDocument(text='abcdefghij\nxyz')
     tw = ttk.TTkTextWrap(document=doc)
-    tw.setWrapWidth(4)   # narrow width — would create many rows if enabled
-    # tw.enable() is intentionally NOT called
+    tw.setWrapWidth(4)   # narrow width — would create many rows if wrapping were enabled
 
     rows = tw.screenRows(0, 2)
 
     assert len(rows) == 2
-    assert rows[0] == (0, (0, 11))   # 'abcdefghij' → len=10, +1 sentinel
-    assert rows[1] == (1, (0, 4))    # 'xyz'        → len=3,  +1 sentinel
+    assert rows[0] == _WrapLine(0, 0, 11)   # 'abcdefghij' → len=10, +1 sentinel
+    assert rows[1] == _WrapLine(1, 0, 4)    # 'xyz'        → len=3,  +1 sentinel
 
 
 # ---------------------------------------------------------------------------
@@ -239,16 +234,15 @@ def test_wrap_changed_emitted_on_setWordWrapMode():
     assert count[0] == 1
 
 
-def test_wrap_changed_emitted_on_invalidateFromDataLine():
+def test_wrap_changed_emitted_on_rewrap():
     _, tw = _mk_wrap('hello world', width=5)
-    tw.ensureScreenRows(0, 10)
     count = [0]
 
     def _inc():
         count[0] += 1
 
     tw.wrapChanged.connect(_inc)
-    tw.invalidateFromDataLine(0)
+    tw.rewrap()
     assert count[0] == 1
 
 
@@ -279,7 +273,7 @@ def test_empty_document_exposes_one_row():
     rows = tw.screenRows(0, 2)
 
     assert len(rows) == 1
-    assert rows[0] == (0, (0, 0))
+    assert rows[0] == _WrapLine(0, 0, 0)
 
 
 # ---------------------------------------------------------------------------
@@ -292,8 +286,8 @@ def test_width_one_wraps_each_character_onto_its_own_row():
     rows = tw.screenRows(0, 5)
 
     assert len(rows) == 3
-    assert rows[0] == (0, (0, 1))
-    assert rows[1] == (0, (1, 2))
+    assert rows[0] == _WrapLine(0, 0, 1)
+    assert rows[1] == _WrapLine(0, 1, 2)
 
 
 # ---------------------------------------------------------------------------
@@ -330,76 +324,37 @@ def test_roundtrip_data_to_screen_for_second_data_line():
 
 
 # ---------------------------------------------------------------------------
-# setWrapWidth resets the wrap cache
+# setWrapWidth triggers a full rewrap
 # ---------------------------------------------------------------------------
 
-def test_setWrapWidth_resets_processed_lines_cache():
+def test_setWrapWidth_changes_wrapped_size():
     _, tw = _mk_wrap('abcdefghij\nxyz', width=4)
-    tw.ensureScreenRows(0, 10)
-    assert tw._processedLines == 2
+    size_at_4 = tw.size()  # 'abcdefghij' → 3 rows, 'xyz' → 1 row = 4
 
     tw.setWrapWidth(10)
+    size_at_10 = tw.size()  # 'abcdefghij' → 1 row, 'xyz' → 1 row = 2
 
-    assert tw._processedLines == 0
+    assert size_at_4 == 4
+    assert size_at_10 == 2
 
 
 # ---------------------------------------------------------------------------
-# _wrapCache behaviour
+# FullWrap buffer behaviour
 # ---------------------------------------------------------------------------
 
-def test_wrapLine_cache_returns_same_object_on_second_call():
-    doc, tw = _mk_wrap('abcdefghij\nxyz', width=4)
-    tw.ensureScreenRows(0, 10)
-
-    line0 = doc.dataLine(0)
-    first = tw._wrapLine(0, line0)
-    second = tw._wrapLine(0, line0)
-
-    assert first is second
-
-
-def test_invalidateAll_clears_wrap_cache():
-    _, tw = _mk_wrap('abcdefghij\nxyz', width=4)
-    tw.ensureScreenRows(0, 10)
-    assert len(tw._wrapCache) > 0
-
-    tw._invalidateAll()
-
-    assert tw._wrapCache == {}
-
-
-def test_invalidateFromDataLine_evicts_lines_ge_threshold():
-    _, tw = _mk_wrap('line0-abcdefghij\nline1-abcdefghij\nline2-abcdefghij', width=6)
-    tw.ensureScreenRows(0, 30)
-    assert 0 in tw._wrapCache
-    assert 1 in tw._wrapCache
-    assert 2 in tw._wrapCache
-
-    tw._invalidateFromDataLine(1)
-
-    assert 0 in tw._wrapCache
-    assert 1 not in tw._wrapCache
-    assert 2 not in tw._wrapCache
-
-
-def test_rewrap_clears_wrap_cache():
+def test_rewrap_rebuilds_buffer():
     _, tw = _mk_wrap('abcdefghij', width=4)
-    tw.ensureScreenRows(0, 10)
-    assert len(tw._wrapCache) > 0
+    assert tw.size() == 3  # 3 wrapped rows
 
-    tw.rewrap()
+    tw.setWrapWidth(5)
 
-    assert tw._wrapCache == {}
+    assert tw.size() == 2  # 2 wrapped rows at width=5
 
 
-def test_screenRows_reuses_cached_wrapLine_results():
-    doc, tw = _mk_wrap('abcdefghij\nxyz', width=4)
-    tw.ensureScreenRows(0, 10)
-
-    cached_line0 = tw._wrapCache.get(0)
-    assert cached_line0 is not None
+def test_screenRows_returns_correct_slices():
+    _, tw = _mk_wrap('abcdefghij\nxyz', width=4)
 
     rows = tw.screenRows(0, 4)
 
-    assert tw._wrapCache[0] is cached_line0
-    assert rows[0] == (0, (0, 4))
+    assert rows[0] == _WrapLine(0, 0, 4)
+    assert rows[3] == _WrapLine(1, 0, 4)

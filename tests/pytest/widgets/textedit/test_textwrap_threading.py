@@ -33,8 +33,7 @@ The suite exercises three concurrent access patterns that occur in a real TUI ap
   ``screenToDataPosition()`` simultaneously on the same (TTkTextDocument,
   TTkTextWrap) pair.
 
-* **Invalidation race**: the document signals ``contentsChange`` which calls
-  ``invalidateFromDataLine()`` from one thread while a rendering thread reads
+* **Rewrap race**: one thread calls ``rewrap()`` while a rendering thread reads
   ``screenRows()`` at the same time.
 
 A test passes if no exception is raised and the returned values satisfy basic
@@ -70,7 +69,7 @@ _LONG_LINE = 'abcdefghijklmnopqrstuvwxyz' * 4   # 104 chars
 def _mk_wrap(text: str, width: int = 20, word_wrap: bool = False) -> tuple[ttk.TTkTextDocument, ttk.TTkTextWrap]:
     doc = ttk.TTkTextDocument(text=text)
     tw = ttk.TTkTextWrap(document=doc)
-    tw.enable()
+    tw.setEngine(ttk.TTkK.WrapEngine.FullWrap)
     tw.setWrapWidth(width)
     if word_wrap:
         tw.setWordWrapMode(ttk.TTkK.WordWrap)
@@ -129,8 +128,6 @@ def test_concurrent_readers_screenRows():
     '''Multiple threads calling screenRows() simultaneously must not raise.'''
     text = '\n'.join(_LINES * 10)
     doc, tw = _mk_wrap(text, width=20)
-    # Fully materialise so readers work on stable data.
-    tw.ensureScreenRows(0, tw.documentLineCount() * 3)
 
     errors: list[Exception] = []
     barrier = threading.Barrier(6)
@@ -139,10 +136,10 @@ def test_concurrent_readers_screenRows():
         barrier.wait()
         for _ in range(50):
             rows = tw.screenRows(start_y, 10)
-            for dt, (fr, to) in rows:
-                assert dt >= 0
-                assert fr >= 0
-                assert fr <= to
+            for row in rows:
+                assert row.line >= 0
+                assert row.start >= 0
+                assert row.start <= row.stop
 
     threads = [_safe_thread(reader, i * 5) for i in range(6)]
     for t in threads:
@@ -155,7 +152,6 @@ def test_concurrent_readers_dataToScreenPosition():
     '''Multiple threads calling dataToScreenPosition() simultaneously must not raise.'''
     text = '\n'.join(_LINES)
     doc, tw = _mk_wrap(text, width=15)
-    tw.ensureScreenRows(0, 100)
 
     barrier = threading.Barrier(4)
 
@@ -178,7 +174,6 @@ def test_reader_writer_setText():
     initial_text = '\n'.join(_LINES)
     doc, tw = _mk_wrap(initial_text, width=20)
 
-    stop = threading.Event()
     barrier = threading.Barrier(2)
 
     def writer() -> None:
@@ -196,10 +191,10 @@ def test_reader_writer_setText():
         barrier.wait()
         for _ in range(100):
             rows = tw.screenRows(0, 10)
-            for dt, (fr, to) in rows:
-                assert dt >= 0
-                assert fr >= 0
-                assert fr <= to
+            for row in rows:
+                assert row.line >= 0
+                assert row.start >= 0
+                assert row.start <= row.stop
 
     t_w = _safe_thread(writer)
     t_r = _safe_thread(reader)
@@ -224,10 +219,10 @@ def test_reader_writer_appendText():
         barrier.wait()
         for _ in range(100):
             rows = tw.screenRows(0, 8)
-            for dt, (fr, to) in rows:
-                assert dt >= 0
-                assert fr >= 0
-                assert fr <= to
+            for row in rows:
+                assert row.line >= 0
+                assert row.start >= 0
+                assert row.start <= row.stop
 
     t_w = _safe_thread(writer)
     t_r = _safe_thread(reader)
@@ -237,29 +232,28 @@ def test_reader_writer_appendText():
     assert errors == [], f'Exceptions in threads: {errors}'
 
 
-def test_invalidation_race():
-    '''invalidateFromDataLine() called from one thread while another reads screenRows().'''
+def test_rewrap_race():
+    '''rewrap() called from one thread while another reads screenRows().'''
     text = '\n'.join(_LINES * 5)
     doc, tw = _mk_wrap(text, width=15)
-    tw.ensureScreenRows(0, 200)
 
     barrier = threading.Barrier(2)
 
-    def invalidator() -> None:
+    def rewrapper() -> None:
         barrier.wait()
-        for line in range(0, tw.documentLineCount(), 3):
-            tw.invalidateFromDataLine(line)
+        for _ in range(10):
+            tw.rewrap()
 
     def reader() -> None:
         barrier.wait()
         for y in range(0, 60, 4):
             rows = tw.screenRows(y, 4)
-            for dt, (fr, to) in rows:
-                assert dt >= 0
-                assert fr >= 0
-                assert fr <= to
+            for row in rows:
+                assert row.line >= 0
+                assert row.start >= 0
+                assert row.start <= row.stop
 
-    t_i = _safe_thread(invalidator)
+    t_i = _safe_thread(rewrapper)
     t_r = _safe_thread(reader)
     t_i.start()
     t_r.start()
@@ -270,7 +264,6 @@ def test_invalidation_race():
 def test_screenToDataPosition_concurrent_with_setText():
     '''screenToDataPosition() must not raise while another thread calls setText().'''
     doc, tw = _mk_wrap('\n'.join(_LINES), width=20)
-    tw.ensureScreenRows(0, 100)
 
     barrier = threading.Barrier(2)
 
@@ -312,8 +305,8 @@ def test_many_threads_mixed_operations():
                 # Read screen rows at a random position
                 y = rng.randint(0, 20)
                 rows = tw.screenRows(y, 5)
-                for dt, (fr, to) in rows:
-                    assert dt >= 0 and fr >= 0 and fr <= to
+                for row in rows:
+                    assert row.line >= 0 and row.start >= 0 and row.start <= row.stop
             elif op == 1:
                 # Map data position to screen
                 lc = tw.documentLineCount()
@@ -326,10 +319,8 @@ def test_many_threads_mixed_operations():
                 line, pos = tw.screenToDataPosition(0, rng.randint(0, 10))
                 assert line >= 0 and pos >= 0
             elif op == 3:
-                # Invalidate cache from a random line
-                lc = tw.documentLineCount()
-                if lc > 0:
-                    tw.invalidateFromDataLine(rng.randint(0, lc - 1))
+                # Trigger a full rewrap
+                tw.rewrap()
             else:
                 # Overwrite document text (rare: only thread 0 does this)
                 if thread_id == 0:
@@ -349,7 +340,6 @@ def test_many_threads_mixed_operations():
 def test_cursor_insertText_concurrent_with_screenRows():
     '''One cursor doing insertText() while another thread reads screenRows().'''
     doc, tw = _mk_wrap('\n'.join(_LINES), width=20)
-    tw.ensureScreenRows(0, 100)
 
     from TermTk.TTkGui.textcursor import TTkTextCursor
     cursor = TTkTextCursor(document=doc)
@@ -367,8 +357,8 @@ def test_cursor_insertText_concurrent_with_screenRows():
         barrier.wait()
         for _ in range(80):
             rows = tw.screenRows(0, 8)
-            for dt, (fr, to) in rows:
-                assert dt >= 0 and fr >= 0 and fr <= to
+            for row in rows:
+                assert row.line >= 0 and row.start >= 0 and row.start <= row.stop
 
     t_e = _safe_thread(editor)
     t_r = _safe_thread(reader)
@@ -417,7 +407,6 @@ def test_cursor_removeSelectedText_concurrent_with_screenRows():
     '''Cursor selecting and removing text while a render thread reads screenRows().'''
     text = '\n'.join(_LINES * 3)
     doc, tw = _mk_wrap(text, width=20)
-    tw.ensureScreenRows(0, 200)
 
     from TermTk.TTkGui.textcursor import TTkTextCursor
     cursor = TTkTextCursor(document=doc)
@@ -444,8 +433,8 @@ def test_cursor_removeSelectedText_concurrent_with_screenRows():
         barrier.wait()
         for y in range(0, 40, 2):
             rows = tw.screenRows(y, 4)
-            for dt, (fr, to) in rows:
-                assert dt >= 0 and fr >= 0 and fr <= to
+            for row in rows:
+                assert row.line >= 0 and row.start >= 0 and row.start <= row.stop
 
     t_e = _safe_thread(editor)
     t_r = _safe_thread(reader)
@@ -455,11 +444,10 @@ def test_cursor_removeSelectedText_concurrent_with_screenRows():
     assert errors == [], f'Exceptions in threads: {errors}'
 
 
-def test_cursor_movePosition_updown_concurrent_with_invalidate():
-    '''Cursor using Up/Down movePosition (via textWrap) while invalidation runs concurrently.'''
+def test_cursor_movePosition_updown_concurrent_with_rewrap():
+    '''Cursor using Up/Down movePosition (via textWrap) while rewrap runs concurrently.'''
     text = '\n'.join(_LINES * 4)
     doc, tw = _mk_wrap(text, width=20)
-    tw.ensureScreenRows(0, 200)
 
     from TermTk.TTkGui.textcursor import TTkTextCursor
     cursor = TTkTextCursor(document=doc)
@@ -474,13 +462,13 @@ def test_cursor_movePosition_updown_concurrent_with_invalidate():
         for _ in range(20):
             cursor.movePosition(TTkTextCursor.Up, textWrap=tw)
 
-    def invalidator() -> None:
+    def rewrapper() -> None:
         barrier.wait()
-        for line in range(0, doc.lineCount(), 4):
-            tw.invalidateFromDataLine(line)
+        for _ in range(10):
+            tw.rewrap()
 
     t_m = _safe_thread(mover)
-    t_i = _safe_thread(invalidator)
+    t_i = _safe_thread(rewrapper)
     t_m.start()
     t_i.start()
     errors = _collect_errors([t_m, t_i])
@@ -520,7 +508,6 @@ def test_cursor_insertText_concurrent_with_dataLine_reads():
 def test_cursor_replaceText_concurrent_with_screenRows():
     '''Cursor using replaceText() while a render thread calls screenRows().'''
     doc, tw = _mk_wrap('\n'.join(_LINES), width=20)
-    tw.ensureScreenRows(0, 100)
 
     from TermTk.TTkGui.textcursor import TTkTextCursor
     cursor = TTkTextCursor(document=doc)
@@ -539,8 +526,8 @@ def test_cursor_replaceText_concurrent_with_screenRows():
         barrier.wait()
         for _ in range(80):
             rows = tw.screenRows(0, 8)
-            for dt, (fr, to) in rows:
-                assert dt >= 0 and fr >= 0 and fr <= to
+            for row in rows:
+                assert row.line >= 0 and row.start >= 0 and row.start <= row.stop
 
     t_e = _safe_thread(editor)
     t_r = _safe_thread(reader)
@@ -555,7 +542,6 @@ def test_cursor_editing_stress_with_mixed_readers():
     rng = random.Random(7)
     text = '\n'.join(_LINES)
     doc, tw = _mk_wrap(text, width=20)
-    tw.ensureScreenRows(0, 100)
 
     from TermTk.TTkGui.textcursor import TTkTextCursor
     cursor = TTkTextCursor(document=doc)
@@ -587,8 +573,8 @@ def test_cursor_editing_stress_with_mixed_readers():
             op = (reader_id + j) % 3
             if op == 0:
                 rows = tw.screenRows(rng.randint(0, 10), 5)
-                for dt, (fr, to) in rows:
-                    assert dt >= 0 and fr >= 0 and fr <= to
+                for row in rows:
+                    assert row.line >= 0 and row.start >= 0 and row.start <= row.stop
             elif op == 1:
                 lc = doc.lineCount()
                 if lc > 0:
@@ -614,7 +600,6 @@ def test_cursor_editing_stress_with_mixed_readers():
 def test_normalizeScreenPosition_concurrent_with_setText():
     '''normalizeScreenPosition() must not raise while another thread calls setText().'''
     doc, tw = _mk_wrap('\n'.join(_LINES), width=20)
-    tw.ensureScreenRows(0, 100)
 
     barrier = threading.Barrier(2)
 
@@ -649,7 +634,6 @@ def test_setWrapWidth_concurrent_with_screenRows():
     '''setWrapWidth() (full rewrap) called from one thread must not crash a concurrent reader.'''
     text = '\n'.join(_LINES * 5)
     doc, tw = _mk_wrap(text, width=20)
-    tw.ensureScreenRows(0, 200)
 
     barrier = threading.Barrier(2)
 
@@ -662,10 +646,10 @@ def test_setWrapWidth_concurrent_with_screenRows():
         barrier.wait()
         for _ in range(80):
             rows = tw.screenRows(0, 10)
-            for dt, (fr, to) in rows:
-                assert dt >= 0
-                assert fr >= 0
-                assert fr <= to
+            for row in rows:
+                assert row.line >= 0
+                assert row.start >= 0
+                assert row.start <= row.stop
 
     t_c = _safe_thread(width_changer)
     t_r = _safe_thread(reader)
@@ -675,50 +659,45 @@ def test_setWrapWidth_concurrent_with_screenRows():
     assert errors == [], f'Exceptions in threads: {errors}'
 
 
-def test_concurrent_materialization_from_partial_cache():
-    '''Two threads both triggering _materializeToScreenY simultaneously on a partially
-    materialised wrap must not raise (exposes the unprotected internal state race).'''
-    # Build a document large enough that a single ensureScreenRows call does not
-    # cover the positions the threads will request.
+def test_concurrent_readers_from_different_positions():
+    '''Multiple threads reading screenRows() from different positions simultaneously
+    must not raise (FullWrap buffer is pre-computed so all reads are valid).'''
     text = '\n'.join(_LINES * 30)          # ~180 logical lines
     doc, tw = _mk_wrap(text, width=20)
-    # Materialise only the first few rows so both threads must extend the cache.
-    tw.ensureScreenRows(0, 5)
 
     NUM_THREADS = 6
     barrier = threading.Barrier(NUM_THREADS)
 
-    def materializer(start_y: int) -> None:
+    def reader(start_y: int) -> None:
         barrier.wait()
         for _ in range(20):
             rows = tw.screenRows(start_y, 8)
-            for dt, (fr, to) in rows:
-                assert dt >= 0
-                assert fr >= 0
-                assert fr <= to
+            for row in rows:
+                assert row.line >= 0
+                assert row.start >= 0
+                assert row.start <= row.stop
 
-    # Spread threads across positions that all require forward materialisation.
-    threads = [_safe_thread(materializer, i * 30) for i in range(NUM_THREADS)]
+    # Spread threads across different positions.
+    threads = [_safe_thread(reader, i * 30) for i in range(NUM_THREADS)]
     for t in threads:
         t.start()
     errors = _collect_errors(threads)
-    assert errors == [], f'Exceptions in concurrent materialisation threads: {errors}'
+    assert errors == [], f'Exceptions in concurrent reader threads: {errors}'
 
 
-def test_wrapChanged_listener_safe_during_concurrent_invalidation():
+def test_wrapChanged_listener_safe_during_concurrent_rewrap():
     '''A wrapChanged listener that calls screenRows() must not deadlock or raise
-    when invalidateFromDataLine() is fired concurrently from another thread.'''
+    when rewrap() is fired concurrently from another thread.'''
     text = '\n'.join(_LINES * 5)
     doc, tw = _mk_wrap(text, width=15)
-    tw.ensureScreenRows(0, 200)
 
     listener_errors: list[Exception] = []
 
     def on_wrap_changed() -> None:
         try:
             rows = tw.screenRows(0, 5)
-            for dt, (fr, to) in rows:
-                assert dt >= 0 and fr >= 0 and fr <= to
+            for row in rows:
+                assert row.line >= 0 and row.start >= 0 and row.start <= row.stop
         except Exception as e:
             listener_errors.append(e)
 
@@ -726,19 +705,19 @@ def test_wrapChanged_listener_safe_during_concurrent_invalidation():
 
     barrier = threading.Barrier(2)
 
-    def invalidator() -> None:
+    def rewrapper() -> None:
         barrier.wait()
-        for line in range(0, tw.documentLineCount(), 4):
-            tw.invalidateFromDataLine(line)
+        for _ in range(10):
+            tw.rewrap()
 
     def reader() -> None:
         barrier.wait()
         for y in range(0, 50, 3):
             rows = tw.screenRows(y, 4)
-            for dt, (fr, to) in rows:
-                assert dt >= 0 and fr >= 0 and fr <= to
+            for row in rows:
+                assert row.line >= 0 and row.start >= 0 and row.start <= row.stop
 
-    t_i = _safe_thread(invalidator)
+    t_i = _safe_thread(rewrapper)
     t_r = _safe_thread(reader)
     t_i.start()
     t_r.start()
