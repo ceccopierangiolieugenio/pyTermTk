@@ -183,6 +183,7 @@ class TTkTextCursor():
     _color:Optional[TTkColor]
     _document:TTkTextDocument
     _properties:list[_Prop]
+    _autoChanged:bool
     def __init__(self, document:TTkTextDocument) -> None:
         self._color = None
         self._cID = 0

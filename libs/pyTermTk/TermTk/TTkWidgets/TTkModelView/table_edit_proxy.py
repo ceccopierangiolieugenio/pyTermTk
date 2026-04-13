@@ -44,7 +44,7 @@ from TermTk.TTkLayouts.gridlayout import TTkGridLayout
 
 from TermTk.TTkWidgets.widget import TTkWidget
 from TermTk.TTkWidgets.resizableframe import TTkResizableFrame
-from TermTk.TTkWidgets.texedit import TTkTextEdit, TTkTextEditView
+from TermTk.TTkWidgets.text_edit import TTkTextEdit, TTkTextEditView
 from TermTk.TTkWidgets.spinbox import TTkSpinBox
 from TermTk.TTkWidgets.list_ import TTkList
 from TermTk.TTkWidgets.listwidget import TTkAbstractListItem

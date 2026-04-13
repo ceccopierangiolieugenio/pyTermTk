@@ -36,9 +36,9 @@ from .TTkModelView    import *
 from .TTkPickers      import *
 from .TTkTerminal     import *
 
-from .texedit         import *
-from .texeditview     import *
-from .texeditruler    import *
+from .text_edit         import *
+from .text_edit_view     import *
+from .text_edit_ruler    import *
 
 from .datetime_time      import *
 from .datetime_date      import *
