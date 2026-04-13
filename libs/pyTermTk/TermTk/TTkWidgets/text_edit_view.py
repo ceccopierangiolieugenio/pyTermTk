@@ -478,6 +478,7 @@ class TTkTextEditView(TTkAbstractScrollView):
             The undo/redo history is also cleared.
         '''
         self.viewMoveTo(0, 0)
+        self._setCursorPos(0,0)
         self._textDocument.clear()
         self._updateSize()
 
