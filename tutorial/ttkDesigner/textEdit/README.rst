@@ -3,7 +3,7 @@
 .. _ttkDesigner: https://github.com/ceccopierangiolieugenio/pyTermTk/tree/main/apps/ttkDesigner
 
 .. _Widget:        https://ceccopierangiolieugenio.github.io/pyTermTk/autogen.TermTk/TermTk.TTkWidgets.widget.html
-.. _Textedit:      https://ceccopierangiolieugenio.github.io/pyTermTk/autogen.TermTk/TermTk.TTkWidgets.texedit.html
+.. _Textedit:      https://ceccopierangiolieugenio.github.io/pyTermTk/autogen.TermTk/TermTk.TTkWidgets.text_edit.html
 .. _window:        https://ceccopierangiolieugenio.github.io/pyTermTk/autogen.TermTk/TermTk.TTkWidgets.window.html
 .. _button:        https://ceccopierangiolieugenio.github.io/pyTermTk/autogen.TermTk/TermTk.TTkWidgets.button.html
 .. _buttons:       https://ceccopierangiolieugenio.github.io/pyTermTk/autogen.TermTk/TermTk.TTkWidgets.button.html
@@ -110,12 +110,12 @@ Add the TextEdit widget
 Link the Events/Slots for the basic functionalities
 ===================================================
 
-- | Connect the TextEdit `undo <https://ceccopierangiolieugenio.github.io/pyTermTk/autogen.TermTk/TermTk.TTkWidgets.texedit.html#TermTk.TTkWidgets.texedit.TTkTextEdit.undoAvailable>`__ / `redo <https://ceccopierangiolieugenio.github.io/pyTermTk/autogen.TermTk/TermTk.TTkWidgets.texedit.html#TermTk.TTkWidgets.texedit.TTkTextEdit.redoAvailable>`__ availability signals with the `setEnabled <https://ceccopierangiolieugenio.github.io/pyTermTk/autogen.TermTk/TermTk.TTkWidgets.widget.html#TermTk.TTkWidgets.widget.TTkWidget.setEnabled>`__ slots of the undo/redo buttons
+- | Connect the TextEdit `undo <https://ceccopierangiolieugenio.github.io/pyTermTk/autogen.TermTk/TermTk.TTkWidgets.text_edit.html#TermTk.TTkWidgets.text_edit.TTkTextEdit.undoAvailable>`__ / `redo <https://ceccopierangiolieugenio.github.io/pyTermTk/autogen.TermTk/TermTk.TTkWidgets.text_edit.html#TermTk.TTkWidgets.text_edit.TTkTextEdit.redoAvailable>`__ availability signals with the `setEnabled <https://ceccopierangiolieugenio.github.io/pyTermTk/autogen.TermTk/TermTk.TTkWidgets.widget.html#TermTk.TTkWidgets.widget.TTkWidget.setEnabled>`__ slots of the undo/redo buttons
   | This allow the TextEdit to control directly the availability status of the Buttons
 
-- Connect the undo/redo buttons `clicked <https://ceccopierangiolieugenio.github.io/pyTermTk/autogen.TermTk/TermTk.TTkWidgets.button.html#TermTk.TTkWidgets.button.TTkButton.clicked>`__ event to the `undo <https://ceccopierangiolieugenio.github.io/pyTermTk/autogen.TermTk/TermTk.TTkWidgets.texedit.html#TermTk.TTkWidgets.texedit.TTkTextEdit.undo>`__ / `redo <https://ceccopierangiolieugenio.github.io/pyTermTk/autogen.TermTk/TermTk.TTkWidgets.texedit.html#TermTk.TTkWidgets.texedit.TTkTextEdit.redo>`__ slots of the TextEditor
+- Connect the undo/redo buttons `clicked <https://ceccopierangiolieugenio.github.io/pyTermTk/autogen.TermTk/TermTk.TTkWidgets.button.html#TermTk.TTkWidgets.button.TTkButton.clicked>`__ event to the `undo <https://ceccopierangiolieugenio.github.io/pyTermTk/autogen.TermTk/TermTk.TTkWidgets.text_edit.html#TermTk.TTkWidgets.text_edit.TTkTextEdit.undo>`__ / `redo <https://ceccopierangiolieugenio.github.io/pyTermTk/autogen.TermTk/TermTk.TTkWidgets.text_edit.html#TermTk.TTkWidgets.text_edit.TTkTextEdit.redo>`__ slots of the TextEditor
 
-- Same for the `Cut <https://ceccopierangiolieugenio.github.io/pyTermTk/autogen.TermTk/TermTk.TTkWidgets.texedit.html#TermTk.TTkWidgets.texedit.TTkTextEdit.cut>`__, `Copy <https://ceccopierangiolieugenio.github.io/pyTermTk/autogen.TermTk/TermTk.TTkWidgets.texedit.html#TermTk.TTkWidgets.texedit.TTkTextEdit.copy>`__, `Paste <https://ceccopierangiolieugenio.github.io/pyTermTk/autogen.TermTk/TermTk.TTkWidgets.texedit.html#TermTk.TTkWidgets.texedit.TTkTextEdit.paste>`__
+- Same for the `Cut <https://ceccopierangiolieugenio.github.io/pyTermTk/autogen.TermTk/TermTk.TTkWidgets.text_edit.html#TermTk.TTkWidgets.text_edit.TTkTextEdit.cut>`__, `Copy <https://ceccopierangiolieugenio.github.io/pyTermTk/autogen.TermTk/TermTk.TTkWidgets.text_edit.html#TermTk.TTkWidgets.text_edit.TTkTextEdit.copy>`__, `Paste <https://ceccopierangiolieugenio.github.io/pyTermTk/autogen.TermTk/TermTk.TTkWidgets.text_edit.html#TermTk.TTkWidgets.text_edit.TTkTextEdit.paste>`__
 
 .. raw:: html
 
