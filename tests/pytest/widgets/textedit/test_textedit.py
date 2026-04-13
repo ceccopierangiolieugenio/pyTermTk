@@ -314,3 +314,126 @@ def test_addCursor_and_clearCursors():
     assert len(cur.cursors()) == 2
     cur.clearCursors()
     assert len(cur.cursors()) == 1
+
+
+# ---------------------------------------------------------------------------
+# TTkTextEditView clear / setText cursor-reset regression tests
+# ---------------------------------------------------------------------------
+
+def test_clear_resets_cursor_to_origin():
+    """Regression: clear() must move cursor back to (0,0)."""
+    tev = ttk.TTkTextEditView()
+    tev.setText('hello\nworld\nfoo')
+    cur = tev.textCursor()
+    cur.setPosition(line=2, pos=3)
+    assert cur.position().line == 2
+    assert cur.position().pos  == 3
+    tev.clear()
+    cur = tev.textCursor()
+    assert cur.position().line == 0
+    assert cur.position().pos  == 0
+
+
+def test_clear_clears_selection():
+    """clear() must leave no selection on the cursor."""
+    tev = ttk.TTkTextEditView()
+    tev.setText('hello\nworld')
+    cur = tev.textCursor()
+    cur.setPosition(line=0, pos=0)
+    cur.setPosition(line=1, pos=5, moveMode=ttk.TTkTextCursor.KeepAnchor)
+    assert cur.hasSelection()
+    tev.clear()
+    cur = tev.textCursor()
+    assert not cur.hasSelection()
+
+
+def test_clear_resets_multi_cursors():
+    """clear() must collapse multiple cursors back to a single cursor at (0,0)."""
+    tev = ttk.TTkTextEditView()
+    tev.setText('aaa\nbbb\nccc')
+    cur = tev.textCursor()
+    cur.setPosition(line=0, pos=1)
+    cur.addCursor(line=2, pos=2)
+    assert len(cur.cursors()) == 2
+    tev.clear()
+    cur = tev.textCursor()
+    assert len(cur.cursors()) == 1
+    assert cur.position().line == 0
+    assert cur.position().pos  == 0
+
+
+def test_clear_then_insert_text():
+    """After clear(), inserting text must work starting at (0,0)."""
+    tev = ttk.TTkTextEditView()
+    tev.setText('hello\nworld')
+    cur = tev.textCursor()
+    cur.setPosition(line=1, pos=5)
+    tev.clear()
+    cur = tev.textCursor()
+    assert cur.position().line == 0
+    assert cur.position().pos  == 0
+    tev.setText('new text')
+    assert tev.toPlainText() == 'new text'
+
+
+def test_clear_document_has_default_content():
+    """After clear(), document should contain the default init text (a space)."""
+    tev = ttk.TTkTextEditView()
+    tev.setText('hello\nworld\nfoo\nbar')
+    tev.clear()
+    # Default init text is a single space
+    assert tev.toPlainText() == ' '
+    assert tev.document().lineCount() == 1
+
+
+def test_setText_over_shorter_content():
+    """setText() with shorter content should leave cursor valid."""
+    tev = ttk.TTkTextEditView()
+    tev.setText('line0\nline1')
+    cur = tev.textCursor()
+    # Place cursor within bounds of the first line
+    cur.setPosition(line=0, pos=3)
+    tev.setText('short')
+    doc = tev.document()
+    assert doc.lineCount() == 1
+    assert doc.toPlainText() == 'short'
+
+
+def test_clear_and_set_text_roundtrip():
+    """clear() followed by setText() must produce the expected document."""
+    tev = ttk.TTkTextEditView()
+    tev.setText('aaa\nbbb')
+    cur = tev.textCursor()
+    cur.setPosition(line=1, pos=3)
+    tev.clear()
+    tev.setText('xxx\nyyy\nzzz')
+    assert tev.toPlainText() == 'xxx\nyyy\nzzz'
+    cur = tev.textCursor()
+    # Cursor should be valid (not pointing beyond the new content)
+    assert cur.position().line < 3
+
+
+def test_clear_undo_redo_not_available():
+    """After clear(), undo/redo history is wiped."""
+    tev = ttk.TTkTextEditView()
+    tev.setText('hello')
+    cur = tev.textCursor()
+    cur.setPosition(line=0, pos=5)
+    cur.insertText(' world')
+    tev.clear()
+    assert not tev.isUndoAvailable()
+    assert not tev.isRedoAvailable()
+
+
+def test_TTkTextEdit_clear_resets_cursor():
+    """TTkTextEdit (scroll-area wrapper) clear() must also reset cursor."""
+    te = ttk.TTkTextEdit()
+    te.setText('hello\nworld\nfoo')
+    cur = te.textCursor()
+    cur.setPosition(line=2, pos=3)
+    assert cur.position().line == 2
+    te.clear()
+    cur = te.textCursor()
+    assert cur.position().line == 0
+    assert cur.position().pos  == 0
+    assert not cur.hasSelection()
