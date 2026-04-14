@@ -1,6 +1,6 @@
 # MIT License
 #
-# Copyright (c) 2022 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
+# Copyright (c) 2026 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -23,6 +23,7 @@
 __all__:list = []
 
 from dataclasses import dataclass
+from threading import RLock
 from typing import List, Optional, Tuple
 from .text_wrap import _WrapEngine_Interface
 from .text_wrap_data import _ReWrapData, _WrapLine, _WrapState
@@ -43,8 +44,11 @@ class _LastWindow():
     buffer:List[_WrapLine]
 
 class _WrapEngine_VimWrap(_WrapEngine_Interface):
-    '''Lazy wrap engine optimized around the active viewport.'''
-    __slots__ = ('_lastWindow')
+    '''Lazy wrap engine optimized around the active viewport.
+    
+    Thread Safety: All cache operations are protected with an RLock mutex.
+    '''
+    __slots__ = ('_lastWindow', '_cacheLock')
 
     _lastWindow: _LastWindow
 
@@ -55,6 +59,7 @@ class _WrapEngine_VimWrap(_WrapEngine_Interface):
         :type state: :py:class:`_WrapState`
         '''
         self._lastWindow = _LastWindow(y=0,h=0,buffer=[])
+        self._cacheLock = RLock()
         super().__init__(state)
 
     def size(self) -> int:
@@ -87,14 +92,15 @@ class _WrapEngine_VimWrap(_WrapEngine_Interface):
         if not (w := self._wrapState.size):
             return 0,0
         text_document = self._wrapState.textDocument
-        buffer = self._lastWindow.buffer
-        for i, row in enumerate(buffer):
-            dt=row.line
-            fr=row.start
-            to=row.stop
-            if dt == line and fr <= pos <= to:
-                l = text_document.dataLine(dt).substring(fr,pos).tab2spaces(self._wrapState.tabSpaces)
-                return l.termWidth(), i+self._lastWindow.y
+        with self._cacheLock:
+            buffer = self._lastWindow.buffer
+            for i, row in enumerate(buffer):
+                dt=row.line
+                fr=row.start
+                to=row.stop
+                if dt == line and fr <= pos <= to:
+                    l = text_document.dataLine(dt).substring(fr,pos).tab2spaces(self._wrapState.tabSpaces)
+                    return l.termWidth(), i+self._lastWindow.y
         return 0,0
 
     def screenToDataPosition(self, x:int, y:int) -> Tuple[int, int]:
@@ -108,14 +114,15 @@ class _WrapEngine_VimWrap(_WrapEngine_Interface):
         :return: ``(line, pos)`` from the cached viewport.
         :rtype: Tuple[int, int]
         '''
-        dy = y - self._lastWindow.y
-        if not (0 <= dy < self._lastWindow.h):
-            return 0,0
+        with self._cacheLock:
+            dy = y - self._lastWindow.y
+            if not (0 <= dy < self._lastWindow.h):
+                return 0,0
+            row = self._lastWindow.buffer[dy]
+            dt=row.line
+            fr=row.start
+            to=row.stop
         text_document = self._wrapState.textDocument
-        row = self._lastWindow.buffer[dy]
-        dt=row.line
-        fr=row.start
-        to=row.stop
         pos = fr+text_document.dataLine(dt).substring(fr,to).tabCharPos(x,self._wrapState.tabSpaces)
         return dt, pos
 
@@ -131,15 +138,16 @@ class _WrapEngine_VimWrap(_WrapEngine_Interface):
         :rtype: Tuple[int, int]
         '''
         y = max(0,min(y,self.size()-1))
-        dy = y - self._lastWindow.y
-        if not (0 <= dy < self._lastWindow.h):
-            return 0,0
-        text_document = self._wrapState.textDocument
-        row = self._lastWindow.buffer[dy]
-        dt=row.line
-        fr=row.start
-        to=row.stop
+        with self._cacheLock:
+            dy = y - self._lastWindow.y
+            if not (0 <= dy < self._lastWindow.h):
+                return 0,0
+            row = self._lastWindow.buffer[dy]
+            dt=row.line
+            fr=row.start
+            to=row.stop
         x = max(0,x)
+        text_document = self._wrapState.textDocument
         s = text_document.dataLine(dt).substring(fr,to)
         x = s.tabCharPos(x, self._wrapState.tabSpaces)
         x = s.substring(0,x).tab2spaces(self._wrapState.tabSpaces).termWidth()
@@ -159,10 +167,11 @@ class _WrapEngine_VimWrap(_WrapEngine_Interface):
         if not (w := self._wrapState.size):
             return []
 
-        self._lastWindow = _LastWindow(y=y, h=h, buffer=[])
+        with self._cacheLock:
+            self._lastWindow = _LastWindow(y=y, h=h, buffer=[])
 
-        for _i,_line in enumerate(self._wrapState.textDocument.dataLines(slice(y,y+h)), start=y):
-            self._lastWindow.buffer.extend(self._wrapLine(w,_i,_line))
-            if len(self._lastWindow.buffer) >= h:
-                break
-        return self._lastWindow.buffer
+            for _i,_line in enumerate(self._wrapState.textDocument.dataLines(slice(y,y+h)), start=y):
+                self._lastWindow.buffer.extend(self._wrapLine(w,_i,_line))
+                if len(self._lastWindow.buffer) >= h:
+                    break
+            return self._lastWindow.buffer
