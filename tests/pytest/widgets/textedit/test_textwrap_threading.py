@@ -333,6 +333,54 @@ def test_many_threads_mixed_operations():
     assert errors == [], f'Exceptions in stress threads: {errors}'
 
 
+def test_fullwrap_rewrap_setText_mapping_regression_none_substring():
+    '''Regression: mixed setText/rewrap/mapping must not trigger None.substring.''' 
+    rng = random.Random(123)
+    text = '\n'.join(_LINES * 8)
+    doc, tw = _mk_wrap(text, width=20)
+
+    barrier = threading.Barrier(8)
+    ITERATIONS = 120
+
+    def mapper() -> None:
+        barrier.wait()
+        for _ in range(ITERATIONS):
+            lc = tw.documentLineCount()
+            if lc > 0:
+                ln = rng.randint(0, lc - 1)
+                x, y = tw.dataToScreenPosition(ln, 0)
+                assert x >= 0 and y >= 0
+            line, pos = tw.screenToDataPosition(0, rng.randint(0, 25))
+            assert line >= 0 and pos >= 0
+
+    def rewrapper() -> None:
+        barrier.wait()
+        for _ in range(ITERATIONS):
+            tw.rewrap()
+
+    def writer() -> None:
+        barrier.wait()
+        for i in range(ITERATIONS):
+            a = i % len(_LINES)
+            b = a + 1 + (i % 4)
+            doc.setText('\n'.join(_LINES[a:b]))
+
+    threads = [
+        _safe_thread(writer),
+        _safe_thread(rewrapper),
+        _safe_thread(mapper),
+        _safe_thread(mapper),
+        _safe_thread(mapper),
+        _safe_thread(mapper),
+        _safe_thread(mapper),
+        _safe_thread(mapper),
+    ]
+    for t in threads:
+        t.start()
+    errors = _collect_errors(threads)
+    assert errors == [], f'Exceptions in regression threads: {errors}'
+
+
 # ---------------------------------------------------------------------------
 # Cursor tests
 # ---------------------------------------------------------------------------
