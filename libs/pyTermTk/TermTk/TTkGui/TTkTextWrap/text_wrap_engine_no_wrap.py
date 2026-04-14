@@ -22,7 +22,6 @@
 
 __all__:list = []
 
-from threading import RLock
 from typing import List, Optional, Tuple
 
 from .text_wrap import _WrapEngine_Interface
@@ -31,19 +30,9 @@ from .text_wrap_data import _ReWrapData, _WrapLine, _WrapState
 
 class _WrapEngine_NoWrap(_WrapEngine_Interface):
     '''Wrapping engine that keeps one screen row per document line.
-    
+
     Thread Safety: All operations use thread-safe document API calls.
     '''
-    __slots__ = ('_rowLock')
-    
-    def __init__(self, state):
-        '''Initialize the no-wrap engine.
-        
-        :param state: shared wrap state.
-        :type state: :py:class:`_WrapState`
-        '''
-        self._rowLock = RLock()
-        super().__init__(state)
     def size(self) -> int:
         '''Return the number of logical lines in the document.
 
@@ -122,8 +111,9 @@ class _WrapEngine_NoWrap(_WrapEngine_Interface):
         :return: row descriptors covering the requested viewport.
         :rtype: List[:py:class:`_WrapLine`]
         '''
-        with self._rowLock:
-            return [
-                _WrapLine(_i, 0, len(_line)+1)
-                for _i,_line in enumerate(self._wrapState.textDocument.dataLines(slice(y,y+h)), start=y)
-            ]
+        return [
+            _WrapLine(_i, 0, len(_line)+1)
+            for _i,_line in enumerate(
+                self._wrapState.textDocument.dataLines(slice(y,y+h)),
+                start=y )
+        ]
