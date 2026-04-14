@@ -23,7 +23,6 @@
 __all__:list = []
 
 import sys
-from bisect import bisect_left as _bisect_left, bisect_right as _bisect_right
 from typing import List, Tuple, Optional
 
 from .text_wrap import _WrapEngine_Interface
@@ -32,37 +31,27 @@ from .text_wrap_data import _WrapLine, _ReWrapData
 # TODO: remove Python 3.9 compatibility routine once dropped support
 # Python 3.9 compatibility: key parameter was added in Python 3.10
 if sys.version_info >= (3, 10):
-    bisect_left = _bisect_left
-    bisect_right = _bisect_right
+    from bisect import bisect_left, bisect_right
 else:
+    from bisect import bisect_left as _bisect_left, bisect_right as _bisect_right
+    class _BisectKeyLine:
+        __slots__ = ('_buf',)
+        _buf:List[_WrapLine]
+        def __init__(self, buf:List[_WrapLine]):
+            self._buf = buf
+        def __len__(self) -> int:
+            return len(self._buf)
+        def __getitem__(self, i) -> int:
+            return self._buf[i].line
     def bisect_left(a, x, lo=0, hi=None, *, key=None):
         '''Compatibility wrapper for bisect_left with key parameter support.'''
-        if key is None:
-            return _bisect_left(a, x, lo, hi)
-        if hi is None:
-            hi = len(a)
-        while lo < hi:
-            mid = (lo + hi) // 2
-            if key(a[mid]) < x:
-                lo = mid + 1
-            else:
-                hi = mid
-        return lo
+        keys = _BisectKeyLine(a)
+        return _bisect_left(keys, x)
 
     def bisect_right(a, x, lo=0, hi=None, *, key=None):
         '''Compatibility wrapper for bisect_right with key parameter support.'''
-        if key is None:
-            return _bisect_right(a, x, lo, hi)
-        if hi is None:
-            hi = len(a)
-        while lo < hi:
-            mid = (lo + hi) // 2
-            if x < key(a[mid]):
-                hi = mid
-            else:
-                lo = mid + 1
-        return lo
-
+        keys = _BisectKeyLine(a)
+        return _bisect_right(keys, x)
 
 class _WrapEngine_FullWrap(_WrapEngine_Interface):
     '''Eager wrap engine that maintains a full wrapped-row buffer.'''
