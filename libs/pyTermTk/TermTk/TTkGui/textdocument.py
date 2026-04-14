@@ -22,7 +22,7 @@
 
 __all__ = ['TTkTextDocument']
 
-from typing import TYPE_CHECKING, Optional, Union
+from typing import TYPE_CHECKING, Optional
 from threading import RLock
 
 from TermTk.TTkCore.log import TTkLog
@@ -255,6 +255,26 @@ class TTkTextDocument():
                 ret = self._dataLines[line]
             else:
                 ret = None
+            return ret
+
+    def dataLines(self, lineRange:Optional[slice]=None) -> list[TTkString]:
+        '''Return data lines in a thread-safe way.
+
+        :param lineRange: optional slice selecting a subset of lines.
+        :type lineRange: Optional[slice]
+        :return: the internal lines list or a sliced list.
+        :rtype: List[:py:class:`TTkString`]
+
+        .. note::
+            This method does not copy the full document when ``lineRange`` is
+            ``None``. The returned object is mutable and reflects live document
+            updates.
+        '''
+        with self._docMutex:
+            if lineRange is not None:
+                ret = self._dataLines[lineRange]
+            else:
+                ret = self._dataLines
             return ret
 
     def clear(self):

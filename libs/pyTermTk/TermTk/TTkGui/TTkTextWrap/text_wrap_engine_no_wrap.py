@@ -36,7 +36,7 @@ class _WrapEngine_NoWrap(_WrapEngine_Interface):
         :return: total visible rows.
         :rtype: int
         '''
-        return len(self._wrapState.textDocument._dataLines)
+        return self._wrapState.textDocument.lineCount()
 
     def rewrap(self, data: Optional[_ReWrapData]=None) -> None:
         '''No-op for no-wrap mode.
@@ -110,5 +110,5 @@ class _WrapEngine_NoWrap(_WrapEngine_Interface):
         '''
         return [
             _WrapLine(_i, 0, len(_line)+1)
-            for _i,_line in enumerate(self._wrapState.textDocument._dataLines[y:y+h], start=y)
+            for _i,_line in enumerate(self._wrapState.textDocument.dataLines(slice(y,y+h)), start=y)
         ]

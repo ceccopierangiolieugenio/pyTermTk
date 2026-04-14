@@ -100,14 +100,14 @@ class _WrapEngine_FullWrap(_WrapEngine_Interface):
             lo = bisect_left(self._buffer, line, key=lambda _wl:_wl.line)
             hi = bisect_right(self._buffer, line+removed-1, lo, key=lambda _wl:_wl.line)
 
-            for i,l in enumerate(self._wrapState.textDocument._dataLines[line:line+added], start=line):
+            for i,l in enumerate(self._wrapState.textDocument.dataLines(slice(line,line+added)), start=line):
                 changed.extend(self._wrapLine(w,i,l))
             for row in self._buffer[hi:]:
                 row.line += added - removed
             self._buffer[lo:hi] = changed
         else:
             self._buffer = []
-            for i,l in enumerate(self._wrapState.textDocument._dataLines):
+            for i,l in enumerate(self._wrapState.textDocument.dataLines()):
                 self._buffer.extend(self._wrapLine(w,i,l))
 
     def dataToScreenPosition(self, line:int, pos:int) -> Tuple[int, int]:

@@ -63,7 +63,7 @@ class _WrapEngine_VimWrap(_WrapEngine_Interface):
         :return: logical line count.
         :rtype: int
         '''
-        return len(self._wrapState.textDocument._dataLines)
+        return self._wrapState.textDocument.lineCount()
 
     def rewrap(self, data: Optional[_ReWrapData]=None) -> None:
         '''No-op; wrapping is generated on demand by viewport.
@@ -161,7 +161,7 @@ class _WrapEngine_VimWrap(_WrapEngine_Interface):
 
         self._lastWindow = _LastWindow(y=y, h=h, buffer=[])
 
-        for _i,_line in enumerate(self._wrapState.textDocument._dataLines[y:y+h], start=y):
+        for _i,_line in enumerate(self._wrapState.textDocument.dataLines(slice(y,y+h)), start=y):
             self._lastWindow.buffer.extend(self._wrapLine(w,_i,_line))
             if len(self._lastWindow.buffer) >= h:
                 break
