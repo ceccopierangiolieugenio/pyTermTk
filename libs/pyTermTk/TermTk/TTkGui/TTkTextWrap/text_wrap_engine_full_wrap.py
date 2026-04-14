@@ -35,23 +35,28 @@ if sys.version_info >= (3, 10):
 else:
     from bisect import bisect_left as _bisect_left, bisect_right as _bisect_right
     class _BisectKeyLine:
-        __slots__ = ('_buf',)
+        __slots__ = ('_buf', '_key')
         _buf:List[_WrapLine]
-        def __init__(self, buf:List[_WrapLine]):
+        def __init__(self, buf:List[_WrapLine], key):
             self._buf = buf
+            self._key = key
         def __len__(self) -> int:
             return len(self._buf)
         def __getitem__(self, i) -> int:
-            return self._buf[i].line
+            return self._key(self._buf[i])
     def bisect_left(a, x, lo=0, hi=None, *, key=None):
         '''Compatibility wrapper for bisect_left with key parameter support.'''
-        keys = _BisectKeyLine(a)
-        return _bisect_left(keys, x)
+        if key is None:
+            return _bisect_left(a, x, lo, hi if hi is not None else len(a))
+        keys = _BisectKeyLine(a, key)
+        return _bisect_left(keys, x, lo, hi if hi is not None else len(a))
 
     def bisect_right(a, x, lo=0, hi=None, *, key=None):
         '''Compatibility wrapper for bisect_right with key parameter support.'''
-        keys = _BisectKeyLine(a)
-        return _bisect_right(keys, x)
+        if key is None:
+            return _bisect_right(a, x, lo, hi if hi is not None else len(a))
+        keys = _BisectKeyLine(a, key)
+        return _bisect_right(keys, x, lo, hi if hi is not None else len(a))
 
 class _WrapEngine_FullWrap(_WrapEngine_Interface):
     '''Eager wrap engine that maintains a full wrapped-row buffer.'''
