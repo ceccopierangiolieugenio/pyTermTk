@@ -162,7 +162,7 @@ class _WrapEngine_FullWrap(_WrapEngine_Interface):
             to = row.stop
         data_line = text_document.dataLine(dt)
         if data_line is None:
-            0, 0
+            return 0, 0
         pos = fr + data_line.substring(fr, to).tabCharPos(x, self._wrapState.tabSpaces)
         return dt, pos
 
