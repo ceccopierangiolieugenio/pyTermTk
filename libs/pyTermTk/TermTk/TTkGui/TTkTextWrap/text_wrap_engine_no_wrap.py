@@ -63,6 +63,8 @@ class _WrapEngine_NoWrap(_WrapEngine_Interface):
         line = self._clampLine(line)
         text_document = self._wrapState.textDocument
         data_line = text_document.dataLine(line)
+        if data_line is None:
+            return 0, 0
         if 0 <= pos <= len(data_line) + 1:
             l = data_line.substring(0,pos).tab2spaces(self._wrapState.tabSpaces)
             return l.termWidth(), line
@@ -80,6 +82,8 @@ class _WrapEngine_NoWrap(_WrapEngine_Interface):
         :rtype: Tuple[int, int]
         '''
         line = self._wrapState.textDocument.dataLine(y)
+        if line is None:
+            return 0, 0
         pos = line.tabCharPos(x,self._wrapState.tabSpaces)
         return y, pos
 
@@ -97,6 +101,8 @@ class _WrapEngine_NoWrap(_WrapEngine_Interface):
         x = max(0,x)
         y = max(0,min(y,self.size()-1))
         line = self._wrapState.textDocument.dataLine(y)
+        if line is None:
+            return 0, 0
         x = line.tabCharPos(x, self._wrapState.tabSpaces)
         x = line.substring(0,x).tab2spaces(self._wrapState.tabSpaces).termWidth()
         return x, y

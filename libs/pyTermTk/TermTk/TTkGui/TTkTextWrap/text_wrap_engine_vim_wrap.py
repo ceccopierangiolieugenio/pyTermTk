@@ -25,6 +25,7 @@ __all__:list = []
 from dataclasses import dataclass
 from threading import RLock
 from typing import List, Optional, Tuple
+
 from .text_wrap import _WrapEngine_Interface
 from .text_wrap_data import _ReWrapData, _WrapLine, _WrapState
 
@@ -126,10 +127,15 @@ class _WrapEngine_VimWrap(_WrapEngine_Interface):
                 fr=row.start
                 to=row.stop
                 if dt == line and fr <= pos <= to:
-                    l = text_document.dataLine(dt).substring(fr,pos).tab2spaces(self._wrapState.tabSpaces)
+                    data_line = text_document.dataLine(dt)
+                    if data_line is None:
+                        return 0, 0
+                    l = data_line.substring(fr,pos).tab2spaces(self._wrapState.tabSpaces)
                     return l.termWidth(), i
             line = self._clampLine(line)
             data_line = text_document.dataLine(line)
+            if data_line is None:
+                return 0, 0
             if 0 <= pos <= len(data_line) + 1:
                 l = data_line.substring(0,pos).tab2spaces(self._wrapState.tabSpaces)
                 return l.termWidth(), line
@@ -155,6 +161,8 @@ class _WrapEngine_VimWrap(_WrapEngine_Interface):
             if dy < 0 or dy >= self._lastWindow.h:
                 y = self._clampLine(y)
                 line = self._wrapState.textDocument.dataLine(y)
+                if line is None:
+                    return 0, 0
                 pos = line.tabCharPos(x,self._wrapState.tabSpaces)
                 return y, pos
             dy = min(dy, len(self._lastWindow.buffer)-1)
@@ -163,7 +171,10 @@ class _WrapEngine_VimWrap(_WrapEngine_Interface):
             fr=row.start
             to=row.stop
         text_document = self._wrapState.textDocument
-        pos = fr+text_document.dataLine(dt).substring(fr,to).tabCharPos(x,self._wrapState.tabSpaces)
+        data_line = text_document.dataLine(dt)
+        if data_line is None:
+            return 0, 0
+        pos = fr+data_line.substring(fr,to).tabCharPos(x,self._wrapState.tabSpaces)
         return dt, pos
 
     def normalizeScreenPosition(self, x:int, y:int) -> Tuple[int, int]:
@@ -187,6 +198,8 @@ class _WrapEngine_VimWrap(_WrapEngine_Interface):
             if dy < 0 or dy >= self._lastWindow.h:
                 y = self._clampLine(y)
                 line = self._wrapState.textDocument.dataLine(y)
+                if line is None:
+                    return 0, 0
                 x = line.tabCharPos(x, self._wrapState.tabSpaces)
                 x = line.substring(0,x).tab2spaces(self._wrapState.tabSpaces).termWidth()
                 return x, y
@@ -197,7 +210,10 @@ class _WrapEngine_VimWrap(_WrapEngine_Interface):
             to=row.stop
         x = max(0,x)
         text_document = self._wrapState.textDocument
-        s = text_document.dataLine(dt).substring(fr,to)
+        data_line = text_document.dataLine(dt)
+        if data_line is None:
+            return 0, 0
+        s = data_line.substring(fr,to)
         x = s.tabCharPos(x, self._wrapState.tabSpaces)
         x = s.substring(0,x).tab2spaces(self._wrapState.tabSpaces).termWidth()
         return x, y

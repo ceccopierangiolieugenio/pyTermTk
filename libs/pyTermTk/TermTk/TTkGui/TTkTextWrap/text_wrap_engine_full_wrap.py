@@ -135,7 +135,10 @@ class _WrapEngine_FullWrap(_WrapEngine_Interface):
             for i in range(lo, hi):
                 row = self._buffer[i]
                 if row.start <= pos <= row.stop:
-                    l = text_document.dataLine(line).substring(row.start, pos).tab2spaces(self._wrapState.tabSpaces)
+                    data_line = text_document.dataLine(line)
+                    if data_line is None:
+                        return 0, 0
+                    l = data_line.substring(row.start, pos).tab2spaces(self._wrapState.tabSpaces)
                     return l.termWidth(), i
         return 0, 0
 
@@ -157,7 +160,10 @@ class _WrapEngine_FullWrap(_WrapEngine_Interface):
             dt = row.line
             fr = row.start
             to = row.stop
-        pos = fr + text_document.dataLine(dt).substring(fr, to).tabCharPos(x, self._wrapState.tabSpaces)
+        data_line = text_document.dataLine(dt)
+        if data_line is None:
+            0, 0
+        pos = fr + data_line.substring(fr, to).tabCharPos(x, self._wrapState.tabSpaces)
         return dt, pos
 
     def normalizeScreenPosition(self, x:int, y:int) -> Tuple[int, int]:
@@ -179,7 +185,10 @@ class _WrapEngine_FullWrap(_WrapEngine_Interface):
             fr = row.start
             to = row.stop
         x = max(0, x)
-        s = text_document.dataLine(dt).substring(fr, to)
+        data_line = text_document.dataLine(dt)
+        if data_line is None:
+            return 0, 0
+        s = data_line.substring(fr, to)
         x = s.tabCharPos(x, self._wrapState.tabSpaces)
         x = s.substring(0, x).tab2spaces(self._wrapState.tabSpaces).termWidth()
         return x, y
