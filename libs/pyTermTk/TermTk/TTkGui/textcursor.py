@@ -31,7 +31,7 @@ from typing import List, Optional, Tuple
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkCore.string import TTkString, TTkStringType
-from TermTk.TTkGui.textwrap1 import TTkTextWrap
+from TermTk.TTkGui.TTkTextWrap.text_wrap import TTkTextWrap
 from TermTk.TTkGui.textdocument import TTkTextDocument
 
 
@@ -183,6 +183,7 @@ class TTkTextCursor():
     _color:Optional[TTkColor]
     _document:TTkTextDocument
     _properties:list[_Prop]
+    _autoChanged:bool
     def __init__(self, document:TTkTextDocument) -> None:
         self._color = None
         self._cID = 0
@@ -244,7 +245,9 @@ class TTkTextCursor():
     def positionChar(self, cID:int=-1) -> str:
         cID = self._cID if cID==-1 else cID
         p = self._properties[cID].position
-        l = self._document._dataLines[p.line]
+        l = self._document.dataLine(p.line)
+        if l is None:
+            return ' '
         pos = max(0,p.pos-1)
         if pos < len(l):
             ch = l.charAt(pos)
@@ -270,7 +273,7 @@ class TTkTextCursor():
         self._document.cursorPositionChanged.emit(self)
 
     def getLinesUnderCursor(self) -> List[TTkString]:
-        return [ self._document._dataLines[p.position.line] for p in self._properties ]
+        return [ l for p in self._properties if (l := self._document.dataLine(p.position.line)) is not None ]
 
     def _checkCursors(self, notify:bool=False) -> None:
         currCurs = self._properties[self._cID]
@@ -303,17 +306,22 @@ class TTkTextCursor():
     def movePosition(self, operation:MoveOperation, moveMode:MoveMode=MoveMode.MoveAnchor, n=1, textWrap:Optional[TTkTextWrap]=None) -> None:
         currPos = self.position().toNum()
         def moveRight(cID,p,_):
-            if p.pos < len(self._document._dataLines[p.line]):
-                nextPos = self._document._dataLines[p.line].nextPos(p.pos)
+            line = self._document.dataLine(p.line)
+            if line and p.pos < len(line):
+                nextPos = line.nextPos(p.pos)
                 self.setPosition(p.line, nextPos, moveMode, cID=cID)
-            elif p.line < len(self._document._dataLines)-1:
+            elif p.line < self._document.lineCount()-1:
                 self.setPosition(p.line+1, 0, moveMode, cID=cID)
         def moveLeft(cID,p,_):
             if p.pos > 0:
-                prevPos = self._document._dataLines[p.line].prevPos(p.pos)
-                self.setPosition(p.line, prevPos, moveMode, cID=cID)
+                line = self._document.dataLine(p.line)
+                if line:
+                    prevPos = line.prevPos(p.pos)
+                    self.setPosition(p.line, prevPos, moveMode, cID=cID)
             elif p.line > 0:
-                self.setPosition(p.line-1, len(self._document._dataLines[p.line-1]) , moveMode, cID=cID)
+                prevLine = self._document.dataLine(p.line-1)
+                if prevLine:
+                    self.setPosition(p.line-1, len(prevLine) , moveMode, cID=cID)
         def moveUpDown(offset):
             def _moveUpDown(cID,p,_n):
                 if not textWrap:
@@ -324,13 +332,15 @@ class TTkTextCursor():
                 self.setPosition(line, pos, moveMode, cID=cID)
             return _moveUpDown
         def moveEndOfLine(cID,p,_):
-            l = self._document._dataLines[p.line]
-            self.setPosition(p.line, len(l), moveMode, cID=cID)
+            l = self._document.dataLine(p.line)
+            if l:
+                self.setPosition(p.line, len(l), moveMode, cID=cID)
         def moveHome(cID,p,_):
             self.setPosition(p.line, 0, moveMode, cID=cID)
         def moveEnd(cID,p,_):
-            l = self._document._dataLines[-1]
-            self.setPosition(len(self._document._dataLines)-1, len(l), moveMode, cID=cID)
+            lastLine = self._document.dataLine(self._document.lineCount()-1)
+            if lastLine:
+                self.setPosition(self._document.lineCount()-1, len(lastLine), moveMode, cID=cID)
         def moveStart(cID,_p,_n):
             self.setPosition(0, 0, moveMode, cID=cID)
 
@@ -479,20 +489,26 @@ class TTkTextCursor():
             if   selection == TTkTextCursor.SelectionType.Document:
                 p.position.pos  = 0
                 p.position.line = 0
-                p.anchor.pos    = len(self._document._dataLines[-1])
-                p.anchor.line   = len(self._document._dataLines)-1
+                lastLine = self._document.dataLine(self._document.lineCount()-1)
+                if lastLine:
+                    p.anchor.pos    = len(lastLine)
+                    p.anchor.line   = self._document.lineCount()-1
             elif selection == TTkTextCursor.SelectionType.LineUnderCursor:
                 line = p.position.line
                 p.position.pos = 0
-                p.anchor.pos   = len(self._document._dataLines[line])
+                lineData = self._document.dataLine(line)
+                if lineData:
+                    p.anchor.pos   = len(lineData)
             elif selection == TTkTextCursor.SelectionType.WordUnderCursor:
                 line = p.position.line
                 pos  = p.position.pos
                 # Split the current line from the current cursor position
                 # search the leftmost(on the right slice)/rightmost(on the left slice) word
                 # in order to match the full word under the cursor
-                splitBefore = self._document._dataLines[line].substring(to=pos)
-                splitAfter =  self._document._dataLines[line].substring(fr=pos)
+                lineData = self._document.dataLine(line)
+                if lineData:
+                    splitBefore = lineData.substring(to=pos)
+                    splitAfter =  lineData.substring(fr=pos)
                 xFrom = pos
                 xTo   = pos
                 selectRE = r'[^ \t\r\n()[\]\.\,\+\-\*\/]*'
@@ -511,7 +527,9 @@ class TTkTextCursor():
             selSt = p.selectionStart()
             selEn = p.selectionEnd()
             for l in range(selSt.line,selEn.line+1):
-                line = self._document._dataLines[l]
+                line = self._document.dataLine(l)
+                if line is None:
+                    continue
                 pf = 0         if l > selSt.line else selSt.pos
                 pt = len(line) if l < selEn.line else selEn.pos
                 _ret.append(line.substring(pf, pt))
@@ -601,7 +619,8 @@ class TTkTextCursor():
             selEn = p.selectionEnd().line
             if selEn >= fr and selSt<=to:
                 for i in range(max(selSt,fr),min(selEn,to)+1):
-                    lines[i-fr] = color
+                    if i < len(lines):
+                        lines[i-fr] = color
         return lines
 
     def _getBlinkingCursors(self, fr:int, to:int, lines, color:TTkColor) -> list[TTkString]:

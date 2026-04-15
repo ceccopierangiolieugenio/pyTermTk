@@ -39,7 +39,7 @@ from TermTk.TTkAbstract.abstractscrollarea import TTkAbstractScrollArea
 from TermTk.TTkWidgets.widget import TTkWidget
 from TermTk.TTkWidgets.container import TTkContainer
 from TermTk.TTkWidgets.resizableframe import TTkResizableFrame
-from TermTk.TTkWidgets.texedit import TTkTextEditView, TTkTextEdit
+from TermTk.TTkWidgets.text_edit import TTkTextEditView, TTkTextEdit
 from TermTk.TTkWidgets.splitter import TTkSplitter
 from TermTk.TTkWidgets.button import TTkButton
 from TermTk.TTkWidgets.label import TTkLabel

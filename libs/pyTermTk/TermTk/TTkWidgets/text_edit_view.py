@@ -20,12 +20,10 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-__all__ = ['TTkTextEditView', 'TTkTextEdit', 'TTkTextEditRuler']
+__all__ = ['TTkTextEditView']
 
-from typing import List,Optional,Union,Dict,Any,TYPE_CHECKING
+from typing import List,Optional
 
-from TermTk.TTkCore.log import TTkLog
-from TermTk.TTkCore.cfg import TTkCfg
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkCore.string import TTkString, TTkStringType
@@ -35,157 +33,12 @@ from TermTk.TTkCore.TTkTerm.inputkey import TTkKeyEvent
 from TermTk.TTkCore.TTkTerm.inputmouse import TTkMouseEvent
 
 from TermTk.TTkGui.clipboard import TTkClipboard
-from TermTk.TTkGui.textwrap1 import TTkTextWrap
 from TermTk.TTkGui.textcursor import TTkTextCursor
 from TermTk.TTkGui.textdocument import TTkTextDocument
+from TermTk.TTkGui.TTkTextWrap.text_wrap import TTkTextWrap
 
-from TermTk.TTkWidgets.widget import TTkWidget
 
-from TermTk.TTkAbstract.abstractscrollarea import TTkAbstractScrollArea, _ForwardData
-from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollView, TTkAbstractScrollViewGridLayout
-
-class TTkTextEditRuler(TTkAbstractScrollView):
-    class MarkRuler():
-        class States(int):
-            NONE      = 0x00
-            FLAGGED   = 0x01
-            UNFLAGGED = NONE
-
-        # class MarkRulerType(int):
-        #     ALLOW_EMPTY  = 0x01
-        #     SINGLE_STATE = 0x02
-        #     MULTI_STATE  = 0x04
-
-        __slots__ = ('_markers','_states','_width','_lines','_defaultState')
-        def __init__(self,
-                markers:dict[int,TTkString]) -> None:
-            self._lines:Dict[int,int] = {}
-            self._markers = markers
-            self._states = len(markers)
-            self._defaultState = next(iter(markers))
-            self._width = max(v.termWidth() for v in markers.values())
-
-        def width(self) -> int:
-            return self._width
-
-        def nextState(self, state:int) -> int:
-            return (state+1)%self._states
-
-        def setState(self, line:int, state:int) -> None:
-            if state == self._defaultState:
-                if line in self._lines:
-                    del self._lines[line]
-            self._lines[line] = state
-
-        def getState(self, line:int) -> int:
-            return self._lines.get(line, self._defaultState)
-
-        def getTTkStr(self, line:int) -> TTkString:
-            state=self._lines.get(line, self._defaultState)
-            return self._markers.get(state, TTkString())
-
-    classStyle = {
-                'default':     {
-                    'color': TTkColor.fg("#88aaaa")+TTkColor.bg("#333333"),
-                    'wrapColor': TTkColor.fg("#888888")+TTkColor.bg("#333333"),
-                    'separatorColor': TTkColor.fg("#444444")},
-                'disabled':    {
-                    'color': TTkColor.fg('#888888'),
-                    'wrapColor': TTkColor.fg('#888888'),
-                    'separatorColor': TTkColor.fg("#888888")},
-            }
-
-    __slots__ = ('_textWrap','_startingNumber', '_markRuler', '_markRulerSizes')
-    def __init__(self, startingNumber=0, **kwargs) -> None:
-        self._startingNumber:int = startingNumber
-        self._textWrap:Optional[TTkTextWrap] = None
-        self._markRuler:List[TTkTextEditRuler.MarkRuler] = []
-        self._markRulerSizes:List[int] = []
-        super().__init__(**kwargs)
-        self.setMaximumWidth(2)
-
-    def _wrapChanged(self) -> None:
-        if not self._textWrap:
-            return
-        dt = max(1,self._textWrap._lines[-1][0])
-        off  = self._startingNumber
-        width = 2+max(len(str(int(dt+off))),len(str(int(off))))
-        width += sum(self._markRulerSizes)
-        self.setMaximumWidth(width)
-        self.update()
-
-    def addMarkRuler(self, markRuler:MarkRuler) -> None:
-        self._markRuler.append(markRuler)
-        self._markRulerSizes.append(markRuler.width())
-        self._wrapChanged()
-
-    def setTextWrap(self, tw:TTkTextWrap) -> None:
-        if self._textWrap:
-            self._textWrap.wrapChanged.disconnect(self._wrapChanged)
-        self._textWrap = tw
-        tw.wrapChanged.connect(self._wrapChanged)
-        self._wrapChanged()
-
-    def viewFullAreaSize(self) -> tuple[int,int]:
-        if self._textWrap:
-            return 5, self._textWrap.size()
-        else:
-            return self.size()
-
-    def mousePressEvent(self, evt:TTkMouseEvent) -> bool:
-        if not self._markRuler:
-            return True
-        ox, oy = self.getViewOffsets()
-        w, h = self.size()
-        mx,my = evt.x+ox, evt.y+oy
-        for mk in self._markRuler:
-            mx -= mk.width()
-            if mx < 0:
-                break
-        if self._textWrap and my < len(self._textWrap._lines):
-            dt = self._textWrap._lines[my][0]
-            mk.setState(dt, mk.nextState(mk.getState(dt)))
-        else:
-            mk.setState(my, mk.nextState(mk.getState(my)))
-
-        self.update()
-        return True
-
-    def paintEvent(self, canvas: TTkCanvas) -> None:
-        if not self._textWrap: return
-        _, oy = self.getViewOffsets()
-        w, h = self.size()
-        off  = self._startingNumber
-        leftOff = sum(self._markRulerSizes)
-        sum(self._markRulerSizes)
-
-        style = self.currentStyle()
-        color = style['color']
-        wrapColor = style['wrapColor']
-        separatorColor = style['separatorColor']
-
-        if self._textWrap:
-            for i, (dt, (fr, _)) in enumerate(self._textWrap._lines[oy:oy+h]):
-                if fr:
-                    canvas.drawText(pos=(leftOff,i), text='<', width=w, color=wrapColor)
-                else:
-                    canvas.drawText(pos=(leftOff,i), text=f"{dt+off}", width=w, color=color)
-                canvas.drawChar(pos=(w-1,i), char='▌', color=separatorColor)
-        else:
-            for y in range(h):
-                canvas.drawText(pos=(leftOff,y), text=f"{y+oy+off}", width=w, color=color)
-                canvas.drawChar(pos=(w-1,y), char='▌', color=separatorColor)
-
-        ox = 0
-        for mk in self._markRuler:
-            if self._textWrap:
-                for i, (dt, (fr, _)) in enumerate(self._textWrap._lines[oy:oy+h]):
-                    if not fr:
-                        canvas.drawText(pos=(ox,i), text=mk.getTTkStr(dt+off))
-            else:
-                for y in range(h):
-                    canvas.drawText(pos=(ox,y), text=mk.getTTkStr(dt+off))
-            ox += mk.width()
+from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollView
 
 class TTkTextEditView(TTkAbstractScrollView):
     '''
@@ -219,7 +72,7 @@ class TTkTextEditView(TTkAbstractScrollView):
         :type format: :py:class:`TTkK.SelectionFormat`
         :param color: The color used to specify the foreground/background color/mod for the selection.
         :type color: :py:class:`TTkColor`
-        :param cursor: A cursor that contains a selection in a :py:class:`QTextDocument`.
+        :param cursor: A cursor that contains a selection in a :py:class:`TTkTextDocument`.
         :type cursor: :py:class:`TTkTextCursor`
         '''
 
@@ -234,7 +87,7 @@ class TTkTextEditView(TTkAbstractScrollView):
 
         def color(self) -> TTkColor:
              '''
-             This propery holds the color that is used for the selection.
+               This property holds the color that is used for the selection.
 
              :rtype: :py:class:`TTkColor`
              '''
@@ -251,7 +104,7 @@ class TTkTextEditView(TTkAbstractScrollView):
 
         def format(self) -> TTkK.SelectionFormat:
              '''
-             This propery holds the format that is used to specify the type of selection.
+               This property holds the format that is used to specify the type of selection.
 
              :rtype: :py:class:`TTkK.SelectionFormat`
              '''
@@ -268,7 +121,7 @@ class TTkTextEditView(TTkAbstractScrollView):
 
         def cursor(self) -> TTkTextCursor:
              '''
-             This propery holds the fcursor that contains a selection in a :py:class:`QTextDocument`.
+               This property holds the cursor that contains a selection in a :py:class:`TTkTextDocument`.
 
              :rtype: :py:class:`TTkTextCursor`
              '''
@@ -382,10 +235,7 @@ class TTkTextEditView(TTkAbstractScrollView):
                  document:Optional[TTkTextDocument]=None,
                  **kwargs) -> None:
         '''
-        :param lineNumber: Show the line number on the left, defaults to **False**
-        :type lineNumber: bool, optional
-
-        :param readOnly: In a read-only text edit the user can only navigate through the text and select text; modifying the text is not possible, defaults to **True**
+        :param readOnly: In a read-only text edit the user can only navigate through the text and select text; modifying the text is not possible, defaults to **False**
         :type readOnly: bool, optional
 
         :param multiLine: In a multiline text edit the user can split the text in multiple lines, defaults to **True**
@@ -407,7 +257,7 @@ class TTkTextEditView(TTkAbstractScrollView):
         self._extraSelections:List[TTkTextEditView.ExtraSelection] = []
         self._hsize:int = 0
         self._lastWrapUsed  = 0
-        self._lineWrapMode = TTkK.NoWrap
+        self._lineWrapMode = TTkK.LineWrapMode.NoWrap
         self._replace = False
         self._clipboard = TTkClipboard()
         self._setDocument(document)
@@ -447,9 +297,9 @@ class TTkTextEditView(TTkAbstractScrollView):
 
     def toAnsi(self) -> str:
         '''
-        Returns the text of the text edit as ANSI test string.
+        Returns the text of the text edit as ANSI text string.
 
-        This string will insluce the ANSI escape codes for color and text formatting.
+        This string will include the ANSI escape codes for color and text formatting.
 
         :rtype: str
         '''
@@ -513,7 +363,7 @@ class TTkTextEditView(TTkAbstractScrollView):
         self._textDocument = document
         self._textCursor = TTkTextCursor(document=self._textDocument)
         self._textWrap = TTkTextWrap(document=self._textDocument)
-        self._textWrap.wrapChanged.connect(self.update)
+        self._textWrap.wrapChanged.connect(self._wrapChanged)
         self._textDocument.contentsChanged.connect(self._documentChanged)
         self._textDocument.cursorPositionChanged.connect(self._cursorPositionChanged)
         self._textDocument.undoAvailable.connect(self._undoAvailable)
@@ -534,6 +384,10 @@ class TTkTextEditView(TTkAbstractScrollView):
         self._textDocument.formatChanged.disconnect(self.update)
         self._textWrap.wrapChanged.disconnect(self.update)
         self._setDocument(document)
+
+    @pyTTkSlot()
+    def _wrapChanged(self):
+        self.update()
 
     # forward textWrap Methods
     def wrapWidth(self, *args, **kwargs) -> None:
@@ -621,6 +475,7 @@ class TTkTextEditView(TTkAbstractScrollView):
             The undo/redo history is also cleared.
         '''
         self.viewMoveTo(0, 0)
+        self._setCursorPos(0,0)
         self._textDocument.clear()
         self._updateSize()
 
@@ -628,29 +483,30 @@ class TTkTextEditView(TTkAbstractScrollView):
         '''
         This property holds the line wrap mode
 
-        The default mode is :py:class:`TTkK.LineWrapMode.WidgetWidth` which
-        causes words to be wrapped at the right edge of the text edit.
-        Wrapping occurs at whitespace, keeping whole words intact.
+        The default mode is :py:class:`TTkK.LineWrapMode.NoWrap`.
 
         :rtype: :py:class:`TTkK.LineWrapMode`
         '''
         return self._lineWrapMode
 
-    def setLineWrapMode(self, mode:TTkK.LineWrapMode):
+    def setLineWrapMode(self, mode:TTkK.LineWrapMode, wrapEngine:TTkK.WrapEngine=TTkK.WrapEngine.FullWrap) -> None:
         '''
         Set the wrapping method
 
         :param mode: the line wrap mode
         :type mode: :py:class:`TTkK.LineWrapMode`
+        :param wrapEngine: the wrap engine used when wrapping is enabled
+        :type wrapEngine: :py:class:`TTkK.WrapEngine`
         '''
+        if self._lineWrapMode == mode and self._textWrap.engine() == wrapEngine:
+            return
         self._lineWrapMode = mode
         if mode == TTkK.LineWrapMode.NoWrap:
-            self._textWrap.disable()
+            self._textWrap.setEngine(engine=TTkK.WrapEngine.NoWrap)
+        elif mode == TTkK.LineWrapMode.WidgetWidth:
+            self._textWrap.setEngine(engine=wrapEngine, width=self.width())
         else:
-            self._textWrap.enable()
-            if mode == TTkK.LineWrapMode.WidgetWidth:
-                self._textWrap.setWrapWidth(self.width())
-        self._textWrap.rewrap()
+            self._textWrap.setEngine(engine=wrapEngine)
 
     @pyTTkSlot(TTkStringType)
     def setText(self, text:TTkStringType) -> None:
@@ -703,12 +559,12 @@ class TTkTextEditView(TTkAbstractScrollView):
     @pyTTkSlot(TTkStringType)
     def find(self, exp:TTkStringType) -> bool:
         '''
-        Search the match word in the document and place the cursor at the beginning of the matched word.
+        Search for text in the document and place the cursor at the beginning of the first match.
 
-        :param exp: The match word
+        :param exp: the expression to find
         :type exp: str or :py:class:`TTkString`
 
-        :return: `True` if the operation is successful, `False` otherwise
+        :return: ``True`` if the operation is successful, ``False`` otherwise
         :rtype: bool
         '''
         if not (cursor := self._textDocument.find(exp)):
@@ -754,7 +610,6 @@ class TTkTextEditView(TTkAbstractScrollView):
 
     @pyTTkSlot()
     def _documentChanged(self) -> None:
-        self._rewrap()
         self.textChanged.emit()
 
     def _rewrap(self) -> None:
@@ -782,7 +637,7 @@ class TTkTextEditView(TTkAbstractScrollView):
     def resizeEvent(self, w:int, h:int) -> None:
         if ( self.lineWrapMode() == TTkK.WidgetWidth and
              w != self._lastWrapUsed and
-             w > self._textWrap._tabSpaces ):
+             w > self._textWrap._wrapState.tabSpaces ):
             self._textWrap.setWrapWidth(w)
             self._lastWrapUsed = w
             self._rewrap()
@@ -1051,10 +906,10 @@ class TTkTextEditView(TTkAbstractScrollView):
         lineColor = style['lineColor']
         backgroundColors = [self._textDocument._backgroundColor]*h
 
-        subLines = self._textWrap._lines[oy:oy+h]
+        subLines = self._textWrap.screenRows(oy,+h)
         if not subLines: return
-        fr = subLines[0][0]
-        to = subLines[-1][0]
+        fr = subLines[0].line
+        to = subLines[-1].line
         outLines = self._textDocument._dataLines[fr:to+1]
         outLines = self._textCursor._getHighlightedLines(fr, to, outLines, selectColor)
 
@@ -1068,484 +923,14 @@ class TTkTextEditView(TTkAbstractScrollView):
 
         outLines = self._textCursor._getBlinkingCursors(fr, to, outLines, selectColor)
 
-        for y, l in enumerate(subLines):
-            t  = outLines[l[0]-subLines[0][0]]
-            bg = backgroundColors[l[0]-subLines[0][0]]
-            text:TTkString = t.substring(l[1][0],l[1][1]).tab2spaces(self._textWrap._tabSpaces)
+        for y, row in enumerate(subLines):
+            t  = outLines[row.line-subLines[0].line]
+            bg = backgroundColors[row.line-subLines[0].line]
+            text:TTkString = t.substring(row.start,row.stop).tab2spaces(self._textWrap._wrapState.tabSpaces)
             if bg != TTkColor.RST:
                 canvas.fill(color=bg,pos=(0,y), size=(w,1))
                 text = text.completeColor(bg)
             canvas.drawTTkString(pos=(-ox,y), text=text)
 
         if self._lineWrapMode == TTkK.FixedWidth:
-            canvas.drawVLine(pos=(self._textWrap._wrapWidth,0), size=h, color=lineColor)
-
-
-
-class TTkTextEdit(TTkAbstractScrollArea):
-    __doc__ = '''
-    :py:class:`TTkTextEdit` is a container widget which place :py:class:`TTkTextEditView` in a scrolling area with on-demand scroll bars.
-
-    ''' + (TTkTextEditView.__doc__ if TTkTextEditView.__doc__ else '')
-
-    if TYPE_CHECKING:
-        from typing import TypeAlias
-        ExtraSelection: TypeAlias = TTkTextEditView.ExtraSelection
-    else:
-        # TODO: remove this once Python 3.9 will disappear from the world
-        ExtraSelection = TTkTextEditView.ExtraSelection
-
-    _ttk_forward:_ForwardData = _ForwardData(
-        forwardClass=TTkTextEditView ,
-        instance="self._textEditView",
-        signals=[ # Forwarded Signals From TTkTexteditView
-            'currentColorChanged', 'cursorPositionChanged',
-            'undoAvailable', 'redoAvailable',
-            'textChanged'],
-        methods=[
-            # Forwarded Methods From TTkTexteditView
-            "clear", "setText", "append", "isReadOnly", "setReadOnly", "document",
-            "wrapWidth", "setWrapWidth",
-            "multiLine",
-            "lineWrapMode", "setLineWrapMode",
-            "wordWrapMode", "setWordWrapMode",
-            "textCursor", "setFocus", "setColor",
-            "extraSelections", "setExtraSelections",
-            "cut", "copy", "paste",
-            "undo", "redo", "isUndoAvailable", "isRedoAvailable",
-            "find", "ensureCursorVisible",
-            # Exported Methods
-            "toAnsi", "toRawText", "toPlainText" # , "toHtml", "toMarkdown",
-            ]
-        )
-
-    __slots__ = (
-        '_textEditView',
-        '_lineNumberView', '_lineNumber')
-
-    def __init__(self, *,
-                 # TTkWidget init
-                 parent:Optional[TTkWidget]=None,
-                 visible:bool=True,
-
-                 # TTkTextEditView init
-                 readOnly:bool=False,
-                 multiLine:bool=True,
-                 document:Optional[TTkTextDocument]=None,
-
-                 # TTkText init
-                 textEditView:Optional[TTkTextEditView]=None,
-                 lineNumber:bool=False,
-                 lineNumberStarting:int=0,
-                 **kwargs) -> None:
-        '''
-        :param textEditView: a custom TextEdit View to be used instead of the default one.
-        :type textEditView: :py:class:`TTkTextEditView`, optional
-        :param lineNumber: show the line number on the left side, defaults to False
-        :type lineNumber: bool, optional
-        :param lineNumberStarting: set the starting number of the left line number column, defaults to 0
-        :type lineNumberStarting: int, optional
-        '''
-        super().__init__(parent=parent, visible=visible, **kwargs)
-        self._textEditView = textEditView if textEditView else TTkTextEditView(readOnly=readOnly, multiLine=multiLine, document=document)
-        # self.setFocusPolicy(self._textEditView.focusPolicy())
-        # self._textEditView.setFocusPolicy(TTkK.ParentFocus)
-        self._lineNumber = lineNumber
-
-        textEditLayout = TTkAbstractScrollViewGridLayout()
-        textEditLayout.addWidget(self._textEditView,0,1)
-        self._lineNumberView = TTkTextEditRuler(visible=self._lineNumber, startingNumber=lineNumberStarting)
-        self._lineNumberView.setTextWrap(self._textEditView._textWrap)
-        textEditLayout.addWidget(self._lineNumberView,0,0)
-        self.setViewport(textEditLayout)
-        self.focusChanged = self._textEditView.focusChanged
-
-    def ruler(self) -> TTkTextEditRuler:
-        '''ruler'''
-        return self._lineNumberView
-
-    def textEditView(self):
-        '''textEditView'''
-        return self._textEditView
-
-    def getLineNumber(self):
-        '''getLineNumber'''
-        return self._lineNumberView.isVisible()
-
-    @pyTTkSlot(bool)
-    def setLineNumber(self, ln):
-        '''setLineNumber'''
-        self._lineNumberView.setVisible(ln)
-
-    def lineNumberStarting(self):
-        '''lineNumberStarting'''
-        return self._lineNumberView._startingNumber
-
-    @pyTTkSlot(int)
-    def setLineNumberStarting(self, starting):
-        '''setLineNumberStarting'''
-        self._lineNumberView._startingNumber = starting
-        self._lineNumberView._wrapChanged()
-
-    def setDocument(self, document):
-        '''setDocument'''
-        self._textEditView.setDocument(document)
-        self._lineNumberView.setTextWrap(self._textEditView._textWrap)
-
-    #--FORWARD-AUTOGEN-START--#
-    @property
-    def currentColorChanged(self) -> pyTTkSignal:
-        '''
-        .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.currentColorChanged`
-
-        This signal is emitted if the current character color has changed,
-        for example caused by a change of the cursor position.
-        
-        :param color: the new color
-        :type color: :py:class:`TTkColor`
-        '''
-        return self._textEditView.currentColorChanged
-    @property
-    def cursorPositionChanged(self) -> pyTTkSignal:
-        '''
-        .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.cursorPositionChanged`
-
-        This signal is emitted whenever the position of the cursor changed.
-        
-        :param cursor: the cursor changed.
-        :type cursor: :py:class:`TTkTextCursor`
-        '''
-        return self._textEditView.cursorPositionChanged
-    @property
-    def undoAvailable(self) -> pyTTkSignal:
-        '''
-        .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.undoAvailable`
-
-        This signal is emitted whenever undo operations become available (available is true)
-        or unavailable (available is false).
-        
-        :param available: the availability of undo
-        :type available: bool
-        '''
-        return self._textEditView.undoAvailable
-    @property
-    def redoAvailable(self) -> pyTTkSignal:
-        '''
-        .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.redoAvailable`
-
-        This signal is emitted whenever redo operations become available (available is true)
-        or unavailable (available is false).
-        
-        :param available: the availability of redo
-        :type available: bool
-        '''
-        return self._textEditView.redoAvailable
-    @property
-    def textChanged(self) -> pyTTkSignal:
-        '''
-        .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.textChanged`
-
-        This signal is emitted whenever the document's content changes;
-        for example, when text is inserted or deleted, or when formatting is applied.
-        '''
-        return self._textEditView.textChanged
-    def clear(self) -> None:
-        '''
-        .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.clear`
-
-        Deletes all the text in the text edit.
-
-        .. note::
-
-            The undo/redo history is also cleared.
-        '''
-        return self._textEditView.clear()
-    @pyTTkSlot(TTkStringType)
-    def setText(self, text:TTkStringType) -> None:
-        '''
-        .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.setText`
-
-        Sets the text edit's text.
-        The text can be plain text or :py:class:`TTkString` and the text edit will
-        try to guess the right format.
-
-        :param text: the text
-        :type text: str or :py:class:`TTkString`
-        '''
-        return self._textEditView.setText(text=text)
-    @pyTTkSlot(TTkStringType)
-    def append(self, text:TTkStringType) -> None:
-        '''
-        .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.append`
-
-        Appends a new paragraph with text to the end of the text edit.
-        The text can be plain text or :py:class:`TTkString`.
-
-        :param text: the text
-        :type text: str or :py:class:`TTkString`
-        '''
-        return self._textEditView.append(text=text)
-    def isReadOnly(self) -> bool:
-        '''
-        .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.isReadOnly`
-
-        This property holds whether the text edit is read-only
-
-        In a read-only text edit the user can only navigate through the text and select text; modifying the text is not possible.
-
-        This property's default is false.
-
-        :rtype: bool
-        '''
-        return self._textEditView.isReadOnly()
-    def setReadOnly(self, ro:bool) -> None:
-        '''
-        .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.setReadOnly`
-
-        This property holds whether the text edit is read-only
-
-        In a read-only text edit the user can only navigate through the text and select text; modifying the text is not possible.
-
-        :param ro: the readonly status
-        :type ro: bool
-        '''
-        return self._textEditView.setReadOnly(ro=ro)
-    def document(self) -> TTkTextDocument:
-        '''
-        .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.document`
-
-        This property holds the underlying document of the text editor.
-
-        :rtype: :py:class:`TTkTextDocument`
-        '''
-        return self._textEditView.document()
-    def wrapWidth(self, *args, **kwargs) -> None:
-        '''
-        .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.wrapWidth`
-
-        .. seealso:: this method is forwarded to :py:meth:`TTkTextWrap.wrapWidth`
-        '''
-        return self._textEditView.wrapWidth(*args, **kwargs)
-    def setWrapWidth(self, *args, **kwargs) -> None:
-        '''
-        .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.setWrapWidth`
-
-        .. seealso:: this method is forwarded to :py:meth:`TTkTextWrap.setWrapWidth`
-        '''
-        return self._textEditView.setWrapWidth(*args, **kwargs)
-    def multiLine(self) -> bool:
-        '''
-        .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.multiLine`
-
-        This property define if the text edit area will use a single line, like in the line-edit or it allows multilines like a normal text edit area.
-
-        :rtype: bool
-        '''
-        return self._textEditView.multiLine()
-    def lineWrapMode(self) -> TTkK.LineWrapMode:
-        '''
-        .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.lineWrapMode`
-
-        This property holds the line wrap mode
-
-        The default mode is :py:class:`TTkK.LineWrapMode.WidgetWidth` which
-        causes words to be wrapped at the right edge of the text edit.
-        Wrapping occurs at whitespace, keeping whole words intact.
-
-        :rtype: :py:class:`TTkK.LineWrapMode`
-        '''
-        return self._textEditView.lineWrapMode()
-    def setLineWrapMode(self, mode:TTkK.LineWrapMode):
-        '''
-        .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.setLineWrapMode`
-
-        Set the wrapping method
-
-        :param mode: the line wrap mode
-        :type mode: :py:class:`TTkK.LineWrapMode`
-        '''
-        return self._textEditView.setLineWrapMode(mode=mode)
-    def wordWrapMode(self, *args, **kwargs) -> None:
-        '''
-        .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.wordWrapMode`
-
-        .. seealso:: this method is forwarded to :py:meth:`TTkTextWrap.wordWrapMode`
-        '''
-        return self._textEditView.wordWrapMode(*args, **kwargs)
-    def setWordWrapMode(self, *args, **kwargs) -> None:
-        '''
-        .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.setWordWrapMode`
-
-        .. seealso:: this method is forwarded to :py:meth:`TTkTextWrap.setWordWrapMode`
-        '''
-        return self._textEditView.setWordWrapMode(*args, **kwargs)
-    def textCursor(self) -> TTkTextCursor:
-        '''
-        .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.textCursor`
-
-        This property holds the underlying text cursor.
-
-        :rtype: :py:class:`TTkTextCursor`
-        '''
-        return self._textEditView.textCursor()
-    @pyTTkSlot()
-    def setFocus(self) -> None:
-        '''
-        .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.setFocus`
-
-        Focus the widget
-        '''
-        return self._textEditView.setFocus()
-    @pyTTkSlot(TTkColor)
-    def setColor(self, color:TTkColor) -> None:
-        '''
-        .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.setColor`
-
-        Change the color used by the cursor to input new text or change the color of the selection
-
-        :param color: the color to be used
-        :type color: :py:class:`TTkColor`
-        '''
-        return self._textEditView.setColor(color=color)
-    def extraSelections(self) -> List[ExtraSelection]:
-        '''
-        .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.extraSelections`
-
-        Returns previously set extra selections.
-
-        :rtype: List[:py:class:`ExtraSelection`]
-        '''
-        return self._textEditView.extraSelections()
-    def setExtraSelections(self, extraSelections:List[ExtraSelection]) -> None:
-        '''
-        .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.setExtraSelections`
-
-        This function allows temporarily marking certain regions in the document with a given color,
-        specified as selections. This can be useful for example in a programming editor to mark a
-        whole line of text with a given background color to indicate the existence of a breakpoint.
-
-        :param extraSelections: the list of extra selections.
-        :type extraSelections: List[:py:class:`ExtraSelection`]
-        '''
-        return self._textEditView.setExtraSelections(extraSelections=extraSelections)
-    @pyTTkSlot()
-    def cut(self) -> None:
-        '''
-        .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.cut`
-
-        Copies the selected text to the clipboard and deletes it from the text edit.
-
-        If there is no selected text nothing happens.
-        '''
-        return self._textEditView.cut()
-    @pyTTkSlot()
-    def copy(self) -> None:
-        '''
-        .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.copy`
-
-        Copies any selected text to the clipboard.
-        '''
-        return self._textEditView.copy()
-    @pyTTkSlot()
-    def paste(self) -> None:
-        '''
-        .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.paste`
-
-        Pastes the text from the clipboard into the text edit at the current cursor position.
-
-        If there is no text in the clipboard nothing happens.
-        '''
-        return self._textEditView.paste()
-    @pyTTkSlot()
-    def undo(self) -> None:
-        '''
-        .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.undo`
-
-        Undoes the last operation.
-
-        If there is no operation to undo,
-        i.e. there is no undo step in the undo/redo history, nothing happens.
-        '''
-        return self._textEditView.undo()
-    @pyTTkSlot()
-    def redo(self) -> None:
-        '''
-        .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.redo`
-
-        Redoes the last operation.
-
-        If there is no operation to redo,
-        i.e. there is no redo step in the undo/redo history, nothing happens.
-        '''
-        return self._textEditView.redo()
-    def isUndoAvailable(self) -> bool:
-        '''
-        .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.isUndoAvailable`
-
-        This property holds whether undo is available.
-
-        :return: the undo available status
-        :rtype: bool
-        '''
-        return self._textEditView.isUndoAvailable()
-    def isRedoAvailable(self) -> bool:
-        '''
-        .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.isRedoAvailable`
-
-        This property holds whether redo is available.
-
-        :return: the redo available status
-        :rtype: bool
-        '''
-        return self._textEditView.isRedoAvailable()
-    @pyTTkSlot(TTkStringType)
-    def find(self, exp:TTkStringType) -> bool:
-        '''
-        .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.find`
-
-        Search the match word in the document and place the cursor at the beginning of the matched word.
-
-        :param exp: The match word
-        :type exp: str or :py:class:`TTkString`
-
-        :return: `True` if the operation is successful, `False` otherwise
-        :rtype: bool
-        '''
-        return self._textEditView.find(exp=exp)
-    @pyTTkSlot()
-    def ensureCursorVisible(self):
-        '''
-        .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.ensureCursorVisible`
-
-        '''
-        return self._textEditView.ensureCursorVisible()
-    def toAnsi(self) -> str:
-        '''
-        .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.toAnsi`
-
-        Returns the text of the text edit as ANSI test string.
-
-        This string will insluce the ANSI escape codes for color and text formatting.
-
-        :rtype: str
-        '''
-        return self._textEditView.toAnsi()
-    def toRawText(self) -> TTkString:
-        '''
-        .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.toRawText`
-
-        Return :py:class:`TTkString` representing the document
-
-        :rtype: :py:class:`TTkString`
-        '''
-        return self._textEditView.toRawText()
-    def toPlainText(self) ->str:
-        '''
-        .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.toPlainText`
-
-        Returns the text of the text edit as plain text string.
-
-        :rtype: str
-        '''
-        return self._textEditView.toPlainText()
-    #--FORWARD-AUTOGEN-END--#
+            canvas.drawVLine(pos=(self._textWrap.wrapWidth(),0), size=h, color=lineColor)
