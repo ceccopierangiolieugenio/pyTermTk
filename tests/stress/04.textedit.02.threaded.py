@@ -58,147 +58,59 @@ def demoTextEdit(root=None):
     te.setLineWrapMode(ttk.TTkK.FixedWidth)
     te.setWordWrapMode(ttk.TTkK.WordWrap)
 
-    frame.layout().addItem(wrapLayout := ttk.TTkGridLayout(), 0,0)
-    frame.layout().addItem(fontLayout := ttk.TTkGridLayout(columnMinWidth=1), 1,0)
+    frame.layout().addItem(wrapLayout := ttk.TTkHBoxLayout(), 0,0)
     frame.layout().addWidget(te,2,0)
 
-    wrapLayout.addWidget(ttk.TTkLabel(text="Wrap: ", maxWidth=6),0,0)
-    wrapLayout.addWidget(lineWrap := ttk.TTkComboBox(list=['NoWrap','WidgetWidth','FixedWidth'], index=2, maxWidth=20),0,1)
-    wrapLayout.addWidget(ttk.TTkLabel(text=" Type: ",maxWidth=7),0,2)
-    wrapLayout.addWidget(wordWrap := ttk.TTkComboBox(list=['WordWrap','WrapAnywhere'], maxWidth=20),0,3)
-    wrapLayout.addWidget(ttk.TTkLabel(text=" FixW: ",maxWidth=7),0,4)
-    wrapLayout.addWidget(fixWidth := ttk.TTkSpinBox(value=te.wrapWidth(), maxWidth=5, maximum=500, minimum=10),0,5)
-    wrapLayout.addWidget(ttk.TTkSpacer(),0,10)
+    wrapLayout.addWidget(ttk.TTkLabel(text="Wrap: ", maxWidth=6))
+    wrapLayout.addWidget(lineWrap := ttk.TTkComboBox(list=[_lw.name for _lw in ttk.TTkK.LineWrapMode], maxWidth=20))
+    wrapLayout.addWidget(ttk.TTkLabel(text=" Type: ",maxWidth=7))
+    wrapLayout.addWidget(wordWrap := ttk.TTkComboBox(list=[_wm.name for _wm in ttk.TTkK.WrapMode], maxWidth=20, enabled=False))
+    wrapLayout.addWidget(ttk.TTkLabel(text=" Engine: ",maxWidth=9))
+    wrapLayout.addWidget(wrapEngine := ttk.TTkComboBox(list=[_we.name for _we in ttk.TTkK.WrapEngine], maxWidth=20, index=1))
+    wrapLayout.addWidget(ttk.TTkLabel(text=" FixW: ",maxWidth=7))
+    wrapLayout.addWidget(fixWidth := ttk.TTkSpinBox(value=te.wrapWidth(), maxWidth=5, maximum=500, minimum=10, enabled=False))
+    wrapLayout.addWidget(ttk.TTkSpacer(maxHeight=1))
 
-    # Empty columns/cells are 1 char wide due to "columnMinWidth=1" parameter in the GridLayout
-    #           1       3                    8                11
-    #    0       2       4    5    6    7     9       10       12
-    # 0  [ ] FG  [ ] BG  [ ] LineNumber [  0]Starting Number
-    # 1  ┌─────┐ ┌─────┐ ╒═══╕╒═══╕╒═══╕╒═══╕ ┌──────┐┌──────┐
-    # 2  │     │ │     │ │ a ││ a ││ a ││ a │ │ UNDO ││ REDO │
-    # 3  └─────┘ └─────┘ └───┘└───┘└───┘└───┘ ╘══════╛└──────┘ ┕━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┙
-
-    # Char Fg/Bg buttons
-    fontLayout.addWidget(cb_fg := ttk.TTkCheckbox(text=" FG"),0,0)
-    fontLayout.addWidget(btn_fgColor := ttk.TTkColorButtonPicker(border=True, enabled=False, maxSize=(7,3), returnType=ttk.TTkK.ColorPickerReturnType.Foreground),1,0)
-
-    fontLayout.addWidget(cb_bg := ttk.TTkCheckbox(text=" BG"),0,2)
-    fontLayout.addWidget(btn_bgColor := ttk.TTkColorButtonPicker(border=True, enabled=False, maxSize=(7,3), returnType=ttk.TTkK.ColorPickerReturnType.Background),1,2)
-
-    fontLayout.addWidget(cb_linenumber := ttk.TTkCheckbox(text=" LineNumber", checked=True),0,4,1,3)
-    fontLayout.addWidget(sb_linenumber := ttk.TTkSpinBox(value=1, maxWidth=5, maximum=10000, minimum=-10000, enabled=True),0,7,1,1)
-
-    # Char style buttons
-    fontLayout.addWidget(btn_bold          := ttk.TTkButton(border=True, maxSize=(5,3), checkable=True, text=ttk.TTkString( 'a' , ttk.TTkColor.BOLD)        ),1,4)
-    fontLayout.addWidget(btn_italic        := ttk.TTkButton(border=True, maxSize=(5,3), checkable=True, text=ttk.TTkString( 'a' , ttk.TTkColor.ITALIC)      ),1,5)
-    fontLayout.addWidget(btn_underline     := ttk.TTkButton(border=True, maxSize=(5,3), checkable=True, text=ttk.TTkString(' a ', ttk.TTkColor.UNDERLINE)   ),1,6)
-    fontLayout.addWidget(btn_strikethrough := ttk.TTkButton(border=True, maxSize=(5,3), checkable=True, text=ttk.TTkString(' a ', ttk.TTkColor.STRIKETROUGH)),1,7)
-
-    # Undo/Redo buttons
-    fontLayout.addWidget(btn_undo := ttk.TTkButton(border=True, maxSize=(8,3), enabled=te.isUndoAvailable(), text=' UNDO '),1,9 )
-    fontLayout.addWidget(btn_redo := ttk.TTkButton(border=True, maxSize=(8,3), enabled=te.isRedoAvailable(), text=' REDO '),1,10)
-    # Undo/Redo events
-    te.undoAvailable.connect(btn_undo.setEnabled)
-    te.redoAvailable.connect(btn_redo.setEnabled)
-    btn_undo.clicked.connect(te.undo)
-    btn_redo.clicked.connect(te.redo)
-
-    # Useless custom horizontal bar for aestetic reason
-    fontLayout.addWidget(superSimpleHorizontalLine(),0,12,2,1)
-
-    @ttk.pyTTkSlot(ttk.TTkColor)
-    def _currentColorChangedCB(format:ttk.TTkColor):
-        if format.hasForeground():
-            cb_fg.setCheckState(ttk.TTkK.Checked)
-            btn_fgColor.setEnabled()
-            btn_fgColor.setColor(format.foreground())
-        else:
-            cb_fg.setCheckState(ttk.TTkK.Unchecked)
-            btn_fgColor.setDisabled()
-
-        if format.hasBackground():
-            cb_bg.setCheckState(ttk.TTkK.Checked)
-            btn_bgColor.setEnabled()
-            btn_bgColor.setColor(format.background())
-        else:
-            cb_bg.setCheckState(ttk.TTkK.Unchecked)
-            btn_bgColor.setDisabled()
-
-        btn_bold.setChecked(format.bold())
-        btn_italic.setChecked(format.italic())
-        btn_underline.setChecked(format.underline())
-        btn_strikethrough.setChecked(format.strikethrough())
-        # ttk.TTkLog.debug(f"{fg=} {bg=} {bold=} {italic=} {underline=} {strikethrough=   }")
-
-    te.currentColorChanged.connect(_currentColorChangedCB)
-
-    def _setStyle():
-        color = ttk.TTkColor()
-        if cb_fg.checkState() == ttk.TTkK.Checked:
-            color += btn_fgColor.color()
-        if cb_bg.checkState() == ttk.TTkK.Checked:
-            color += btn_bgColor.color()
-        if btn_bold.isChecked():
-            color += ttk.TTkColor.BOLD
-        if btn_italic.isChecked():
-            color += ttk.TTkColor.ITALIC
-        if btn_underline.isChecked():
-            color += ttk.TTkColor.UNDERLINE
-        if btn_strikethrough.isChecked():
-            color += ttk.TTkColor.STRIKETROUGH
-        cursor = te.textCursor()
-        cursor.applyColor(color)
-        cursor.setColor(color)
-        te.setFocus()
-
-    cb_fg.toggled.connect(btn_fgColor.setEnabled)
-    cb_bg.toggled.connect(btn_bgColor.setEnabled)
-    cb_fg.clicked.connect(_setStyle)
-    cb_bg.clicked.connect(_setStyle)
-
-    cb_linenumber.toggled.connect(te.setLineNumber)
-    cb_linenumber.toggled.connect(sb_linenumber.setEnabled)
-    sb_linenumber.valueChanged.connect(te.setLineNumberStarting)
-
-    btn_fgColor.colorSelected.connect(_setStyle)
-    btn_bgColor.colorSelected.connect(_setStyle)
-
-    btn_bold.clicked.connect(_setStyle)
-    btn_italic.clicked.connect(_setStyle)
-    btn_underline.clicked.connect(_setStyle)
-    btn_strikethrough.clicked.connect(_setStyle)
-
-    lineWrap.setCurrentIndex(2)
-    wordWrap.setCurrentIndex(0)
+    lineWrap.setCurrentText(ttk.TTkK.LineWrapMode.NoWrap.name)
+    wordWrap.setCurrentText(ttk.TTkK.WrapMode.WrapAnywhere.name)
 
     fixWidth.valueChanged.connect(te.setWrapWidth)
 
-    @ttk.pyTTkSlot(int)
-    def _lineWrapCallback(index):
-        if index == 0:
+    @ttk.pyTTkSlot(str)
+    def _lineWrapCallback(_lineWrap:str):
+        _wrapEngine = ttk.TTkK.WrapEngine[wrapEngine.currentText()]
+        if _lineWrap == ttk.TTkK.LineWrapMode.NoWrap.name:
             te.setLineWrapMode(ttk.TTkK.NoWrap)
             wordWrap.setDisabled()
             fixWidth.setDisabled()
-        elif index == 1:
-            te.setLineWrapMode(ttk.TTkK.WidgetWidth)
+        elif _lineWrap == ttk.TTkK.LineWrapMode.WidgetWidth.name:
+            te.setLineWrapMode(ttk.TTkK.WidgetWidth, wrapEngine=_wrapEngine)
             wordWrap.setEnabled()
             fixWidth.setDisabled()
-        else:
-            te.setLineWrapMode(ttk.TTkK.FixedWidth)
+        elif _lineWrap == ttk.TTkK.LineWrapMode.FixedWidth.name:
+            te.setLineWrapMode(ttk.TTkK.FixedWidth, wrapEngine=_wrapEngine)
             te.setWrapWidth(fixWidth.value())
             wordWrap.setEnabled()
             fixWidth.setEnabled()
 
-    lineWrap.currentIndexChanged.connect(_lineWrapCallback)
+    lineWrap.currentTextChanged.connect(_lineWrapCallback)
 
     @ttk.pyTTkSlot(int)
-    def _wordWrapCallback(index):
-        if index == 0:
+    def _wordWrapCallback(_index):
+        if _index == 0:
             te.setWordWrapMode(ttk.TTkK.WordWrap)
         else:
             te.setWordWrapMode(ttk.TTkK.WrapAnywhere)
 
     wordWrap.currentIndexChanged.connect(_wordWrapCallback)
+
+    @ttk.pyTTkSlot(str)
+    def _wrapEngineCallback(_wrapEngine:str):
+        _wrapEngine = ttk.TTkK.WrapEngine[_wrapEngine]
+        _lineWrap = ttk.TTkK.LineWrapMode[lineWrap.currentText()]
+        te.setLineWrapMode(_lineWrap, wrapEngine=_wrapEngine)
+
+    wrapEngine.currentTextChanged.connect(_wrapEngineCallback)
 
     def _thread():
         while True:
