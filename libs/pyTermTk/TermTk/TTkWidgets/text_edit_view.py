@@ -498,7 +498,7 @@ class TTkTextEditView(TTkAbstractScrollView):
         :param wrapEngine: the wrap engine used when wrapping is enabled
         :type wrapEngine: :py:class:`TTkK.WrapEngine`
         '''
-        if self._lineWrapMode == mode:
+        if self._lineWrapMode == mode and self._textWrap.engine() == wrapEngine:
             return
         self._lineWrapMode = mode
         if mode == TTkK.LineWrapMode.NoWrap:

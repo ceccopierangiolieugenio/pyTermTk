@@ -149,6 +149,19 @@ class _WrapEngine_Interface():
         '''
         raise NotImplementedError()
 
+    def _clampLine(self, line:int) -> int:
+        '''Clamp a line index to the valid document range.
+
+        Ensures the given line index is within the valid range [0, lineCount-1].
+
+        :param line: the line index to clamp.
+        :type line: int
+
+        :return: the clamped line index.
+        :rtype: int
+        '''
+        return max(0,min(line, self._wrapState.textDocument.lineCount()-1))
+
     def _wrapLine(self, _w:int, _i:int, _l:TTkString) -> List[_WrapLine]:
         '''Split a single document line into wrapped fragments.
 

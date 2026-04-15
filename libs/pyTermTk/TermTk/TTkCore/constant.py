@@ -334,13 +334,12 @@ class TTkConstant:
     MiddleButton  = MouseKey.MiddleButton
     Wheel         = MouseKey.Wheel
 
-    class WrapMode(int):
+    class WrapMode(IntEnum):
         '''Those constants describes how text is wrapped in a document.
 
         .. autosummary::
           WordWrap
           WrapAnywhere
-          WrapAtWordBoundaryOrAnywhere
         '''
         # NoWrap        = 0x00
         # '''Text is not wrapped at all.'''
@@ -350,14 +349,14 @@ class TTkConstant:
         # '''Same as :py:class:`~TermTk.TTkCore.constant.TTkConstant.WrapMode.NoWrap`'''
         WrapAnywhere  = 0x03
         '''Text can be wrapped at any point on a line, even if it occurs in the middle of a word.'''
-        WrapAtWordBoundaryOrAnywhere = 0x04
-        '''If possible, wrapping occurs at a word boundary; otherwise it will occur at the appropriate point on the line, even in the middle of a word.'''
+        # WrapAtWordBoundaryOrAnywhere = 0x04
+        # '''If possible, wrapping occurs at a word boundary; otherwise it will occur at the appropriate point on the line, even in the middle of a word.'''
 
     # NoWrap       = WrapMode.NoWrap
     WordWrap     = WrapMode.WordWrap
     # ManualWrap   = WrapMode.ManualWrap
     WrapAnywhere = WrapMode.WrapAnywhere
-    WrapAtWordBoundaryOrAnywhere = WrapMode.WrapAtWordBoundaryOrAnywhere
+    # WrapAtWordBoundaryOrAnywhere = WrapMode.WrapAtWordBoundaryOrAnywhere
 
     class WrapEngine(Enum):
         '''Those constants describes which wrapping engine should be used

@@ -35,11 +35,9 @@ sys.path.append(os.path.join(sys.path[0], '../../libs/pyTermTk'))
 
 import TermTk as ttk
 
-from TermTk.TTkGui.TTkTextWrap.text_wrap_data import _WrapLine
-
 
 def _mk_vim_wrap(text: str, width: int = 10, word_wrap: bool = False):
-    """Create a document with VimWrap engine for testing."""
+    '''Create a document with VimWrap engine for testing.'''
     doc = ttk.TTkTextDocument(text=text)
     tw = ttk.TTkTextWrap(document=doc)
     tw.setEngine(ttk.TTkK.WrapEngine.VimWrap)
@@ -55,7 +53,7 @@ def _mk_vim_wrap(text: str, width: int = 10, word_wrap: bool = False):
 # Lazy wrapping: screenRows only wraps visible window
 # ---------------------------------------------------------------------------
 
-def test_vim_wrap_screenRows_lazily_wraps_visible_window():
+def test_vim_wrap_screen_rows_lazily_wraps_visible_window():
     """VimWrap.screenRows caches only the requested window, not entire document."""
     text = 'abcdefghij\n' * 20  # 20 lines, each 10 chars
     doc, tw = _mk_vim_wrap(text, width=4)
@@ -68,75 +66,137 @@ def test_vim_wrap_screenRows_lazily_wraps_visible_window():
     assert rows[0].start == 0
 
 
-def test_vim_wrap_relying_on_last_cached_window():
-    """dataToScreenPosition uses lastWindow cache set by prior screenRows call."""
+def test_vim_wrap_data_to_screen_position_inside_cached_window_is_wrap_accurate():
+    """Inside cached rows, VimWrap returns wrapped coordinates."""
     text = 'abcdefghij\n' * 5
-    doc, tw = _mk_vim_wrap(text, width=4)
+    _, tw = _mk_vim_wrap(text, width=4)
 
-    # Prime the cache with screenRows call for y=0..4
+    # Prime cache for wrapped rows.
     tw.screenRows(0, 4)
 
-    # dataToScreenPosition now uses that cached window
-    x, y = tw.dataToScreenPosition(0, 2)  # Position 2 in line 0
-    assert y >= 0  # Must return a valid screen row
-    assert x >= 0  # Must return a valid column
+    # line 0 split at width=4 => [0:4], [4:8], [8:11]
+    x, y = tw.dataToScreenPosition(0, 6)
+    assert (x, y) == (2, 1)
 
 
-def test_vim_wrap_dataToScreenPosition_outside_cached_window_returns_zero():
-    """dataToScreenPosition returns (0,0) if position is outside cached window."""
+def test_vim_wrap_data_to_screen_position_offscreen_falls_back_to_unwrapped():
+    """Outside cache, VimWrap treats coordinates as unwrapped source lines."""
     text = 'abcdefghij\n' * 5
-    doc, tw = _mk_vim_wrap(text, width=4)
+    _, tw = _mk_vim_wrap(text, width=4)
 
-    # Cache window y=10-13
+    # Cache a distant window so line 0 is offscreen.
     tw.screenRows(10, 4)
 
-    # Try to convert position in line 0 (outside the cached y=10-13 window)
-    x, y = tw.dataToScreenPosition(0, 0)
-    # VimWrap returns (0,0) if position is not in cached window
-    assert x == 0 and y == 0
+    x, y = tw.dataToScreenPosition(0, 5)
+    assert (x, y) == (5, 0)
 
 
-def test_vim_wrap_screenToDataPosition_outside_cached_window_returns_zero():
-    """screenToDataPosition returns (0,0) if screen position is outside cached window."""
+def test_vim_wrap_data_to_screen_position_out_of_range_pos_returns_zero():
+    """Invalid positions return (0,0) instead of raising."""
     text = 'abcdefghij\n' * 5
-    doc, tw = _mk_vim_wrap(text, width=4)
+    _, tw = _mk_vim_wrap(text, width=4)
+
+    tw.screenRows(10, 4)
+    assert tw.dataToScreenPosition(0, -1) == (0, 0)
+
+
+def test_vim_wrap_data_to_screen_position_with_zero_width_returns_zero():
+    """Zero wrap width disables coordinate mapping safely."""
+    text = 'abcdefghij\n'
+    _, tw = _mk_vim_wrap(text, width=0)
+
+    assert tw.dataToScreenPosition(0, 1) == (0, 0)
+
+
+def test_vim_wrap_screen_to_data_position_offscreen_above_uses_unwrapped():
+    """Rows above cached window are interpreted as unwrapped lines."""
+    text = 'abcdefghij\n' * 5
+    _, tw = _mk_vim_wrap(text, width=4)
 
     # Cache window y=5-8
     tw.screenRows(5, 4)
 
-    # Try to convert screen position y=0 (outside the cached y=5-8 window)
-    line, pos = tw.screenToDataPosition(0, 0)
-    # VimWrap has no cached data for y=0, returns (0,0)
-    assert line == 0 and pos == 0
+    line, pos = tw.screenToDataPosition(5, 0)
+    assert (line, pos) == (0, 5)
 
 
-def test_vim_wrap_normalizeScreenPosition_outside_cached_window_returns_zero():
-    """normalizeScreenPosition returns (0,0) if screen y is outside cached window."""
+def test_vim_wrap_screen_to_data_position_offscreen_below_uses_unwrapped():
+    """Rows below cached window are interpreted as unwrapped lines."""
+    text = '\n'.join(['abcdefghij'] * 5)
+    _, tw = _mk_vim_wrap(text, width=4)
+
+    # Cache window y=0-3
+    tw.screenRows(0, 4)
+
+    # y=50 is below cached window -> clamp to last source line
+    line, pos = tw.screenToDataPosition(5, 50)
+    assert (line, pos) == (4, 5)
+
+
+def test_vim_wrap_screen_to_data_position_inside_cached_window_uses_wrapped_row():
+    """Inside cached rows, screenToDataPosition maps through wrapped fragments."""
     text = 'abcdefghij\n' * 5
-    doc, tw = _mk_vim_wrap(text, width=4)
+    _, tw = _mk_vim_wrap(text, width=4)
+
+    tw.screenRows(0, 4)
+    # y=1 is second wrapped fragment [4:8] of line 0
+    line, pos = tw.screenToDataPosition(1, 1)
+    assert (line, pos) == (0, 5)
+
+
+def test_vim_wrap_normalize_screen_position_offscreen_above_uses_unwrapped():
+    """Offscreen-above normalization uses unwrapped line semantics."""
+    text = 'abcdefghij\n' * 5
+    _, tw = _mk_vim_wrap(text, width=4)
 
     # Cache window y=10-13
     tw.screenRows(10, 4)
 
-    # Try to normalize position y=2 (outside cache)
+    # y=2 is above cached window -> unwrapped normalization on source line 2
     x, y = tw.normalizeScreenPosition(5, 2)
-    # VimWrap returns (0,0) if no cached data
-    assert x == 0 and y == 0
+    assert (x, y) == (5, 2)
+
+
+def test_vim_wrap_normalize_screen_position_offscreen_below_uses_unwrapped():
+    """Offscreen-below normalization uses unwrapped line semantics."""
+    text = '\n'.join(['abcdefghij'] * 5)
+    _, tw = _mk_vim_wrap(text, width=4)
+
+    # Cache window y=0-3
+    tw.screenRows(0, 4)
+
+    # y=50 is below cached window -> clamp to last source line
+    x, y = tw.normalizeScreenPosition(5, 50)
+    assert (x, y) == (5, 4)
+
+
+def test_vim_wrap_normalize_screen_position_inside_cached_row_clamps_to_fragment():
+    """Inside cached rows, x is normalized within wrapped fragment boundaries."""
+    text = 'abcdefghij\n' * 3
+    _, tw = _mk_vim_wrap(text, width=4)
+
+    tw.screenRows(0, 4)
+    # y=1 corresponds to source slice [4:8], max local width is 4
+    x, y = tw.normalizeScreenPosition(99, 1)
+    assert (x, y) == (4, 1)
 
 
 def test_vim_wrap_size_returns_total_document_line_count():
-    """VimWrap.size() returns document line count (may include trailing newline line)."""
+    """VimWrap.size() follows documented approximate viewport-based sizing."""
     text = 'a\n' * 100  # 100 lines
     doc, tw = _mk_vim_wrap(text, width=1)
 
-    # VimWrap counts source lines
-    assert tw.size() > 0
+    # Before a viewport cache is built, h=0 contribution is -1.
+    assert tw.size() == doc.lineCount() - 1
+
+    tw.screenRows(0, 5)
+    assert tw.size() == doc.lineCount() + 4
 
 
 def test_vim_wrap_empty_document():
     """VimWrap handles empty document gracefully."""
     text = ''
-    doc, tw = _mk_vim_wrap(text, width=10)
+    _, tw = _mk_vim_wrap(text, width=10)
 
     rows = tw.screenRows(0, 2)
     assert len(rows) >= 1
@@ -147,7 +207,7 @@ def test_vim_wrap_empty_document():
 def test_vim_wrap_single_long_line():
     """VimWrap wraps a single long line across multiple rows."""
     text = 'abcdefghijklmnopqrst'  # 20 chars
-    doc, tw = _mk_vim_wrap(text, width=4)
+    _, tw = _mk_vim_wrap(text, width=4)
 
     rows = tw.screenRows(0, 10)
     # 20 chars at width=4 → 5 rows
@@ -162,7 +222,7 @@ def test_vim_wrap_single_long_line():
 def test_vim_wrap_multi_line_document():
     """VimWrap handles multi-line documents correctly."""
     text = 'short\nabcdefghij\nend'
-    doc, tw = _mk_vim_wrap(text, width=4)
+    _, tw = _mk_vim_wrap(text, width=4)
 
     rows = tw.screenRows(0, 10)
 
@@ -190,31 +250,28 @@ def test_vim_wrap_roundtrip_within_cached_window():
     # Test roundtrip for positions in line 0
     for pos in [0, 2, 4, 6, 8, 10]:
         x, y = tw.dataToScreenPosition(0, pos)
-        if y > 0:  # Only if within cached window
-            line, rpos = tw.screenToDataPosition(x, y)
-            # May not roundtrip perfectly due to tab expansion,
-            # but should return valid document position
-            assert line == 0
-            assert 0 <= rpos <= len(tw._wrapState.textDocument.dataLine(0))
+        line, rpos = tw.screenToDataPosition(x, y)
+        assert line == 0
+        assert 0 <= rpos <= len(doc.dataLine(0))
 
 
 def test_vim_wrap_tab_handling():
     """VimWrap expands tabs correctly in position conversions."""
     text = '\ta\tb'  # tab-a-tab-b
-    doc, tw = _mk_vim_wrap(text, width=20)
+    _, tw = _mk_vim_wrap(text, width=20)
 
     # Prime cache
     tw.screenRows(0, 2)
 
     # First tab expands to 4 cells (default tabSpaces)
-    x, y = tw.dataToScreenPosition(0, 1)  # Position of 'a'
+    x, _y = tw.dataToScreenPosition(0, 1)  # Position of 'a'
     assert x == 4  # After tab expansion
 
 
 def test_vim_wrap_width_zero_handles_gracefully():
     """VimWrap with zero width should not crash."""
     text = 'hello'
-    doc, tw = _mk_vim_wrap(text, width=0)
+    _, tw = _mk_vim_wrap(text, width=0)
 
     # Should handle gracefully
     rows = tw.screenRows(0, 5)
@@ -227,7 +284,7 @@ def test_vim_wrap_large_document_partial_access():
     text = 'line_of_text_' * 100 + '\n'  # ~1300 char line
     text = text * 1000
 
-    doc, tw = _mk_vim_wrap(text, width=20)
+    _, tw = _mk_vim_wrap(text, width=20)
 
     # Request only rows 500-510
     rows = tw.screenRows(500, 10)
@@ -237,56 +294,48 @@ def test_vim_wrap_large_document_partial_access():
     assert all(row.start >= 0 and row.start <= row.stop for row in rows)
 
 
-def test_vim_wrap_screenRows_with_height_zero():
+def test_vim_wrap_screen_rows_with_height_zero_returns_empty_and_is_stable():
     """VimWrap.screenRows with h=0 returns empty list."""
     text = 'hello world'
-    doc, tw = _mk_vim_wrap(text, width=10)
+    _, tw = _mk_vim_wrap(text, width=10)
 
     rows = tw.screenRows(0, 0)
     assert rows == []
 
+    # Repeated request should remain empty and safe.
+    assert tw.screenRows(0, 0) == []
 
-def test_vim_wrap_screenRows_with_negative_y():
+
+def test_vim_wrap_screen_rows_with_negative_y():
     """VimWrap.screenRows with negative y should handle gracefully."""
     text = 'hello world'
-    doc, tw = _mk_vim_wrap(text, width=10)
+    _, tw = _mk_vim_wrap(text, width=10)
 
     # screenRows should handle negative y gracefully
     rows = tw.screenRows(-5, 10)
-    # Should return some wrapped rows or empty
     assert isinstance(rows, list)
 
 
-def test_vim_wrap_caches_last_window_state():
-    """VimWrap caches _lastWindow state across multiple calls."""
+def test_vim_wrap_screen_rows_repeated_same_viewport_returns_same_rows():
+    """Repeated identical viewport requests return the same cached rows."""
     text = 'abcdefghij\n' * 10
-    doc, tw = _mk_vim_wrap(text, width=4)
+    _, tw = _mk_vim_wrap(text, width=4)
 
-    # First call sets cache for y=0-4
-    rows1 = tw.screenRows(0, 4)
-    y1 = tw._wrapEngine._lastWindow.y  # type: ignore[attr-defined]
-    h1 = tw._wrapEngine._lastWindow.h  # type: ignore[attr-defined]
-
-    # Second call to different window updates cache
-    rows2 = tw.screenRows(10, 4)
-    y2 = tw._wrapEngine._lastWindow.y  # type: ignore[attr-defined]
-    h2 = tw._wrapEngine._lastWindow.h  # type: ignore[attr-defined]
-
-    # Cache should have updated
-    assert y2 == 10 and h2 == 4
+    rows1 = tw.screenRows(3, 4)
+    rows2 = tw.screenRows(3, 4)
+    assert rows2 == rows1
 
 
-def test_vim_wrap_rewrap_clears_nothing():
-    """VimWrap.rewrap() is a no-op (lazy engine, no pre-computed buffer)."""
-    text = 'hello world'
-    doc, tw = _mk_vim_wrap(text, width=10)
+def test_vim_wrap_rewrap_invalidation_rebuilds_after_document_change():
+    """After document edits, rewrap path invalidates and rebuilds viewport cache."""
+    doc, tw = _mk_vim_wrap('aaaa\nbbbb', width=2)
 
-    # Prime cache
-    tw.screenRows(0, 2)
+    first = tw.screenRows(0, 4)
+    assert first[0].stop == 2
 
-    # Call rewrap (should be no-op)
-    tw.rewrap()
+    doc.setText('zzzzzz\nbbbb')
+    rebuilt = tw.screenRows(0, 4)
 
-    # Cache should still be valid
-    rows = tw.screenRows(0, 2)
-    assert len(rows) > 0
+    # First line changed from len=4 to len=6, so wrapped rows update.
+    assert rebuilt != first
+    assert rebuilt[2].stop == 7

@@ -36,6 +36,13 @@ from .text_wrap_engine_vim_wrap import _WrapEngine_VimWrap
 from .text_wrap_engine_fast_wrap import _WrapEngine_FastWrap
 from .text_wrap_engine_full_wrap import _WrapEngine_FullWrap
 
+_wrapEngines = {
+    TTkK.WrapEngine.FastWrap : _WrapEngine_FastWrap,
+    TTkK.WrapEngine.FullWrap : _WrapEngine_FullWrap,
+    TTkK.WrapEngine.VimWrap : _WrapEngine_VimWrap,
+    TTkK.WrapEngine.NoWrap : _WrapEngine_NoWrap,
+}
+
 class TTkTextWrap():
     '''TTkTextWrap:
 
@@ -83,6 +90,12 @@ class TTkTextWrap():
         self._wrapEngine.rewrap(data=_ReWrapData(line,added,removed))
         self.wrapChanged.emit()
 
+    def engine(self) -> TTkK.WrapEngine:
+        for _e, _t in _wrapEngines.items():
+            if isinstance(self._wrapEngine, _t):
+                return _e
+        return TTkK.WrapEngine.NoWrap
+
     def setEngine(self, engine:TTkK.WrapEngine, width:Optional[int]=None) -> None:
         '''Switch the wrapping backend implementation.
 
@@ -91,12 +104,7 @@ class TTkTextWrap():
         :param width: optional wrap width applied before switching engines.
         :type width: Optional[int]
         '''
-        engine_class = {
-            TTkK.WrapEngine.FastWrap : _WrapEngine_FastWrap,
-            TTkK.WrapEngine.FullWrap : _WrapEngine_FullWrap,
-            TTkK.WrapEngine.VimWrap : _WrapEngine_VimWrap,
-            TTkK.WrapEngine.NoWrap : _WrapEngine_NoWrap,
-        }.get(engine, _WrapEngine_NoWrap)
+        engine_class = _wrapEngines.get(engine, _WrapEngine_NoWrap)
         if isinstance(self._wrapEngine, engine_class):
             return
         if width is not None:

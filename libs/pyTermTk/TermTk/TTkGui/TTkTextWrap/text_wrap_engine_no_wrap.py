@@ -60,6 +60,7 @@ class _WrapEngine_NoWrap(_WrapEngine_Interface):
         :return: ``(x, y)`` screen coordinates.
         :rtype: Tuple[int, int]
         '''
+        line = self._clampLine(line)
         text_document = self._wrapState.textDocument
         data_line = text_document.dataLine(line)
         if 0 <= pos <= len(data_line) + 1:
