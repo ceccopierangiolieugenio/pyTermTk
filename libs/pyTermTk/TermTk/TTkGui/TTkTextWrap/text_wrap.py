@@ -37,7 +37,7 @@ from .text_wrap_engine_fast_wrap import _WrapEngine_FastWrap
 from .text_wrap_engine_full_wrap import _WrapEngine_FullWrap
 
 _wrapEngines = {
-    # TTkK.WrapEngine.FastWrap : _WrapEngine_FastWrap,
+    TTkK.WrapEngine.FastWrap : _WrapEngine_FastWrap,
     TTkK.WrapEngine.FullWrap : _WrapEngine_FullWrap,
     TTkK.WrapEngine.VimWrap : _WrapEngine_VimWrap,
     TTkK.WrapEngine.NoWrap : _WrapEngine_NoWrap,
