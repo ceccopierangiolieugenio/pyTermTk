@@ -1,6 +1,6 @@
 # MIT License
 #
-# Copyright (c) 2023 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
+# Copyright (c) 2026 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -20,12 +20,10 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+__all__:list = []
 
-__all__ = ['TTkVT102']
+from .text_wrap import _WrapEngine_Interface
 
-class TTkVT102():
-    CLEAR         = "\033[2J\033[0;0f" # Clear screen and set cursor to position 0,0
-    ALT_SCREEN    = "\033[?1049h"                       #* Switch to alternate screen
-    NORMAL_SCREEN = "\033[?1049l"                       #* Switch to normal screen
-
-
+class _WrapEngine_FastWrap(_WrapEngine_Interface):
+    '''Placeholder for the Fast Wrap'''
+    pass

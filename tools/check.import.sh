@@ -35,7 +35,7 @@ __check(){
             -e "ttk.py:import contextlib" \
             -e "clipboard.py:import importlib.util" \
             -e "filebuffer.py:import threading" \
-            -e "texedit.py:from math import log10, floor" \
+            -e "text_edit.py:from math import log10, floor" \
             -e "string.py:import unicodedata" \
             -e "string.py:from types import GeneratorType" \
             -e "progressbar.py:import math" \

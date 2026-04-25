@@ -27,7 +27,7 @@ from typing import Dict
 # from TermTk.TTkCore.string import TTkString
 # from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.color import TTkColor
-from TermTk.TTkWidgets.texedit import TTkTextEdit
+from TermTk.TTkWidgets.text_edit import TTkTextEdit
 
 TTkTextEditProperties:Dict[str,Dict] = {
     'properties' : {

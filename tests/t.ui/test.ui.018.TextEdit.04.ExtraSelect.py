@@ -108,7 +108,7 @@ def demoTextEdit(root, filename):
         cursor.clearSelection()
         for x in set(lines):
             cursor.addCursor(x,0)
-        selection = ttk.TTkTextEdit.ExtraSelection(
+        selection = ttk.TTkTextEditView.ExtraSelection(
                                         cursor=cursor,
                                         color=ttk.TTkColor.BG_YELLOW,
                                         format=ttk.TTkK.SelectionFormat.FullWidthSelection)
@@ -117,7 +117,7 @@ def demoTextEdit(root, filename):
         # Highlight Red only the  lines under the cursor positions
         cursor = te.textCursor().copy()
         cursor.clearSelection()
-        selection = ttk.TTkTextEdit.ExtraSelection(
+        selection = ttk.TTkTextEditView.ExtraSelection(
                                         cursor=cursor,
                                         color=ttk.TTkColor.BG_RED,
                                         format=ttk.TTkK.SelectionFormat.FullWidthSelection)
@@ -126,7 +126,7 @@ def demoTextEdit(root, filename):
         # Highlight GREEN the words under the cursor positions
         cursor = te.textCursor().copy()
         cursor.select(ttk.TTkTextCursor.SelectionType.WordUnderCursor)
-        selection = ttk.TTkTextEdit.ExtraSelection(
+        selection = ttk.TTkTextEditView.ExtraSelection(
                                         cursor=cursor,
                                         color=ttk.TTkColor.BG_GREEN)
         extra_selections.append(selection)

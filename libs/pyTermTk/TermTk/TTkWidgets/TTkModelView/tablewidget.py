@@ -38,7 +38,7 @@ from TermTk.TTkCore.TTkTerm.inputmouse import TTkMouseEvent
 from TermTk.TTkGui.clipboard import TTkClipboard
 from TermTk.TTkGui.textcursor import TTkTextCursor
 
-from TermTk.TTkWidgets.texedit  import TTkTextEdit
+from TermTk.TTkWidgets.text_edit  import TTkTextEdit
 from TermTk.TTkWidgets.spinbox  import TTkSpinBox
 from TermTk.TTkWidgets.TTkPickers.textpicker import TTkTextPicker
 from TermTk.TTkWidgets.TTkModelView.tablemodellist import TTkTableModelList, TTkModelIndex

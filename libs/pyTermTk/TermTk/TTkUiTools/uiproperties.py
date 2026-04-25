@@ -51,7 +51,7 @@ from .properties.slider import *
 from .properties.spinbox import *
 from .properties.splitter import *
 # from .properties.tabwidget import
-from .properties.texedit import *
+from .properties.text_edit import *
 from .properties.widget import *
 from .properties.window import *
 
