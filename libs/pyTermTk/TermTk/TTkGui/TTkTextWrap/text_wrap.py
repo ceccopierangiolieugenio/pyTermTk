@@ -23,13 +23,13 @@
 __all__ = ['TTkTextWrap']
 
 
-from typing import List, Optional, Tuple
+from typing import Optional, Tuple
 
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
 from TermTk.TTkGui.textdocument import TTkTextDocument
 
-from .text_wrap_data import _WrapLine, _WrapState, _ReWrapData
+from .text_wrap_data import _RetScreenRows, _WrapState, _ReWrapData
 from .text_wrap_engine import _WrapEngine_Interface
 from .text_wrap_engine_no_wrap import _WrapEngine_NoWrap
 from .text_wrap_engine_vim_wrap import _WrapEngine_VimWrap
@@ -37,7 +37,7 @@ from .text_wrap_engine_fast_wrap import _WrapEngine_FastWrap
 from .text_wrap_engine_full_wrap import _WrapEngine_FullWrap
 
 _wrapEngines = {
-    TTkK.WrapEngine.FastWrap : _WrapEngine_FastWrap,
+    # TTkK.WrapEngine.FastWrap : _WrapEngine_FastWrap,
     TTkK.WrapEngine.FullWrap : _WrapEngine_FullWrap,
     TTkK.WrapEngine.VimWrap : _WrapEngine_VimWrap,
     TTkK.WrapEngine.NoWrap : _WrapEngine_NoWrap,
@@ -162,7 +162,7 @@ class TTkTextWrap():
         self._wrapState.wordWrapMode = mode
         self.rewrap()
 
-    def screenRows(self, y:int, h:int) -> List[_WrapLine]:
+    def screenRows(self, y:int, h:int) -> _RetScreenRows:
         '''Return wrapped slices visible in the requested viewport.
 
         :param y: first screen row.
@@ -174,7 +174,7 @@ class TTkTextWrap():
         :rtype: List[:py:class:`_WrapLine`]
         '''
         if h <= 0:
-            return []
+            return _RetScreenRows(y=y, rows=[])
         return self._wrapEngine.screenRows(y=y,h=h)
 
     def rewrap(self) -> None:

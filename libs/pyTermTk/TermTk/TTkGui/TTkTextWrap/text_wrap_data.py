@@ -23,6 +23,7 @@
 __all__:list = []
 
 from dataclasses import dataclass
+from typing import List
 
 from TermTk.TTkCore.constant import TTkK
 
@@ -78,3 +79,8 @@ class _WrapState():
     tabSpaces: int
     textDocument: TTkTextDocument
     wordWrapMode: TTkK.WrapMode
+
+@dataclass
+class _RetScreenRows():
+    y:int
+    rows: List[_WrapLine]

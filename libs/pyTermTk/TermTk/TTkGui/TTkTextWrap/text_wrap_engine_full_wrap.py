@@ -27,7 +27,7 @@ from threading import RLock
 from typing import List, Tuple, Optional
 
 from .text_wrap import _WrapEngine_Interface
-from .text_wrap_data import _WrapLine, _ReWrapData
+from .text_wrap_data import _RetScreenRows, _WrapLine, _ReWrapData
 
 # TODO: remove Python 3.9 compatibility routine once dropped support
 # Python 3.9 compatibility: key parameter was added in Python 3.10
@@ -193,7 +193,7 @@ class _WrapEngine_FullWrap(_WrapEngine_Interface):
         x = s.substring(0, x).tab2spaces(self._wrapState.tabSpaces).termWidth()
         return x, y
 
-    def screenRows(self, y:int, h:int) -> List[_WrapLine]:
+    def screenRows(self, y:int, h:int) -> _RetScreenRows:
         '''Return a viewport slice from the precomputed wrapped buffer.
 
         :param y: first wrapped row.
@@ -205,4 +205,4 @@ class _WrapEngine_FullWrap(_WrapEngine_Interface):
         :rtype: List[:py:class:`_WrapLine`]
         '''
         with self._bufferLock:
-            return self._buffer[y:y+h].copy()
+            return _RetScreenRows(y=y, rows=self._buffer[y:y+h].copy())

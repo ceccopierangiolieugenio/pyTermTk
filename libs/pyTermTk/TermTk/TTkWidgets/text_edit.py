@@ -45,12 +45,7 @@ class TTkTextEdit(TTkAbstractScrollArea):
 
     ''' + (TTkTextEditView.__doc__ if TTkTextEditView.__doc__ else '')
 
-    if TYPE_CHECKING:
-        from typing import TypeAlias
-        ExtraSelection: TypeAlias = TTkTextEditView.ExtraSelection
-    else:
-        # TODO: remove this once Python 3.9 will disappear from the world
-        ExtraSelection = TTkTextEditView.ExtraSelection
+    ExtraSelection = TTkTextEditView.ExtraSelection
 
     _ttk_forward:_ForwardData = _ForwardData(
         forwardClass=TTkTextEditView ,
@@ -157,7 +152,7 @@ class TTkTextEdit(TTkAbstractScrollArea):
 
         This signal is emitted if the current character color has changed,
         for example caused by a change of the cursor position.
-        
+
         :param color: the new color
         :type color: :py:class:`TTkColor`
         '''
@@ -168,7 +163,7 @@ class TTkTextEdit(TTkAbstractScrollArea):
         .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.cursorPositionChanged`
 
         This signal is emitted whenever the position of the cursor changed.
-        
+
         :param cursor: the cursor changed.
         :type cursor: :py:class:`TTkTextCursor`
         '''
@@ -180,7 +175,7 @@ class TTkTextEdit(TTkAbstractScrollArea):
 
         This signal is emitted whenever undo operations become available (available is true)
         or unavailable (available is false).
-        
+
         :param available: the availability of undo
         :type available: bool
         '''
@@ -192,7 +187,7 @@ class TTkTextEdit(TTkAbstractScrollArea):
 
         This signal is emitted whenever redo operations become available (available is true)
         or unavailable (available is false).
-        
+
         :param available: the availability of redo
         :type available: bool
         '''
@@ -276,7 +271,7 @@ class TTkTextEdit(TTkAbstractScrollArea):
         :rtype: :py:class:`TTkTextDocument`
         '''
         return self._textEditView.document()
-    def wrapWidth(self, *args, **kwargs) -> None:
+    def wrapWidth(self, *args, **kwargs) -> int:
         '''
         .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.wrapWidth`
 
@@ -322,7 +317,7 @@ class TTkTextEdit(TTkAbstractScrollArea):
         :type wrapEngine: :py:class:`TTkK.WrapEngine`
         '''
         return self._textEditView.setLineWrapMode(mode=mode, wrapEngine=wrapEngine)
-    def wordWrapMode(self, *args, **kwargs) -> None:
+    def wordWrapMode(self, *args, **kwargs) -> TTkK.WrapMode:
         '''
         .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.wordWrapMode`
 
@@ -364,7 +359,7 @@ class TTkTextEdit(TTkAbstractScrollArea):
         :type color: :py:class:`TTkColor`
         '''
         return self._textEditView.setColor(color=color)
-    def extraSelections(self) -> List[ExtraSelection]:
+    def extraSelections(self) -> List[TTkTextEditView.ExtraSelection]:
         '''
         .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.extraSelections`
 
@@ -373,7 +368,7 @@ class TTkTextEdit(TTkAbstractScrollArea):
         :rtype: List[:py:class:`ExtraSelection`]
         '''
         return self._textEditView.extraSelections()
-    def setExtraSelections(self, extraSelections:List[ExtraSelection]) -> None:
+    def setExtraSelections(self, extraSelections:List[TTkTextEditView.ExtraSelection]) -> None:
         '''
         .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.setExtraSelections`
 

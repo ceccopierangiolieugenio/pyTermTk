@@ -49,6 +49,17 @@ def _mk_vim_wrap(text: str, width: int = 10, word_wrap: bool = False):
     return doc, tw
 
 
+def _rows_for(tw: ttk.TTkTextWrap, y: int, h: int):
+    """Return wrapped rows handling legacy/buggy engine return shapes."""
+    ret = tw.screenRows(y, h)
+    if isinstance(ret, list):
+        # Some VimWrap codepaths still return rows directly.
+        return ret
+    assert ret.y == y
+    assert isinstance(ret.rows, list)
+    return ret.rows
+
+
 # ---------------------------------------------------------------------------
 # Lazy wrapping: screenRows only wraps visible window
 # ---------------------------------------------------------------------------
@@ -59,7 +70,7 @@ def test_vim_wrap_screen_rows_lazily_wraps_visible_window():
     doc, tw = _mk_vim_wrap(text, width=4)
 
     # Request rows 0-4 (should wrap first few document lines)
-    rows = tw.screenRows(0, 4)
+    rows = _rows_for(tw, 0, 4)
     # 'abcdefghij' (10 chars) wraps into 3 rows at width=4: [0-3], [4-7], [8-10]
     assert len(rows) > 0
     assert rows[0].line == 0
@@ -198,7 +209,7 @@ def test_vim_wrap_empty_document():
     text = ''
     _, tw = _mk_vim_wrap(text, width=10)
 
-    rows = tw.screenRows(0, 2)
+    rows = _rows_for(tw, 0, 2)
     assert len(rows) >= 1
     assert rows[0].line == 0
     assert rows[0].start == 0
@@ -209,7 +220,7 @@ def test_vim_wrap_single_long_line():
     text = 'abcdefghijklmnopqrst'  # 20 chars
     _, tw = _mk_vim_wrap(text, width=4)
 
-    rows = tw.screenRows(0, 10)
+    rows = _rows_for(tw, 0, 10)
     # 20 chars at width=4 → 5 rows
     assert len(rows) == 5
     assert all(row.line == 0 for row in rows)  # All from same source line
@@ -224,7 +235,7 @@ def test_vim_wrap_multi_line_document():
     text = 'short\nabcdefghij\nend'
     _, tw = _mk_vim_wrap(text, width=4)
 
-    rows = tw.screenRows(0, 10)
+    rows = _rows_for(tw, 0, 10)
 
     # Line 0: 'short' (5 chars) → 2 rows at width=4
     assert rows[0].line == 0
@@ -274,7 +285,7 @@ def test_vim_wrap_width_zero_handles_gracefully():
     _, tw = _mk_vim_wrap(text, width=0)
 
     # Should handle gracefully
-    rows = tw.screenRows(0, 5)
+    rows = _rows_for(tw, 0, 5)
     assert isinstance(rows, list)
 
 
@@ -287,7 +298,7 @@ def test_vim_wrap_large_document_partial_access():
     _, tw = _mk_vim_wrap(text, width=20)
 
     # Request only rows 500-510
-    rows = tw.screenRows(500, 10)
+    rows = _rows_for(tw, 500, 10)
 
     # Should return rows from around line 500
     assert len(rows) > 0
@@ -299,11 +310,11 @@ def test_vim_wrap_screen_rows_with_height_zero_returns_empty_and_is_stable():
     text = 'hello world'
     _, tw = _mk_vim_wrap(text, width=10)
 
-    rows = tw.screenRows(0, 0)
+    rows = _rows_for(tw, 0, 0)
     assert rows == []
 
     # Repeated request should remain empty and safe.
-    assert tw.screenRows(0, 0) == []
+    assert _rows_for(tw, 0, 0) == []
 
 
 def test_vim_wrap_screen_rows_with_negative_y():
@@ -312,7 +323,7 @@ def test_vim_wrap_screen_rows_with_negative_y():
     _, tw = _mk_vim_wrap(text, width=10)
 
     # screenRows should handle negative y gracefully
-    rows = tw.screenRows(-5, 10)
+    rows = _rows_for(tw, -5, 10)
     assert isinstance(rows, list)
 
 
@@ -321,8 +332,8 @@ def test_vim_wrap_screen_rows_repeated_same_viewport_returns_same_rows():
     text = 'abcdefghij\n' * 10
     _, tw = _mk_vim_wrap(text, width=4)
 
-    rows1 = tw.screenRows(3, 4)
-    rows2 = tw.screenRows(3, 4)
+    rows1 = _rows_for(tw, 3, 4)
+    rows2 = _rows_for(tw, 3, 4)
     assert rows2 == rows1
 
 
@@ -330,12 +341,32 @@ def test_vim_wrap_rewrap_invalidation_rebuilds_after_document_change():
     """After document edits, rewrap path invalidates and rebuilds viewport cache."""
     doc, tw = _mk_vim_wrap('aaaa\nbbbb', width=2)
 
-    first = tw.screenRows(0, 4)
+    first = _rows_for(tw, 0, 4)
     assert first[0].stop == 2
 
     doc.setText('zzzzzz\nbbbb')
-    rebuilt = tw.screenRows(0, 4)
+    rebuilt = _rows_for(tw, 0, 4)
 
     # First line changed from len=4 to len=6, so wrapped rows update.
     assert rebuilt != first
     assert rebuilt[2].stop == 7
+
+
+def test_vim_wrap_negative_y_never_emits_negative_source_line_indexes():
+    """Wrapped rows should never reference negative source line numbers."""
+    text = 'hello world\nsecond line'
+    _, tw = _mk_vim_wrap(text, width=6)
+
+    rows = _rows_for(tw, -5, 4)
+    assert all(row.line >= 0 for row in rows)
+
+
+def test_vim_wrap_screen_rows_always_returns_ret_screen_rows_object():
+    """ScreenRows should consistently return _RetScreenRows."""
+    _, tw = _mk_vim_wrap('abcdefghij\n' * 2, width=4)
+
+    first = tw.screenRows(0, 4)
+    second = tw.screenRows(0, 4)
+
+    assert hasattr(first, 'rows') and hasattr(first, 'y')
+    assert hasattr(second, 'rows') and hasattr(second, 'y')

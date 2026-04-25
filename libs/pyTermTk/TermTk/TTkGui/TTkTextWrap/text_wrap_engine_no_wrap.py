@@ -25,7 +25,7 @@ __all__:list = []
 from typing import List, Optional, Tuple
 
 from .text_wrap import _WrapEngine_Interface
-from .text_wrap_data import _ReWrapData, _WrapLine, _WrapState
+from .text_wrap_data import _ReWrapData, _RetScreenRows, _WrapLine, _WrapState
 
 
 class _WrapEngine_NoWrap(_WrapEngine_Interface):
@@ -107,7 +107,7 @@ class _WrapEngine_NoWrap(_WrapEngine_Interface):
         x = line.substring(0,x).tab2spaces(self._wrapState.tabSpaces).termWidth()
         return x, y
 
-    def screenRows(self, y:int, h:int) -> List[_WrapLine]:
+    def screenRows(self, y:int, h:int) -> _RetScreenRows:
         '''Return contiguous source lines as viewport row descriptors.
 
         :param y: first row.
@@ -118,9 +118,12 @@ class _WrapEngine_NoWrap(_WrapEngine_Interface):
         :return: row descriptors covering the requested viewport.
         :rtype: List[:py:class:`_WrapLine`]
         '''
-        return [
-            _WrapLine(_i, 0, len(_line)+1)
-            for _i,_line in enumerate(
-                self._wrapState.textDocument.dataLines(slice(y,y+h)),
-                start=y )
-        ]
+        return _RetScreenRows(
+            y=y,
+            rows=[
+                _WrapLine(_i, 0, len(_line)+1)
+                for _i,_line in enumerate(
+                    self._wrapState.textDocument.dataLines(slice(y,y+h)),
+                    start=y )
+            ]
+        )

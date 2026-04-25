@@ -78,6 +78,14 @@ def _mk_wrap(text: str, width: int = 20, word_wrap: bool = False) -> tuple[ttk.T
     return doc, tw
 
 
+def _rows_for(tw: ttk.TTkTextWrap, y: int, h: int):
+    """Return wrapped rows and validate viewport origin metadata."""
+    ret = tw.screenRows(y, h)
+    assert ret.y == y
+    assert isinstance(ret.rows, list)
+    return ret.rows
+
+
 _THREAD_TIMEOUT = 10  # seconds; a still-alive thread after this is treated as a deadlock
 
 
@@ -135,7 +143,7 @@ def test_concurrent_readers_screenRows():
     def reader(start_y: int) -> None:
         barrier.wait()
         for _ in range(50):
-            rows = tw.screenRows(start_y, 10)
+            rows = _rows_for(tw, start_y, 10)
             for row in rows:
                 assert row.line >= 0
                 assert row.start >= 0
@@ -190,7 +198,7 @@ def test_reader_writer_setText():
     def reader() -> None:
         barrier.wait()
         for _ in range(100):
-            rows = tw.screenRows(0, 10)
+            rows = _rows_for(tw, 0, 10)
             for row in rows:
                 assert row.line >= 0
                 assert row.start >= 0
@@ -218,7 +226,7 @@ def test_reader_writer_appendText():
     def reader() -> None:
         barrier.wait()
         for _ in range(100):
-            rows = tw.screenRows(0, 8)
+            rows = _rows_for(tw, 0, 8)
             for row in rows:
                 assert row.line >= 0
                 assert row.start >= 0
@@ -247,7 +255,7 @@ def test_rewrap_race():
     def reader() -> None:
         barrier.wait()
         for y in range(0, 60, 4):
-            rows = tw.screenRows(y, 4)
+            rows = _rows_for(tw, y, 4)
             for row in rows:
                 assert row.line >= 0
                 assert row.start >= 0
@@ -304,7 +312,7 @@ def test_many_threads_mixed_operations():
             if op == 0:
                 # Read screen rows at a random position
                 y = rng.randint(0, 20)
-                rows = tw.screenRows(y, 5)
+                rows = _rows_for(tw, y, 5)
                 for row in rows:
                     assert row.line >= 0 and row.start >= 0 and row.start <= row.stop
             elif op == 1:
@@ -334,7 +342,7 @@ def test_many_threads_mixed_operations():
 
 
 def test_fullwrap_rewrap_setText_mapping_regression_none_substring():
-    '''Regression: mixed setText/rewrap/mapping must not trigger None.substring.''' 
+    '''Regression: mixed setText/rewrap/mapping must not trigger None.substring.'''
     rng = random.Random(123)
     text = '\n'.join(_LINES * 8)
     doc, tw = _mk_wrap(text, width=20)
@@ -404,7 +412,7 @@ def test_cursor_insertText_concurrent_with_screenRows():
     def reader() -> None:
         barrier.wait()
         for _ in range(80):
-            rows = tw.screenRows(0, 8)
+            rows = _rows_for(tw, 0, 8)
             for row in rows:
                 assert row.line >= 0 and row.start >= 0 and row.start <= row.stop
 
@@ -480,7 +488,7 @@ def test_cursor_removeSelectedText_concurrent_with_screenRows():
     def reader() -> None:
         barrier.wait()
         for y in range(0, 40, 2):
-            rows = tw.screenRows(y, 4)
+            rows = _rows_for(tw, y, 4)
             for row in rows:
                 assert row.line >= 0 and row.start >= 0 and row.start <= row.stop
 
@@ -573,7 +581,7 @@ def test_cursor_replaceText_concurrent_with_screenRows():
     def reader() -> None:
         barrier.wait()
         for _ in range(80):
-            rows = tw.screenRows(0, 8)
+            rows = _rows_for(tw, 0, 8)
             for row in rows:
                 assert row.line >= 0 and row.start >= 0 and row.start <= row.stop
 
@@ -620,7 +628,8 @@ def test_cursor_editing_stress_with_mixed_readers():
         for j in range(40):
             op = (reader_id + j) % 3
             if op == 0:
-                rows = tw.screenRows(rng.randint(0, 10), 5)
+                y = rng.randint(0, 10)
+                rows = _rows_for(tw, y, 5)
                 for row in rows:
                     assert row.line >= 0 and row.start >= 0 and row.start <= row.stop
             elif op == 1:
@@ -693,7 +702,7 @@ def test_setWrapWidth_concurrent_with_screenRows():
     def reader() -> None:
         barrier.wait()
         for _ in range(80):
-            rows = tw.screenRows(0, 10)
+            rows = _rows_for(tw, 0, 10)
             for row in rows:
                 assert row.line >= 0
                 assert row.start >= 0
@@ -719,7 +728,7 @@ def test_concurrent_readers_from_different_positions():
     def reader(start_y: int) -> None:
         barrier.wait()
         for _ in range(20):
-            rows = tw.screenRows(start_y, 8)
+            rows = _rows_for(tw, start_y, 8)
             for row in rows:
                 assert row.line >= 0
                 assert row.start >= 0
@@ -743,7 +752,7 @@ def test_wrapChanged_listener_safe_during_concurrent_rewrap():
 
     def on_wrap_changed() -> None:
         try:
-            rows = tw.screenRows(0, 5)
+            rows = _rows_for(tw, 0, 5)
             for row in rows:
                 assert row.line >= 0 and row.start >= 0 and row.start <= row.stop
         except Exception as e:
@@ -761,7 +770,7 @@ def test_wrapChanged_listener_safe_during_concurrent_rewrap():
     def reader() -> None:
         barrier.wait()
         for y in range(0, 50, 3):
-            rows = tw.screenRows(y, 4)
+            rows = _rows_for(tw, y, 4)
             for row in rows:
                 assert row.line >= 0 and row.start >= 0 and row.start <= row.stop
 

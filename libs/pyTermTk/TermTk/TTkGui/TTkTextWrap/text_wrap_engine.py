@@ -28,7 +28,7 @@ from typing import List, Tuple, Optional
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.string import TTkString
 
-from .text_wrap_data import _WrapLine, _WrapState, _ReWrapData
+from .text_wrap_data import _RetScreenRows, _WrapLine, _WrapState, _ReWrapData
 
 class _WrapEngine_Interface():
     '''Base interface for text wrap engines.
@@ -132,7 +132,7 @@ class _WrapEngine_Interface():
         '''
         raise NotImplementedError()
 
-    def screenRows(self, y:int, h:int) -> List[_WrapLine]:
+    def screenRows(self, y:int, h:int) -> _RetScreenRows:
         '''Return the wrapped row slices for a viewport.
 
         Each returned :py:class:`_WrapLine` carries the source document

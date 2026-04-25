@@ -113,13 +113,13 @@ def test_ti_01_legacy_eager_full_rewrap() -> int:
 
 def test_ti_02_fastwrap_first_viewport() -> int:
     TW_ANY.rewrap()
-    rows = TW_ANY.screenRows(0, VIEWPORT_ROWS)
+    rows = TW_ANY.screenRows(0, VIEWPORT_ROWS).rows
     return len(rows)
 
 
 def test_ti_03_fastwrap_mid_viewport() -> int:
     TW_ANY.rewrap()
-    rows = TW_ANY.screenRows(2000, VIEWPORT_ROWS)
+    rows = TW_ANY.screenRows(2000, VIEWPORT_ROWS).rows
     return len(rows)
 
 

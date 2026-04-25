@@ -268,6 +268,7 @@ class TTkTextEditView(TTkAbstractScrollView):
         self.disableWidgetCursor(self._readOnly)
         self._updateSize()
         self.viewChanged.connect(self._pushCursor)
+        self.viewChanged.connect(self._check_document_wrap_position)
 
     def multiLine(self) -> bool:
         '''
@@ -390,7 +391,7 @@ class TTkTextEditView(TTkAbstractScrollView):
         self.update()
 
     # forward textWrap Methods
-    def wrapWidth(self, *args, **kwargs) -> None:
+    def wrapWidth(self, *args, **kwargs) -> int:
         '''
         .. seealso:: this method is forwarded to :py:meth:`TTkTextWrap.wrapWidth`
         '''
@@ -402,7 +403,7 @@ class TTkTextEditView(TTkAbstractScrollView):
         '''
         return self._textWrap.setWrapWidth(*args, **kwargs)
 
-    def wordWrapMode(self, *args, **kwargs) -> None:
+    def wordWrapMode(self, *args, **kwargs) -> TTkK.WrapMode:
         '''
         .. seealso:: this method is forwarded to :py:meth:`TTkTextWrap.wordWrapMode`
         '''
@@ -655,6 +656,16 @@ class TTkTextEditView(TTkAbstractScrollView):
             return self.width(), self._textWrap.size()
         return self.width(), self._textWrap.size()
 
+    @pyTTkSlot()
+    def _check_document_wrap_position(self):
+        ox, oy = self.getViewOffsets()
+        w, h = self.size()
+        y = self._textWrap.screenRows(oy,h).y
+        if y == oy:
+            return
+        self.viewMoveTo(ox, y)
+
+    @pyTTkSlot()
     def _pushCursor(self) -> None:
         ox, oy = self.getViewOffsets()
 
@@ -906,7 +917,7 @@ class TTkTextEditView(TTkAbstractScrollView):
         lineColor = style['lineColor']
         backgroundColors = [self._textDocument._backgroundColor]*h
 
-        subLines = self._textWrap.screenRows(oy,+h)
+        subLines = self._textWrap.screenRows(oy,+h).rows
         if not subLines: return
         fr = subLines[0].line
         to = subLines[-1].line

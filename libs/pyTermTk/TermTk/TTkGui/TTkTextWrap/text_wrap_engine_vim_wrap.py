@@ -27,7 +27,7 @@ from threading import RLock
 from typing import List, Optional, Tuple
 
 from .text_wrap import _WrapEngine_Interface
-from .text_wrap_data import _ReWrapData, _WrapLine, _WrapState
+from .text_wrap_data import _ReWrapData, _RetScreenRows, _WrapLine, _WrapState
 
 @dataclass
 class _LastWindow():
@@ -218,7 +218,7 @@ class _WrapEngine_VimWrap(_WrapEngine_Interface):
         x = s.substring(0,x).tab2spaces(self._wrapState.tabSpaces).termWidth()
         return x, y
 
-    def screenRows(self, y:int, h:int) -> List[_WrapLine]:
+    def screenRows(self, y:int, h:int) -> _RetScreenRows:
         '''Wrap and cache enough rows to satisfy a viewport request.
 
         The engine caches only the last requested viewport window. If the same
@@ -240,12 +240,12 @@ class _WrapEngine_VimWrap(_WrapEngine_Interface):
             if (self._lastWindow.y == y and
                 self._lastWindow.h == h and
                 self._lastWindow.buffer):
-                return self._lastWindow.buffer
+                return _RetScreenRows(y=y, rows=self._lastWindow.buffer)
 
             self._lastWindow = _LastWindow(y=y, h=h, buffer=[])
 
-            for _i,_line in enumerate(self._wrapState.textDocument.dataLines(slice(y,y+h)), start=y):
+            for _i,_line in enumerate(self._wrapState.textDocument.dataLines(slice(y,y+h)), start=max(0,y)):
                 self._lastWindow.buffer.extend(self._wrapLine(w,_i,_line))
                 if len(self._lastWindow.buffer) >= h:
                     break
-            return self._lastWindow.buffer
+            return _RetScreenRows(y=y, rows=self._lastWindow.buffer)

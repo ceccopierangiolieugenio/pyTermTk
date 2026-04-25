@@ -34,7 +34,20 @@ from TermTk.TTkGui.TTkTextWrap.text_wrap import TTkTextWrap
 from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollView
 
 class TTkTextEditRuler(TTkAbstractScrollView):
+    '''Ruler widget for `TTkTextEdit`.
+
+    Displays line numbers and one or more marker columns provided by
+    `MarkRuler` instances. The ruler listens to a `TTkTextWrap` instance to
+    compute its preferred width when lines are wrapped.
+    '''
     class MarkRuler():
+        '''Column of per-line markers shown in the text edit ruler.
+
+        Each `MarkRuler` holds a mapping from document line index to a small
+        integer state. The state selects one of the provided `TTkString`
+        markers to render for that line. States can be cycled with
+        `nextState`.
+        '''
         class States(int):
             NONE      = 0x00
             FLAGGED   = 0x01
@@ -48,6 +61,11 @@ class TTkTextEditRuler(TTkAbstractScrollView):
         __slots__ = ('_markers','_states','_width','_lines','_defaultState')
         def __init__(self,
                 markers:dict[int,TTkString]) -> None:
+            '''Create a `MarkRuler`.
+
+            :param markers: mapping of integer state -> `TTkString` to render
+            :type markers: dict[int, TTkString]
+            '''
             self._lines:Dict[int,int] = {}
             self._markers = markers
             self._states = len(markers)
@@ -55,21 +73,58 @@ class TTkTextEditRuler(TTkAbstractScrollView):
             self._width = max(v.termWidth() for v in markers.values())
 
         def width(self) -> int:
+            '''Return column width in terminal cells.
+
+            :return: width in terminal cells
+            :rtype: int
+            '''
             return self._width
 
         def nextState(self, state:int) -> int:
+            '''Return the next state value after `state`.
+
+            :param state: current state value
+            :type state: int
+            :return: next state value
+            :rtype: int
+            '''
             return (state+1)%self._states
 
         def setState(self, line:int, state:int) -> None:
+            '''Set the marker state for a document line.
+
+            If the state equals the default state, the explicit entry is removed
+            to keep the internal map sparse.
+
+            :param line: document line index
+            :type line: int
+            :param state: state value to set
+            :type state: int
+            '''
             if state == self._defaultState:
                 if line in self._lines:
                     del self._lines[line]
+                return
             self._lines[line] = state
 
         def getState(self, line:int) -> int:
+            '''Get the marker state for a document line.
+
+            :param line: document line index
+            :type line: int
+            :return: state value for the line
+            :rtype: int
+            '''
             return self._lines.get(line, self._defaultState)
 
         def getTTkStr(self, line:int) -> TTkString:
+            '''Return the `TTkString` marker for a given document line.
+
+            :param line: document line index
+            :type line: int
+            :return: `TTkString` to render for the line
+            :rtype: TTkString
+            '''
             state=self._lines.get(line, self._defaultState)
             return self._markers.get(state, TTkString())
 
@@ -132,11 +187,11 @@ class TTkTextEditRuler(TTkAbstractScrollView):
             if mx < 0:
                 break
         if self._textWrap:
-            rows = self._textWrap.screenRows(my, 1)
+            rows = self._textWrap.screenRows(my, 1).rows
         else:
             rows = []
         if rows:
-            dt = rows[0][0]
+            dt = rows[0].line
             mk.setState(dt, mk.nextState(mk.getState(dt)))
         else:
             mk.setState(my, mk.nextState(mk.getState(my)))
@@ -149,7 +204,7 @@ class TTkTextEditRuler(TTkAbstractScrollView):
         w, h = self.size()
         off  = self._startingNumber
         leftOff = sum(self._markRulerSizes)
-        rows = self._textWrap.screenRows(oy, h)
+        rows = self._textWrap.screenRows(oy, h).rows
 
         style = self.currentStyle()
         color = style['color']

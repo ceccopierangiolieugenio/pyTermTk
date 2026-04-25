@@ -43,10 +43,18 @@ def _mk_wrap(text: str, width: int = 4, word_wrap: bool = False):
     return doc, tw
 
 
+def _rows_for(tw: ttk.TTkTextWrap, y: int, h: int) -> list[_WrapLine]:
+    """Return wrapped rows and validate the screenRows contract."""
+    ret = tw.screenRows(y, h)
+    assert ret.y == y
+    assert isinstance(ret.rows, list)
+    return ret.rows
+
+
 def test_screen_rows_wrap_anywhere_visible_window():
     _, tw = _mk_wrap('abcdefghij\nxyz', width=4)
 
-    rows = tw.screenRows(0, 4)
+    rows = _rows_for(tw, 0, 4)
 
     assert len(rows) == 4
     assert rows[0] == _WrapLine(0, 0, 4)
@@ -75,7 +83,7 @@ def test_rewrap_after_document_content_change():
     doc.setText('short')
 
     assert tw.size() < size_before
-    rows = tw.screenRows(0, 5)
+    rows = _rows_for(tw, 0, 5)
     assert len(rows) >= 1
     assert rows[0].line == 0
 
@@ -180,7 +188,7 @@ def test_disable_mode_exposes_each_line_as_one_screen_row():
     tw = ttk.TTkTextWrap(document=doc)
     tw.setWrapWidth(4)   # narrow width — would create many rows if wrapping were enabled
 
-    rows = tw.screenRows(0, 2)
+    rows = _rows_for(tw, 0, 2)
 
     assert len(rows) == 2
     assert rows[0] == _WrapLine(0, 0, 11)   # 'abcdefghij' → len=10, +1 sentinel
@@ -270,7 +278,7 @@ def test_tab_handling_advances_x_by_tab_width():
 def test_empty_document_exposes_one_row():
     _, tw = _mk_wrap('', width=10)
 
-    rows = tw.screenRows(0, 2)
+    rows = _rows_for(tw, 0, 2)
 
     assert len(rows) == 1
     assert rows[0] == _WrapLine(0, 0, 0)
@@ -283,7 +291,7 @@ def test_empty_document_exposes_one_row():
 def test_width_one_wraps_each_character_onto_its_own_row():
     _, tw = _mk_wrap('abc', width=1)
 
-    rows = tw.screenRows(0, 5)
+    rows = _rows_for(tw, 0, 5)
 
     assert len(rows) == 3
     assert rows[0] == _WrapLine(0, 0, 1)
@@ -296,7 +304,9 @@ def test_width_one_wraps_each_character_onto_its_own_row():
 
 def test_screen_rows_zero_height_returns_empty_list():
     _, tw = _mk_wrap('hello', width=10)
-    assert tw.screenRows(0, 0) == []
+    ret = tw.screenRows(0, 0)
+    assert ret.y == 0
+    assert ret.rows == []
 
 
 # ---------------------------------------------------------------------------
@@ -354,7 +364,19 @@ def test_rewrap_rebuilds_buffer():
 def test_screenRows_returns_correct_slices():
     _, tw = _mk_wrap('abcdefghij\nxyz', width=4)
 
-    rows = tw.screenRows(0, 4)
+    rows = _rows_for(tw, 0, 4)
 
     assert rows[0] == _WrapLine(0, 0, 4)
     assert rows[3] == _WrapLine(1, 0, 4)
+
+
+def test_screen_rows_contract_preserves_viewport_origin_and_row_invariants():
+    _, tw = _mk_wrap('alpha\nbeta\ngamma', width=3)
+
+    ret = tw.screenRows(2, 4)
+
+    assert ret.y == 2
+    for row in ret.rows:
+        assert row.start >= 0
+        assert row.stop >= row.start
+        assert row.line >= 0
