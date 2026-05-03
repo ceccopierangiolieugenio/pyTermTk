@@ -189,3 +189,76 @@ def test_fast_wrap_size_estimate_becomes_more_than_line_count_after_wrapping() -
 	tw.screenRows(0, 50)
 
 	assert tw.size() > doc.lineCount()
+
+
+def test_fast_wrap_size_estimate_exact_multiple_chunks() -> None:
+	'''Regression: size estimate should be accurate after materializing exact multiples of chunks.
+
+	Validates fix for off-by-one error in unprocessed_tail_lines calculation.
+	With 896 lines (7 × 128 chunk size) wrapped at width=5, all lines should be materialized
+	and size estimate should match actual wrapped row count exactly.
+	'''
+	text = '\n'.join(['x' * 20] * 896)
+	doc, tw = _mk_fast_wrap(text, width=5)
+
+	# Materialize all chunks by querying full document
+	rows = _rows_for(tw, 0, 10000)
+	actual_wrapped_rows = len(rows)
+
+	# After full materialization, size estimate should match actual
+	estimated_size = tw.size()
+
+	assert actual_wrapped_rows > 0, "Document should produce wrapped rows"
+	assert estimated_size == actual_wrapped_rows, (
+		f"Size estimate {estimated_size} should match actual wrapped rows {actual_wrapped_rows}"
+	)
+
+
+def test_fast_wrap_rewrap_exact_chunk_multiples_does_not_regress() -> None:
+	'''Regression: rewrap with exact chunk multiples should not fail or corrupt state.
+
+	Validates fix for brittle tail_id calculation in rewrap(). With 896 lines
+	(exactly 7 chunks of 128), the old code would compute last_id=7 which is out
+	of range for valid chunk IDs (0-6). The fix explicitly handles this case.
+	'''
+	text = '\n'.join(['abcdefghij'] * 896)
+	doc, tw = _mk_fast_wrap(text, width=4)
+
+	# Prime the cache with some rows
+	tw.screenRows(0, 50)
+
+	# Trigger rewrap (full document, no incremental data)
+	tw.rewrap()
+
+	# Verify state is still valid after rewrap
+	last_line = doc.lineCount() - 1
+	x, y = tw.dataToScreenPosition(last_line, 0).to_xy()
+	assert x >= 0 and y >= 0, "Last line should map to valid screen coordinates"
+
+	# Verify round-trip mapping still works
+	line, pos = tw.screenToDataPosition(x, y)
+	assert line == last_line, f"Screen position should map back to last line, got {line}"
+	assert pos >= 0, f"Position should be valid, got {pos}"
+
+
+def test_fast_wrap_rewrap_incremental_then_full_exact_multiple() -> None:
+	'''Rewrap after incremental change, then full rewrap, with exact chunk multiple.'''
+	text = '\n'.join(['line'] * 640)  # 640 lines
+	doc, tw = _mk_fast_wrap(text, width=8)
+
+	# Materialize initial state
+	tw.screenRows(0, 100)
+
+	# Append exactly 384 lines to hit 1024 total (8 complete chunks)
+	doc.appendText('\n' + '\n'.join(['new'] * 384))
+	assert doc.lineCount() == 1025, "Should have 1025 lines"
+
+	# Rewrap after append
+	tw.rewrap()
+
+	# Verify full document is addressable
+	for line_idx in [0, 512, 1024]:
+		x, y = tw.dataToScreenPosition(line_idx, 0).to_xy()
+		assert x >= 0 and y >= 0, f"Line {line_idx} should map to valid coordinates"
+		recovered_line, _ = tw.screenToDataPosition(x, y)
+		assert recovered_line == line_idx, f"Round-trip mapping failed for line {line_idx}"

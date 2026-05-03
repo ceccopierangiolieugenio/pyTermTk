@@ -134,8 +134,8 @@ class _WrapEngine_FastWrap(_WrapEngine_Interface):
                 return num_all_lines
             last_chunk = chunks[-1]
             last_line = last_chunk.last_line
-            unprocessed_tail_lines = num_all_lines - last_line
-            average_chunk_size = sum(_c.size for _c in chunks) // len(chunks)
+            unprocessed_tail_lines = num_all_lines - last_line - 1
+            average_chunk_size = self._chunksSize // len(chunks)
             return last_chunk.y + last_chunk.size + average_chunk_size * unprocessed_tail_lines // _WRAP_CHUNK_LINES
 
 
@@ -153,8 +153,8 @@ class _WrapEngine_FastWrap(_WrapEngine_Interface):
             return
         with self._chunksLock:
             self._chunksSize = 0
-            num_all_lines = self._wrapState.textDocument.lineCount()
-            num_ids = num_all_lines // _WRAP_CHUNK_LINES
+            last_line_index = self._wrapState.textDocument.lineCount() - 1
+            num_ids = last_line_index // _WRAP_CHUNK_LINES
             if num_ids > 6:
                 if isinstance(data, _ReWrapData):
                     line = data.line
