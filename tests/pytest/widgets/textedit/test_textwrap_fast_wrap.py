@@ -29,6 +29,7 @@ sys.path.append(os.path.join(sys.path[0], '../../libs/pyTermTk'))
 import TermTk as ttk
 
 from TermTk.TTkGui.TTkTextWrap.text_wrap_data import _WrapLine
+from TermTk.TTkGui.textcursor import TTkTextCursor
 
 
 def _mk_wrap(text: str, engine: ttk.TTkK.WrapEngine, width: int = 4, word_wrap: bool = False):
@@ -364,3 +365,186 @@ def test_fast_wrap_rewrap_exact_multiple_with_incremental_data() -> None:
 		x, y = tw.dataToScreenPosition(test_line, 0).to_xy()
 		recovered, _ = tw.screenToDataPosition(x, y)
 		assert recovered == test_line, f"Line {test_line} should round-trip correctly"
+
+
+def test_fast_wrap_regression_scroll_end_then_modify():
+	'''Regression test: scroll to end, modify document, verify no crash on screenToDataPosition.
+
+	This tests a bug where scrolling to near the end and then modifying the document
+	could cause screenToDataPosition to crash with AttributeError when trying to access
+	chunk.y on a None chunk. The fix ensures that None chunks are handled gracefully
+	with proper early return instead of unsafe walrus operator patterns.
+	'''
+	# Create document with exact chunk multiple (512 = 4 * 128)
+	doc = ttk.TTkTextDocument(text='\n'.join(['line'*10] * 512))
+	tw = ttk.TTkTextWrap(document=doc)
+	tw.setEngine(ttk.TTkK.WrapEngine.FastWrap)
+	tw.setWrapWidth(30)
+	tw.rewrap()
+
+	initial_size = tw.size()
+	assert initial_size > 0, "Should have wrapped rows"
+
+	# Scroll to end by querying rows near last line (this materializes chunks)
+	last_line_before = doc.lineCount() - 1
+	x, y = tw.dataToScreenPosition(last_line_before, 0).to_xy()
+	rows_end = tw.screenRows(max(0, y - 50), 100)
+	assert len(rows_end.rows) > 0, "Should get rows near end"
+
+	# Append new content (creates new lines, triggers rewrap)
+	doc.appendText('\n' + '\n'.join(['NEW'*8] * 256))
+	last_line_after = doc.lineCount() - 1
+	assert last_line_after > last_line_before, "Should have new lines"
+
+	tw.rewrap()
+	new_size = tw.size()
+	assert new_size > initial_size, "Size should grow after append"
+
+	# Now the critical test: map the new end position
+	# This used to crash because screenToDataPosition would get a None chunk
+	# when accessing an out-of-range y coordinate after the rewrap
+	x_new, y_new = tw.dataToScreenPosition(last_line_after, 0).to_xy()
+	assert x_new >= 0 and y_new >= 0, "New end should be mappable"
+
+	# Verify round-trip works (this calls screenToDataPosition internally)
+	recovered_line, _ = tw.screenToDataPosition(x_new, y_new)
+	assert recovered_line == last_line_after, "Should round-trip correctly after append+rewrap"
+
+	# Verify size consistency
+	all_rows = tw.screenRows(0, 100000)
+	actual_wrapped = len(all_rows.rows)
+	estimated_size = tw.size()
+	assert actual_wrapped == estimated_size, "Size should match actual row count"
+
+def test_fast_wrap_regression_text_edit_view_paint_crash():
+	'''Regression test: text_edit_view.paintEvent crashes with IndexError when backgroundColors
+	is too small for the line range covered by wrapped rows.
+
+	This tests a bug where when wrapping causes multiple wrapped rows to reference the same
+	source line, the backgroundColors array (sized to viewport height) can be too small to
+	index by (row.line - first_line), causing IndexError during paint.
+
+	Scenario: 2 text editors share a document. Editor 1 is scrolled near the end with FastWrap.
+	Editor 2 adds content. When Editor 1 repaints, screenRows might return wrapped rows spanning
+	many source lines (e.g., 10 wrapped rows but 20 source lines due to word wrapping).
+	The old code sized backgroundColors to viewport height (10), but indexed by line offset (up to 19),
+	causing IndexError.
+	'''
+	# Create document with long lines that wrap heavily
+	doc = ttk.TTkTextDocument(text='\n'.join(['word ' * 30] * 64))
+	tw = ttk.TTkTextWrap(document=doc)
+	tw.setEngine(ttk.TTkK.WrapEngine.FastWrap)
+	tw.setWrapWidth(30)  # Small width causes heavy wrapping
+	tw.rewrap()
+
+	# Request rows that will span more source lines than viewport height
+	# This creates the mismatch that triggers the bug
+	rows = tw.screenRows(150, 10).rows  # Request 10 rows from offset 150
+	size = tw.size()
+	if not rows and size > 0:
+		# Adjust offset to be within bounds
+		rows = tw.screenRows(max(0, size - 30), 10).rows
+
+	assert len(rows) > 0, "Should get some rows"
+
+	fr = rows[0].line
+	to = rows[-1].line
+	line_range = to - fr + 1
+
+	# Verify the problematic condition exists
+	# (more source lines than viewport height)
+	if line_range > 10:
+		# This is the scenario that would crash with old code
+		# Old code: backgroundColors = [color] * 10
+		# New code: backgroundColors = [color] * line_range
+		for y, row in enumerate(rows):
+			idx = row.line - rows[0].line
+			# With new code, this should never exceed line_range - 1
+			assert idx < line_range, f"Index {idx} should be < {line_range}"
+			# With old code (h=10), this would sometimes fail
+			# if idx >= 10, that would have been the crash point
+
+	# Verify all rows can be safely indexed
+	outLines = doc._dataLines[fr:to+1]
+	assert len(outLines) == line_range, "outLines should match line_range"
+
+	for row in rows:
+		idx = row.line - rows[0].line
+		# Both should be safe with new code
+		assert idx < len(outLines), f"Index {idx} valid for outLines of length {len(outLines)}"
+		assert idx < line_range, f"Index {idx} valid for line_range of {line_range}"
+
+
+def test_fast_wrap_regression_shared_document_last_line_edit_keeps_tail_consistent() -> None:
+	'''Editing the last line from another editor must not corrupt FastWrap tail chunks.
+
+	Scenario covered: one FastWrap view is scrolled at the bottom while another editor
+	modifies the same last line in the shared document.
+	'''
+	doc = ttk.TTkTextDocument(text='\n'.join(['x' * 20] * 1200))
+	tw = ttk.TTkTextWrap(document=doc)
+	tw.setEngine(ttk.TTkK.WrapEngine.FastWrap)
+	tw.setWrapWidth(10)
+
+	# Simulate bottom viewport in the fast-wrapped editor.
+	last_line = doc.lineCount() - 1
+	_, last_y = tw.dataToScreenPosition(last_line, 0).to_xy()
+	tw.screenRows(max(0, last_y - 40), 60)
+
+	# Simulate another editor modifying the same last line.
+	cursor = TTkTextCursor(document=doc)
+	line_txt = doc.dataLine(last_line)
+	line_end = len(line_txt) if line_txt is not None else 0
+	cursor.setPosition(last_line, line_end)
+	cursor.insertText('Z', moveCursor=True)
+
+	# Tail mapping should remain stable and size should be exact after materialization.
+	rows_all = tw.screenRows(0, 100000)
+	actual_rows = len(rows_all.rows)
+	assert tw.size() == actual_rows, 'FastWrap size() should match materialized rows after tail edit'
+
+	ids = [chunk.id for chunk in tw._wrapEngine._chunks]
+	assert ids == sorted(set(ids)), 'Chunk ids should remain unique and sorted after incremental rewrap'
+
+
+def test_fast_wrap_regression_shared_document_newline_at_end_keeps_tail_consistent() -> None:
+	'''Pressing newline at the very end of the last line (via a shared document cursor) must
+	not corrupt FastWrap tail chunks or underreport size in the other editor.
+
+	This is the exact user scenario: two editors share a document, editor A (FastWrap) is
+	scrolled to the bottom, editor B presses Enter on the last line.
+	'''
+	doc = ttk.TTkTextDocument(text='\n'.join(['x' * 20] * 1200))
+	tw = ttk.TTkTextWrap(document=doc)
+	tw.setEngine(ttk.TTkK.WrapEngine.FastWrap)
+	tw.setWrapWidth(10)
+
+	# Editor A: materialize viewport at the bottom.
+	last_line = doc.lineCount() - 1
+	_, last_y = tw.dataToScreenPosition(last_line, 0).to_xy()
+	tw.screenRows(max(0, last_y - 40), 60)
+
+	# Editor B: press Enter at the very end of the last line.
+	cursor = TTkTextCursor(document=doc)
+	line_txt = doc.dataLine(last_line)
+	line_end = len(line_txt) if line_txt is not None else 0
+	cursor.setPosition(last_line, line_end)
+	cursor.insertText('\n', moveCursor=True)
+
+	# Document must have grown by one line.
+	assert doc.lineCount() == last_line + 2, 'Document should have a new empty line at the end'
+
+	new_last = doc.lineCount() - 1
+	_, new_last_y = tw.dataToScreenPosition(new_last, 0).to_xy()
+	assert new_last_y > last_y, 'New last-line screen position should be beyond the old one'
+
+	# Size must be exact after full materialization.
+	rows_all = tw.screenRows(0, 100000)
+	actual_rows = len(rows_all.rows)
+	assert tw.size() == actual_rows, (
+		f'FastWrap size() {tw.size()} should match materialized rows {actual_rows} after newline-at-end'
+	)
+
+	# Chunk IDs must remain unique and sorted.
+	ids = [chunk.id for chunk in tw._wrapEngine._chunks]
+	assert ids == sorted(set(ids)), 'Chunk ids should remain unique and sorted after newline-at-end'

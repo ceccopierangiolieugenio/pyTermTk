@@ -177,7 +177,7 @@ class _WrapEngine_FastWrap(_WrapEngine_Interface):
             else:
                 self._chunks = []
                 pos_y = 0
-                for id in range(num_ids):
+                for id in range(num_ids+1):
                     if not (chunk := self._makeChunk_and_prev(chunk_logical_id=id, y=pos_y)):
                         return
                     pos_y += chunk.size
@@ -258,9 +258,11 @@ class _WrapEngine_FastWrap(_WrapEngine_Interface):
             return 0,0
         text_document = self._wrapState.textDocument
         with self._chunksLock:
-            if not (chunk := self._get_chunk_from_position(y)) and self._chunks:
+            chunk = self._get_chunk_from_position(y)
+            if not chunk:
+                # No chunk at this position; clamp to end of document
                 document_size = text_document.lineCount()
-                return document_size-1, 0
+                return (document_size - 1, 0) if document_size > 0 else (0, 0)
 
             dy = y - chunk.y
             if 0 <= dy < chunk.size:
@@ -489,6 +491,13 @@ class _WrapEngine_FastWrap(_WrapEngine_Interface):
             if the wrap width is zero or the id is out of range.
         :rtype: Optional[:py:class:`_WrapChunk`]
         '''
+        # Avoid duplicate logical ids; rewrap paths can request the same id twice.
+        idx = bisect_right(self._chunks, chunk_logical_id, key=lambda _ch: _ch.id)
+        if idx > 0:
+            existing = self._chunks[idx-1]
+            if existing.id == chunk_logical_id:
+                return existing
+
         prev_id = chunk_logical_id - 1
         if prev_id >= 0:
             # Check whether the predecessor is already cached.

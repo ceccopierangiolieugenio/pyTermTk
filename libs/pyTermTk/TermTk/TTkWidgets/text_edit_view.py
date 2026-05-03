@@ -952,13 +952,15 @@ class TTkTextEditView(TTkAbstractScrollView):
         color         = style['color']
         selectColor = style['selectedColor']
         lineColor = style['lineColor']
-        backgroundColors = [self._textDocument._backgroundColor]*h
 
         subLines = self._textWrap.screenRows(oy,+h).rows
         if not subLines: return
         fr = subLines[0].line
         to = subLines[-1].line
         outLines = self._textDocument._dataLines[fr:to+1]
+        # backgroundColors must be sized to match the line range, not the wrapped row count
+        # because wrapping can cause multiple wrapped rows to reference the same source line
+        backgroundColors = [self._textDocument._backgroundColor]*(to-fr+1)
         outLines = self._textCursor._getHighlightedLines(fr, to, outLines, selectColor)
 
         for extraSelection in self._extraSelections:
