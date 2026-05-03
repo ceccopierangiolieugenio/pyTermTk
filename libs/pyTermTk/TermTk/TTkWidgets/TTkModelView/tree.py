@@ -35,7 +35,7 @@ class TTkTree(TTkAbstractScrollArea):
     __doc__ = '''
     :py:class:`TTkTree` is a container widget which place :py:class:`TTkTreeWidget` in a scrolling area with on-demand scroll bars.
 
-    ''' + TTkTreeWidget.__doc__
+    ''' + (TTkTreeWidget.__doc__ or '')
 
     _ttk_forward = _ForwardData(
         forwardClass=TTkTreeWidget ,

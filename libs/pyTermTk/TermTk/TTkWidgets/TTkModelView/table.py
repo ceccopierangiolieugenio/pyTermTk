@@ -35,7 +35,7 @@ class TTkTable(TTkAbstractScrollArea):
     __doc__ = '''
     :py:class:`TTkTable` is a container widget which place :py:class:`TTkTableWidget` in a scrolling area with on-demand scroll bars.
 
-    ''' + str(TTkTableWidget.__doc__)
+    ''' + (TTkTableWidget.__doc__ or '')
 
     classStyle = TTkTableWidget.classStyle
 
