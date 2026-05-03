@@ -351,32 +351,6 @@ class _WrapEngine_FastWrap(_WrapEngine_Interface):
                 ret.extend(chunk.buffer[lo:hi])
             return _RetScreenRows(rows=ret)
 
-    def _find_next_chunk_index_to_screen_position(self, y:int) -> int:
-        chunk_id = bisect_left(self._chunks, y, key=lambda _ch:_ch.y)
-        return chunk_id
-
-    def _find_next_chunk_index_to_line(self, line:int) -> int:
-        chunk_id = bisect_left(self._chunks, line, key=lambda _ch:_ch.first_line)
-        return chunk_id
-
-    def _shift_chunks_y(self, start_index:int, delta_y:int) -> None:
-        '''Shift cached chunk screen positions by ``delta_y`` from ``start_index`` onward.'''
-        if delta_y == 0:
-            return
-        for _ch in self._chunks[start_index:]:
-            _ch.y += delta_y
-
-    def _reflow_following_chunks(self, start_index:int) -> None:
-        '''Ensure following chunks never overlap previous ones while preserving gaps.'''
-        if start_index <= 0:
-            start_index = 1
-        for _i in range(start_index, len(self._chunks)):
-            _prev = self._chunks[_i-1]
-            _cur = self._chunks[_i]
-            _min_y = _prev.y + _prev.size
-            if _cur.y < _min_y:
-                _cur.y = _min_y
-
     def _align_chunks(self) -> None:
         '''Realign chunk screen offsets after insertion/replacement.
 

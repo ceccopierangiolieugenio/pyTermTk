@@ -262,3 +262,105 @@ def test_fast_wrap_rewrap_incremental_then_full_exact_multiple() -> None:
 		assert x >= 0 and y >= 0, f"Line {line_idx} should map to valid coordinates"
 		recovered_line, _ = tw.screenToDataPosition(x, y)
 		assert recovered_line == line_idx, f"Round-trip mapping failed for line {line_idx}"
+
+
+def test_fast_wrap_size_estimate_exactness_after_partial_materialization() -> None:
+	'''Gap: Validate size() exactness after partial wrapping, not just inequalities.
+
+	The original loose inequality test (line 183) doesn't validate that size estimate
+	accuracy improves as more chunks are materialized. This test confirms that size()
+	becomes exact once all chunks are wrapped, without relying on inequalities.
+	'''
+	text = '\n'.join(['abcdefghij'] * 512)
+	doc, tw = _mk_fast_wrap(text, width=5)
+
+	# Before any materialization, size is an estimate based on line count
+	size_before = tw.size()
+	assert size_before >= doc.lineCount(), "Initial estimate should be >= line count"
+
+	# Materialize first half of document
+	rows_half = _rows_for(tw, 0, 500)
+	size_after_half = tw.size()
+	assert size_after_half > 0, "Size after partial wrap should be positive"
+
+	# Materialize full document
+	rows_full = _rows_for(tw, 0, 10000)
+	size_after_full = tw.size()
+
+	# Key validation: size() should match actual wrapped row count exactly when fully materialized
+	actual_rows = len(rows_full)
+	assert size_after_full == actual_rows, (
+		f"After full materialization, size() {size_after_full} should exactly match "
+		f"actual wrapped rows {actual_rows}"
+	)
+
+
+def test_fast_wrap_large_document_exact_multiple_rewrap_path() -> None:
+	'''Gap: Test rewrap with large exact-multiple-of-128 document to exercise full rewrap path.
+
+	The rewrap() method has different logic paths for num_ids > 6 (large documents with
+	first/last chunk bootstrap) vs small documents (full sequential wrap). This test
+	ensures the large-document rewrap path (lines 158-175) works correctly with exact
+	multiples where num_ids = N*128.
+	'''
+	# Create exactly 10 chunks (1280 lines)
+	text = '\n'.join(['x' * 30] * 1280)
+	doc, tw = _mk_fast_wrap(text, width=7)
+
+	# Trigger rewrap on untouched document (full rewrap path)
+	tw.rewrap()
+
+	# Verify chunk state is valid
+	eng = tw._wrapEngine
+	chunks = eng._chunks
+	assert len(chunks) > 0, "Should have materialized chunks"
+	assert chunks[-1].id == 9, f"Max chunk id should be 9 (for 1280 lines), got {chunks[-1].id}"
+
+	# Verify all document lines are addressable after rewrap
+	for test_line in [0, 128, 256, 640, 1024, 1279]:
+		x, y = tw.dataToScreenPosition(test_line, 0).to_xy()
+		assert x >= 0 and y >= 0, f"Line {test_line} should map to valid coordinates"
+		recovered_line, _ = tw.screenToDataPosition(x, y)
+		assert recovered_line == test_line, (
+			f"Large-doc rewrap: line {test_line} should round-trip, got {recovered_line}"
+		)
+
+	# Verify size estimation is correct
+	rows_all = _rows_for(tw, 0, 50000)
+	assert tw.size() == len(rows_all), (
+		f"Size estimate {tw.size()} should match actual wrapped rows {len(rows_all)}"
+	)
+
+
+def test_fast_wrap_rewrap_exact_multiple_with_incremental_data() -> None:
+	'''Full rewrap on exact-multiple document to exercise large-doc rewrap bootstrap path.
+
+	Validates that the full rewrap path (num_ids > 6) in rewrap() correctly handles
+	exact multiples of 128. This tests the same code path as the large-document case
+	but in isolation with document modification.
+	'''
+	text = '\n'.join(['base'] * 768)  # 6 chunks exactly
+	doc, tw = _mk_fast_wrap(text, width=6)
+
+	# Materialize initial state
+	tw.screenRows(0, 100)
+
+	# Replace entire document (still exact multiple)
+	doc.setText('\n'.join(['modified'] * 768))
+
+	# Full rewrap
+	tw.rewrap()
+
+	# Verify document is still addressable after rewrap on exact multiple
+	last_line = doc.lineCount() - 1
+	x, y = tw.dataToScreenPosition(last_line, 0).to_xy()
+	assert x >= 0 and y >= 0, "Last line should be addressable after rewrap"
+
+	line, _ = tw.screenToDataPosition(x, y)
+	assert line == last_line, "Round-trip should work after rewrap on exact multiple"
+
+	# Verify intermediate lines also work
+	for test_line in [0, 128, 256, 512, 640]:
+		x, y = tw.dataToScreenPosition(test_line, 0).to_xy()
+		recovered, _ = tw.screenToDataPosition(x, y)
+		assert recovered == test_line, f"Line {test_line} should round-trip correctly"
