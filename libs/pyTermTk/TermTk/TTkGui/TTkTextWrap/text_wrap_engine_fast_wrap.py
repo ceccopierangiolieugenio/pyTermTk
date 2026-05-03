@@ -63,7 +63,6 @@ else:
         return _bisect_right(keys, x, lo, hi if hi is not None else len(a))
 
 _WRAP_CHUNK_LINES: Final[int] = 128
-_WRAP_CHUNK_LINES: Final[int] = 100
 
 @dataclass
 class _WrapChunk():
