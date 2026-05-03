@@ -55,7 +55,6 @@ def _rows_for(tw: ttk.TTkTextWrap, y: int, h: int):
     if isinstance(ret, list):
         # Some VimWrap codepaths still return rows directly.
         return ret
-    assert ret.y == y
     assert isinstance(ret.rows, list)
     return ret.rows
 
@@ -86,7 +85,7 @@ def test_vim_wrap_data_to_screen_position_inside_cached_window_is_wrap_accurate(
     tw.screenRows(0, 4)
 
     # line 0 split at width=4 => [0:4], [4:8], [8:11]
-    x, y = tw.dataToScreenPosition(0, 6)
+    x, y = tw.dataToScreenPosition(0, 6).to_xy()
     assert (x, y) == (2, 1)
 
 
@@ -98,7 +97,7 @@ def test_vim_wrap_data_to_screen_position_offscreen_falls_back_to_unwrapped():
     # Cache a distant window so line 0 is offscreen.
     tw.screenRows(10, 4)
 
-    x, y = tw.dataToScreenPosition(0, 5)
+    x, y = tw.dataToScreenPosition(0, 5).to_xy()
     assert (x, y) == (5, 0)
 
 
@@ -108,7 +107,7 @@ def test_vim_wrap_data_to_screen_position_out_of_range_pos_returns_zero():
     _, tw = _mk_vim_wrap(text, width=4)
 
     tw.screenRows(10, 4)
-    assert tw.dataToScreenPosition(0, -1) == (0, 0)
+    assert tw.dataToScreenPosition(0, -1).to_xy() == (0, 0)
 
 
 def test_vim_wrap_data_to_screen_position_with_zero_width_returns_zero():
@@ -116,7 +115,7 @@ def test_vim_wrap_data_to_screen_position_with_zero_width_returns_zero():
     text = 'abcdefghij\n'
     _, tw = _mk_vim_wrap(text, width=0)
 
-    assert tw.dataToScreenPosition(0, 1) == (0, 0)
+    assert tw.dataToScreenPosition(0, 1).to_xy() == (0, 0)
 
 
 def test_vim_wrap_screen_to_data_position_offscreen_above_uses_unwrapped():
@@ -260,7 +259,7 @@ def test_vim_wrap_roundtrip_within_cached_window():
 
     # Test roundtrip for positions in line 0
     for pos in [0, 2, 4, 6, 8, 10]:
-        x, y = tw.dataToScreenPosition(0, pos)
+        x, y = tw.dataToScreenPosition(0, pos).to_xy()
         line, rpos = tw.screenToDataPosition(x, y)
         assert line == 0
         assert 0 <= rpos <= len(doc.dataLine(0))
@@ -275,7 +274,7 @@ def test_vim_wrap_tab_handling():
     tw.screenRows(0, 2)
 
     # First tab expands to 4 cells (default tabSpaces)
-    x, _y = tw.dataToScreenPosition(0, 1)  # Position of 'a'
+    x, _y = tw.dataToScreenPosition(0, 1).to_xy()  # Position of 'a'
     assert x == 4  # After tab expansion
 
 
@@ -368,5 +367,5 @@ def test_vim_wrap_screen_rows_always_returns_ret_screen_rows_object():
     first = tw.screenRows(0, 4)
     second = tw.screenRows(0, 4)
 
-    assert hasattr(first, 'rows') and hasattr(first, 'y')
-    assert hasattr(second, 'rows') and hasattr(second, 'y')
+    assert hasattr(first, 'rows')
+    assert hasattr(second, 'rows')

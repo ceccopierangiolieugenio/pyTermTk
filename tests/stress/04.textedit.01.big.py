@@ -97,7 +97,7 @@ def demoTextEdit(root=None, document=None):
     te.append("-------tab\ttab\ttab\ttab\ttab\ttab\ttab\ttab\ttab\ttab\ttab\ttab\n")
 
     te.append(ttk.TTkString("Random TTkString Input Test\n",ttk.TTkColor.UNDERLINE+ttk.TTkColor.BOLD))
-    _sss = ttk.TTkString('\n').join([ getUtfColoredSentence(3,10) for _ in range(500)])
+    _sss = ttk.TTkString('\n').join([ ttk.TTkString(f"{i} <- ") + getUtfColoredSentence(3,10) + ttk.TTkString(f" -> {i} ")for i in range(500)])
     for _ in range(20):
         te.append(_sss)
 
@@ -187,6 +187,7 @@ def main():
     rootTree.layout().addWidget(split,0,0,1,2)
     rootTree.layout().addWidget(quitbtn := ttk.TTkButton(border=True, text="Quit", maxWidth=6),1,0)
     rootTree.layout().addWidget(ttk.TTkKeyPressView(maxHeight=3),1,1)
+    rootTree.layout().addWidget(ttk.TTkLogViewer(),2,0,1,2)
     quitbtn.clicked.connect(root.quit)
     root.mainloop()
 

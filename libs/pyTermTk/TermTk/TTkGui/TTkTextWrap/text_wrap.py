@@ -29,7 +29,7 @@ from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
 from TermTk.TTkGui.textdocument import TTkTextDocument
 
-from .text_wrap_data import _RetScreenRows, _WrapState, _ReWrapData
+from .text_wrap_data import _RetScreenPositions, _RetScreenRows, _WrapState, _ReWrapData
 from .text_wrap_engine import _WrapEngine_Interface
 from .text_wrap_engine_no_wrap import _WrapEngine_NoWrap
 from .text_wrap_engine_vim_wrap import _WrapEngine_VimWrap
@@ -101,7 +101,8 @@ class TTkTextWrap():
 
         :param engine: engine selector from :py:class:`TTkK.WrapEngine`.
         :type engine: :py:class:`TTkK.WrapEngine`
-        :param width: optional wrap width applied before switching engines.
+        :param width: optional wrap width applied before switching engines
+            when the engine type actually changes.
         :type width: Optional[int]
         '''
         engine_class = _wrapEngines.get(engine, _WrapEngine_NoWrap)
@@ -171,10 +172,10 @@ class TTkTextWrap():
         :type h: int
 
         :return: wrapped row slices.
-        :rtype: List[:py:class:`_WrapLine`]
+        :rtype: :py:class:`_RetScreenRows`
         '''
         if h <= 0:
-            return _RetScreenRows(y=y, rows=[])
+            return _RetScreenRows(rows=[])
         return self._wrapEngine.screenRows(y=y,h=h)
 
     def rewrap(self) -> None:
@@ -186,15 +187,15 @@ class TTkTextWrap():
         self._wrapEngine.rewrap()
         self.wrapChanged.emit()
 
-    def dataToScreenPosition(self, line:int, pos:int) -> Tuple[int, int]:
+    def dataToScreenPosition(self, line:int, pos:int) -> _RetScreenPositions:
         '''Map a document position to wrapped screen coordinates.
 
         :param line: logical line index.
         :type line: int
         :param pos: character position in the logical line.
         :type pos: int
-        :return: ``(x, y)`` wrapped screen coordinates.
-        :rtype: Tuple[int, int]
+        :return: wrapped screen coordinates.
+        :rtype: :py:class:`_RetScreenPositions`
         '''
         return self._wrapEngine.dataToScreenPosition(line=line, pos=pos)
 

@@ -27,7 +27,7 @@ from threading import RLock
 from typing import List, Optional, Tuple
 
 from .text_wrap import _WrapEngine_Interface
-from .text_wrap_data import _ReWrapData, _RetScreenRows, _WrapLine, _WrapState
+from .text_wrap_data import _ReWrapData, _RetScreenPosition, _RetScreenPositions, _RetScreenRows, _WrapLine, _WrapState
 
 @dataclass
 class _LastWindow():
@@ -47,16 +47,16 @@ class _LastWindow():
 class _WrapEngine_VimWrap(_WrapEngine_Interface):
     '''Lazy wrap engine optimized around the active viewport.
 
-        This engine is intentionally *viewport-accurate* only:
+    This engine is intentionally *viewport-accurate* only:
 
         * rows inside the cached window are wrapped with full accuracy;
         * coordinates outside the cached window are treated as unwrapped
             document lines to keep lookups and navigation fast on large files.
 
-        This trade-off is deliberate and favors responsiveness while preserving
-        precise behavior on visible content.
+    This trade-off is deliberate and favors responsiveness while preserving
+    precise behavior on visible content.
 
-        Thread Safety: All cache operations are protected with an RLock mutex.
+    Thread Safety: All cache operations are protected with an RLock mutex.
     '''
     __slots__ = ('_lastWindow', '_cacheLock')
 
@@ -99,7 +99,7 @@ class _WrapEngine_VimWrap(_WrapEngine_Interface):
         with self._cacheLock:
             self._lastWindow = _LastWindow(y=0, h=0, buffer=[])
 
-    def dataToScreenPosition(self, line:int, pos:int) -> Tuple[int, int]:
+    def dataToScreenPosition(self, line:int, pos:int) -> _RetScreenPositions:
         '''Map document coordinates to screen coordinates.
 
         Behavior depends on whether the target position is in the cached
@@ -114,11 +114,11 @@ class _WrapEngine_VimWrap(_WrapEngine_Interface):
         :param pos: source position within line.
         :type pos: int
 
-        :return: ``(x, y)`` position if present in cache, else ``(0, 0)``.
-        :rtype: Tuple[int, int]
+        :return: wrapped or fallback unwrapped-style screen coordinates.
+        :rtype: :py:class:`_RetScreenPositions`
         '''
         if not self._wrapState.size:
-            return 0,0
+            return _RetScreenPositions(main=_RetScreenPosition(x=0,y=0))
         text_document = self._wrapState.textDocument
         with self._cacheLock:
             buffer = self._lastWindow.buffer
@@ -129,17 +129,19 @@ class _WrapEngine_VimWrap(_WrapEngine_Interface):
                 if dt == line and fr <= pos <= to:
                     data_line = text_document.dataLine(dt)
                     if data_line is None:
-                        return 0, 0
+                        return _RetScreenPositions(main=_RetScreenPosition(x=0,y=0))
                     l = data_line.substring(fr,pos).tab2spaces(self._wrapState.tabSpaces)
-                    return l.termWidth(), i
+                    x, y = l.termWidth(), i
+                    return _RetScreenPositions(main=_RetScreenPosition(x=x,y=y))
             line = self._clampLine(line)
             data_line = text_document.dataLine(line)
             if data_line is None:
-                return 0, 0
+                return _RetScreenPositions(main=_RetScreenPosition(x=0,y=0))
             if 0 <= pos <= len(data_line) + 1:
                 l = data_line.substring(0,pos).tab2spaces(self._wrapState.tabSpaces)
-                return l.termWidth(), line
-        return 0,0
+                x, y = l.termWidth(), line
+                return _RetScreenPositions(main=_RetScreenPosition(x=x,y=y))
+        return _RetScreenPositions(main=_RetScreenPosition(x=0,y=0))
 
     def screenToDataPosition(self, x:int, y:int) -> Tuple[int, int]:
         '''Map screen coordinates back to source coordinates.
@@ -231,7 +233,7 @@ class _WrapEngine_VimWrap(_WrapEngine_Interface):
         :type h: int
 
         :return: cached wrapped row descriptors.
-        :rtype: List[:py:class:`_WrapLine`]
+        :rtype: :py:class:`_RetScreenRows`
         '''
         if not (w := self._wrapState.size):
             return []
@@ -240,7 +242,7 @@ class _WrapEngine_VimWrap(_WrapEngine_Interface):
             if (self._lastWindow.y == y and
                 self._lastWindow.h == h and
                 self._lastWindow.buffer):
-                return _RetScreenRows(y=y, rows=self._lastWindow.buffer)
+                return _RetScreenRows(rows=self._lastWindow.buffer)
 
             self._lastWindow = _LastWindow(y=y, h=h, buffer=[])
 
@@ -248,4 +250,4 @@ class _WrapEngine_VimWrap(_WrapEngine_Interface):
                 self._lastWindow.buffer.extend(self._wrapLine(w,_i,_line))
                 if len(self._lastWindow.buffer) >= h:
                     break
-            return _RetScreenRows(y=y, rows=self._lastWindow.buffer)
+            return _RetScreenRows(rows=self._lastWindow.buffer)

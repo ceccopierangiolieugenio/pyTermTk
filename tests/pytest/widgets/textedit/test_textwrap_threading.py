@@ -81,7 +81,6 @@ def _mk_wrap(text: str, width: int = 20, word_wrap: bool = False) -> tuple[ttk.T
 def _rows_for(tw: ttk.TTkTextWrap, y: int, h: int):
     """Return wrapped rows and validate viewport origin metadata."""
     ret = tw.screenRows(y, h)
-    assert ret.y == y
     assert isinstance(ret.rows, list)
     return ret.rows
 
@@ -166,7 +165,7 @@ def test_concurrent_readers_dataToScreenPosition():
     def reader(line_idx: int) -> None:
         barrier.wait()
         for pos in range(0, 40, 2):
-            x, y = tw.dataToScreenPosition(line_idx % tw.documentLineCount(), pos)
+            x, y = tw.dataToScreenPosition(line_idx % tw.documentLineCount(), pos).to_xy()
             assert x >= 0
             assert y >= 0
 
@@ -320,7 +319,7 @@ def test_many_threads_mixed_operations():
                 lc = tw.documentLineCount()
                 if lc > 0:
                     ln = rng.randint(0, lc - 1)
-                    x, y = tw.dataToScreenPosition(ln, 0)
+                    x, y = tw.dataToScreenPosition(ln, 0).to_xy()
                     assert x >= 0 and y >= 0
             elif op == 2:
                 # Map screen position to data
@@ -356,7 +355,7 @@ def test_fullwrap_rewrap_setText_mapping_regression_none_substring():
             lc = tw.documentLineCount()
             if lc > 0:
                 ln = rng.randint(0, lc - 1)
-                x, y = tw.dataToScreenPosition(ln, 0)
+                x, y = tw.dataToScreenPosition(ln, 0).to_xy()
                 assert x >= 0 and y >= 0
             line, pos = tw.screenToDataPosition(0, rng.randint(0, 25))
             assert line >= 0 and pos >= 0
@@ -635,7 +634,7 @@ def test_cursor_editing_stress_with_mixed_readers():
             elif op == 1:
                 lc = doc.lineCount()
                 if lc > 0:
-                    x, y = tw.dataToScreenPosition(rng.randint(0, lc - 1), 0)
+                    x, y = tw.dataToScreenPosition(rng.randint(0, lc - 1), 0).to_xy()
                     assert x >= 0 and y >= 0
             else:
                 line, pos = tw.screenToDataPosition(0, rng.randint(0, 8))

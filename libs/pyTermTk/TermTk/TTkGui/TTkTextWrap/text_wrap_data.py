@@ -23,7 +23,7 @@
 __all__:list = []
 
 from dataclasses import dataclass
-from typing import List
+from typing import List, Optional, Tuple
 
 from TermTk.TTkCore.constant import TTkK
 
@@ -54,11 +54,15 @@ class _WrapLine():
     :type start: int
     :param stop: exclusive stop character offset in the source line.
     :type stop: int
+    :param last_slice: ``True`` when this fragment is the final wrapped slice
+        for :py:attr:`line`, ``False`` otherwise.
+    :type last_slice: bool
     '''
-    __slots__ = ('line', 'start', 'stop')
+    __slots__ = ('line', 'start', 'stop', 'last_slice')
     line:int
     start: int
     stop:int
+    last_slice:bool
 
 
 @dataclass
@@ -82,5 +86,17 @@ class _WrapState():
 
 @dataclass
 class _RetScreenRows():
-    y:int
     rows: List[_WrapLine]
+
+@dataclass
+class _RetScreenPosition():
+    x: int
+    y: int
+    def to_xy(self) -> Tuple[int,int]:
+        return self.x, self.y
+@dataclass
+class _RetScreenPositions():
+    main: _RetScreenPosition
+    extra: Optional[_RetScreenPosition] = None
+    def to_xy(self) -> Tuple[int,int]:
+        return self.main.to_xy()

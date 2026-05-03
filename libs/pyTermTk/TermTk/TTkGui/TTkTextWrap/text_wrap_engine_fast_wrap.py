@@ -28,8 +28,9 @@ import math
 from threading import RLock
 from typing import Final, List, Optional, Tuple
 
+
 from .text_wrap import _WrapEngine_Interface
-from .text_wrap_data import _RetScreenRows, _WrapLine, _ReWrapData, _WrapState
+from .text_wrap_data import _RetScreenPosition, _RetScreenPositions, _RetScreenRows, _WrapLine, _ReWrapData, _WrapState
 
 # TODO: remove Python 3.9 compatibility routine once dropped support
 # Python 3.9 compatibility: key parameter was added in Python 3.10
@@ -62,17 +63,20 @@ else:
         return _bisect_right(keys, x, lo, hi if hi is not None else len(a))
 
 _WRAP_CHUNK_LINES: Final[int] = 128
+_WRAP_CHUNK_LINES: Final[int] = 100
 
 @dataclass
 class _WrapChunk():
     '''A lazily-computed block of wrapped rows for a contiguous range of document lines.
 
-    :param id: logical chunk index (``first_line // _WRAP_CHUNK_SIZE``).
+    :param id: logical chunk index (``first_line // _WRAP_CHUNK_LINES``).
     :type id: int
     :param y: screen row where this chunk starts.
     :type y: int
     :param first_line: first document line covered by this chunk.
     :type first_line: int
+    :param last_line: last document line covered by this chunk.
+    :type last_line: int
     :param size: total number of wrapped rows in :py:attr:`buffer`.
     :type size: int
     :param buffer: wrapped row fragments produced by :py:meth:`_WrapEngine_Interface._wrapLine`.
@@ -90,7 +94,7 @@ class _WrapEngine_FastWrap(_WrapEngine_Interface):
 
     Instead of wrapping every document line upfront (like
     :py:class:`_WrapEngine_FullWrap`), this engine divides the document into
-    fixed-size chunks of ``_WRAP_CHUNK_SIZE`` lines and wraps them on demand
+    fixed-size chunks of ``_WRAP_CHUNK_LINES`` lines and wraps them on demand
     when a screen region is queried via :py:meth:`screenRows`.
 
     Chunks are cached in a sorted list keyed by screen position (``y``) so
@@ -106,11 +110,13 @@ class _WrapEngine_FastWrap(_WrapEngine_Interface):
     _chunks: List[_WrapChunk]
     _chunksSize: int
 
+
     def __init__(self, state:_WrapState):
         self._chunks = []
         self._chunksLock = RLock()
         self._chunksSize = 0
         super().__init__(state)
+
 
     def size(self) -> int:
         '''Return an estimated total number of wrapped screen rows.
@@ -133,6 +139,7 @@ class _WrapEngine_FastWrap(_WrapEngine_Interface):
             average_chunk_size = sum(_c.size for _c in chunks) // len(chunks)
             return last_chunk.y + last_chunk.size + average_chunk_size * unprocessed_tail_lines // _WRAP_CHUNK_LINES
 
+
     def rewrap(self, data: Optional[_ReWrapData]=None) -> None:
         '''Invalidate cached chunks affected by a document change.
 
@@ -153,18 +160,14 @@ class _WrapEngine_FastWrap(_WrapEngine_Interface):
                 if isinstance(data, _ReWrapData):
                     line = data.line
                     first_chunk_id = line // _WRAP_CHUNK_LINES
-                    self._chunks = self._chunks[:first_chunk_id]
+                    idx = bisect_left(self._chunks, first_chunk_id, key=lambda _ch: _ch.id)
+                    self._chunks = self._chunks[:idx]
                     self._chunksSize = sum(_c.size for _c in self._chunks)
                 else:
                     first_chunk_id = 0
                     self._chunks = []
 
                 if not self._makeChunk_and_prev(chunk_logical_id=first_chunk_id, y=0):
-                    return
-
-                mid_id = (first_chunk_id + num_ids) // 2
-                mid_estimated_y = mid_id * self._chunksSize // len(self._chunks)
-                if not self._makeChunk_and_prev(chunk_logical_id=mid_id, y=mid_estimated_y):
                     return
 
                 last_id = num_ids
@@ -181,20 +184,19 @@ class _WrapEngine_FastWrap(_WrapEngine_Interface):
                     pos_y += chunk.size
 
 
-    def dataToScreenPosition(self, line:int, pos:int) -> Tuple[int, int]:
+    def dataToScreenPosition(self, line:int, pos:int) -> _RetScreenPositions:
         '''Map document coordinates to wrapped screen coordinates.
 
-        If the target line falls inside a cached chunk the mapping is
-        wrap-accurate.  Otherwise the engine falls back to unwrapped
-        line semantics (``y == line``).
+        The target chunk is materialized on demand when missing, so the
+        mapping is wrap-accurate for valid document positions.
 
         :param line: source line index.
         :type line: int
         :param pos: character offset within the source line.
         :type pos: int
 
-        :return: ``(x, y)`` wrapped screen coordinates.
-        :rtype: Tuple[int, int]
+        :return: wrapped screen coordinates and optional extra position.
+        :rtype: :py:class:`_RetScreenPositions`
         '''
         text_document = self._wrapState.textDocument
         chunkId = line // _WRAP_CHUNK_LINES
@@ -213,75 +215,37 @@ class _WrapEngine_FastWrap(_WrapEngine_Interface):
                     self._align_chunks()
 
         if chunk:
+            data_line = text_document.dataLine(line)
+            if data_line is None:
+                data_line = text_document.dataLine(chunk.buffer[-1].line)
+                pos = data_line.termWidth() if data_line else 0
+                x, y = pos, chunk.y + len(chunk.buffer) -1
+                return _RetScreenPositions(main=_RetScreenPosition(x=x,y=y))
             for bi, row in enumerate(chunk.buffer):
-                if row.line == line and row.start <= pos <= row.stop:
-                    data_line = text_document.dataLine(line)
-                    if data_line is None:
-                        data_line = text_document.dataLine(chunk.buffer[-1].line)
-                        pos = data_line.termWidth() if data_line else 0
-                        return pos, chunk.y + len(chunk.buffer) -1
-                    # Compute the screen column from the fragment start to pos
-                    l = data_line.substring(row.start, pos).tab2spaces(self._wrapState.tabSpaces)
-                    return l.termWidth(), chunk.y + bi
+                if row.line == line:
+                    if row.start <= pos <= row.stop:
+                        # Compute the screen column from the fragment start to pos
+                        l = data_line.substring(row.start, pos).tab2spaces(self._wrapState.tabSpaces)
+                        x, y = l.termWidth(), chunk.y + bi
+                        extra = None
+                        # Check if this is the end of the line and the beginning of the next one
+                        if pos == row.stop and bi < chunk.size - 1 and chunk.buffer[bi+1].line == line:
+                            extra = _RetScreenPosition(x=0,y=y+1)
+                        return _RetScreenPositions(main=_RetScreenPosition(x=x,y=y), extra=extra)
+                    if row.last_slice and pos > row.stop:
+                        # Compute the screen column from the fragment start to pos
+                        l = data_line.substring(row.start, row.stop).tab2spaces(self._wrapState.tabSpaces)
+                        x, y = l.termWidth(), chunk.y + bi
+                        return _RetScreenPositions(main=_RetScreenPosition(x=x,y=y))
 
-        return 0, 0
+        return _RetScreenPositions(main=_RetScreenPosition(x=0,y=0))
 
-    # def _dataToScreenPosition_old(self, line:int, pos:int) -> Tuple[int, int]:
-    #     '''Map document coordinates to wrapped screen coordinates.
-
-    #     If the target line falls inside a cached chunk the mapping is
-    #     wrap-accurate.  Otherwise the engine falls back to unwrapped
-    #     line semantics (``y == line``).
-
-    #     :param line: source line index.
-    #     :type line: int
-    #     :param pos: character offset within the source line.
-    #     :type pos: int
-
-    #     :return: ``(x, y)`` wrapped screen coordinates.
-    #     :rtype: Tuple[int, int]
-    #     '''
-    #     text_document = self._wrapState.textDocument
-    #     with self._chunksLock:
-    #         # bisect by first_line to find the chunk whose range covers 'line'
-    #         idx = bisect_right(self._chunks, line, key=lambda _ch: _ch.first_line)
-    #         chunk = self._chunks[idx - 1] if idx > 0 else None
-    #         if chunk is None or not (chunk.first_line <= line < chunk.first_line + _WRAP_CHUNK_LINES):
-    #             # Chunk not cached — materialise it from the document line position.
-    #             chunk_logical_id = line // _WRAP_CHUNK_LINES
-    #             # Estimate screen y from the last known chunk, or fall back to line index.
-    #             if self._chunks:
-    #                 last = self._chunks[-1]
-    #                 estimated_chunk_size = self._chunksSize // len(self._chunks)
-    #                 estimated_y = last.y + last.size + (chunk_logical_id - last.id - 1) * estimated_chunk_size
-    #             else:
-    #                 estimated_y = line
-    #             chunk = self._get_chunk_from_position(max(0, estimated_y))
-    #         if chunk is not None and chunk.first_line <= line < chunk.first_line + _WRAP_CHUNK_LINES:
-    #             # Scan the chunk buffer for the fragment containing (line, pos)
-    #             for bi, row in enumerate(chunk.buffer):
-    #                 if row.line == line and row.start <= pos <= row.stop:
-    #                     data_line = text_document.dataLine(line)
-    #                     if data_line is None:
-    #                         return 0, 0
-    #                     # Compute the screen column from the fragment start to pos
-    #                     l = data_line.substring(row.start, pos).tab2spaces(self._wrapState.tabSpaces)
-    #                     return l.termWidth(), chunk.y + bi
-    #     # Fallback: treat document line index as screen row (unwrapped)
-    #     line = self._clampLine(line)
-    #     data_line = text_document.dataLine(line)
-    #     if data_line is None:
-    #         return 0, 0
-    #     if 0 <= pos <= len(data_line) + 1:
-    #         l = data_line.substring(0, pos).tab2spaces(self._wrapState.tabSpaces)
-    #         return l.termWidth(), line
-    #     return 0, 0
 
     def screenToDataPosition(self, x:int, y:int) -> Tuple[int, int]:
         '''Map wrapped screen coordinates back to source document coordinates.
 
-        Wrap-accurate when *y* falls inside a cached chunk; otherwise
-        ``y`` is interpreted as an unwrapped document line index.
+        Chunks are materialized on demand to preserve wrap-accurate mapping.
+        Out-of-range positions are clamped to safe defaults.
 
         :param x: horizontal screen coordinate (terminal cells).
         :type x: int
@@ -297,7 +261,7 @@ class _WrapEngine_FastWrap(_WrapEngine_Interface):
         with self._chunksLock:
             if not (chunk := self._get_chunk_from_position(y)) and self._chunks:
                 document_size = text_document.lineCount()
-                return document_size-1, len(text_document.dataLine(document_size-1).__len__)
+                return document_size-1, 0
 
             dy = y - chunk.y
             if 0 <= dy < chunk.size:
@@ -315,12 +279,14 @@ class _WrapEngine_FastWrap(_WrapEngine_Interface):
 
         return 0,0
 
+
     def normalizeScreenPosition(self, x:int, y:int) -> Tuple[int, int]:
         '''Snap a screen coordinate to the nearest valid character cell.
 
         Clamps *y* to the valid range and adjusts *x* to land on a real
         character boundary (respecting tab expansion and wide characters).
-        Wrap-accurate for cached chunks; unwrapped fallback otherwise.
+        Wrap-accurate for cached or newly materialized chunks, with a
+        line-based fallback when no wrapped chunk can be resolved.
 
         :param x: horizontal screen coordinate.
         :type x: int
@@ -360,6 +326,7 @@ class _WrapEngine_FastWrap(_WrapEngine_Interface):
         x = data_line.substring(0, x).tab2spaces(self._wrapState.tabSpaces).termWidth()
         return x, y
 
+
     def screenRows(self, y:int, h:int) -> _RetScreenRows:
         '''Return wrapped row fragments for a viewport region.
 
@@ -372,7 +339,7 @@ class _WrapEngine_FastWrap(_WrapEngine_Interface):
         :type h: int
 
         :return: wrapped row descriptors covering the viewport.
-        :rtype: List[:py:class:`_WrapLine`]
+        :rtype: :py:class:`_RetScreenRows`
         '''
         with self._chunksLock:
             ret: List[_WrapLine] = []
@@ -383,7 +350,7 @@ class _WrapEngine_FastWrap(_WrapEngine_Interface):
                 lo = max(0,dy)
                 hi = dy+h
                 ret.extend(chunk.buffer[lo:hi])
-            return _RetScreenRows(y=y, rows=ret)
+            return _RetScreenRows(rows=ret)
 
     def _find_next_chunk_index_to_screen_position(self, y:int) -> int:
         chunk_id = bisect_left(self._chunks, y, key=lambda _ch:_ch.y)
@@ -414,12 +381,9 @@ class _WrapEngine_FastWrap(_WrapEngine_Interface):
     def _align_chunks(self) -> None:
         '''Realign chunk screen offsets after insertion/replacement.
 
-        Starting from ``ref_index``, recompute every following chunk ``y``
-        so chunks remain monotonic and preserve logical-id gaps as virtual
+        Recompute every following chunk ``y`` from the first cached chunk so
+        chunks remain monotonic and preserve logical-id gaps as virtual
         unwrapped space.
-
-        :param ref_index: index of the reference chunk used as anchor.
-        :type ref_index: int
         '''
         if not self._chunks:
             return
@@ -431,23 +395,6 @@ class _WrapEngine_FastWrap(_WrapEngine_Interface):
             chunk.y = last_chunk.y + last_chunk.size + (id - last_id -1) * estimated_chunk_size
             last_chunk = chunk
 
-    # def _align_chunks_to(self, ref_index:int) -> None:
-    #     '''Realign chunk screen offsets after insertion/replacement.
-
-    #     Starting from ``ref_index``, recompute every following chunk ``y``
-    #     so chunks remain monotonic and preserve logical-id gaps as virtual
-    #     unwrapped space.
-
-    #     :param ref_index: index of the reference chunk used as anchor.
-    #     :type ref_index: int
-    #     '''
-    #     estimated_chunk_size = _WRAP_CHUNK_LINES if not self._chunks else self._chunksSize // len(self._chunks)
-    #     last_chunk = self._chunks[ref_index]
-    #     for chunk in self._chunks[ref_index+1:]:
-    #         id = chunk.id
-    #         last_id = last_chunk.id
-    #         chunk.y = last_chunk.y + last_chunk.size + (id - last_id -1) * estimated_chunk_size
-    #         last_chunk = chunk
 
     def _get_chunk_from_position(self, y:int) -> Optional[_WrapChunk]:
         '''Retrieve or create the chunk containing screen row *y*.
@@ -518,6 +465,7 @@ class _WrapEngine_FastWrap(_WrapEngine_Interface):
                 self._align_chunks()
                 return chunk_mid
 
+
     def _get_chunks_from_range(self, y_start:int, y_stop:int) -> Tuple[List[_WrapChunk],int]:
         '''Return all chunks that overlap the screen range ``[y_start, y_stop)``.
 
@@ -529,8 +477,8 @@ class _WrapEngine_FastWrap(_WrapEngine_Interface):
         :param y_stop: exclusive end screen row.
         :type y_stop: int
 
-        :return: ordered list of overlapping chunks.
-        :rtype: List[:py:class:`_WrapChunk`]
+        :return: ordered list of overlapping chunks and the applied y offset.
+        :rtype: Tuple[List[:py:class:`_WrapChunk`], int]
         '''
         ret: List[_WrapChunk] = []
         y_start_new = max(0, y_start)
@@ -549,6 +497,7 @@ class _WrapEngine_FastWrap(_WrapEngine_Interface):
                 # Advance past this chunk to the next uncovered screen row
                 y = chunk.y + chunk.size
             return ret, 0
+
 
     def _makeChunk_and_prev(self, chunk_logical_id: int, y: int) -> Optional[_WrapChunk]:
         '''Wrap the chunk at *chunk_logical_id* and, if missing, also its predecessor.
@@ -585,22 +534,22 @@ class _WrapEngine_FastWrap(_WrapEngine_Interface):
             if prev_chunk is not None:
                 y = prev_chunk.y + prev_chunk.size
         chunk = self._makeChunk(chunk_logical_id=chunk_logical_id, y=y)
-        if chunk is None:
-            return None
-        ins = bisect_right(self._chunks, chunk_logical_id, key=lambda _ch: _ch.id)
-        self._chunks.insert(ins, chunk)
-        self._chunksSize += chunk.size
+        if chunk is not None:
+            ins = bisect_right(self._chunks, chunk_logical_id, key=lambda _ch: _ch.id)
+            self._chunks.insert(ins, chunk)
+            self._chunksSize += chunk.size
         return chunk
+
 
     def _makeChunk(self, chunk_logical_id: int, y: int) -> Optional[_WrapChunk]:
         '''Wrap a block of document lines into a new :py:class:`_WrapChunk`.
 
-        Reads ``_WRAP_CHUNK_SIZE`` document lines starting at
-        ``chunk_logical_id * _WRAP_CHUNK_SIZE`` and wraps each one.
+        Reads ``_WRAP_CHUNK_LINES`` document lines starting at
+        ``chunk_logical_id * _WRAP_CHUNK_LINES`` and wraps each one.
         The resulting wrapped rows are stored in the chunk buffer,
         anchored at screen row *y*.
 
-        :param chunk_logical_id: chunk index (``first_line // _WRAP_CHUNK_SIZE``).
+        :param chunk_logical_id: chunk index (``first_line // _WRAP_CHUNK_LINES``).
         :type chunk_logical_id: int
         :param y: screen row where this chunk should start.
         :type y: int

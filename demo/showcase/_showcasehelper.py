@@ -71,7 +71,7 @@ def getUtfColoredWords(n):
     www = [random.choice(utfwords) for _ in range(n)]
     return ttk.TTkString(" ".join(www), randColor())
 def getUtfColoredSentence(a,b):
-    return ttk.TTkString(" ").join([getUtfColoredWords(random.randint(1,4)) for _ in range(0,random.randint(a,b))])
+    return ttk.TTkString(" ").join([getUtfColoredWords(random.randint(1,8)) for _ in range(0,random.randint(a,b))])
 
 def main():
     root = ttk.TTk()

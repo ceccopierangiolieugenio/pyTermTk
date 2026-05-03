@@ -27,7 +27,7 @@ from threading import RLock
 from typing import List, Tuple, Optional
 
 from .text_wrap import _WrapEngine_Interface
-from .text_wrap_data import _RetScreenRows, _WrapLine, _ReWrapData
+from .text_wrap_data import _RetScreenPosition, _RetScreenPositions, _RetScreenRows, _WrapLine, _ReWrapData
 
 # TODO: remove Python 3.9 compatibility routine once dropped support
 # Python 3.9 compatibility: key parameter was added in Python 3.10
@@ -117,7 +117,7 @@ class _WrapEngine_FullWrap(_WrapEngine_Interface):
                 for i,l in enumerate(self._wrapState.textDocument.dataLines()):
                     self._buffer.extend(self._wrapLine(w,i,l))
 
-    def dataToScreenPosition(self, line:int, pos:int) -> Tuple[int, int]:
+    def dataToScreenPosition(self, line:int, pos:int) -> _RetScreenPositions:
         '''Map source coordinates to screen coordinates using the full buffer.
 
         :param line: source line index.
@@ -125,8 +125,8 @@ class _WrapEngine_FullWrap(_WrapEngine_Interface):
         :param pos: source character offset.
         :type pos: int
 
-        :return: ``(x, y)`` wrapped coordinates.
-        :rtype: Tuple[int, int]
+        :return: wrapped screen coordinates.
+        :rtype: :py:class:`_RetScreenPositions`
         '''
         text_document = self._wrapState.textDocument
         with self._bufferLock:
@@ -137,10 +137,11 @@ class _WrapEngine_FullWrap(_WrapEngine_Interface):
                 if row.start <= pos <= row.stop:
                     data_line = text_document.dataLine(line)
                     if data_line is None:
-                        return 0, 0
+                        return _RetScreenPositions(main=_RetScreenPosition(x=0,y=0))
                     l = data_line.substring(row.start, pos).tab2spaces(self._wrapState.tabSpaces)
-                    return l.termWidth(), i
-        return 0, 0
+                    x, y = l.termWidth(), i
+                    return _RetScreenPositions(main=_RetScreenPosition(x=x,y=y))
+        return _RetScreenPositions(main=_RetScreenPosition(x=0,y=0))
 
     def screenToDataPosition(self, x:int, y:int) -> Tuple[int, int]:
         '''Map wrapped screen coordinates back to source coordinates.
@@ -202,7 +203,7 @@ class _WrapEngine_FullWrap(_WrapEngine_Interface):
         :type h: int
 
         :return: wrapped row descriptors for the viewport.
-        :rtype: List[:py:class:`_WrapLine`]
+        :rtype: :py:class:`_RetScreenRows`
         '''
         with self._bufferLock:
-            return _RetScreenRows(y=y, rows=self._buffer[y:y+h].copy())
+            return _RetScreenRows(rows=self._buffer[y:y+h].copy())

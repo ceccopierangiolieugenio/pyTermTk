@@ -25,7 +25,7 @@ __all__:list = []
 from typing import List, Optional, Tuple
 
 from .text_wrap import _WrapEngine_Interface
-from .text_wrap_data import _ReWrapData, _RetScreenRows, _WrapLine, _WrapState
+from .text_wrap_data import _ReWrapData, _RetScreenPosition, _RetScreenPositions, _RetScreenRows, _WrapLine, _WrapState
 
 
 class _WrapEngine_NoWrap(_WrapEngine_Interface):
@@ -49,7 +49,7 @@ class _WrapEngine_NoWrap(_WrapEngine_Interface):
         '''
         pass
 
-    def dataToScreenPosition(self, line:int, pos:int) -> Tuple[int, int]:
+    def dataToScreenPosition(self, line:int, pos:int) -> _RetScreenPositions:
         '''Convert ``(line, pos)`` into no-wrap screen coordinates.
 
         :param line: source line index.
@@ -57,18 +57,19 @@ class _WrapEngine_NoWrap(_WrapEngine_Interface):
         :param pos: source character offset.
         :type pos: int
 
-        :return: ``(x, y)`` screen coordinates.
-        :rtype: Tuple[int, int]
+        :return: screen coordinates.
+        :rtype: :py:class:`_RetScreenPositions`
         '''
         line = self._clampLine(line)
         text_document = self._wrapState.textDocument
         data_line = text_document.dataLine(line)
         if data_line is None:
-            return 0, 0
+            return _RetScreenPositions(main=_RetScreenPosition(x=0,y=0))
         if 0 <= pos <= len(data_line) + 1:
             l = data_line.substring(0,pos).tab2spaces(self._wrapState.tabSpaces)
-            return l.termWidth(), line
-        return 0,0
+            x, y = l.termWidth(), line
+            return _RetScreenPositions(main=_RetScreenPosition(x=x,y=y))
+        return _RetScreenPositions(main=_RetScreenPosition(x=0,y=0))
 
     def screenToDataPosition(self, x:int, y:int) -> Tuple[int, int]:
         '''Convert no-wrap screen coordinates back to document position.
@@ -116,12 +117,11 @@ class _WrapEngine_NoWrap(_WrapEngine_Interface):
         :type h: int
 
         :return: row descriptors covering the requested viewport.
-        :rtype: List[:py:class:`_WrapLine`]
+        :rtype: :py:class:`_RetScreenRows`
         '''
         return _RetScreenRows(
-            y=y,
             rows=[
-                _WrapLine(_i, 0, len(_line)+1)
+                _WrapLine(_i, 0, len(_line)+1, True)
                 for _i,_line in enumerate(
                     self._wrapState.textDocument.dataLines(slice(y,y+h)),
                     start=y )
