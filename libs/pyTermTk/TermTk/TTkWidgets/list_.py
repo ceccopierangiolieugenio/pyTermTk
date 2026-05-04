@@ -33,7 +33,7 @@ class TTkList(TTkAbstractScrollArea):
     __doc__ = '''
     :py:class:`TTkList` is a container widget which place :py:class:`TTkListWidget` in a scrolling area with on-demand scroll bars.
 
-    ''' + TTkListWidget.__doc__
+    ''' + (TTkListWidget.__doc__ or '')
 
     _ttk_forward = _ForwardData(
         forwardClass=TTkListWidget ,

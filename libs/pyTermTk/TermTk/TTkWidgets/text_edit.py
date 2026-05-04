@@ -43,7 +43,7 @@ class TTkTextEdit(TTkAbstractScrollArea):
     __doc__ = '''
     :py:class:`TTkTextEdit` is a container widget which place :py:class:`TTkTextEditView` in a scrolling area with on-demand scroll bars.
 
-    ''' + (TTkTextEditView.__doc__ if TTkTextEditView.__doc__ else '')
+    ''' + (TTkTextEditView.__doc__ or '')
 
     ExtraSelection = TTkTextEditView.ExtraSelection
 

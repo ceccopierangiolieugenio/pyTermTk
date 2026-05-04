@@ -36,7 +36,7 @@ class TTkFileTree(TTkTree):
     __doc__ = '''
     :py:class:`TTkFileTree` is a container widget which place :py:class:`TTkFileTreeWidget` in a scrolling area with on-demand scroll bars.
 
-    ''' + TTkFileTreeWidget.__doc__
+    ''' + (TTkFileTreeWidget.__doc__ or '')
 
     _ttk_forward = _ForwardData(
         forwardClass=TTkFileTreeWidget,
