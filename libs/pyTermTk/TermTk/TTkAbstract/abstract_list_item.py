@@ -40,7 +40,7 @@ class _TTkAbstractListItem():
 
     Currently used as an internal marker for the planned architecture migration.
     '''
-    __slots__ = ('dataChanged')
+    __slots__ = ('dataChanged',)
 
     def __init__(self):
        self.dataChanged = pyTTkSignal()

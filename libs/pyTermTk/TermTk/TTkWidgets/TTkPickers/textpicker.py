@@ -113,7 +113,7 @@ class _emojiPickerView(TTkAbstractScrollView):
     def minimumHeight(self):  return 0
 
 class _emojiPickerArea(TTkAbstractScrollArea):
-    __slots__ = ('_areaView')
+    __slots__ = ('_areaView',)
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         kwargs.pop('parent',None)
@@ -123,7 +123,7 @@ class _emojiPickerArea(TTkAbstractScrollArea):
         self.setViewport(self._areaView)
 
 class _emojiPicker(TTkResizableFrame):
-    __slots__ = ('emojiClicked')
+    __slots__ = ('emojiClicked',)
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs|{'layout':TTkGridLayout()})
         self.layout().addWidget(epa := _emojiPickerArea())

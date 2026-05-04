@@ -80,7 +80,7 @@ class _Test_TTkTestAbstractScrollWidget(ttk.TTkTestAbstractScrollWidget):
 
 
 class ScrollAreaTest(ttk.TTkAbstractScrollArea):
-    __slots__ = ('_areaView')
+    __slots__ = ('_areaView',)
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         kwargs.pop('parent',None)

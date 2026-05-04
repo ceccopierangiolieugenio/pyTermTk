@@ -77,7 +77,7 @@ class _TTkLogViewer(TTkAbstractScrollView):
             canvas.drawTTkString(pos=(-ox,y),text=message)
 
 class TTkLogViewer(TTkAbstractScrollArea):
-    __slots__ = ('_logView')
+    __slots__ = ('_logView',)
     def __init__(self, *,
                  # TTkWidget init
                  parent:TTkWidget=None,

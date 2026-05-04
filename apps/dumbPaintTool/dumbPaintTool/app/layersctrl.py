@@ -245,7 +245,7 @@ class LayerScrollWidget(ttk.TTkAbstractScrollView):
 
 
 class LayersControl(ttk.TTkGridLayout):
-    __slots__ = ('_scrollWidget')
+    __slots__ = ('_scrollWidget',)
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self._scrollWidget = _lsw = LayerScrollWidget()

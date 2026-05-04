@@ -24,7 +24,7 @@
 __all__ = []
 
 # class DebugTTkTerminal(TTkWidget):
-#     __slots__ = ('_terminal')
+#     __slots__ = ('_terminal',)
 #     _terminal:TTkTerminal
 #     def __init__(self, terminal, **kwargs) -> None:
 #         self._terminal = terminal

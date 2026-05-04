@@ -23,17 +23,17 @@
 # SOFTWARE.
 
 class A():
-    __slots__ = ('a')
+    __slots__ = ('a',)
     def __init__(self):
         self.a = 1
 
 class B():
-    # __slots__ = ('b')
+    # __slots__ = ('b',)
     def __init__(self):
         self.b = 1
 
 class C(A,B):
-    __slots__ = ('c')
+    __slots__ = ('c',)
     def __init__(self):
         A.__init__(self)
         B.__init__(self)

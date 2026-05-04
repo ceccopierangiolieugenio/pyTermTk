@@ -25,7 +25,7 @@
 import timeit
 
 class A():
-    __slots__ = ('_value')
+    __slots__ = ('_value',)
     def __init__(self):
         self._value = 123
     @property
@@ -34,7 +34,7 @@ class A():
     def value(self, value): self._value = value
 
 class B():
-    __slots__ = ('_value')
+    __slots__ = ('_value',)
     def __init__(self):
         self._value = 123
 

@@ -52,7 +52,7 @@ from TermTk.TTkWidgets.TTkModelView.treewidgetitem import TTkTreeWidgetItem
 from TermTk.TTkWidgets.TTkPickers.colorpicker import TTkColorButtonPicker
 
 class _DetailGridView(TTkAbstractScrollView):
-    __slots__ = ('_gridLayout')
+    __slots__ = ('_gridLayout',)
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         self._gridLayout = TTkGridLayout()
@@ -135,7 +135,7 @@ class _DetailLazyFormView(TTkAbstractScrollView):
             canvas.drawText(pos=(hx-x,0), text=l, width=hx1-hx, color=TTkCfg.theme.treeHeaderColor)
 
 class _TTkDomTreeWidgetItem(TTkTreeWidgetItem):
-    __slots__ = ('_domWidget')
+    __slots__ = ('_domWidget',)
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         self._domWidget = kwargs.get('domWidget')

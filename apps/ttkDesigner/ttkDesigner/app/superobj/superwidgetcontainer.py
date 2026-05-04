@@ -28,7 +28,7 @@ import ttkDesigner.app.superobj as so
 from .superobj import SuperObject
 
 class SuperWidgetContainer(so.SuperWidget):
-    __slots__ = ('_superLayout')
+    __slots__ = ('_superLayout',)
     def __init__(self, designer, wid, *args, **kwargs):
 
         self._superLayout = so.SuperLayout(designer=designer, lay=wid.layout(),)

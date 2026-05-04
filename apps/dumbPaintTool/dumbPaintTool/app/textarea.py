@@ -87,7 +87,7 @@ Symbols for Legacy Computing
 
 '''
 class TextArea(ttk.TTkGridLayout):
-    __slots__ = ('_te')
+    __slots__ = ('_te',)
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 

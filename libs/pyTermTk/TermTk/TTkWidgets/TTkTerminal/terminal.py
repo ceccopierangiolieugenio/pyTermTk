@@ -46,7 +46,7 @@ class TTkTerminal(TTkAbstractScrollArea):
             'termWrite', 'termSize', 'getBuffer']
     )
 
-    __slots__ = ('_terminalView')
+    __slots__ = ('_terminalView',)
 
     def __init__(self, **kwargs) -> None:
         super().__init__(**kwargs)

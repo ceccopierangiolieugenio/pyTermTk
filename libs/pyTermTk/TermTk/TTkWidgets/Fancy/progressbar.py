@@ -34,7 +34,7 @@ from TermTk.TTkCore.signal    import pyTTkSignal, pyTTkSlot
 from TermTk.TTkWidgets.widget import TTkWidget
 
 class TTkLookAndFeel():
-    __slots__ = ('modified')
+    __slots__ = ('modified',)
     def __init__(self) -> None:
         self.modified = pyTTkSignal()
 

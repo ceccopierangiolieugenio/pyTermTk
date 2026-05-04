@@ -44,7 +44,7 @@ class C(B):
         return 3
 
 class D():
-    __slots__ = ('test')
+    __slots__ = ('test',)
     def __init__(self, sw=True):
         if sw:
             self.test = self._testA
@@ -56,7 +56,7 @@ class D():
         return 12
 
 class E():
-    __slots__ = ('_sw')
+    __slots__ = ('_sw',)
     def __init__(self, sw=True):
         self._sw = sw
     def test(self):
@@ -66,7 +66,7 @@ class E():
             return 22
 
 class F():
-    __slots__ = ('_sw')
+    __slots__ = ('_sw',)
     def __init__(self, sw=True):
         self._sw = sw
     def test(self):

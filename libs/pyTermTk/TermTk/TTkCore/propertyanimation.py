@@ -76,7 +76,7 @@ class TTkEasingCurve():
     # TCBSpline    = 46
     # Custom       = 47
 
-    __slots__ = ('_easingFunc')
+    __slots__ = ('_easingFunc',)
     def __init__(self, easingCurve=Linear):
         self._easingFunc = {self.Linear    : TTkEasingCurve._ecLinear,
          self.InQuad       : TTkEasingCurve._ecInQuad,

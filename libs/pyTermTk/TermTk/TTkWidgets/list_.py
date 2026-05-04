@@ -52,7 +52,7 @@ class TTkList(TTkAbstractScrollArea):
             ]
     )
 
-    __slots__ = ('_listView')
+    __slots__ = ('_listView',)
 
     def __init__(self, *,
                  items:List[TTkAbstractListItemType]=[],

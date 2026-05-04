@@ -44,7 +44,7 @@ class _WrapEngine_Interface():
         * :py:class:`_WrapEngine_FastWrap` -- chunk-based lazy wrapping strategy
             for large documents.
     '''
-    __slots__ = ('_wrapState')
+    __slots__ = ('_wrapState',)
 
     _wrapState: _WrapState
 

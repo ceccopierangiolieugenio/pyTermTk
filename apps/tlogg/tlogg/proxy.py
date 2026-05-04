@@ -25,7 +25,7 @@ __all__ = ['TloggViewerProxy', 'tloggProxy']
 import TermTk as ttk
 
 class TloggViewerProxy():
-    __slots__ = ('_fileName')
+    __slots__ = ('_fileName',)
     def __init__(self, fileName) -> None:
         self._fileName = fileName
 

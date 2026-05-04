@@ -507,7 +507,7 @@ TTkColor.BG_YELLOW  = TTkColor.YELLOW.invertFgBg()
 
 
 class _TTkColor_mod(TTkColor):
-    __slots__ = ('_mod')
+    __slots__ = ('_mod',)
     _mod: int
     def __init__(self, *,
                  mod:int=0,
@@ -622,7 +622,7 @@ TTkColor.STRIKETROUGH = _TTkColor_mod(mod=TTkTermColor.STRIKETROUGH)
 TTkColor.BLINKING     = _TTkColor_mod(mod=TTkTermColor.BLINKING)
 
 class _TTkColor_mod_link(_TTkColor_mod):
-    __slots__ = ('_link')
+    __slots__ = ('_link',)
     _link: str
     def __init__(self, *,
                  link:str='',
@@ -831,7 +831,7 @@ class TTkLinearGradient(TTkColorModifier):
 class TTkAlternateColor(TTkColorModifier):
     '''TTkAlternateColor'''
 
-    __slots__ = ('_alternateColor')
+    __slots__ = ('_alternateColor',)
     def __init__(self, alternateColor:TTkColor=TTkColor.RST, **kwargs) -> None:
         super().__init__(**kwargs)
         self.setParam(alternateColor)

@@ -62,7 +62,7 @@ class _TestContent(TTkWidget):
 
 class TTkTestWidget(TTkFrame):
     ID = 1
-    __slots__ = ('_l')
+    __slots__ = ('_l',)
     def __init__(self, *,
                  name:str=None,
                  **kwargs) -> None:

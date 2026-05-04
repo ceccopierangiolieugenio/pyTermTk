@@ -31,7 +31,7 @@ from TermTk.TTkWidgets.button import TTkButton
 from TermTk.TTkWidgets.resizableframe import TTkResizableFrame
 
 class _MinimizedButton(TTkButton):
-    __slots__ = ('_windowWidget')
+    __slots__ = ('_windowWidget',)
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         self._windowWidget = kwargs.get('windowWidget')

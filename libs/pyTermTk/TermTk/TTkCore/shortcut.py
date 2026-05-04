@@ -39,7 +39,7 @@ class _TTkStandardKey():
     pass
 
 class _TTkKeySequence():
-    __slots__ = ('_key')
+    __slots__ = ('_key',)
     def __init__(self, key:int):
         mod = (
             ( TTkK.ControlModifier if key & TTkK.CTRL  else 0 ) |

@@ -35,7 +35,7 @@ __all__ = ['WBWindow']
 
 
 class _MinimizedButton(TTkButton):
-    __slots__ = ('_windowWidget')
+    __slots__ = ('_windowWidget',)
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._windowWidget = kwargs.get('windowWidget')
