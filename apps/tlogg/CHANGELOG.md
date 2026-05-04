@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.48.2-a0](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/tlogg-v0.48.1-a0...tlogg-v0.48.2-a0) (2026-05-04)
+
+
+### Chores
+
+* fix single entry slots ([#623](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/623)) ([02f621d](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/02f621d8afdaddb13f5a591b760613d3c8889d7f))
+
 ## [0.48.1-a0](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/tlogg-v0.7.1-a.0...tlogg-v0.48.1-a0) (2025-11-10)
 
 
