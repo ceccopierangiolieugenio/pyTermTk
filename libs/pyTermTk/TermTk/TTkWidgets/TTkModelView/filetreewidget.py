@@ -174,8 +174,7 @@ class TTkFileTreeWidget(TTkTreeWidget):
         self._path = path
 
         self.clear()
-        for i in TTkFileTreeWidget._getFileItems(path):
-            self.addTopLevelItem(i)
+        self.addTopLevelItems(TTkFileTreeWidget._getFileItems(path))
         self.setFilter(self._filter)
 
     @staticmethod
