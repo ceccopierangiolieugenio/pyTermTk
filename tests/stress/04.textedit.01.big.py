@@ -41,7 +41,7 @@ class superSimpleHorizontalLine(ttk.TTkWidget):
 
 def demoTextEditSecondary(root=None, document=None):
     te = ttk.TTkTextEdit(parent=root, document=document, lineNumber=True)
-    te.setLineWrapMode(ttk.TTkK.WidgetWidth)
+    te.setLineWrapMode(ttk.TTkK.WidgetWidth, wrapEngine=ttk.TTkK.WrapEngine.FastWrap)
     te.setWordWrapMode(ttk.TTkK.WordWrap)
     te.setReadOnly(False)
     # print the document events for debugging purposes
@@ -53,7 +53,7 @@ def demoTextEdit(root=None, document=None):
     # If no document is passed a default one is created,
     # In this showcase I want to be able to share the same
     # document among 2 textEdit widgets
-    te = ttk.TTkTextEdit(document=document, lineNumber=True, lineNumberStarting=1)
+    te = ttk.TTkTextEdit(document=document, lineNumber=True)
 
     te.setReadOnly(False)
 
@@ -97,7 +97,7 @@ def demoTextEdit(root=None, document=None):
     te.append("-------tab\ttab\ttab\ttab\ttab\ttab\ttab\ttab\ttab\ttab\ttab\ttab\n")
 
     te.append(ttk.TTkString("Random TTkString Input Test\n",ttk.TTkColor.UNDERLINE+ttk.TTkColor.BOLD))
-    _sss = ttk.TTkString('\n').join([ getUtfColoredSentence(3,10) for _ in range(500)])
+    _sss = ttk.TTkString('\n').join([ ttk.TTkString(f"{i} <- ") + getUtfColoredSentence(3,10) + ttk.TTkString(f" -> {i} ")for i in range(500)])
     for _ in range(20):
         te.append(_sss)
 
@@ -119,7 +119,7 @@ def demoTextEdit(root=None, document=None):
     wrapLayout.addWidget(ttk.TTkLabel(text=" Type: ",maxWidth=7))
     wrapLayout.addWidget(wordWrap := ttk.TTkComboBox(list=[_wm.name for _wm in ttk.TTkK.WrapMode], maxWidth=20, enabled=False))
     wrapLayout.addWidget(ttk.TTkLabel(text=" Engine: ",maxWidth=9))
-    wrapLayout.addWidget(wrapEngine := ttk.TTkComboBox(list=[_we.name for _we in ttk.TTkK.WrapEngine], maxWidth=20, index=1))
+    wrapLayout.addWidget(wrapEngine := ttk.TTkComboBox(list=[_we.name for _we in ttk.TTkK.WrapEngine], maxWidth=20, index=2))
     wrapLayout.addWidget(ttk.TTkLabel(text=" FixW: ",maxWidth=7))
     wrapLayout.addWidget(fixWidth := ttk.TTkSpinBox(value=te.wrapWidth(), maxWidth=5, maximum=500, minimum=10, enabled=False))
     wrapLayout.addWidget(ttk.TTkSpacer(maxHeight=1))
@@ -187,6 +187,7 @@ def main():
     rootTree.layout().addWidget(split,0,0,1,2)
     rootTree.layout().addWidget(quitbtn := ttk.TTkButton(border=True, text="Quit", maxWidth=6),1,0)
     rootTree.layout().addWidget(ttk.TTkKeyPressView(maxHeight=3),1,1)
+    rootTree.layout().addWidget(ttk.TTkLogViewer(),2,0,1,2)
     quitbtn.clicked.connect(root.quit)
     root.mainloop()
 

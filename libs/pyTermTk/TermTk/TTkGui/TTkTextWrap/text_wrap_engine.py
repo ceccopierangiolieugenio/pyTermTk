@@ -28,7 +28,7 @@ from typing import List, Tuple, Optional
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.string import TTkString
 
-from .text_wrap_data import _RetScreenRows, _WrapLine, _WrapState, _ReWrapData
+from .text_wrap_data import _RetScreenPosition, _RetScreenPositions, _RetScreenRows, _WrapLine, _WrapState, _ReWrapData
 
 class _WrapEngine_Interface():
     '''Base interface for text wrap engines.
@@ -41,8 +41,8 @@ class _WrapEngine_Interface():
       :py:attr:`TTkTextDocument.contentsChange` signal.
     * :py:class:`_WrapEngine_VimWrap` -- lazily wraps only the visible window,
       caching the last viewport for coordinate conversions.
-    * :py:class:`_WrapEngine_FastWrap` -- placeholder for a future incremental
-      wrapping strategy.
+        * :py:class:`_WrapEngine_FastWrap` -- chunk-based lazy wrapping strategy
+            for large documents.
     '''
     __slots__ = ('_wrapState')
 
@@ -77,10 +77,13 @@ class _WrapEngine_Interface():
         :py:class:`_WrapEngine_FullWrap`) rebuild it here; engines
         that wrap lazily (e.g. :py:class:`_WrapEngine_NoWrap`,
         :py:class:`_WrapEngine_VimWrap`) may be a no-op.
+
+        :param data: optional incremental change descriptor.
+        :type data: Optional[:py:class:`_ReWrapData`]
         '''
         raise NotImplementedError()
 
-    def dataToScreenPosition(self, line:int, pos:int) -> Tuple[int, int]:
+    def dataToScreenPosition(self, line:int, pos:int) -> _RetScreenPositions:
         '''Map a document position to wrapped screen coordinates.
 
         Converts a logical ``(line, pos)`` pair in the source document
@@ -92,9 +95,9 @@ class _WrapEngine_Interface():
         :param pos: character offset within the document line.
         :type pos: int
 
-        :return: ``(x, y)`` screen coordinates where *x* is the
-                 terminal-cell column and *y* is the wrapped row index.
-        :rtype: Tuple[int, int]
+        :return: wrapped screen coordinates where *main.x* is the
+             terminal-cell column and *main.y* is the wrapped row index.
+        :rtype: :py:class:`_RetScreenPositions`
         '''
         raise NotImplementedError()
 
@@ -144,8 +147,8 @@ class _WrapEngine_Interface():
         :param h: number of rows to retrieve.
         :type h: int
 
-        :return: list of wrapped row descriptors.
-        :rtype: List[:py:class:`_WrapLine`]
+        :return: wrapped row descriptors.
+        :rtype: :py:class:`_RetScreenRows`
         '''
         raise NotImplementedError()
 
@@ -188,12 +191,12 @@ class _WrapEngine_Interface():
         wordWrapMode = self._wrapState.wordWrapMode
         fr = 0
         if not len(_l): # if the line is empty append it
-            ret.append(_WrapLine(_i,0,0))
+            ret.append(_WrapLine(_i,0,0,True))
             return ret
         while len(_l):
             to = _l.tabCharPos(_w, tabSpaces)
             if to >= len(_l):
-                ret.append(_WrapLine(_i,fr,fr+len(_l)+1))
+                ret.append(_WrapLine(_i,fr,fr+len(_l)+1,True))
                 return ret
             to = max(1,to)
             if wordWrapMode == TTkK.WordWrap: # Find the index of the first white space
@@ -202,7 +205,9 @@ class _WrapEngine_Interface():
                 while newTo and ( s[newTo] != ' ' and s[newTo] != '\t' ): newTo-=1
                 if newTo: to = newTo
 
-            ret.append(_WrapLine(_i,fr,fr+to))
+            ret.append(_WrapLine(_i,fr,fr+to,False))
             _l = _l.substring(to)
             fr += to
+        if ret:
+            ret[-1].last_slice=True
         return ret

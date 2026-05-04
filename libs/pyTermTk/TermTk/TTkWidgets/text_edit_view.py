@@ -22,6 +22,7 @@
 
 __all__ = ['TTkTextEditView']
 
+from dataclasses import dataclass
 from typing import List,Optional
 
 from TermTk.TTkCore.constant import TTkK
@@ -37,8 +38,15 @@ from TermTk.TTkGui.textcursor import TTkTextCursor
 from TermTk.TTkGui.textdocument import TTkTextDocument
 from TermTk.TTkGui.TTkTextWrap.text_wrap import TTkTextWrap
 
-
 from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollView
+
+@dataclass
+class _TextEditLineMap():
+    line: int = 0
+    line_pos: int = 0
+    '''The Document logical Line'''
+    pos_y: int = 0
+    '''The screen y position'''
 
 class TTkTextEditView(TTkAbstractScrollView):
     '''
@@ -207,6 +215,7 @@ class TTkTextEditView(TTkAbstractScrollView):
             '_replace',
             '_readOnly', '_multiCursor',
             '_clipboard',
+            '_lineMap',
             # '_preview', '_previewWidth',
             '_multiLine',
             # # Forwarded Methods
@@ -221,6 +230,7 @@ class TTkTextEditView(TTkAbstractScrollView):
     _textWrap:TTkTextWrap
     _textDocument:TTkTextDocument
     _textCursor:TTkTextCursor
+    _lineMap: _TextEditLineMap
 
     #    in order to support the line wrap, I need to divide the full data text in;
     #    _textDocument = the entire text divided in lines, easy to add/remove/append lines
@@ -267,8 +277,9 @@ class TTkTextEditView(TTkAbstractScrollView):
         self.setFocusPolicy(TTkK.ClickFocus | TTkK.TabFocus)
         self.disableWidgetCursor(self._readOnly)
         self._updateSize()
+        self.viewMovedTo.connect(self._view_moved_event)
         self.viewChanged.connect(self._pushCursor)
-        self.viewChanged.connect(self._check_document_wrap_position)
+        # self.viewChanged.connect(self._check_document_wrap_position)
 
     def multiLine(self) -> bool:
         '''
@@ -359,6 +370,7 @@ class TTkTextEditView(TTkAbstractScrollView):
         return self._textDocument
 
     def _setDocument(self, document:Optional[TTkTextDocument]) -> None:
+        self._lineMap = _TextEditLineMap()
         if not document:
             document = TTkTextDocument()
         self._textDocument = document
@@ -383,12 +395,24 @@ class TTkTextEditView(TTkAbstractScrollView):
         self._textDocument.undoAvailable.disconnect(self._undoAvailable)
         self._textDocument.redoAvailable.disconnect(self._redoAvailable)
         self._textDocument.formatChanged.disconnect(self.update)
-        self._textWrap.wrapChanged.disconnect(self.update)
+        self._textWrap.wrapChanged.disconnect(self._wrapChanged)
         self._setDocument(document)
 
     @pyTTkSlot()
     def _wrapChanged(self):
-        self.update()
+        line = self._lineMap.line
+        line_pos = self._lineMap.line_pos
+        pos_y = self._lineMap.pos_y
+        screen_position = self._textWrap.dataToScreenPosition(line, line_pos)
+        if screen_position.extra is not None:
+            screen_y = screen_position.extra.y
+        else:
+            screen_y = screen_position.main.y
+        if screen_y != pos_y:
+            ox, oy = self.getViewOffsets()
+            self.viewMoveTo(ox, screen_y)
+        else:
+            self.update()
 
     # forward textWrap Methods
     def wrapWidth(self, *args, **kwargs) -> int:
@@ -656,22 +680,36 @@ class TTkTextEditView(TTkAbstractScrollView):
             return self.width(), self._textWrap.size()
         return self.width(), self._textWrap.size()
 
-    @pyTTkSlot()
-    def _check_document_wrap_position(self):
-        ox, oy = self.getViewOffsets()
-        w, h = self.size()
-        y = self._textWrap.screenRows(oy,h).y
-        if y == oy:
-            return
-        self.viewMoveTo(ox, y)
+    # @pyTTkSlot()
+    # def _check_document_wrap_position(self):
+    #     ox, oy = self.getViewOffsets()
+    #     w, h = self.size()
+    #     y = self._textWrap.screenRows(oy,h).y
+    #     if y == oy:
+    #         return
+    #     self.viewMoveTo(ox, y)
+
+    @pyTTkSlot(int,int)
+    def _view_moved_event(self, x:int, y:int):
+        h = self.height()
+        screen_rows = self._textWrap.screenRows(y,h)
+        self._lineMap.line = 0 if not screen_rows.rows else screen_rows.rows[0].line
+        self._lineMap.line_pos = 0 if not screen_rows.rows else screen_rows.rows[0].start
+        self._lineMap.pos_y = y
 
     @pyTTkSlot()
-    def _pushCursor(self) -> None:
+    def _pushCursor(self, moving_left:bool=False) -> None:
         ox, oy = self.getViewOffsets()
 
-        x,y = self._textWrap.dataToScreenPosition(
+        screen_position = self._textWrap.dataToScreenPosition(
                 self._textCursor.position().line,
                 self._textCursor.position().pos)
+
+        if moving_left and screen_position.extra is not None:
+            x,y = screen_position.extra.to_xy()
+        else:
+            x,y = screen_position.main.to_xy()
+
         y -= oy
         x -= ox
 
@@ -765,7 +803,7 @@ class TTkTextEditView(TTkAbstractScrollView):
             self._textCursor.insertText(txt, moveCursor=True)
         # Scroll to align to the cursor
         p = self._textCursor.position()
-        cx, cy = self._textWrap.dataToScreenPosition(p.line, p.pos)
+        cx, cy = self._textWrap.dataToScreenPosition(p.line, p.pos).to_xy()
         self._updateSize()
         self._scrolToInclude(cx,cy)
         self._pushCursor()
@@ -792,7 +830,6 @@ class TTkTextEditView(TTkAbstractScrollView):
                     evt.key == TTkK.Key_X or
                   ( evt.key == TTkK.Key_Z and self._textDocument.changed() ) )
               ) ) ) ):
-            # TTkLog.debug(f"Saving {self._textCursor.selectedText()} {self._textCursor._properties[0].anchor.pos}")
             self._textDocument.saveSnapshot(self._textCursor.copy())
 
         if evt.key == TTkK.Key_Tab and evt.mod==TTkK.NoModifier:
@@ -817,7 +854,7 @@ class TTkTextEditView(TTkAbstractScrollView):
 
             if ctrl:
                 p = self._textCursor.position()
-                cx, cy = self._textWrap.dataToScreenPosition(p.line, p.pos)
+                cx, cy = self._textWrap.dataToScreenPosition(p.line, p.pos).to_xy()
                 if evt.key == TTkK.Key_Up:
                     self._setCursorPos(cx, cy-1, addCursor=True)
                     self._textCursor.clearColor()
@@ -885,10 +922,10 @@ class TTkTextEditView(TTkAbstractScrollView):
                 return super().keyEvent(evt)
             # Scroll to align to the cursor
             p = self._textCursor.position()
-            cx, cy = self._textWrap.dataToScreenPosition(p.line, p.pos)
+            cx, cy = self._textWrap.dataToScreenPosition(p.line, p.pos).to_xy()
             self._updateSize()
             self._scrolToInclude(cx,cy)
-            self._pushCursor()
+            self._pushCursor(evt.key == TTkK.Key_Left)
             self.update()
             return True
         else: # Input char
@@ -898,7 +935,7 @@ class TTkTextEditView(TTkAbstractScrollView):
                 self._textCursor.insertText(str(evt.key), moveCursor=True)
             # Scroll to align to the cursor
             p = self._textCursor.position()
-            cx, cy = self._textWrap.dataToScreenPosition(p.line, p.pos)
+            cx, cy = self._textWrap.dataToScreenPosition(p.line, p.pos).to_xy()
             self._updateSize()
             self._scrolToInclude(cx,cy)
             self._pushCursor()
@@ -915,13 +952,15 @@ class TTkTextEditView(TTkAbstractScrollView):
         color         = style['color']
         selectColor = style['selectedColor']
         lineColor = style['lineColor']
-        backgroundColors = [self._textDocument._backgroundColor]*h
 
         subLines = self._textWrap.screenRows(oy,+h).rows
         if not subLines: return
         fr = subLines[0].line
         to = subLines[-1].line
         outLines = self._textDocument._dataLines[fr:to+1]
+        # backgroundColors must be sized to match the line range, not the wrapped row count
+        # because wrapping can cause multiple wrapped rows to reference the same source line
+        backgroundColors = [self._textDocument._backgroundColor]*(to-fr+1)
         outLines = self._textCursor._getHighlightedLines(fr, to, outLines, selectColor)
 
         for extraSelection in self._extraSelections:

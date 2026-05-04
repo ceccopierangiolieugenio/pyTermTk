@@ -46,7 +46,6 @@ def _mk_wrap(text: str, width: int = 4, word_wrap: bool = False):
 def _rows_for(tw: ttk.TTkTextWrap, y: int, h: int) -> list[_WrapLine]:
     """Return wrapped rows and validate the screenRows contract."""
     ret = tw.screenRows(y, h)
-    assert ret.y == y
     assert isinstance(ret.rows, list)
     return ret.rows
 
@@ -57,17 +56,17 @@ def test_screen_rows_wrap_anywhere_visible_window():
     rows = _rows_for(tw, 0, 4)
 
     assert len(rows) == 4
-    assert rows[0] == _WrapLine(0, 0, 4)
-    assert rows[1] == _WrapLine(0, 4, 8)
-    assert rows[2] == _WrapLine(0, 8, 11)
-    assert rows[3] == _WrapLine(1, 0, 4)
+    assert rows[0] == _WrapLine(0, 0, 4, False)
+    assert rows[1] == _WrapLine(0, 4, 8, False)
+    assert rows[2] == _WrapLine(0, 8, 11, True)
+    assert rows[3] == _WrapLine(1, 0, 4, True)
 
 
 def test_data_to_screen_and_back_roundtrip():
     _, tw = _mk_wrap('abcdefghij\nxyz', width=4)
 
     for pos in (0, 3, 4, 7, 9, 10):
-        x, y = tw.dataToScreenPosition(0, pos)
+        x, y = tw.dataToScreenPosition(0, pos).to_xy()
         line, dpos = tw.screenToDataPosition(x, y)
         assert line == 0
         assert dpos == pos
@@ -105,14 +104,14 @@ def test_data_to_screen_position_safe_after_document_shrink():
     # Shrink the document; the engine re-wraps automatically.
     doc.setText('only-one-line')
 
-    x, y = tw.dataToScreenPosition(2, 0)
+    x, y = tw.dataToScreenPosition(2, 0).to_xy()
 
     assert x >= 0
     assert y >= 0
 
     doc.clear()
 
-    x, y = tw.dataToScreenPosition(2, 0)
+    x, y = tw.dataToScreenPosition(2, 0).to_xy()
 
     assert x >= 0
     assert y >= 0
@@ -191,8 +190,8 @@ def test_disable_mode_exposes_each_line_as_one_screen_row():
     rows = _rows_for(tw, 0, 2)
 
     assert len(rows) == 2
-    assert rows[0] == _WrapLine(0, 0, 11)   # 'abcdefghij' → len=10, +1 sentinel
-    assert rows[1] == _WrapLine(1, 0, 4)    # 'xyz'        → len=3,  +1 sentinel
+    assert rows[0] == _WrapLine(0, 0, 11, True)   # 'abcdefghij' → len=10, +1 sentinel
+    assert rows[1] == _WrapLine(1, 0, 4, True)    # 'xyz'        → len=3,  +1 sentinel
 
 
 # ---------------------------------------------------------------------------
@@ -264,8 +263,8 @@ def test_tab_handling_advances_x_by_tab_width():
     # Screen columns:   0      4     5     6
     _, tw = _mk_wrap('\tabc', width=6)
 
-    x0, y0 = tw.dataToScreenPosition(0, 0)  # at the tab
-    x1, y1 = tw.dataToScreenPosition(0, 1)  # at 'a', after the tab
+    x0, y0 = tw.dataToScreenPosition(0, 0).to_xy()  # at the tab
+    x1, y1 = tw.dataToScreenPosition(0, 1).to_xy()  # at 'a', after the tab
 
     assert x0 == 0 and y0 == 0
     assert x1 == 4 and y1 == 0   # tab consumed 4 terminal cells
@@ -281,7 +280,7 @@ def test_empty_document_exposes_one_row():
     rows = _rows_for(tw, 0, 2)
 
     assert len(rows) == 1
-    assert rows[0] == _WrapLine(0, 0, 0)
+    assert rows[0] == _WrapLine(0, 0, 0, True)
 
 
 # ---------------------------------------------------------------------------
@@ -294,8 +293,8 @@ def test_width_one_wraps_each_character_onto_its_own_row():
     rows = _rows_for(tw, 0, 5)
 
     assert len(rows) == 3
-    assert rows[0] == _WrapLine(0, 0, 1)
-    assert rows[1] == _WrapLine(0, 1, 2)
+    assert rows[0] == _WrapLine(0, 0, 1, False)
+    assert rows[1] == _WrapLine(0, 1, 2, False)
 
 
 # ---------------------------------------------------------------------------
@@ -305,7 +304,6 @@ def test_width_one_wraps_each_character_onto_its_own_row():
 def test_screen_rows_zero_height_returns_empty_list():
     _, tw = _mk_wrap('hello', width=10)
     ret = tw.screenRows(0, 0)
-    assert ret.y == 0
     assert ret.rows == []
 
 
@@ -317,7 +315,7 @@ def test_data_to_screen_position_for_second_data_line():
     # 'abcdefghij' wraps into 3 rows at y=0,1,2; 'xyz' starts at y=3.
     _, tw = _mk_wrap('abcdefghij\nxyz', width=4)
 
-    x, y = tw.dataToScreenPosition(1, 0)
+    x, y = tw.dataToScreenPosition(1, 0).to_xy()
 
     assert y == 3
     assert x == 0
@@ -327,7 +325,7 @@ def test_roundtrip_data_to_screen_for_second_data_line():
     _, tw = _mk_wrap('abcdefghij\nxyz', width=4)
 
     for pos in (0, 1, 2):
-        x, y = tw.dataToScreenPosition(1, pos)
+        x, y = tw.dataToScreenPosition(1, pos).to_xy()
         line, dpos = tw.screenToDataPosition(x, y)
         assert line == 1
         assert dpos == pos
@@ -366,8 +364,8 @@ def test_screenRows_returns_correct_slices():
 
     rows = _rows_for(tw, 0, 4)
 
-    assert rows[0] == _WrapLine(0, 0, 4)
-    assert rows[3] == _WrapLine(1, 0, 4)
+    assert rows[0] == _WrapLine(0, 0, 4, False)
+    assert rows[3] == _WrapLine(1, 0, 4, True)
 
 
 def test_screen_rows_contract_preserves_viewport_origin_and_row_invariants():
@@ -375,7 +373,6 @@ def test_screen_rows_contract_preserves_viewport_origin_and_row_invariants():
 
     ret = tw.screenRows(2, 4)
 
-    assert ret.y == 2
     for row in ret.rows:
         assert row.start >= 0
         assert row.stop >= row.start

@@ -303,16 +303,16 @@ class TTkTextCursor():
         if notify or currPos != currCurs.position.toNum():
             self._document.cursorPositionChanged.emit(self)
 
-    def movePosition(self, operation:MoveOperation, moveMode:MoveMode=MoveMode.MoveAnchor, n=1, textWrap:Optional[TTkTextWrap]=None) -> None:
+    def movePosition(self, operation:MoveOperation, moveMode:MoveMode=MoveMode.MoveAnchor, n:int=1, textWrap:Optional[TTkTextWrap]=None) -> None:
         currPos = self.position().toNum()
-        def moveRight(cID,p,_):
+        def moveRight(cID:int, p:_CP, _):
             line = self._document.dataLine(p.line)
             if line and p.pos < len(line):
                 nextPos = line.nextPos(p.pos)
                 self.setPosition(p.line, nextPos, moveMode, cID=cID)
             elif p.line < self._document.lineCount()-1:
                 self.setPosition(p.line+1, 0, moveMode, cID=cID)
-        def moveLeft(cID,p,_):
+        def moveLeft(cID:int, p:_CP, _):
             if p.pos > 0:
                 line = self._document.dataLine(p.line)
                 if line:
@@ -320,28 +320,28 @@ class TTkTextCursor():
                     self.setPosition(p.line, prevPos, moveMode, cID=cID)
             elif p.line > 0:
                 prevLine = self._document.dataLine(p.line-1)
-                if prevLine:
+                if prevLine is not None:
                     self.setPosition(p.line-1, len(prevLine) , moveMode, cID=cID)
         def moveUpDown(offset):
-            def _moveUpDown(cID,p,_n):
+            def _moveUpDown(cID:int, p:_CP, _n:int):
                 if not textWrap:
                     raise ValueError("textWrap is required for the Up,Down movement")
-                cx, cy    = textWrap.dataToScreenPosition(p.line, p.pos)
+                cx, cy    = textWrap.dataToScreenPosition(p.line, p.pos).to_xy()
                 x,  y     = textWrap.normalizeScreenPosition(cx,cy+offset)
                 line, pos = textWrap.screenToDataPosition(x,y)
                 self.setPosition(line, pos, moveMode, cID=cID)
             return _moveUpDown
-        def moveEndOfLine(cID,p,_):
+        def moveEndOfLine(cID:int, p:_CP, _):
             l = self._document.dataLine(p.line)
             if l:
                 self.setPosition(p.line, len(l), moveMode, cID=cID)
-        def moveHome(cID,p,_):
+        def moveHome(cID:int, p:_CP, _):
             self.setPosition(p.line, 0, moveMode, cID=cID)
-        def moveEnd(cID,p,_):
+        def moveEnd(cID:int, p:_CP, _):
             lastLine = self._document.dataLine(self._document.lineCount()-1)
             if lastLine:
                 self.setPosition(self._document.lineCount()-1, len(lastLine), moveMode, cID=cID)
-        def moveStart(cID,_p,_n):
+        def moveStart(cID:int, _p:_CP, _n:int):
             self.setPosition(0, 0, moveMode, cID=cID)
 
         op = {
@@ -506,16 +506,16 @@ class TTkTextCursor():
                 # search the leftmost(on the right slice)/rightmost(on the left slice) word
                 # in order to match the full word under the cursor
                 lineData = self._document.dataLine(line)
+                xFrom = pos
+                xTo   = pos
                 if lineData:
                     splitBefore = lineData.substring(to=pos)
                     splitAfter =  lineData.substring(fr=pos)
-                xFrom = pos
-                xTo   = pos
-                selectRE = r'[^ \t\r\n()[\]\.\,\+\-\*\/]*'
-                if m := splitBefore.search(selectRE+'$'):
-                    xFrom -= len(m.group(0))
-                if m := splitAfter.search('^'+selectRE):
-                    xTo += len(m.group(0))
+                    selectRE = r'[^ \t\r\n()[\]\.\,\+\-\*\/]*'
+                    if m := splitBefore.search(selectRE+'$'):
+                        xFrom -= len(m.group(0))
+                    if m := splitAfter.search('^'+selectRE):
+                        xTo += len(m.group(0))
                 p.position.pos = xTo
                 p.anchor.pos   = xFrom
                 p.anchor.line  = line
