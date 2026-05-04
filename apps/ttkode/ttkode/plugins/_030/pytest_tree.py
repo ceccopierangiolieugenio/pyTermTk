@@ -323,7 +323,7 @@ class PTP_Tree(ttk.TTkTree):
     Wraps :py:class:`PTP_TreeWidget` in a scrollable :py:class:`TTkTree` container,
     exposing the actionPressed signal for test execution.
     '''
-    __slots__ = ('actionPressed')
+    __slots__ = ('actionPressed',)
     actionPressed: ttk.pyTTkSignal
     '''
     This signal is emitted when a run button is clicked.

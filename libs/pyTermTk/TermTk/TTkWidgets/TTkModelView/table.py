@@ -64,7 +64,7 @@ class TTkTable(TTkAbstractScrollArea):
             'setRowHeight', 'resizeRowToContents', 'resizeRowsToContents']
     )
 
-    __slots__ = ('_tableView')
+    __slots__ = ('_tableView',)
 
     def __init__(self, *,
                  tableWidget:Optional[TTkTableWidget]=None,

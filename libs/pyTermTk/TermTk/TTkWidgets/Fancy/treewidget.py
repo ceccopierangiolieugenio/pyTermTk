@@ -82,7 +82,7 @@ class _TTkDisplayedTreeItem(TTkContainer):
 
 
 class TTkFancyTreeWidget(TTkFancyTableView):
-    __slots__ = ( '_topLevelItems')
+    __slots__ = ('_topLevelItems',)
 
     def __init__(self, **kwargs) -> None:
         super().__init__(**kwargs)

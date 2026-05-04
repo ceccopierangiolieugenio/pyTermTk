@@ -28,7 +28,7 @@
 import gc, weakref, time
 
 class Bar():
-    __slots__ = ('_foo')
+    __slots__ = ('_foo',)
     def __init__(self, foo) -> None:
         self._foo = foo
 

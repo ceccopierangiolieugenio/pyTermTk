@@ -49,7 +49,7 @@ class RenderData:
     # mirror: Tuple[int,int]
 
 class _ThreadingData:
-    __slots__ = ('timer')
+    __slots__ = ('timer',)
     timer: ttk.TTkTimer
     def __init__(self):
         self.timer = ttk.TTkTimer()
@@ -468,7 +468,7 @@ class _State():
             return state
 
 class Perspectivator(ttk.TTkWidget):
-    __slots__ = ('_state')
+    __slots__ = ('_state',)
     _state:_State
     def __init__(self, state:_State, **kwargs):
         self._state = state
@@ -810,7 +810,7 @@ class Perspectivator(ttk.TTkWidget):
                         canvas.drawChar(char='X',pos=(ix+iw-dx,iy+dy))
 
 class _Preview(ttk.TTkWidget):
-    __slots__ = ('_canvasImage')
+    __slots__ = ('_canvasImage',)
     def __init__(self, **kwargs):
         self._canvasImage = ttk.TTkCanvas(width=20,height=3)
         self._canvasImage.drawText(pos=(0,0),text="Preview...")

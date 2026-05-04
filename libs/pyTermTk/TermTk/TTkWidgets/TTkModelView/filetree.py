@@ -50,7 +50,7 @@ class TTkFileTree(TTkTree):
             'setFilter']
     )
 
-    __slots__ = ('_fileTreeWidget')
+    __slots__ = ('_fileTreeWidget',)
 
     def __init__(self, **kwargs) -> None:
         wkwargs = kwargs.copy()

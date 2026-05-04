@@ -415,7 +415,7 @@ class TTkLayout(TTkLayoutItem):
         return ret
 
 class TTkWidgetItem(TTkLayoutItem):
-    __slots__ = ('_widget')
+    __slots__ = ('_widget',)
     def __init__(self, *,
                  widget=None,
                  **kwargs) -> None:

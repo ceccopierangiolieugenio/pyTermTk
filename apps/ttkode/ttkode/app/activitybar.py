@@ -107,7 +107,7 @@ class _SideBar(ttk.TTkLayout):
 
 
 class TTKodeActivityBar(ttk.TTkVBoxLayout):
-    __slots__ = ('_sideBar')
+    __slots__ = ('_sideBar',)
     def __init__(self, **kwargs) -> None:
         super().__init__(**kwargs)
         self._sideBar = _SideBar()

@@ -46,7 +46,7 @@ class _TTkAreaWidget(TTkAbstractScrollView):
 
 class TTkScrollArea(TTkAbstractScrollArea):
     '''TTkScrollArea'''
-    __slots__ = ('_areaView')
+    __slots__ = ('_areaView',)
     def __init__(self, *,
                  # TTkWidget init
                  parent:TTkWidget=None,

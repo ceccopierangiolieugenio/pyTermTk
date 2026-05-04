@@ -677,7 +677,7 @@ class Perspectivator(ttk.TTkWidget):
                         canvas.drawChar(char='X',pos=(ix+iw-dx,iy+dy))
 
 class _Preview(ttk.TTkWidget):
-    __slots__ = ('_canvasImage')
+    __slots__ = ('_canvasImage',)
     def __init__(self, **kwargs):
         self._canvasImage = ttk.TTkCanvas()
         super().__init__(**kwargs)

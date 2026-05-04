@@ -31,7 +31,7 @@ import TermTk as ttk
 from bolib import *
 
 class WinParams(ttk.TTkWindow):
-    __slots__ = ('_breakout')
+    __slots__ = ('_breakout',)
     def __init__(self, breakout:BreakOutDisplay, **kwargs):
         self._breakout = breakout
         super().__init__(**kwargs|{'layout':ttk.TTkGridLayout()})

@@ -32,7 +32,7 @@ sys.path.append(os.path.join(sys.path[0],'../..'))
 import TermTk as ttk
 
 class Pippo():
-    __slots__ = ('_pa')
+    __slots__ = ('_pa',)
     def __init__(self, pa=1234):
         self._pa=pa
     def getPa(self):

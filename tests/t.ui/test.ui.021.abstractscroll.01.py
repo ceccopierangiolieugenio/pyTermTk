@@ -28,7 +28,7 @@ sys.path.append(os.path.join(sys.path[0],'../../libs/pyTermTk'))
 import TermTk as ttk
 
 class ScrollAreaTest(ttk.TTkAbstractScrollArea):
-    __slots__ = ('_areaView')
+    __slots__ = ('_areaView',)
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         kwargs.pop('parent',None)

@@ -29,7 +29,7 @@ import TermTk as ttk
 from ttkode.app.ttkode import TTKode, TTKodeWidget
 
 class TTKodeViewerProxy():
-    __slots__ = ('_fileName')
+    __slots__ = ('_fileName',)
     def __init__(self, fileName) -> None:
         self._fileName = fileName
 

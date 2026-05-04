@@ -34,7 +34,7 @@ sys.path.append(os.path.join(sys.path[0],'..'))
 from showcase._showcasehelper import getUtfColoredSentence
 
 class EasingShow(ttk.TTkWidget):
-    __slots__ = ('_easingCb')
+    __slots__ = ('_easingCb',)
     def __init__(self, easingCb, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._easingCb = ttk.TTkEasingCurve(easingCb)

@@ -53,7 +53,7 @@ class ObjA2(ObjA):
             (other.a,other.b,other.c,other.d) )
 
 class ObjA3(ObjA):
-    __slots__ = ('rec')
+    __slots__ = ('rec',)
     def __init__(self, a, b, c, d) -> None:
         super().__init__(a, b, c, d)
         self.rec = (self.a, self.b, self.c, self.d )

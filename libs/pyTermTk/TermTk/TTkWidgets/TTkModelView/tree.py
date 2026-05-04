@@ -55,7 +55,7 @@ class TTkTree(TTkAbstractScrollArea):
             'addTopLevelItem', 'addTopLevelItems', 'takeTopLevelItem', 'topLevelItem', 'indexOfTopLevelItem', 'selectedItems', 'clear']
     )
 
-    __slots__ = ('_treeView')
+    __slots__ = ('_treeView',)
 
     def __init__(self, *,
                  treeWidget:TTkTreeWidget=None,

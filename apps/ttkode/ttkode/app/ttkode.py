@@ -117,7 +117,7 @@ class _TextDocument(ttk.TextDocumentHighlight):
         self._genTabText()
         self.save()
 class _TextEdit(ttk.TTkTextEdit, TTKodeWidget):
-    __slots__ = ('docFocussed')
+    __slots__ = ('docFocussed',)
     def __init__(self, **kwargs):
         self.docFocussed = ttk.pyTTkSignal(_TextDocument)
         super().__init__(**kwargs)
@@ -203,7 +203,7 @@ class _Panel():
             self.menuBar = menuBar
             self.widgets = widgets
 
-    __slots__ = ('_panels')
+    __slots__ = ('_panels',)
     _panels:Dict[_Panel.Position,_Panel._PanelDef]
 
     def __init__(self):

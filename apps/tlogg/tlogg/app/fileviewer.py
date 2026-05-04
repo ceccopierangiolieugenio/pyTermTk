@@ -216,7 +216,7 @@ class FileViewer(ttk.TTkAbstractScrollView):
             canvas.drawText(pos=(0,0), text=f" [ Indexed: {int(100*self._indexing)}% ] ")
 
 class FileViewerSearch(FileViewer):
-    __slots__ = ('_indexes')
+    __slots__ = ('_indexes',)
     def __init__(self, *args, **kwargs):
         self._indexes = []
         FileViewer.__init__(self, *args, **kwargs)
@@ -297,7 +297,7 @@ class FileViewerSearch(FileViewer):
         return self._indexes[num]
 
 class FileViewerArea(ttk.TTkAbstractScrollArea):
-    __slots__ = ('_fileView')
+    __slots__ = ('_fileView',)
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._name = kwargs.get('name' , 'FileViewer' )

@@ -30,7 +30,7 @@ from TermTk.TTkWidgets.widget import TTkWidget
 from TermTk.TTkCore.TTkTerm.inputmouse import TTkMouseEvent
 
 class _TTkDragDisplayWidget(TTkWidget):
-    __slots__ = ('_pixmap')
+    __slots__ = ('_pixmap',)
     def __init__(self, **kwargs) -> None:
         self._pixmap = TTkCanvas(width=5, height=1)
         self._pixmap.drawText(pos=(0,0), text='[...]')

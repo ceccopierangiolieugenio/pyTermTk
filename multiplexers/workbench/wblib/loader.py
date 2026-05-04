@@ -27,7 +27,7 @@ from .colors import *
 __all__ = ['WBLoader']
 
 class WBLoader(TTkWidget):
-    __slots__ = ('_data')
+    __slots__ = ('_data',)
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 

@@ -149,7 +149,7 @@ class _TTkColorCanvas(TTkWidget):
                     canvas.drawText(pos=(x,y), text=" ", color=color)
 
 class _TTkShowColor(TTkWidget):
-    __slots__ = ('_color')
+    __slots__ = ('_color',)
     def __init__(self, *,
                  color:TTkColor=TTkColor.RST,
                  **kwargs) -> None:
