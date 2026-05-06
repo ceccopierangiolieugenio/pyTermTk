@@ -373,6 +373,8 @@ class TTkConstant:
         '''Full document Wrap at any change, Ideal for small documents (~300 Lines) [Precise] (Slow)'''
         FastWrap = auto()
         '''Chunk based document Wrap, Default wrap [Fast] (Scrolling position is estimated)'''
+        HybridVimWrap = auto()
+        '''Hybrid implementation between VimWrap and FastWrap, [Faster] (Scrolling position is estimated)'''
         VimWrap = auto()
         '''Wrap applied only in the displayed area, [Fastest] (the scrolling is snap to the beginning of the lines)'''
 

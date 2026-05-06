@@ -1,4 +1,3 @@
-
 #!/usr/bin/env python3
 
 # MIT License
@@ -41,7 +40,7 @@ class superSimpleHorizontalLine(ttk.TTkWidget):
 
 def demoTextEditSecondary(root=None, document=None):
     te = ttk.TTkTextEdit(parent=root, document=document, lineNumber=True)
-    te.setLineWrapMode(ttk.TTkK.WidgetWidth, wrapEngine=ttk.TTkK.WrapEngine.FastWrap)
+    te.setLineWrapMode(ttk.TTkK.WidgetWidth, wrapEngine=ttk.TTkK.WrapEngine.VimWrap)
     te.setWordWrapMode(ttk.TTkK.WordWrap)
     te.setReadOnly(False)
     # print the document events for debugging purposes
@@ -64,6 +63,12 @@ def demoTextEdit(root=None, document=None):
         te.append(ttk.TTkString("ANSI Input Test\n",ttk.TTkColor.UNDERLINE+ttk.TTkColor.BOLD))
         with open(os.path.join(os.path.dirname(os.path.abspath(__file__)),'textedit.ANSI.txt')) as f:
             te.append(f.read())
+
+    te.append("  /)/)")
+    te.append(" ( ..)")
+    te.append("(   づ♡")
+
+    te.append("")
 
     # Test Variable sized chars
     te.append(ttk.TTkString("Test Variable sized chars\n",ttk.TTkColor.UNDERLINE+ttk.TTkColor.BOLD))
@@ -97,7 +102,7 @@ def demoTextEdit(root=None, document=None):
     te.append("-------tab\ttab\ttab\ttab\ttab\ttab\ttab\ttab\ttab\ttab\ttab\ttab\n")
 
     te.append(ttk.TTkString("Random TTkString Input Test\n",ttk.TTkColor.UNDERLINE+ttk.TTkColor.BOLD))
-    _sss = ttk.TTkString('\n').join([ ttk.TTkString(f"{i} <- ") + getUtfColoredSentence(3,10) + ttk.TTkString(f" -> {i} ")for i in range(500)])
+    _sss = ttk.TTkString('\n').join([ ttk.TTkString(f"{i} <- ") + getUtfColoredSentence(3,10) + ttk.TTkString(f" -> {i} ")for i in range(50)])
     for _ in range(20):
         te.append(_sss)
 

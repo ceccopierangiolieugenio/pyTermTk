@@ -33,14 +33,16 @@ from .text_wrap_data import _RetScreenPositions, _RetScreenRows, _WrapState, _Re
 from .text_wrap_engine import _WrapEngine_Interface
 from .text_wrap_engine_no_wrap import _WrapEngine_NoWrap
 from .text_wrap_engine_vim_wrap import _WrapEngine_VimWrap
+from .text_wrap_engine_vim_wrap_hybrid import _WrapEngine_HybridVimWrap
 from .text_wrap_engine_fast_wrap import _WrapEngine_FastWrap
 from .text_wrap_engine_full_wrap import _WrapEngine_FullWrap
 
 _wrapEngines = {
+    TTkK.WrapEngine.NoWrap : _WrapEngine_NoWrap,
+    TTkK.WrapEngine.VimWrap : _WrapEngine_VimWrap,
     TTkK.WrapEngine.FastWrap : _WrapEngine_FastWrap,
     TTkK.WrapEngine.FullWrap : _WrapEngine_FullWrap,
-    TTkK.WrapEngine.VimWrap : _WrapEngine_VimWrap,
-    TTkK.WrapEngine.NoWrap : _WrapEngine_NoWrap,
+    TTkK.WrapEngine.HybridVimWrap : _WrapEngine_HybridVimWrap,
 }
 
 class TTkTextWrap():
