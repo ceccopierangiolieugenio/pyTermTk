@@ -31,8 +31,16 @@ from .text_wrap_data import _ReWrapData, _RetScreenPosition, _RetScreenPositions
 
 _WINDOW_BORDER : Final[int] = 32
 
+
 @dataclass
 class _getBufferSignature():
+    '''Viewport signature for caching.
+
+    :param y: first viewport row.
+    :type y: int
+    :param h: viewport height.
+    :type h: int
+    '''
     y: int
     h: int
 
@@ -41,12 +49,10 @@ class _getBufferSignature():
 class _LastWindow():
     '''Cache of the last wrapped viewport window.
 
-    :param y: first wrapped row of the cached viewport.
-    :type y: int
-    :param h: viewport height used to build the cache.
-    :type h: int
     :param buffer: cached wrapped-row descriptors.
     :type buffer: List[:py:class:`_WrapLine`]
+    :param signature: viewport signature used to build the cache.
+    :type signature: Optional[:py:class:`_getBufferSignature`]
     '''
     buffer: List[_WrapLine]
     signature: Optional[_getBufferSignature] = None
@@ -289,6 +295,18 @@ class _WrapEngine_HybridVimWrap(_WrapEngine_Interface):
         return _RetScreenRows(rows=buffer)
 
     def _getBuffer(self, y:int, h:int, force:bool=False) -> List[_WrapLine]:
+        '''Build or retrieve cached wrapped rows for a viewport window.
+
+        :param y: first viewport row.
+        :type y: int
+        :param h: viewport height.
+        :type h: int
+        :param force: force re-wrapping even if cached slice is available.
+        :type force: bool
+
+        :return: list of wrapped row descriptors.
+        :rtype: List[:py:class:`_WrapLine`]
+        '''
         if not (w := self._wrapState.size):
             return []
 
