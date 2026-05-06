@@ -58,6 +58,11 @@ def demoTextEdit(root=None, document=None):
 
     te.setText(ttk.TTkString("Text Edit DEMO\n",ttk.TTkColor.UNDERLINE+ttk.TTkColor.BOLD+ttk.TTkColor.ITALIC))
 
+    te.append("  /)/)")
+    te.append(" ( ..)")
+    te.append("(   づ♡")
+    te.append("")
+
     # Load ANSI input
     if os.path.exists(os.path.join(os.path.dirname(os.path.abspath(__file__)),'textedit.ANSI.txt')):
         te.append(ttk.TTkString("ANSI Input Test\n",ttk.TTkColor.UNDERLINE+ttk.TTkColor.BOLD))
