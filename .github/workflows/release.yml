@@ -56,6 +56,10 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+      - name: Install dependencies
+        shell: bash
+        run:
+          pip install -e 'tools/ci[social]'
       - name: Update Version
         if: ${{ steps.release-please.outputs.prs_created == 'true'}}
         shell: bash
