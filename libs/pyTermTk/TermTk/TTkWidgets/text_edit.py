@@ -66,6 +66,8 @@ class TTkTextEdit(TTkAbstractScrollArea):
             "cut", "copy", "paste",
             "undo", "redo", "isUndoAvailable", "isRedoAvailable",
             "find", "ensureCursorVisible",
+            "follow", "setFollow",
+            "scrollTo",
             # Exported Methods
             "toAnsi", "toRawText", "toPlainText" # , "toHtml", "toMarkdown",
             ]
@@ -84,6 +86,7 @@ class TTkTextEdit(TTkAbstractScrollArea):
                  readOnly:bool=False,
                  multiLine:bool=True,
                  document:Optional[TTkTextDocument]=None,
+                 follow:bool=False,
 
                  # TTkText init
                  textEditView:Optional[TTkTextEditView]=None,
@@ -99,7 +102,7 @@ class TTkTextEdit(TTkAbstractScrollArea):
         :type lineNumberStarting: int, optional
         '''
         super().__init__(parent=parent, visible=visible, **kwargs)
-        self._textEditView = textEditView if textEditView else TTkTextEditView(readOnly=readOnly, multiLine=multiLine, document=document)
+        self._textEditView = textEditView if textEditView else TTkTextEditView(readOnly=readOnly, multiLine=multiLine, document=document, follow=follow)
         # self.setFocusPolicy(self._textEditView.focusPolicy())
         # self._textEditView.setFocusPolicy(TTkK.ParentFocus)
         self._lineNumber = lineNumber
@@ -471,6 +474,43 @@ class TTkTextEdit(TTkAbstractScrollArea):
 
         '''
         return self._textEditView.ensureCursorVisible()
+    def follow(self) -> bool:
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.follow`
+
+        This property holds whether the view follows the last line whenever the document changes.
+
+        :rtype: bool
+        '''
+        return self._textEditView.follow()
+    @pyTTkSlot(bool)
+    def setFollow(self, follow:bool) -> None:
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.setFollow`
+
+        Enable or disable the follow-bottom mode.
+
+        When enabled, the view automatically scrolls to the last visible row
+        every time the underlying document changes.
+
+        :param follow: ``True`` to keep following the bottom row, ``False`` otherwise
+        :type follow: bool
+        '''
+        return self._textEditView.setFollow(follow=follow)
+    @pyTTkSlot()
+    def scrollTo(self, position:TTkK.TextEditEdge) -> None:
+        '''
+        .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.scrollTo`
+
+        Scrolls the view to the specified edge(s) of the text document.
+
+        This method allows scrolling to the top, bottom, left, or right edge of the document.
+        Multiple edges can be specified by combining them with the bitwise OR operator.
+
+        :param position: the edge(s) to scroll to
+        :type position: :py:class:`TTkK.TextEditEdge`
+        '''
+        return self._textEditView.scrollTo(position=position)
     def toAnsi(self) -> str:
         '''
         .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.toAnsi`

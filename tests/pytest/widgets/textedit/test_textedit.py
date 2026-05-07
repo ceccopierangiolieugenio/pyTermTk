@@ -541,3 +541,265 @@ def test_TTkTextEdit_clear_resets_cursor():
     assert cur.position().line == 0
     assert cur.position().pos  == 0
     assert not cur.hasSelection()
+
+
+# ---------------------------------------------------------------------------
+# TTkTextEditView scrolling/follow-bottom API coverage
+# ---------------------------------------------------------------------------
+
+def test_textedit_view_scroll_to_top_and_bottom():
+    tev = ttk.TTkTextEditView(size=(10, 3))
+    tev.setText('\n'.join(f'line-{i}' for i in range(12)))
+
+    tev.scrollTo(ttk.TTkK.TextEditEdge.BOTTOM)
+    _, oy = tev.getViewOffsets()
+    _, fh = tev.viewFullAreaSize()
+    _, dh = tev.viewDisplayedSize()
+    assert oy == max(0, fh - dh)
+
+    tev.scrollTo(ttk.TTkK.TextEditEdge.TOP)
+    _, oy = tev.getViewOffsets()
+    assert oy == 0
+
+
+def test_textedit_view_follow_bottom_tracks_document_changes():
+    tev = ttk.TTkTextEditView(size=(10, 3))
+    tev.setText('\n'.join(f'line-{i}' for i in range(6)))
+
+    tev.setFollow(True)
+    assert tev.follow()
+
+    tev.append('new-tail')
+    _, oy = tev.getViewOffsets()
+    _, fh = tev.viewFullAreaSize()
+    _, dh = tev.viewDisplayedSize()
+    assert oy == max(0, fh - dh)
+
+
+def test_textedit_view_follow_bottom_disabled_does_not_force_scroll():
+    tev = ttk.TTkTextEditView(size=(10, 3))
+    tev.setText('\n'.join(f'line-{i}' for i in range(10)))
+    tev.scrollTo(ttk.TTkK.TextEditEdge.BOTTOM)
+    tev.viewMoveTo(0, 1)
+    _, oy_before = tev.getViewOffsets()
+
+    tev.setFollow(False)
+    tev.append('still-not-following')
+    _, oy_after = tev.getViewOffsets()
+
+    assert oy_before == 1
+    assert oy_after == oy_before
+
+
+def test_textedit_wrapper_forwards_scroll_and_follow_bottom_api():
+    te = ttk.TTkTextEdit(size=(10, 3))
+    te.setText('\n'.join(f'line-{i}' for i in range(8)))
+
+    te.setFollow(True)
+    te.append('tail')
+    te.scrollTo(ttk.TTkK.TextEditEdge.BOTTOM)
+
+    _, oy = te.textEditView().getViewOffsets()
+    _, fh = te.textEditView().viewFullAreaSize()
+    _, dh = te.textEditView().viewDisplayedSize()
+    assert oy == max(0, fh - dh)
+
+    te.scrollTo(ttk.TTkK.TextEditEdge.TOP)
+    _, oy = te.textEditView().getViewOffsets()
+    assert oy == 0
+
+
+# ---------------------------------------------------------------------------
+# TTkTextEditView horizontal scrolling (LEFT/RIGHT) coverage
+# ---------------------------------------------------------------------------
+
+def test_textedit_view_scroll_to_left():
+    '''Test scrollTo(LEFT) scrolls the horizontal offset to the beginning (ox=0)'''
+    # Create a text view with width 20 and add wide text (longer lines)
+    tev = ttk.TTkTextEditView(size=(20, 5))
+    tev.setLineWrapMode(ttk.TTkK.LineWrapMode.NoWrap)
+    # Create lines that are longer than the 20-char width
+    wide_text = '\n'.join('x' * 50 for _ in range(4))
+    tev.setText(wide_text)
+
+    # First scroll right to see if we can move the horizontal offset
+    tev.viewMoveTo(10, 0)  # Move right by 10 chars
+    ox, _ = tev.getViewOffsets()
+    assert ox == 10  # Verify horizontal scroll worked
+
+    # Now scroll to LEFT
+    tev.scrollTo(ttk.TTkK.TextEditEdge.LEFT)
+    ox, _ = tev.getViewOffsets()
+    assert ox == 0
+
+
+def test_textedit_view_scroll_to_right():
+    '''Test scrollTo(RIGHT) scrolls to the rightmost position (ox=max(0, fw-dw))'''
+    tev = ttk.TTkTextEditView(size=(20, 5))
+    tev.setLineWrapMode(ttk.TTkK.LineWrapMode.NoWrap)
+    # Create lines that are longer than the 20-char width
+    wide_text = '\n'.join('x' * 50 for _ in range(4))
+    tev.setText(wide_text)
+
+    # First move to the left
+    tev.viewMoveTo(0, 0)
+    ox, _ = tev.getViewOffsets()
+    assert ox == 0
+
+    # Now scroll to RIGHT
+    tev.scrollTo(ttk.TTkK.TextEditEdge.RIGHT)
+    ox, _ = tev.getViewOffsets()
+    fw, _ = tev.viewFullAreaSize()
+    dw, _ = tev.viewDisplayedSize()
+    assert ox == max(0, fw - dw)
+
+
+def test_textedit_view_scroll_to_top_and_left():
+    '''Test scrollTo(TOP | LEFT) scrolls to the top-left corner'''
+    tev = ttk.TTkTextEditView(size=(20, 5))
+    tev.setLineWrapMode(ttk.TTkK.LineWrapMode.NoWrap)
+    # Create a grid of wide text lines
+    wide_text = '\n'.join('line-' + str(i).ljust(40) for i in range(15))
+    tev.setText(wide_text)
+
+    # Move to a random position
+    tev.viewMoveTo(15, 8)
+    ox, oy = tev.getViewOffsets()
+    assert ox > 0 and oy > 0
+
+    # Scroll to top-left
+    tev.scrollTo(ttk.TTkK.TextEditEdge.TOP | ttk.TTkK.TextEditEdge.LEFT)
+    ox, oy = tev.getViewOffsets()
+    assert ox == 0
+    assert oy == 0
+
+
+def test_textedit_view_scroll_to_bottom_and_right():
+    '''Test scrollTo(BOTTOM | RIGHT) scrolls to the bottom-right corner'''
+    tev = ttk.TTkTextEditView(size=(20, 5))
+    tev.setLineWrapMode(ttk.TTkK.LineWrapMode.NoWrap)
+    # Create a grid of wide text lines
+    wide_text = '\n'.join('line-' + str(i).ljust(40) for i in range(15))
+    tev.setText(wide_text)
+
+    # Move to the top-left first
+    tev.viewMoveTo(0, 0)
+    ox, oy = tev.getViewOffsets()
+    assert ox == 0 and oy == 0
+
+    # Scroll to bottom-right
+    tev.scrollTo(ttk.TTkK.TextEditEdge.BOTTOM | ttk.TTkK.TextEditEdge.RIGHT)
+    ox, oy = tev.getViewOffsets()
+    fw, fh = tev.viewFullAreaSize()
+    dw, dh = tev.viewDisplayedSize()
+    assert ox == max(0, fw - dw)
+    assert oy == max(0, fh - dh)
+
+
+def test_textedit_view_scroll_to_top_and_right():
+    '''Test scrollTo(TOP | RIGHT) scrolls to the top-right corner'''
+    tev = ttk.TTkTextEditView(size=(20, 5))
+    tev.setLineWrapMode(ttk.TTkK.LineWrapMode.NoWrap)
+    wide_text = '\n'.join('x' * 50 for _ in range(10))
+    tev.setText(wide_text)
+
+    # Move to bottom-left
+    tev.viewMoveTo(0, 5)
+    ox, oy = tev.getViewOffsets()
+    assert oy > 0
+
+    # Scroll to top-right
+    tev.scrollTo(ttk.TTkK.TextEditEdge.TOP | ttk.TTkK.TextEditEdge.RIGHT)
+    ox, oy = tev.getViewOffsets()
+    fw, _ = tev.viewFullAreaSize()
+    dw, _ = tev.viewDisplayedSize()
+    assert oy == 0
+    assert ox == max(0, fw - dw)
+
+
+def test_textedit_view_scroll_to_bottom_and_left():
+    '''Test scrollTo(BOTTOM | LEFT) scrolls to the bottom-left corner'''
+    tev = ttk.TTkTextEditView(size=(20, 5))
+    tev.setLineWrapMode(ttk.TTkK.LineWrapMode.NoWrap)
+    wide_text = '\n'.join('x' * 50 for _ in range(10))
+    tev.setText(wide_text)
+
+    # Move to top-right
+    tev.viewMoveTo(20, 0)
+    ox, oy = tev.getViewOffsets()
+    assert ox > 0
+
+    # Scroll to bottom-left
+    tev.scrollTo(ttk.TTkK.TextEditEdge.BOTTOM | ttk.TTkK.TextEditEdge.LEFT)
+    ox, oy = tev.getViewOffsets()
+    _, fh = tev.viewFullAreaSize()
+    _, dh = tev.viewDisplayedSize()
+    assert ox == 0
+    assert oy == max(0, fh - dh)
+
+
+def test_textedit_wrapper_forwards_scroll_left_and_right_api():
+    '''Test that TTkTextEdit properly forwards scrollTo LEFT and RIGHT to the view'''
+    te = ttk.TTkTextEdit(size=(20, 5))
+    te.setLineWrapMode(ttk.TTkK.LineWrapMode.NoWrap)
+    wide_text = '\n'.join('y' * 60 for _ in range(8))
+    te.setText(wide_text)
+
+    # Test scrollTo(LEFT)
+    te.textEditView().viewMoveTo(15, 0)
+    ox_before, _ = te.textEditView().getViewOffsets()
+    assert ox_before == 15
+
+    te.scrollTo(ttk.TTkK.TextEditEdge.LEFT)
+    ox, _ = te.textEditView().getViewOffsets()
+    assert ox == 0
+
+    # Test scrollTo(RIGHT)
+    te.scrollTo(ttk.TTkK.TextEditEdge.RIGHT)
+    ox, _ = te.textEditView().getViewOffsets()
+    fw, _ = te.textEditView().viewFullAreaSize()
+    dw, _ = te.textEditView().viewDisplayedSize()
+    assert ox == max(0, fw - dw)
+
+
+def test_textedit_view_scroll_left_does_not_affect_vertical_offset():
+    '''Test that scrolling left/right doesn't affect vertical scroll position'''
+    tev = ttk.TTkTextEditView(size=(20, 5))
+    tev.setLineWrapMode(ttk.TTkK.LineWrapMode.NoWrap)
+    tall_wide_text = '\n'.join('z' * 50 for _ in range(15))
+    tev.setText(tall_wide_text)
+
+    # Set a specific vertical position
+    _, oy = 0, 7
+    tev.viewMoveTo(0, oy)
+    _, oy_before = tev.getViewOffsets()
+    assert oy_before == 7
+
+    # Scroll LEFT
+    tev.scrollTo(ttk.TTkK.TextEditEdge.LEFT)
+    _, oy_after = tev.getViewOffsets()
+    assert oy_after == oy_before  # Vertical position unchanged
+
+    # Scroll RIGHT
+    tev.scrollTo(ttk.TTkK.TextEditEdge.RIGHT)
+    _, oy_after = tev.getViewOffsets()
+    assert oy_after == oy_before  # Vertical position unchanged
+
+
+def test_textedit_view_scroll_right_does_not_affect_vertical_offset():
+    '''Test that scrolling right doesn't affect vertical scroll position'''
+    tev = ttk.TTkTextEditView(size=(20, 5))
+    tev.setLineWrapMode(ttk.TTkK.LineWrapMode.NoWrap)
+    tall_wide_text = '\n'.join('a' * 50 for _ in range(15))
+    tev.setText(tall_wide_text)
+
+    # Set a specific vertical position
+    oy = 10
+    tev.viewMoveTo(0, oy)
+    _, oy_before = tev.getViewOffsets()
+    assert oy_before == oy
+
+    # Scroll RIGHT
+    tev.scrollTo(ttk.TTkK.TextEditEdge.RIGHT)
+    _, oy_after = tev.getViewOffsets()
+    assert oy_after == oy_before  # Vertical position unchanged

@@ -212,15 +212,13 @@ class TTkTextEditView(TTkAbstractScrollView):
             '_textCursor',
             '_extraSelections',
             '_textWrap', '_lineWrapMode', '_lastWrapUsed',
+            '_followBottom',
             '_replace',
             '_readOnly', '_multiCursor',
             '_clipboard',
             '_lineMap',
             # '_preview', '_previewWidth',
             '_multiLine',
-            # # Forwarded Methods
-            # 'wrapWidth',    'setWrapWidth',
-            # 'wordWrapMode', 'setWordWrapMode',
             # Signals
             '_currentColorChanged', '_cursorPositionChanged_sig',
             '_undoAvailable_sig', '_redoAvailable_sig',
@@ -232,17 +230,11 @@ class TTkTextEditView(TTkAbstractScrollView):
     _textCursor:TTkTextCursor
     _lineMap: _TextEditLineMap
 
-    #    in order to support the line wrap, I need to divide the full data text in;
-    #    _textDocument = the entire text divided in lines, easy to add/remove/append lines
-    #    _textWrap._lines     = an array of tuples for each displayed line with a pointer to a
-    #                 specific line and its slice to be shown at this coordinate;
-    #                 [ (line, (posFrom, posTo)), ... ]
-    #                 This is required to support the wrap feature
-
     def __init__(self, *,
                  readOnly:bool=False,
                  multiLine:bool=True,
                  document:Optional[TTkTextDocument]=None,
+                 follow:bool=False,
                  **kwargs) -> None:
         '''
         :param readOnly: In a read-only text edit the user can only navigate through the text and select text; modifying the text is not possible, defaults to **False**
@@ -253,6 +245,9 @@ class TTkTextEditView(TTkAbstractScrollView):
 
         :param document: If required an external Document can be used in this text editor, this option is useful if multiple editors share the same document as in the `demo <https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/sandbox/sandbox.html?filePath=demo/showcase/textedit.py>`__, defaults to a new Document
         :type document: :py:class:`TTkTextDocument`, optional
+
+        :param follow: If True, the text edit will automatically scroll to the bottom when new text is added, defaults to **False**
+        :type follow: bool, optional
         '''
 
         self._currentColorChanged = pyTTkSignal(TTkColor)
@@ -268,6 +263,7 @@ class TTkTextEditView(TTkAbstractScrollView):
         self._hsize:int = 0
         self._lastWrapUsed  = 0
         self._lineWrapMode = TTkK.LineWrapMode.NoWrap
+        self._followBottom = follow
         self._replace = False
         self._clipboard = TTkClipboard()
         self._setDocument(document)
@@ -377,7 +373,6 @@ class TTkTextEditView(TTkAbstractScrollView):
         self._textCursor = TTkTextCursor(document=self._textDocument)
         self._textWrap = TTkTextWrap(document=self._textDocument)
         self._textWrap.wrapChanged.connect(self._wrapChanged)
-        self._textDocument.contentsChanged.connect(self._documentChanged)
         self._textDocument.cursorPositionChanged.connect(self._cursorPositionChanged)
         self._textDocument.undoAvailable.connect(self._undoAvailable)
         self._textDocument.redoAvailable.connect(self._redoAvailable)
@@ -390,7 +385,6 @@ class TTkTextEditView(TTkAbstractScrollView):
         :param document: the text document
         :type document: :py:class:`TTkTextDocument`
         '''
-        self._textDocument.contentsChanged.disconnect(self._documentChanged)
         self._textDocument.cursorPositionChanged.disconnect(self._cursorPositionChanged)
         self._textDocument.undoAvailable.disconnect(self._undoAvailable)
         self._textDocument.redoAvailable.disconnect(self._redoAvailable)
@@ -413,6 +407,9 @@ class TTkTextEditView(TTkAbstractScrollView):
             self.viewMoveTo(ox, screen_y)
         else:
             self.update()
+        self.textChanged.emit()
+        if self._followBottom:
+            self.scrollTo(TTkK.TextEditEdge.BOTTOM)
 
     # forward textWrap Methods
     def wrapWidth(self, *args, **kwargs) -> int:
@@ -633,10 +630,61 @@ class TTkTextEditView(TTkAbstractScrollView):
         txt = self._clipboard.text()
         self.pasteEvent(txt)
 
-    @pyTTkSlot()
-    def _documentChanged(self) -> None:
-        self.textChanged.emit()
+    def follow(self) -> bool:
+        '''
+        This property holds whether the view follows the last line whenever the document changes.
 
+        :rtype: bool
+        '''
+        return self._followBottom
+
+    @pyTTkSlot(bool)
+    def setFollow(self, follow:bool) -> None:
+        '''
+        Enable or disable the follow-bottom mode.
+
+        When enabled, the view automatically scrolls to the last visible row
+        every time the underlying document changes.
+
+        :param follow: ``True`` to keep following the bottom row, ``False`` otherwise
+        :type follow: bool
+        '''
+        self._followBottom = follow
+        if follow:
+            self.scrollTo(TTkK.TextEditEdge.BOTTOM)
+
+    @pyTTkSlot()
+    def scrollTo(self, position:TTkK.TextEditEdge) -> None:
+        '''
+        Scrolls the view to the specified edge(s) of the text document.
+
+        This method allows scrolling to the top, bottom, left, or right edge of the document.
+        Multiple edges can be specified by combining them with the bitwise OR operator.
+
+        :param position: the edge(s) to scroll to
+        :type position: :py:class:`TTkK.TextEditEdge`
+        '''
+        ox, oy = self.getViewOffsets()
+        fw, fh = self.viewFullAreaSize()
+        dw, dh = self.viewDisplayedSize()
+
+        if TTkK.TextEditEdge.TOP in position:
+            oy = 0
+        elif TTkK.TextEditEdge.BOTTOM in position:
+            # Lazy-loading wrap engines (FastWrap, HybridVimWrap) estimate size()
+            # based on materialized chunks. Ensure the bottom is materialized so
+            # size() returns accurate row count instead of a prediction.
+            self._textWrap.ensureScreenRows(fh-1, 1)
+            fw, fh = self.viewFullAreaSize()
+            oy = max(0, fh-dh)
+
+        if TTkK.TextEditEdge.LEFT in position:
+            ox = 0
+        elif TTkK.TextEditEdge.RIGHT in position:
+            ox = max(0, fw-dw)
+
+        self.viewMoveTo(ox, oy)
+        
     def _rewrap(self) -> None:
         self._textWrap.rewrap()
         self.viewChanged.emit()

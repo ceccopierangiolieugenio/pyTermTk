@@ -24,7 +24,7 @@ from __future__ import annotations
 
 __all__ = ['TTkConstant', 'TTkK']
 
-from enum import Enum, IntEnum, Flag, auto
+from enum import Enum, IntEnum, Flag, IntFlag, auto
 
 class TTkConstant:
     '''Class container of all the constants used in :mod:`~TermTk`'''
@@ -101,6 +101,27 @@ class TTkConstant:
     CENTER = 0x0010
     HEADER = 0x0020
     FOOTER = 0x0040
+
+    class TextEditEdge(IntFlag):
+        '''This class type defines the edges of a text editor for scrolling operations.
+
+        .. autosummary::
+          NONE
+          TOP
+          BOTTOM
+          RIGHT
+          LEFT
+        '''
+        NONE = 0x0000
+        '''No edge specified.'''
+        TOP = 0x0001
+        '''The top edge of the text editor.'''
+        BOTTOM = 0x0002
+        '''The bottom edge of the text editor.'''
+        RIGHT = 0x0004
+        '''The right edge of the text editor.'''
+        LEFT = 0x0008
+        '''The left edge of the text editor.'''
 
     class SelectionMode(IntEnum):
         '''
@@ -442,7 +463,7 @@ class TTkConstant:
     Cursor_Blinking_Bar        = 0x0006
     Cursor_Steady_Bar          = 0x0007
 
-    class InputType(int, Flag):
+    class InputType(IntFlag):
         '''
         This enum type describes the input validation types for text input widgets.
 
@@ -523,7 +544,7 @@ class TTkConstant:
         AcceptSave	= 1
         '''Save'''
 
-    class TTkItemSelectionModel(int, Flag):
+    class TTkItemSelectionModel(IntFlag):
         '''These values describes the way the selection model will be updated.
 
         .. autosummary::
@@ -603,7 +624,7 @@ class TTkConstant:
     LayoutItem = LayoutItemTypes.LayoutItem
     WidgetItem = LayoutItemTypes.WidgetItem
 
-    class WindowFlag(int, Flag):
+    class WindowFlag(IntFlag):
         '''
         Those flags are used to enable customization of the window controls.
 
