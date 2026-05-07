@@ -674,6 +674,10 @@ class TTkTextEditView(TTkAbstractScrollView):
         if TTkK.TextEditEdge.TOP in position:
             oy = 0
         elif TTkK.TextEditEdge.BOTTOM in position:
+            # Stupid workaround to overcome the 
+            # predicted document wrap size
+            self._textWrap.screenRows(fh-1,1)
+            fw, fh = self.viewFullAreaSize()
             oy = max(0, fh-dh)
 
         if TTkK.TextEditEdge.LEFT in position:
