@@ -180,6 +180,25 @@ class TTkTextWrap():
             return _RetScreenRows(rows=[])
         return self._wrapEngine.screenRows(y=y,h=h)
 
+    @pyTTkSlot(int, int)
+    def ensureScreenRows(self, y:int, h:int) -> None:
+        '''Force materialization of wrapped rows in a viewport range.
+
+        For lazy-loading engines (FastWrap, VimWrap, HybridVimWrap), this
+        materializes the rows that would be returned by :py:meth:`screenRows`.
+        For eager engines (FullWrap, NoWrap), this is typically a no-op.
+
+        This is useful when you need :py:meth:`size()` to return an accurate
+        estimate instead of a prediction, as lazy engines improve their
+        estimates as more chunks are materialized.
+
+        :param y: first screen row to materialize.
+        :type y: int
+        :param h: number of rows to materialize.
+        :type h: int
+        '''
+        self._wrapEngine.ensureScreenRows(y=y, h=h)
+
     def rewrap(self) -> None:
         '''Force a complete wrap refresh and emit ``wrapChanged``.
 

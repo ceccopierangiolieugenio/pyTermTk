@@ -152,6 +152,25 @@ class _WrapEngine_Interface():
         '''
         raise NotImplementedError()
 
+    def ensureScreenRows(self, y:int, h:int) -> None:
+        '''Force materialization of wrapped rows in a viewport range.
+
+        For lazy-loading engines (FastWrap, VimWrap, HybridVimWrap), this
+        materializes the rows that would be returned by :py:meth:`screenRows`.
+        For eager engines (FullWrap, NoWrap), this is typically a no-op.
+
+        This is useful when you need :py:meth:`size()` to return an accurate
+        estimate instead of a prediction, as lazy engines improve their
+        estimates as more chunks are materialized.
+
+        :param y: first screen row to materialize.
+        :type y: int
+        :param h: number of rows to materialize.
+        :type h: int
+        '''
+        # Default implementation: call screenRows to force materialization
+        self.screenRows(y, h)
+
     def _clampLine(self, line:int) -> int:
         '''Clamp a line index to the valid document range.
 

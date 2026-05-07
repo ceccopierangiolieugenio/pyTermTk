@@ -219,9 +219,6 @@ class TTkTextEditView(TTkAbstractScrollView):
             '_lineMap',
             # '_preview', '_previewWidth',
             '_multiLine',
-            # # Forwarded Methods
-            # 'wrapWidth',    'setWrapWidth',
-            # 'wordWrapMode', 'setWordWrapMode',
             # Signals
             '_currentColorChanged', '_cursorPositionChanged_sig',
             '_undoAvailable_sig', '_redoAvailable_sig',
@@ -674,9 +671,10 @@ class TTkTextEditView(TTkAbstractScrollView):
         if TTkK.TextEditEdge.TOP in position:
             oy = 0
         elif TTkK.TextEditEdge.BOTTOM in position:
-            # Stupid workaround to overcome the 
-            # predicted document wrap size
-            self._textWrap.screenRows(fh-1,1)
+            # Lazy-loading wrap engines (FastWrap, HybridVimWrap) estimate size()
+            # based on materialized chunks. Ensure the bottom is materialized so
+            # size() returns accurate row count instead of a prediction.
+            self._textWrap.ensureScreenRows(fh-1, 1)
             fw, fh = self.viewFullAreaSize()
             oy = max(0, fh-dh)
 
