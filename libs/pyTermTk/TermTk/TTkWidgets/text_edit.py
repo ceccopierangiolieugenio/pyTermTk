@@ -502,6 +502,13 @@ class TTkTextEdit(TTkAbstractScrollArea):
         '''
         .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.scrollTo`
 
+        Scrolls the view to the specified edge(s) of the text document.
+
+        This method allows scrolling to the top, bottom, left, or right edge of the document.
+        Multiple edges can be specified by combining them with the bitwise OR operator.
+
+        :param position: the edge(s) to scroll to
+        :type position: :py:class:`TTkK.TextEditEdge`
         '''
         return self._textEditView.scrollTo(position=position)
     def toAnsi(self) -> str:
