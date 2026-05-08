@@ -37,17 +37,47 @@ Events
 
 :ttk:sbIntLink:`tutorial/examples,TTkLineEdit/Events.01.py`
 
-.. _Examples-Terminal:
+TTkButton
+=========
+
+Init
+----
+
+:ttk:sbIntLink:`tutorial/examples,TTkButton/Init.01.py`
+
+.. code:: bash
+
+    # to run it just exec:
+    tutorial/examples/TTkButton/Init.01.py
+    # or
+    python3 tutorial/examples/TTkButton/Init.01.py
+
+Set/Get Text
+------------
+
+
+Events
+------
+
+:ttk:sbIntLink:`tutorial/examples,TTkButton/Events.01.py`
+
+Checkable
+---------
+
+:ttk:sbIntLink:`tutorial/examples,TTkButton/Checkable.01.py`
+
+----------
+
+:ttk:sbIntLink:`tutorial/examples,TTkButton/MultiLine.01.py`
+
 
 TTkTerminal
 ===========
 
-.. note::
     This widget is available only on Linux/Mac
 
 :ttk:ghIntLink:`tutorial/examples,TTkTerminal/TerminalTab.01.Basic.py`
 
-:ttk:ghIntLink:`tutorial/examples,TTkTerminal/TerminalTab.02.AddButton.py`
 
 :ttk:ghIntLink:`tutorial/examples,TTkTerminal/TerminalTab.03.KodeTab.py`
 
@@ -55,7 +85,6 @@ TTkTerminal
 
 TTkTable
 ========
-
 :ttk:sbIntLink:`tutorial/examples,TTkTable/table.01.basic.py`
 
 :ttk:sbIntLink:`tutorial/examples,TTkTable/table.02.custom.model.01.py`
@@ -64,41 +93,63 @@ TTkTable
 
 :ttk:sbIntLink:`tutorial/examples,TTkTable/table.02.custom.model.03.py`
 
-:ttk:sbIntLink:`tutorial/examples,TTkTable/table.03.theming.color.01.py`
 
 :ttk:sbIntLink:`tutorial/examples,TTkTable/table.03.theming.color.02.py`
 
 :ttk:sbIntLink:`tutorial/examples,TTkTable/table.03.theming.color.03.py`
-
 :ttk:sbIntLink:`tutorial/examples,TTkTable/table.03.theming.headers.01.py`
 
 :ttk:sbIntLink:`tutorial/examples,TTkTable/table.03.theming.lines.01.py`
 
-:ttk:sbIntLink:`tutorial/examples,TTkTable/table.04.methods.py`
 
 :ttk:sbIntLink:`tutorial/examples,TTkTable/table.05.events.py`
 
 
-DragAndDrop
 ===========
 
 :ttk:sbIntLink:`tutorial/examples,DragAndDrop/dnd.01.basic.py`
 
-:ttk:sbIntLink:`tutorial/examples,DragAndDrop/dnd.02.events.01.py`
 
 :ttk:sbIntLink:`tutorial/examples,DragAndDrop/dnd.02.events.02.py`
 
 :ttk:sbIntLink:`tutorial/examples,DragAndDrop/dnd.03.pixmap.01.py`
-
 :ttk:sbIntLink:`tutorial/examples,DragAndDrop/dnd.03.pixmap.02.py`
 
 :ttk:sbIntLink:`tutorial/examples,DragAndDrop/dnd.03.pixmap.03.py`
 
-:ttk:sbIntLink:`tutorial/examples,DragAndDrop/dnd.03.pixmap.04.py`
 
 :ttk:sbIntLink:`tutorial/examples,DragAndDrop/dnd.04.hotSpot.01.py`
 
 
+TTkCheckbox
+===========
+
+Init
+----
+
+:ttk:sbIntLink:`tutorial/examples,TTkCheckbox/Init.01.py`
+
+.. code:: bash
+
+    # to run it just exec:
+    tutorial/examples/TTkCheckbox/Init.01.py
+    # or
+    python3 tutorial/examples/TTkCheckbox/Init.01.py
+
+Set/Get
+-------
+
+:ttk:sbIntLink:`tutorial/examples,TTkCheckbox/SetGet.01.py`
+
+Events
+------
+
+:ttk:sbIntLink:`tutorial/examples,TTkCheckbox/Events.01.py`
+
+Tristate
+--------
+
+:ttk:sbIntLink:`tutorial/examples,TTkCheckbox/Tristate.01.py`
 
 TTkTextEdit
 ===========

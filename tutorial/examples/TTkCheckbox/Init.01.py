@@ -2,7 +2,7 @@
 
 # MIT License
 #
-# Copyright (c) 2023 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
+# Copyright (c) 2026 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -22,27 +22,46 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-
+##########
 # Those 2 lines are required to use the TermTk library straight from the main folder
 import sys, os
 sys.path.append(os.path.join(sys.path[0],'../../../libs/pyTermTk'))
+##########
+
+'''
+TTkCheckbox - Basic Initialization
+
+This example demonstrates the basic creation and initialization of TTkCheckbox widgets.
+It shows checkboxes with different initial states and a disabled checkbox.
+
+Key Features:
+    - Creating a basic checkbox with a label
+    - Setting initial checked state with checked=True
+    - Disabling a checkbox using setEnabled(False)
+    - Minimal sizing based on text length
+
+Related concepts:
+    - text parameter for checkbox label
+    - checked parameter for initial state
+    - setEnabled() for disabling interaction
+'''
 
 import TermTk as ttk
 
-# layout = GridLayout
-#   It is required to allow the tabWidget to be automatically resized to the "root" area
-# mouseTrack = True (optional)
-#   It is required if we want to forward the mouse over events to the terminals
-#   i.e. the mouse over feature of pytermTk or Textual
-root = ttk.TTk(layout=ttk.TTkGridLayout(), mouseTrack=True)
+root = ttk.TTk()
 
-tab = ttk.TTkTabWidget(parent=root)
+ttk.TTkLabel(parent=root, pos=(2,1), text="Unchecked checkbox (default)")
+ttk.TTkCheckbox(parent=root, pos=(2,2), text='Option A')
 
-term = ttk.TTkTerminal()
-th = ttk.TTkTerminalHelper(term=term)
-th.runShell()
+ttk.TTkLabel(parent=root, pos=(2,4), text="Checked checkbox")
+ttk.TTkCheckbox(parent=root, pos=(2,5), text='Option B', checked=True)
 
-tab.addTab(term, "Terminal")
+ttk.TTkLabel(parent=root, pos=(2,7), text="Disabled unchecked")
+cb_dis1 = ttk.TTkCheckbox(parent=root, pos=(2,8), text='Disabled')
+cb_dis1.setEnabled(False)
 
+ttk.TTkLabel(parent=root, pos=(2,10), text="Disabled checked")
+cb_dis2 = ttk.TTkCheckbox(parent=root, pos=(2,11), text='Disabled checked', checked=True)
+cb_dis2.setEnabled(False)
 
 root.mainloop()
