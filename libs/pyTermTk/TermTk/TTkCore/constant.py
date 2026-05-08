@@ -386,6 +386,7 @@ class TTkConstant:
           NoWrap
           FullWrap
           FastWrap
+          HybridVimWrap
           VimWrap
         '''
         NoWrap = auto()
