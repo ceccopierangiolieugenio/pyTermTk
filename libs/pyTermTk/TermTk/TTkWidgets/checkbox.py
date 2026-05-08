@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-__all__ = ['TTkCheckbox']
+__all__ = ['TTkCheckbox', 'TTkCheckBox']
 
 from typing import Optional
 
@@ -242,3 +242,5 @@ class TTkCheckbox(TTkWidget):
             self._pressEvent()
             return True
         return False
+
+TTkCheckBox = TTkCheckbox

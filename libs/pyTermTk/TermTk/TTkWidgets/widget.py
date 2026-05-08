@@ -267,7 +267,13 @@ class TTkWidget(TMouseEvents, TKeyEvents, TDragEvents):
                     self._parent.update(repaint=True, updateLayout=True)
 
     def __del__(self):
-        ''' .. caution:: Don't touch this! '''
+        '''
+        Widget destructor
+
+        Performs cleanup including removal from parent layout and signal cleanup.
+
+        .. caution:: This is an internal method, do not call it directly
+        '''
         # TTkLog.debug("DESTRUCTOR")
 
         # clean all the signals, slots
@@ -280,7 +286,12 @@ class TTkWidget(TMouseEvents, TKeyEvents, TDragEvents):
             self._parent = None
 
     def name(self) -> str:
-        '''name'''
+        '''
+        Retrieve the name of this widget
+
+        :return: the widget name
+        :rtype: str
+        '''
         return self._name
 
     def setName(self, name:str) -> None:
@@ -295,11 +306,17 @@ class TTkWidget(TMouseEvents, TKeyEvents, TDragEvents):
     def setDropEventProxy(self, proxy:Callable) -> None:
         '''
         .. warning::
-            This is an alpha Method to prototype the Drag and Drop prosy feature and may change in the future
+            This is an alpha Method to prototype the Drag and Drop proxy feature and may change in the future
         '''
         self._dropEventProxy = proxy
 
     def widgetItem(self) -> TTkWidgetItem:
+        '''
+        Retrieve the widget item (layout item wrapper)
+
+        :return: the layout item for this widget
+        :rtype: :py:class:`TTkWidgetItem`
+        '''
         return self._widgetItem
 
     def paintEvent(self, canvas:TTkCanvas) -> None:
@@ -326,9 +343,28 @@ class TTkWidget(TMouseEvents, TKeyEvents, TDragEvents):
 
     @staticmethod
     def _paintChildCanvas(canvas, item, geometry, offset) -> None:
+        '''
+        Internal static method for painting child widgets on the canvas
+
+        .. note:: This is an internal method
+
+        :param canvas: the canvas to paint on
+        :type canvas: :py:class:`TTkCanvas`
+        :param item: the layout item
+        :param geometry: the geometry information
+        :param offset: the drawing offset
+        '''
         pass
 
     def paintChildCanvas(self) -> None:
+        '''
+        Paint child widgets on the canvas
+
+        This method is called during the paint process to render child widgets.
+        Override in container widgets to implement custom child rendering.
+
+        .. note:: Override this method in subclasses to handle child widget painting
+        '''
         pass
 
     def moveEvent(self, x: int, y: int) -> None:
@@ -360,6 +396,21 @@ class TTkWidget(TMouseEvents, TKeyEvents, TDragEvents):
         pass
 
     def setDefaultSize(self, arg, width: int, height: int) -> None:
+        # TODO: Get rid of this method
+        '''
+        Set default size if not already specified in arguments
+
+        This is a helper method for widgets to set default dimensions when no explicit size was provided.
+
+        .. note:: This is typically called during widget initialization
+
+        :param arg: the arguments dictionary
+        :type arg: dict
+        :param width: the default width in characters
+        :type width: int
+        :param height: the default height in characters
+        :type height: int
+        '''
         if ( 'size' in arg or
              'width' in arg or
              'height' in arg ):
@@ -428,13 +479,38 @@ class TTkWidget(TMouseEvents, TKeyEvents, TDragEvents):
         return False
 
     def _mouseEventParseChildren(self, evt:TTkMouseEvent) -> bool:
+        '''
+        Parse mouse events for child widgets
+
+        This method is called to allow container widgets to handle mouse events for their children.
+        Override this method in container widgets to parse and forward mouse events to child widgets.
+
+        .. note:: This is an internal method
+
+        :param evt: the mouse event
+        :type evt: :py:class:`TTkMouseEvent`
+        :return: True if the event was handled, False otherwise
+        :rtype: bool
+        '''
         return False
 
     _mouseOver = None
     _mouseOverTmp = None
     _mouseOverProcessed = False
     def mouseEvent(self, evt:TTkMouseEvent) -> bool:
-        ''' .. caution:: Don Not touch this! '''
+        '''
+        Handle mouse events for this widget and its children
+
+        This method handles all mouse-related events including clicks, movement, dragging, and wheel events.
+        It manages focus, hover states, and delegates events to child widgets and event handlers.
+
+        .. note:: This is an internal method
+
+        :param evt: the mouse event
+        :type evt: :py:class:`TTkMouseEvent`
+        :return: True if the event was handled, False otherwise
+        :rtype: bool
+        '''
         if not self._enabled: return False
 
         # Saving self in this global variable
@@ -536,66 +612,263 @@ class TTkWidget(TMouseEvents, TKeyEvents, TDragEvents):
         return False
 
     def setParent(self, parent) -> None:
+        '''
+        Set the parent widget
+
+        :param parent: the parent widget
+        :type parent: :py:class:`TTkContainer`
+        '''
         self._parent = parent
     def parentWidget(self):
+        '''
+        Retrieve the parent widget
+
+        :return: the parent widget or None if top-level
+        :rtype: :py:class:`TTkContainer` or None
+        '''
         return self._parent
 
-    def x(self) -> int: return self._x
-    def y(self) -> int: return self._y
-    def width(self)  -> int: return self._width
-    def height(self) -> int: return self._height
+    def x(self) -> int:
+        '''
+        Retrieve the horizontal position
 
-    def pos(self)  -> tuple[int,int]: return self._x, self._y
-    def size(self) -> tuple[int,int]: return self._width, self._height
-    def geometry(self) -> tuple[int,int,int,int]: return self._x, self._y, self._width, self._height
+        :return: the x coordinate
+        :rtype: int
+        '''
+        return self._x
+    def y(self) -> int:
+        '''
+        Retrieve the vertical position
+
+        :return: the y coordinate
+        :rtype: int
+        '''
+        return self._y
+    def width(self)  -> int:
+        '''
+        Retrieve the widget width
+
+        :return: the width in characters
+        :rtype: int
+        '''
+        return self._width
+    def height(self) -> int:
+        '''
+        Retrieve the widget height
+
+        :return: the height in characters
+        :rtype: int
+        '''
+        return self._height
+
+    def pos(self)  -> tuple[int,int]:
+        '''
+        Retrieve the widget position
+
+        :return: a tuple of (x, y) coordinates
+        :rtype: tuple[int, int]
+        '''
+        return self._x, self._y
+    def size(self) -> tuple[int,int]:
+        '''
+        Retrieve the widget size
+
+        :return: a tuple of (width, height)
+        :rtype: tuple[int, int]
+        '''
+        return self._width, self._height
+    def geometry(self) -> tuple[int,int,int,int]:
+        '''
+        Retrieve the widget geometry
+
+        :return: a tuple of (x, y, width, height)
+        :rtype: tuple[int, int, int, int]
+        '''
+        return self._x, self._y, self._width, self._height
 
     def maximumSize(self) -> tuple[int,int]:
+        '''
+        Retrieve the maximum size
+
+        :return: a tuple of (max_width, max_height)
+        :rtype: tuple[int, int]
+        '''
         return self.maximumWidth(), self.maximumHeight()
     def maxDimension(self, orientation:TTkK.Direction) -> int:
+        '''
+        Retrieve the maximum dimension for the given orientation
+
+        :param orientation: the orientation (:py:class:`TTkK.HORIZONTAL` or :py:class:`TTkK.VERTICAL`)
+        :type orientation: :py:class:`TTkK.Direction`
+        :return: the maximum dimension
+        :rtype: int
+        '''
         if orientation == TTkK.HORIZONTAL:
             return self.maximumWidth()
         else:
             return self.maximumHeight()
     def maximumHeight(self) -> int:
+        '''
+        Retrieve the maximum height
+
+        :return: the maximum height in characters
+        :rtype: int
+        '''
         return self._maxh
     def maximumWidth(self) -> int:
+        '''
+        Retrieve the maximum width
+
+        :return: the maximum width in characters
+        :rtype: int
+        '''
         return self._maxw
 
     def minimumSize(self) -> tuple[int,int]:
+        '''
+        Retrieve the minimum size
+
+        :return: a tuple of (min_width, min_height)
+        :rtype: tuple[int, int]
+        '''
         return self.minimumWidth(), self.minimumHeight()
     def minDimension(self, orientation:TTkK.Direction) -> int:
+        '''
+        Retrieve the minimum dimension for the given orientation
+
+        :param orientation: the orientation (:py:class:`TTkK.HORIZONTAL` or :py:class:`TTkK.VERTICAL`)
+        :type orientation: :py:class:`TTkK.Direction`
+        :return: the minimum dimension
+        :rtype: int
+        '''
         if orientation == TTkK.HORIZONTAL:
             return self.minimumWidth()
         else:
             return self.minimumHeight()
     def minimumHeight(self) -> int:
+        '''
+        Retrieve the minimum height
+
+        :return: the minimum height in characters
+        :rtype: int
+        '''
         return self._minh
     def minimumWidth(self) -> int:
+        '''
+        Retrieve the minimum width
+
+        :return: the minimum width in characters
+        :rtype: int
+        '''
         return self._minw
 
-    def setMaximumSize(self, maxw: int, maxh: int):
+    def setMaximumSize(self, maxw: int, maxh: int) -> None:
+        '''
+        Set the maximum size of the widget
+
+        :param maxw: the maximum width in characters
+        :type maxw: int
+        :param maxh: the maximum height in characters
+        :type maxh: int
+        '''
         self.setMaximumWidth(maxw)
         self.setMaximumHeight(maxh)
-    def setMaximumHeight(self, maxh: int):
+
+    def _clampCurrentSizeToBoundaries(self) -> bool:
+        '''
+        Clamp the current widget size to its minimum and maximum boundaries
+
+        .. note:: This is an internal method
+
+        :return: True if resize was needed, False otherwise
+        :rtype: bool
+        '''
+        neww = max(self._minw, min(self._width,  self._maxw))
+        newh = max(self._minh, min(self._height, self._maxh))
+        if neww == self._width and newh == self._height:
+            return False
+        self.resize(neww, newh)
+        return True
+
+    def setMaximumHeight(self, maxh: int) -> None:
+        '''
+        Set the maximum height of the widget
+
+        If the current height exceeds the new maximum, the widget will be resized.
+        If the minimum height exceeds the new maximum, the minimum height is adjusted.
+
+        :param maxh: the maximum height in characters
+        :type maxh: int
+        '''
         if self._maxh == maxh: return
         self._maxh = maxh
-        self.update(updateLayout=True, updateParent=True)
-    def setMaximumWidth(self, maxw: int):
+        if self._minh > self._maxh:
+            self._minh = self._maxh
+        if not self._clampCurrentSizeToBoundaries():
+            self.update(updateLayout=True, updateParent=True)
+
+    def setMaximumWidth(self, maxw: int) -> None:
+        '''
+        Set the maximum width of the widget
+
+        If the current width exceeds the new maximum, the widget will be resized.
+        If the minimum width exceeds the new maximum, the minimum width is adjusted.
+
+        :param maxw: the maximum width in characters
+        :type maxw: int
+        '''
         if self._maxw == maxw: return
         self._maxw = maxw
-        self.update(updateLayout=True, updateParent=True)
+        if self._minw > self._maxw:
+            self._minw = self._maxw
+        if not self._clampCurrentSizeToBoundaries():
+            self.update(updateLayout=True, updateParent=True)
 
-    def setMinimumSize(self, minw: int, minh: int):
+    def setMinimumSize(self, minw: int, minh: int) -> None:
+        '''
+        Set the minimum size of the widget
+
+        :param minw: the minimum width in characters
+        :type minw: int
+        :param minh: the minimum height in characters
+        :type minh: int
+        '''
         self.setMinimumWidth(minw)
         self.setMinimumHeight(minh)
-    def setMinimumHeight(self, minh: int):
+
+    def setMinimumHeight(self, minh: int) -> None:
+        '''
+        Set the minimum height of the widget
+
+        If the current height is less than the new minimum, the widget will be resized.
+        If the maximum height is less than the new minimum, the maximum height is adjusted.
+
+        :param minh: the minimum height in characters
+        :type minh: int
+        '''
         if self._minh == minh: return
         self._minh = minh
-        self.update(updateLayout=True, updateParent=True)
-    def setMinimumWidth(self, minw: int):
+        if self._maxh < self._minh:
+            self._maxh = self._minh
+        if not self._clampCurrentSizeToBoundaries():
+            self.update(updateLayout=True, updateParent=True)
+
+    def setMinimumWidth(self, minw: int) -> None:
+        '''
+        Set the minimum width of the widget
+
+        If the current width is less than the new minimum, the widget will be resized.
+        If the maximum width is less than the new minimum, the maximum width is adjusted.
+
+        :param minw: the minimum width in characters
+        :type minw: int
+        '''
         if self._minw == minw: return
         self._minw = minw
-        self.update(updateLayout=True, updateParent=True)
+        if self._maxw < self._minw:
+            self._maxw = self._minw
+        if not self._clampCurrentSizeToBoundaries():
+            self.update(updateLayout=True, updateParent=True)
 
     @pyTTkSlot()
     def show(self) -> None:
@@ -648,12 +921,18 @@ class TTkWidget(TMouseEvents, TKeyEvents, TDragEvents):
         Set the visibility status of this widget
 
         :param visible: status
-        :type visible: bool:
+        :type visible: bool
         '''
         if visible: self.show()
         else: self.hide()
 
     def isVisibleAndParent(self) -> bool:
+        '''
+        Check if the widget and all its parents are visible
+
+        :return: True if the widget and all its parents are visible, False otherwise
+        :rtype: bool
+        '''
         return ( self._visible and
             ( self._parent is not None ) and
             self._parent.isVisibleAndParent() )
@@ -701,7 +980,11 @@ class TTkWidget(TMouseEvents, TKeyEvents, TDragEvents):
             self._parent.update(updateLayout=True)
 
     def _setPendingMouseRelease(self) -> None:
-        '''set the Pending Mouse Release Widget'''
+        '''
+        Set this widget as the pending mouse release widget
+
+        .. note:: This is an internal method used to track which widget should receive a mouse release event
+        '''
         if not (_p:=self._parent):
              return
         _p._setPendingMouseReleaseWidget(self)
@@ -742,9 +1025,21 @@ class TTkWidget(TMouseEvents, TKeyEvents, TDragEvents):
         return bool((_p:=self._parent) and _p._getFocusWidget() is self)
 
     def getCanvas(self) -> TTkCanvas:
+        '''
+        Retrieve the widget canvas
+
+        :return: the canvas object used for drawing
+        :rtype: :py:class:`TTkCanvas`
+        '''
         return self._canvas
 
     def focusPolicy(self) -> TTkK.FocusPolicy:
+        '''
+        Retrieve the focus policy of this widget
+
+        :return: the focus policy
+        :rtype: :py:class:`TTkK.FocusPolicy`
+        '''
         return self._focus_policy
 
     def setFocusPolicy(self, policy:TTkK.FocusPolicy) -> None:
@@ -767,10 +1062,28 @@ class TTkWidget(TMouseEvents, TKeyEvents, TDragEvents):
         '''
         self._focus_policy = policy
 
-    def focusInEvent(self) -> None: pass
-    def focusOutEvent(self) -> None: pass
+    def focusInEvent(self) -> None:
+        '''
+        Callback triggered when the widget receives focus
+
+        .. note:: Override this method to handle focus in events
+        '''
+        pass
+    def focusOutEvent(self) -> None:
+        '''
+        Callback triggered when the widget loses focus
+
+        .. note:: Override this method to handle focus out events
+        '''
+        pass
 
     def isEntered(self) -> bool:
+        '''
+        Check if the mouse cursor is currently over this widget
+
+        :return: True if the mouse is over this widget, False otherwise
+        :rtype: bool
+        '''
         return self._mouseOver == self
 
     def isEnabled(self) -> bool:
@@ -810,7 +1123,7 @@ class TTkWidget(TMouseEvents, TKeyEvents, TDragEvents):
 
     @pyTTkSlot(bool)
     def setDisabled(self, disabled:bool=True) -> None:
-        '''This property holds whether the widget is disnabled
+        '''This property holds whether the widget is disabled
 
         This is a convenience function wrapped around :py:meth:`setEnabled` where (not disabled) is used
 
@@ -820,12 +1133,32 @@ class TTkWidget(TMouseEvents, TKeyEvents, TDragEvents):
         self.setEnabled(not disabled)
 
     def toolTip(self) -> TTkString:
+        '''
+        Retrieve the widget tooltip
+
+        :return: the tooltip text
+        :rtype: :py:class:`TTkString`
+        '''
         return self._toolTip
 
     def setToolTip(self, toolTip: TTkString) -> None:
+        '''
+        Set the widget tooltip
+
+        :param toolTip: the tooltip text to display
+        :type toolTip: :py:class:`TTkString`
+        '''
         self._toolTip = TTkString(toolTip)
 
     def getWidgetByName(self, name: str):
+        '''
+        Get a widget by its name (recursively searches this widget and its children)
+
+        :param name: the widget name to search for
+        :type name: str
+        :return: the widget with the given name, or None if not found
+        :rtype: :py:class:`TTkWidget` or None
+        '''
         if name == self._name:
             return self
         return None
@@ -842,12 +1175,30 @@ class TTkWidget(TMouseEvents, TKeyEvents, TDragEvents):
     _S_RELEASED = 0x40
 
     def style(self) -> Dict:
+        '''
+        Retrieve a copy of the widget style dictionary
+
+        :return: a dictionary containing the style configuration
+        :rtype: dict
+        '''
         return self._style.copy()
 
     def currentStyle(self) -> Dict:
+        '''
+        Retrieve the currently active style
+
+        :return: a dictionary containing the active style
+        :rtype: dict
+        '''
         return self._currentStyle
 
     def setCurrentStyle(self, style) -> None:
+        '''
+        Set the currently active style
+
+        :param style: the style dictionary to apply
+        :type style: dict
+        '''
         if style == self._currentStyle:
             return
         self._currentStyle = style
@@ -855,6 +1206,15 @@ class TTkWidget(TMouseEvents, TKeyEvents, TDragEvents):
         self.update()
 
     def setStyle(self, style:Dict[str,Dict]={}) -> None:
+        '''
+        Set the style for the widget
+
+        The style dictionary should have keys for different states like 'default', 'hover', 'focus', 'disabled', 'clicked'.
+        Each state has its own style dictionary.
+
+        :param style: the style configuration dictionary
+        :type style: dict[str, dict]
+        '''
         if not style:
             style = self.classStyle.copy()
         defaultStyle = style['default']
@@ -864,6 +1224,14 @@ class TTkWidget(TMouseEvents, TKeyEvents, TDragEvents):
         self._processStyleEvent(TTkWidget._S_DEFAULT)
 
     def mergeStyle(self, style) -> None:
+        '''
+        Merge additional style properties with the existing style
+
+        This allows updating only specific style properties without replacing the entire style.
+
+        :param style: a dictionary with style properties to merge
+        :type style: dict
+        '''
         cs = None
         # for field in style:
         #     if field in self._style:
@@ -879,6 +1247,18 @@ class TTkWidget(TMouseEvents, TKeyEvents, TDragEvents):
             self.setCurrentStyle(self._style[cs])
 
     def _processStyleEvent(self, evt=_S_DEFAULT) -> bool:
+        '''
+        Process a style event and update the widget appearance
+
+        This internal method handles style transitions based on widget state events.
+
+        .. note:: This is an internal method
+
+        :param evt: the style event type
+        :type evt: int
+        :return: True if the style was changed, False otherwise
+        :rtype: bool
+        '''
         if not self._style: return False
         if not self._enabled and 'disabled' in self._style:
             self.setCurrentStyle(self._style['disabled'])
@@ -909,19 +1289,46 @@ class TTkWidget(TMouseEvents, TKeyEvents, TDragEvents):
 
     # Widget Cursor Helpers
     def enableWidgetCursor(self, enable:bool=True) -> None:
+        '''
+        Enable or disable the widget cursor
+
+        :param enable: True to enable the cursor, False to disable
+        :type enable: bool
+        '''
         self._widgetCursorEnabled = enable
         self._pushWidgetCursor()
 
     def disableWidgetCursor(self, disable:bool=True) -> None:
+        '''
+        Disable or enable the widget cursor
+
+        This is a convenience method that is equivalent to enableWidgetCursor(not disable).
+
+        :param disable: True to disable the cursor, False to enable
+        :type disable: bool
+        '''
         self._widgetCursorEnabled = not disable
         self._pushWidgetCursor()
 
     def setWidgetCursor(self, pos=None, type=None) -> None:
+        '''
+        Set the widget cursor position and type
+
+        :param pos: the cursor position as (x, y) tuple, or None to keep current
+        :type pos: tuple[int, int] or None
+        :param type: the cursor type (e.g., :py:class:`TTkK.Cursor_Blinking_Bar`), or None to keep current
+        :type type: int or None
+        '''
         self._widgetCursor     = pos  if pos  else self._widgetCursor
         self._widgetCursorType = type if type else self._widgetCursorType
         self._pushWidgetCursor()
 
-    def _pushWidgetCursor(self):
+    def _pushWidgetCursor(self) -> None:
+        '''
+        Push the widget cursor to the terminal display
+
+        .. note:: This is an internal method
+        '''
         if ( self._widgetCursorEnabled and
              self._visible and
              ( self.hasFocus() or self == TTkHelper.cursorWidget() ) ):
