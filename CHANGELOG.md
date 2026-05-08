@@ -1,5 +1,36 @@
 # Changelog
 
+## [0.50.0-a0](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/pyTermTk-v0.49.0-a0...pyTermTk-v0.50.0-a0) (2026-05-08)
+
+
+### Fixes
+
+* **docs:** support optimized cx_Freeze packaging ([#621](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/621)) ([f8f1b58](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/f8f1b58fffa4896307b93464dc7b73ec61b25bfa))
+* **drivers:** run on BSD and other unix ([#620](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/620)) ([a57e5e2](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/a57e5e2d4d3a53393a3386fa1c0cbe6817443f89))
+* **terminal:** remove color modifier for the VT100 Erase in Line ([#614](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/614)) ([2037345](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/20373458bd4a0ca29c85d8be0c095b144f5de65e))
+* **TTkLineEdit:** paste str ([#610](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/610)) ([0006afd](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/0006afdf5d38a496a27ec458f0838e70dbdb1ae8))
+
+
+### Features
+
+* **textedit:** add follow and scroll API for text editor  ([#627](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/627)) ([871ec41](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/871ec41b26edffbccadace8cf586a360f9751dd3))
+* **widget:** add size constraint tests for TTkWidget ([#630](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/630)) ([4f12ad6](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/4f12ad66136466683305853bd65841d264459dfb))
+
+
+### Chores
+
+* add HybridVimWrap ([#626](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/626)) ([fd40f1a](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/fd40f1a707a169557ebe1c0c51e9d41bfc295f03))
+* fix single entry slots ([#623](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/623)) ([02f621d](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/02f621d8afdaddb13f5a591b760613d3c8889d7f))
+* responsive tab close button ([#609](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/609)) ([19ab5df](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/19ab5df32cfeb80c575e7c8a2b64685b4c80a9e6))
+* **terminal:** tests and bugfixes ([#612](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/612)) ([0dbab3c](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/0dbab3c43b046c3bcd489cc8185b057acb57f8e7))
+* **textedit:** add fastwrap ([#615](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/615)) ([925c9cd](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/925c9cdeb92fd92d07a160fc2a1355d54848bd65))
+* **tree:** add selection api ([#611](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/611)) ([bb9475a](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/bb9475a6c17ed90bdbed6cd2ca368e6267262d2a))
+
+
+### Refactors
+
+* **textEdit:** refactor the text edit and define a library for the wrap engines ([#617](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/617)) ([6f083fc](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/6f083fcf2d43aacb8891f3ddbdee78fbe3ac1782))
+
 ## [0.49.0-a0](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/pyTermTk-v0.48.1-a0...pyTermTk-v0.49.0-a0) (2026-01-07)
 
 

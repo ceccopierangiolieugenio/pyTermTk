@@ -24,7 +24,7 @@
         "Topic :: Software Development :: User Interfaces",
     ]
     dependencies = [
-        'pyTermTk>=0.48.1-a0',
+        'pyTermTk>=0.50.0-a0',
         'pytest',
         'appdirs',
         'copykitten',
