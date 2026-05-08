@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.48.2-a0](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/ttkode-v0.48.1-a0...ttkode-v0.48.2-a0) (2026-05-08)
+
+
+### Chores
+
+* fix single entry slots ([#623](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/623)) ([02f621d](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/02f621d8afdaddb13f5a591b760613d3c8889d7f))
+* responsive tab close button ([#609](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/609)) ([19ab5df](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/19ab5df32cfeb80c575e7c8a2b64685b4c80a9e6))
+
 ## [0.48.1-a0](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/ttkode-v0.5.3-a.2...ttkode-v0.48.1-a0) (2025-11-10)
 
 
