@@ -12,7 +12,7 @@
 
 doc: .venv
 	. .venv/bin/activate ; \
-		uv pip install '.[docs]' ;
+		uv pip install '.[docs]' --no-cache ;
 	. .venv/bin/activate ; \
 		make -C docs/source/ clean ; \
 		make -C docs/source/ html ;
