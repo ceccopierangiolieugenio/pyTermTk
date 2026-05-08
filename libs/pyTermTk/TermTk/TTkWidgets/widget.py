@@ -24,7 +24,7 @@ from __future__ import annotations
 
 __all__ = ['TTkWidget']
 
-from typing import ( TYPE_CHECKING, Callable, Any, List, Optional, Tuple, Union, Dict )
+from typing import ( TYPE_CHECKING, Callable, Any, List, Optional, Tuple, Union, Dict, TypeVar, Generic )
 
 from TermTk.TTkCore.cfg       import TTkCfg, TTkGlbl
 from TermTk.TTkCore.constant  import TTkK
@@ -136,10 +136,10 @@ class TTkWidget(TMouseEvents, TKeyEvents, TDragEvents):
     _widgetItem:TTkWidgetItem
     _visible:bool
     _enabled:bool
-    _style:Dict
-    _currentStyle:Dict
+    _style:Dict[str, Any]
+    _currentStyle:Dict[str, Any]
     _toolTip:TTkString
-    _dropEventProxy:Any
+    _dropEventProxy:Callable[..., Any]
     _widgetCursor:Tuple[int,int]
     _widgetCursorEnabled:bool
     _widgetCursorType:int
@@ -161,8 +161,8 @@ class TTkWidget(TMouseEvents, TKeyEvents, TDragEvents):
             visible  : bool = True,
             enabled  : bool = True,
             toolTip  : Union[TTkString,str] = '',
-            style    : Optional[Dict] = None,
-            addStyle : Optional[Dict] = None,
+            style    : Optional[Dict[str, Any]] = None,
+            addStyle : Optional[Dict[str, Any]] = None,
             **kwargs) -> None:
         '''
         :param name: the name of the widget, defaults to ""
@@ -266,7 +266,7 @@ class TTkWidget(TMouseEvents, TKeyEvents, TDragEvents):
                     self._parent.layout().addWidget(self)
                     self._parent.update(repaint=True, updateLayout=True)
 
-    def __del__(self):
+    def __del__(self) -> None:
         '''
         Widget destructor
 
@@ -281,8 +281,9 @@ class TTkWidget(TMouseEvents, TKeyEvents, TDragEvents):
         #    att = self.__getattribute__(an)
         #    # TODO: TBD, I need to find the time to do this
 
-        if hasattr(self._parent,'layout') and self._parent.layout():
-            self._parent.layout().removeWidget(self)
+        parent = self._parent
+        if parent is not None and hasattr(parent, 'layout') and parent.layout():
+            parent.layout().removeWidget(self)
             self._parent = None
 
     def name(self) -> str:
@@ -303,7 +304,7 @@ class TTkWidget(TMouseEvents, TKeyEvents, TDragEvents):
         '''
         self._name = name
 
-    def setDropEventProxy(self, proxy:Callable) -> None:
+    def setDropEventProxy(self, proxy: Callable[..., Any]) -> None:
         '''
         .. warning::
             This is an alpha Method to prototype the Drag and Drop proxy feature and may change in the future
@@ -449,7 +450,7 @@ class TTkWidget(TMouseEvents, TKeyEvents, TDragEvents):
         self.resizeEvent(width,height)
         self.sizeChanged.emit(width,height)
 
-    def setGeometry(self, x: int, y: int, width: int, height: int):
+    def setGeometry(self, x: int, y: int, width: int, height: int) -> None:
         ''' Resize and move the widget
 
         :param x: the horizontal position
@@ -611,7 +612,7 @@ class TTkWidget(TMouseEvents, TKeyEvents, TDragEvents):
 
         return False
 
-    def setParent(self, parent) -> None:
+    def setParent(self, parent: Optional[TTkContainer]) -> None:
         '''
         Set the parent widget
 
@@ -619,7 +620,7 @@ class TTkWidget(TMouseEvents, TKeyEvents, TDragEvents):
         :type parent: :py:class:`TTkContainer`
         '''
         self._parent = parent
-    def parentWidget(self):
+    def parentWidget(self) -> Optional[TTkContainer]:
         '''
         Retrieve the parent widget
 
@@ -1150,7 +1151,7 @@ class TTkWidget(TMouseEvents, TKeyEvents, TDragEvents):
         '''
         self._toolTip = TTkString(toolTip)
 
-    def getWidgetByName(self, name: str):
+    def getWidgetByName(self, name: str) -> Optional[TTkWidget]:
         '''
         Get a widget by its name (recursively searches this widget and its children)
 
@@ -1174,7 +1175,7 @@ class TTkWidget(TMouseEvents, TKeyEvents, TDragEvents):
     _S_PRESSED  = 0x20
     _S_RELEASED = 0x40
 
-    def style(self) -> Dict:
+    def style(self) -> Dict[str, Any]:
         '''
         Retrieve a copy of the widget style dictionary
 
@@ -1183,7 +1184,7 @@ class TTkWidget(TMouseEvents, TKeyEvents, TDragEvents):
         '''
         return self._style.copy()
 
-    def currentStyle(self) -> Dict:
+    def currentStyle(self) -> Dict[str, Any]:
         '''
         Retrieve the currently active style
 
@@ -1192,7 +1193,7 @@ class TTkWidget(TMouseEvents, TKeyEvents, TDragEvents):
         '''
         return self._currentStyle
 
-    def setCurrentStyle(self, style) -> None:
+    def setCurrentStyle(self, style: Dict[str, Any]) -> None:
         '''
         Set the currently active style
 
@@ -1205,7 +1206,7 @@ class TTkWidget(TMouseEvents, TKeyEvents, TDragEvents):
         self.currentStyleChanged.emit(style)
         self.update()
 
-    def setStyle(self, style:Dict[str,Dict]={}) -> None:
+    def setStyle(self, style: Dict[str, Dict[str, Any]] = {}) -> None:
         '''
         Set the style for the widget
 
@@ -1223,7 +1224,7 @@ class TTkWidget(TMouseEvents, TKeyEvents, TDragEvents):
         self._style = mergeStyle
         self._processStyleEvent(TTkWidget._S_DEFAULT)
 
-    def mergeStyle(self, style) -> None:
+    def mergeStyle(self, style: Dict[str, Any]) -> None:
         '''
         Merge additional style properties with the existing style
 
@@ -1310,7 +1311,7 @@ class TTkWidget(TMouseEvents, TKeyEvents, TDragEvents):
         self._widgetCursorEnabled = not disable
         self._pushWidgetCursor()
 
-    def setWidgetCursor(self, pos=None, type=None) -> None:
+    def setWidgetCursor(self, pos: Optional[Tuple[int,int]] = None, type: Optional[int] = None) -> None:
         '''
         Set the widget cursor position and type
 
