@@ -183,7 +183,11 @@ class _WrapEngine_HybridVimWrap(_WrapEngine_Interface):
                         return _RetScreenPositions(main=_RetScreenPosition(x=0,y=0))
                     l = data_line.substring(fr,pos).tab2spaces(self._wrapState.tabSpaces)
                     x, y = l.termWidth(), i
-                    return _RetScreenPositions(main=_RetScreenPosition(x=x,y=y))
+                    extra = None
+                    # Check if this is the end of the line and the beginning of the next one
+                    if pos == row.stop and not row.last_slice:
+                        extra = _RetScreenPosition(x=0,y=y+1)
+                    return _RetScreenPositions(main=_RetScreenPosition(x=x,y=y), extra=extra)
                 elif dt == line and row.last_slice and pos > row.stop:
                     data_line = text_document.dataLine(dt)
                     l = data_line.substring(row.start, row.stop).tab2spaces(self._wrapState.tabSpaces)

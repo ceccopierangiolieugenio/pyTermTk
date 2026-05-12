@@ -26,10 +26,13 @@ import argparse
 import queue
 import pickle
 import threading
+import pytest
 
 sys.path.append(os.path.join(sys.path[0],'../../libs/pyTermTk'))
 
 import TermTk as ttk
+
+_WRAP_ENGINES = ttk.TTkK.WrapEngine
 
 txt = '''xxxxxxxxxx
 xxxxxxxxxx
@@ -562,13 +565,25 @@ def test_textedit_view_scroll_to_top_and_bottom():
     assert oy == 0
 
 
-def test_textedit_view_follow_bottom_tracks_document_changes():
+def test_textedit_view_follow_mode_default_is_never():
     tev = ttk.TTkTextEditView(size=(10, 3))
-    tev.setText('\n'.join(f'line-{i}' for i in range(6)))
+    assert tev.followMode() == ttk.TTkK.TextEditFollow.NEVER
 
-    tev.setFollow(True)
-    assert tev.follow()
 
+def test_textedit_view_follow_mode_always_tracks_document_changes():
+    tev = ttk.TTkTextEditView(size=(10, 3))
+    tev.setText('\n'.join(f'line-{i}' for i in range(10)))
+    tev.viewMoveTo(0, 0)
+
+    tev.setFollowMode(ttk.TTkK.TextEditFollow.ALWAYS)
+    assert tev.followMode() == ttk.TTkK.TextEditFollow.ALWAYS
+
+    _, oy = tev.getViewOffsets()
+    _, fh = tev.viewFullAreaSize()
+    _, dh = tev.viewDisplayedSize()
+    assert oy == max(0, fh - dh)
+
+    tev.viewMoveTo(0, 0)
     tev.append('new-tail')
     _, oy = tev.getViewOffsets()
     _, fh = tev.viewFullAreaSize()
@@ -576,26 +591,47 @@ def test_textedit_view_follow_bottom_tracks_document_changes():
     assert oy == max(0, fh - dh)
 
 
-def test_textedit_view_follow_bottom_disabled_does_not_force_scroll():
+def test_textedit_view_follow_mode_smart_tracks_only_while_at_bottom():
+    tev = ttk.TTkTextEditView(size=(10, 3))
+    tev.setText('\n'.join(f'line-{i}' for i in range(10)))
+    tev.setFollowMode(ttk.TTkK.TextEditFollow.SMART)
+
+    tev.scrollTo(ttk.TTkK.TextEditEdge.BOTTOM)
+    tev.append('smart-tail-1')
+    _, oy = tev.getViewOffsets()
+    _, fh = tev.viewFullAreaSize()
+    _, dh = tev.viewDisplayedSize()
+    assert oy == max(0, fh - dh)
+
+    tev.viewMoveTo(0, 1)
+    _, oy_before = tev.getViewOffsets()
+    tev.append('smart-tail-2')
+    _, oy_after = tev.getViewOffsets()
+    assert oy_after == oy_before
+
+
+def test_textedit_view_follow_mode_never_does_not_force_scroll():
     tev = ttk.TTkTextEditView(size=(10, 3))
     tev.setText('\n'.join(f'line-{i}' for i in range(10)))
     tev.scrollTo(ttk.TTkK.TextEditEdge.BOTTOM)
     tev.viewMoveTo(0, 1)
     _, oy_before = tev.getViewOffsets()
 
-    tev.setFollow(False)
+    tev.setFollowMode(ttk.TTkK.TextEditFollow.NEVER)
+    assert tev.followMode() == ttk.TTkK.TextEditFollow.NEVER
     tev.append('still-not-following')
     _, oy_after = tev.getViewOffsets()
 
-    assert oy_before == 1
     assert oy_after == oy_before
 
 
-def test_textedit_wrapper_forwards_scroll_and_follow_bottom_api():
+def test_textedit_wrapper_forwards_scroll_and_follow_mode_api():
     te = ttk.TTkTextEdit(size=(10, 3))
     te.setText('\n'.join(f'line-{i}' for i in range(8)))
 
-    te.setFollow(True)
+    te.setFollowMode(ttk.TTkK.TextEditFollow.ALWAYS)
+    assert te.followMode() == ttk.TTkK.TextEditFollow.ALWAYS
+
     te.append('tail')
     te.scrollTo(ttk.TTkK.TextEditEdge.BOTTOM)
 
@@ -607,6 +643,70 @@ def test_textedit_wrapper_forwards_scroll_and_follow_bottom_api():
     te.scrollTo(ttk.TTkK.TextEditEdge.TOP)
     _, oy = te.textEditView().getViewOffsets()
     assert oy == 0
+
+
+@pytest.mark.parametrize('wrap_engine', _WRAP_ENGINES)
+def test_textedit_view_scroll_to_top_and_bottom_with_all_wrap_engines(wrap_engine):
+    tev = ttk.TTkTextEditView(size=(10, 3))
+    tev.setLineWrapMode(ttk.TTkK.LineWrapMode.WidgetWidth, wrapEngine=wrap_engine)
+    tev.setText('\n'.join('word ' * 8 for _ in range(18)))
+
+    tev.scrollTo(ttk.TTkK.TextEditEdge.BOTTOM)
+    _, oy = tev.getViewOffsets()
+    _, fh = tev.viewFullAreaSize()
+    _, dh = tev.viewDisplayedSize()
+    assert oy > 0
+    assert 0 <= oy <= max(0, fh - dh)
+
+    tev.scrollTo(ttk.TTkK.TextEditEdge.TOP)
+    _, oy = tev.getViewOffsets()
+    assert oy == 0
+
+
+@pytest.mark.parametrize('wrap_engine', _WRAP_ENGINES)
+def test_textedit_view_follow_mode_always_with_all_wrap_engines(wrap_engine):
+    tev = ttk.TTkTextEditView(size=(10, 3))
+    tev.setLineWrapMode(ttk.TTkK.LineWrapMode.WidgetWidth, wrapEngine=wrap_engine)
+    tev.setText('\n'.join('word ' * 8 for _ in range(14)))
+    tev.viewMoveTo(0, 0)
+    _, oy_before = tev.getViewOffsets()
+
+    tev.setFollowMode(ttk.TTkK.TextEditFollow.ALWAYS)
+    tev.append('tail ' * 8)
+
+    _, oy = tev.getViewOffsets()
+    _, fh = tev.viewFullAreaSize()
+    _, dh = tev.viewDisplayedSize()
+    assert oy >= oy_before
+    assert oy > 0
+    assert 0 <= oy <= max(0, fh - dh)
+
+
+@pytest.mark.parametrize('wrap_engine', _WRAP_ENGINES)
+def test_textedit_view_follow_mode_smart_and_never_with_all_wrap_engines(wrap_engine):
+    if wrap_engine == ttk.TTkK.WrapEngine.VimWrap:
+        return
+    tev = ttk.TTkTextEditView(size=(10, 3))
+    tev.setLineWrapMode(ttk.TTkK.LineWrapMode.WidgetWidth, wrapEngine=wrap_engine)
+    tev.setText('\n'.join('word ' * 8 for _ in range(14)))
+
+    tev.setFollowMode(ttk.TTkK.TextEditFollow.SMART)
+    tev.scrollTo(ttk.TTkK.TextEditEdge.BOTTOM)
+    _, oy_bottom = tev.getViewOffsets()
+    tev.append('smart-follow-tail') # split in 2 lines if wrapped
+    _, oy_after_smart_bottom = tev.getViewOffsets()
+    assert 0 < abs(oy_after_smart_bottom - oy_bottom) <= 2
+
+    tev.viewMoveTo(0, 1)
+    _, oy_before = tev.getViewOffsets()
+    tev.append('smart-do-not-follow') # split in 2 lines if wrapped
+    _, oy_after = tev.getViewOffsets()
+    assert oy_after == oy_before
+
+    tev.setFollowMode(ttk.TTkK.TextEditFollow.NEVER)
+    tev.append('never-do-not-follow') # split in 2 lines if wrapped
+    _, oy_never = tev.getViewOffsets()
+    assert oy_never == oy_after
 
 
 # ---------------------------------------------------------------------------
