@@ -123,6 +123,22 @@ class TTkConstant:
         LEFT = 0x0008
         '''The left edge of the text editor.'''
 
+    class TextEditFollow(IntEnum):
+        '''This class type defines the auto-scroll follow mode of a text editor.
+
+        .. autosummary::
+          NEVER
+          ALWAYS
+          SMART
+        '''
+        NEVER = 0
+        '''Never auto-scroll; the view stays where the user left it.'''
+        ALWAYS = 1
+        '''Always scroll to the bottom whenever the document changes.'''
+        SMART = 2
+        '''Scroll to the bottom only when the view is already at the bottom,
+        allowing the user to scroll back and read without being interrupted.'''
+
     class SelectionMode(IntEnum):
         '''
         This class type indicates how the view responds to user selections.

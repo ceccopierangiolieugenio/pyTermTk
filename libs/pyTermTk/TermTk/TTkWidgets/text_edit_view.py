@@ -212,7 +212,7 @@ class TTkTextEditView(TTkAbstractScrollView):
             '_textCursor',
             '_extraSelections',
             '_textWrap', '_lineWrapMode', '_lastWrapUsed',
-            '_followBottom',
+            '_following', '_followMode',
             '_replace',
             '_readOnly', '_multiCursor',
             '_clipboard',
@@ -234,7 +234,7 @@ class TTkTextEditView(TTkAbstractScrollView):
                  readOnly:bool=False,
                  multiLine:bool=True,
                  document:Optional[TTkTextDocument]=None,
-                 follow:bool=False,
+                 followMode:TTkK.TextEditFollow=TTkK.TextEditFollow.NEVER,
                  **kwargs) -> None:
         '''
         :param readOnly: In a read-only text edit the user can only navigate through the text and select text; modifying the text is not possible, defaults to **False**
@@ -246,8 +246,8 @@ class TTkTextEditView(TTkAbstractScrollView):
         :param document: If required an external Document can be used in this text editor, this option is useful if multiple editors share the same document as in the `demo <https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/sandbox/sandbox.html?filePath=demo/showcase/textedit.py>`__, defaults to a new Document
         :type document: :py:class:`TTkTextDocument`, optional
 
-        :param follow: If True, the text edit will automatically scroll to the bottom when new text is added, defaults to **False**
-        :type follow: bool, optional
+        :param followMode: Controls auto-scroll behaviour when the document changes, defaults to :py:class:`TTkK.TextEditFollow.NEVER`
+        :type followMode: :py:class:`TTkK.TextEditFollow`, optional
         '''
 
         self._currentColorChanged = pyTTkSignal(TTkColor)
@@ -263,7 +263,8 @@ class TTkTextEditView(TTkAbstractScrollView):
         self._hsize:int = 0
         self._lastWrapUsed  = 0
         self._lineWrapMode = TTkK.LineWrapMode.NoWrap
-        self._followBottom = follow
+        self._following = followMode == TTkK.TextEditFollow.ALWAYS
+        self._followMode = followMode
         self._replace = False
         self._clipboard = TTkClipboard()
         self._setDocument(document)
@@ -408,7 +409,9 @@ class TTkTextEditView(TTkAbstractScrollView):
         else:
             self.update()
         self.textChanged.emit()
-        if self._followBottom:
+        if self._followMode == TTkK.TextEditFollow.ALWAYS:
+            self.scrollTo(TTkK.TextEditEdge.BOTTOM)
+        elif self._following and self._followMode == TTkK.TextEditFollow.SMART:
             self.scrollTo(TTkK.TextEditEdge.BOTTOM)
 
     # forward textWrap Methods
@@ -436,7 +439,7 @@ class TTkTextEditView(TTkAbstractScrollView):
         '''
         return self._textWrap.setWordWrapMode(*args, **kwargs)
 
-    def extraSelections(self) -> List[ExtraSelection]:
+    def extraSelections(self) -> List[TTkTextEditView.ExtraSelection]:
         '''
         Returns previously set extra selections.
 
@@ -444,7 +447,7 @@ class TTkTextEditView(TTkAbstractScrollView):
         '''
         return self._extraSelections
 
-    def setExtraSelections(self, extraSelections:List[ExtraSelection]) -> None:
+    def setExtraSelections(self, extraSelections:List[TTkTextEditView.ExtraSelection]) -> None:
         '''
         This function allows temporarily marking certain regions in the document with a given color,
         specified as selections. This can be useful for example in a programming editor to mark a
@@ -630,27 +633,24 @@ class TTkTextEditView(TTkAbstractScrollView):
         txt = self._clipboard.text()
         self.pasteEvent(txt)
 
-    def follow(self) -> bool:
+    def followMode(self) -> TTkK.TextEditFollow:
         '''
-        This property holds whether the view follows the last line whenever the document changes.
+        This property holds the auto-scroll follow mode of the view.
 
-        :rtype: bool
+        :rtype: :py:class:`TTkK.TextEditFollow`
         '''
-        return self._followBottom
+        return self._followMode
 
-    @pyTTkSlot(bool)
-    def setFollow(self, follow:bool) -> None:
+    @pyTTkSlot(TTkK.TextEditFollow)
+    def setFollowMode(self, mode:TTkK.TextEditFollow) -> None:
         '''
-        Enable or disable the follow-bottom mode.
+        Set the auto-scroll follow mode.
 
-        When enabled, the view automatically scrolls to the last visible row
-        every time the underlying document changes.
-
-        :param follow: ``True`` to keep following the bottom row, ``False`` otherwise
-        :type follow: bool
+        :param mode: the follow mode
+        :type mode: :py:class:`TTkK.TextEditFollow`
         '''
-        self._followBottom = follow
-        if follow:
+        self._followMode = mode
+        if mode == TTkK.TextEditFollow.ALWAYS:
             self.scrollTo(TTkK.TextEditEdge.BOTTOM)
 
     @pyTTkSlot()
@@ -728,15 +728,6 @@ class TTkTextEditView(TTkAbstractScrollView):
             return self.width(), self._textWrap.size()
         return self.width(), self._textWrap.size()
 
-    # @pyTTkSlot()
-    # def _check_document_wrap_position(self):
-    #     ox, oy = self.getViewOffsets()
-    #     w, h = self.size()
-    #     y = self._textWrap.screenRows(oy,h).y
-    #     if y == oy:
-    #         return
-    #     self.viewMoveTo(ox, y)
-
     @pyTTkSlot(int,int)
     def _view_moved_event(self, x:int, y:int):
         h = self.height()
@@ -744,6 +735,9 @@ class TTkTextEditView(TTkAbstractScrollView):
         self._lineMap.line = 0 if not screen_rows.rows else screen_rows.rows[0].line
         self._lineMap.line_pos = 0 if not screen_rows.rows else screen_rows.rows[0].start
         self._lineMap.pos_y = y
+        if self._followMode == TTkK.TextEditFollow.SMART:
+            _, _fh = self.viewFullAreaSize()
+            self._following = y+h >= _fh
 
     @pyTTkSlot()
     def _pushCursor(self, moving_left:bool=False) -> None:

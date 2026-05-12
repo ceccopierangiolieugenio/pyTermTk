@@ -66,7 +66,7 @@ class TTkTextEdit(TTkAbstractScrollArea):
             "cut", "copy", "paste",
             "undo", "redo", "isUndoAvailable", "isRedoAvailable",
             "find", "ensureCursorVisible",
-            "follow", "setFollow",
+            "followMode", "setFollowMode",
             "scrollTo",
             # Exported Methods
             "toAnsi", "toRawText", "toPlainText" # , "toHtml", "toMarkdown",
@@ -362,7 +362,7 @@ class TTkTextEdit(TTkAbstractScrollArea):
         :type color: :py:class:`TTkColor`
         '''
         return self._textEditView.setColor(color=color)
-    def extraSelections(self) -> List[ExtraSelection]:
+    def extraSelections(self) -> List[TTkTextEditView.ExtraSelection]:
         '''
         .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.extraSelections`
 
@@ -371,7 +371,7 @@ class TTkTextEdit(TTkAbstractScrollArea):
         :rtype: List[:py:class:`ExtraSelection`]
         '''
         return self._textEditView.extraSelections()
-    def setExtraSelections(self, extraSelections:List[ExtraSelection]) -> None:
+    def setExtraSelections(self, extraSelections:List[TTkTextEditView.ExtraSelection]) -> None:
         '''
         .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.setExtraSelections`
 
@@ -474,29 +474,26 @@ class TTkTextEdit(TTkAbstractScrollArea):
 
         '''
         return self._textEditView.ensureCursorVisible()
-    def follow(self) -> bool:
+    def followMode(self) -> TTkK.TextEditFollow:
         '''
-        .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.follow`
+        .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.followMode`
 
-        This property holds whether the view follows the last line whenever the document changes.
+        This property holds the auto-scroll follow mode of the view.
 
-        :rtype: bool
+        :rtype: :py:class:`TTkK.TextEditFollow`
         '''
-        return self._textEditView.follow()
-    @pyTTkSlot(bool)
-    def setFollow(self, follow:bool) -> None:
+        return self._textEditView.followMode()
+    @pyTTkSlot(TTkK.TextEditFollow)
+    def setFollowMode(self, mode:TTkK.TextEditFollow) -> None:
         '''
-        .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.setFollow`
+        .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.setFollowMode`
 
-        Enable or disable the follow-bottom mode.
+        Set the auto-scroll follow mode.
 
-        When enabled, the view automatically scrolls to the last visible row
-        every time the underlying document changes.
-
-        :param follow: ``True`` to keep following the bottom row, ``False`` otherwise
-        :type follow: bool
+        :param mode: the follow mode
+        :type mode: :py:class:`TTkK.TextEditFollow`
         '''
-        return self._textEditView.setFollow(follow=follow)
+        return self._textEditView.setFollowMode(mode=mode)
     @pyTTkSlot()
     def scrollTo(self, position:TTkK.TextEditEdge) -> None:
         '''
