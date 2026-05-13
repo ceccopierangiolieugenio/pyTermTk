@@ -22,7 +22,7 @@
 
 __all__ = ['TTkTextEditView', 'TTkTextEdit', 'TTkTextEditRuler']
 
-from typing import List,Optional,TYPE_CHECKING,TypeAlias
+from typing import List,Optional,TYPE_CHECKING
 
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.color import TTkColor
@@ -38,6 +38,12 @@ from TermTk.TTkWidgets.text_edit_ruler import TTkTextEditRuler
 
 from TermTk.TTkAbstract.abstractscrollarea import TTkAbstractScrollArea, _ForwardData
 from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollViewGridLayout
+
+try:
+    from typing import TypeAlias
+except ImportError:
+    # TODO: Remove this workaround for Python 3.9
+    TypeAlias = type  # Fallback for Python < 3.10 without typing_extensions
 
 class TTkTextEdit(TTkAbstractScrollArea):
     __doc__ = '''
