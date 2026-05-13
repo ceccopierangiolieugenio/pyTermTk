@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-__all__:list = []
+__all__:list[str] = []
 
 from dataclasses import dataclass
 from threading import RLock
@@ -190,8 +190,9 @@ class _WrapEngine_HybridVimWrap(_WrapEngine_Interface):
                     return _RetScreenPositions(main=_RetScreenPosition(x=x,y=y), extra=extra)
                 elif dt == line and row.last_slice and pos > row.stop:
                     data_line = text_document.dataLine(dt)
-                    l = data_line.substring(row.start, row.stop).tab2spaces(self._wrapState.tabSpaces)
-                    x, y = l.termWidth(), i
+                    if data_line is not None:
+                        l = data_line.substring(row.start, row.stop).tab2spaces(self._wrapState.tabSpaces)
+                        x, y = l.termWidth(), i
                     return _RetScreenPositions(main=_RetScreenPosition(x=x,y=y))
             line = self._clampLine(line)
             data_line = text_document.dataLine(line)

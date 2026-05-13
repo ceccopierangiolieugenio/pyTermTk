@@ -45,7 +45,7 @@ class TTkTextEdit(TTkAbstractScrollArea):
 
     ''' + (TTkTextEditView.__doc__ or '')
 
-    ExtraSelection = TTkTextEditView.ExtraSelection
+    class ExtraSelection(TTkTextEditView.ExtraSelection): ...
 
     _ttk_forward:_ForwardData = _ForwardData(
         forwardClass=TTkTextEditView ,
