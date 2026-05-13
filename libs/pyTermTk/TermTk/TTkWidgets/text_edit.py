@@ -22,7 +22,7 @@
 
 __all__ = ['TTkTextEditView', 'TTkTextEdit', 'TTkTextEditRuler']
 
-from typing import List,Optional,TYPE_CHECKING
+from typing import List,Optional,TYPE_CHECKING,TypeAlias
 
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.color import TTkColor
@@ -45,7 +45,7 @@ class TTkTextEdit(TTkAbstractScrollArea):
 
     ''' + (TTkTextEditView.__doc__ or '')
 
-    class ExtraSelection(TTkTextEditView.ExtraSelection): ...
+    ExtraSelection: TypeAlias = TTkTextEditView.ExtraSelection
 
     _ttk_forward:_ForwardData = _ForwardData(
         forwardClass=TTkTextEditView ,
@@ -362,7 +362,7 @@ class TTkTextEdit(TTkAbstractScrollArea):
         :type color: :py:class:`TTkColor`
         '''
         return self._textEditView.setColor(color=color)
-    def extraSelections(self) -> List[TTkTextEditView.ExtraSelection]:
+    def extraSelections(self) -> List[ExtraSelection]:
         '''
         .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.extraSelections`
 
@@ -371,7 +371,7 @@ class TTkTextEdit(TTkAbstractScrollArea):
         :rtype: List[:py:class:`ExtraSelection`]
         '''
         return self._textEditView.extraSelections()
-    def setExtraSelections(self, extraSelections:List[TTkTextEditView.ExtraSelection]) -> None:
+    def setExtraSelections(self, extraSelections:List[ExtraSelection]) -> None:
         '''
         .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.setExtraSelections`
 

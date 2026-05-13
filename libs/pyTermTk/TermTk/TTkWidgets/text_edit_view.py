@@ -439,7 +439,7 @@ class TTkTextEditView(TTkAbstractScrollView):
         '''
         return self._textWrap.setWordWrapMode(*args, **kwargs)
 
-    def extraSelections(self) -> List[TTkTextEditView.ExtraSelection]:
+    def extraSelections(self) -> List[ExtraSelection]:
         '''
         Returns previously set extra selections.
 
@@ -447,7 +447,7 @@ class TTkTextEditView(TTkAbstractScrollView):
         '''
         return self._extraSelections
 
-    def setExtraSelections(self, extraSelections:List[TTkTextEditView.ExtraSelection]) -> None:
+    def setExtraSelections(self, extraSelections:List[ExtraSelection]) -> None:
         '''
         This function allows temporarily marking certain regions in the document with a given color,
         specified as selections. This can be useful for example in a programming editor to mark a
