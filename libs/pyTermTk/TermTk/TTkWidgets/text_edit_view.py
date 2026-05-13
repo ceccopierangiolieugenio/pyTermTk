@@ -212,7 +212,7 @@ class TTkTextEditView(TTkAbstractScrollView):
             '_textCursor',
             '_extraSelections',
             '_textWrap', '_lineWrapMode', '_lastWrapUsed',
-            '_following', '_followMode',
+            '_smartFollowing', '_followMode',
             '_replace',
             '_readOnly', '_multiCursor',
             '_clipboard',
@@ -263,7 +263,7 @@ class TTkTextEditView(TTkAbstractScrollView):
         self._hsize:int = 0
         self._lastWrapUsed  = 0
         self._lineWrapMode = TTkK.LineWrapMode.NoWrap
-        self._following = followMode == TTkK.TextEditFollow.ALWAYS
+        self._smartFollowing = followMode != TTkK.TextEditFollow.NEVER
         self._followMode = followMode
         self._replace = False
         self._clipboard = TTkClipboard()
@@ -411,7 +411,7 @@ class TTkTextEditView(TTkAbstractScrollView):
         self.textChanged.emit()
         if self._followMode == TTkK.TextEditFollow.ALWAYS:
             self.scrollTo(TTkK.TextEditEdge.BOTTOM)
-        elif self._following and self._followMode == TTkK.TextEditFollow.SMART:
+        elif self._smartFollowing and self._followMode == TTkK.TextEditFollow.SMART:
             self.scrollTo(TTkK.TextEditEdge.BOTTOM)
 
     # forward textWrap Methods
@@ -652,6 +652,11 @@ class TTkTextEditView(TTkAbstractScrollView):
         self._followMode = mode
         if mode == TTkK.TextEditFollow.ALWAYS:
             self.scrollTo(TTkK.TextEditEdge.BOTTOM)
+        elif  mode == TTkK.TextEditFollow.SMART:
+            h = self.height()
+            _, oy = self.getViewOffsets()
+            _, _fh = self.viewFullAreaSize()
+            self._smartFollowing = oy+h >= _fh
 
     @pyTTkSlot()
     def scrollTo(self, position:TTkK.TextEditEdge) -> None:
@@ -737,7 +742,7 @@ class TTkTextEditView(TTkAbstractScrollView):
         self._lineMap.pos_y = y
         if self._followMode == TTkK.TextEditFollow.SMART:
             _, _fh = self.viewFullAreaSize()
-            self._following = y+h >= _fh
+            self._smartFollowing = y+h >= _fh
 
     @pyTTkSlot()
     def _pushCursor(self, moving_left:bool=False) -> None:

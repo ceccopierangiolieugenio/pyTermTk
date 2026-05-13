@@ -610,6 +610,21 @@ def test_textedit_view_follow_mode_smart_tracks_only_while_at_bottom():
     assert oy_after == oy_before
 
 
+@pytest.mark.parametrize('initial_text', ['', 'line-0'])
+def test_textedit_view_follow_mode_smart_from_underfilled_document_starts_following_when_full(initial_text):
+    tev = ttk.TTkTextEditView(size=(10, 3))
+    tev.setText(initial_text)
+    tev.setFollowMode(ttk.TTkK.TextEditFollow.SMART)
+
+    for i in range(1, 7):
+        tev.append(f'line-{i}')
+
+    _, oy = tev.getViewOffsets()
+    _, fh = tev.viewFullAreaSize()
+    _, dh = tev.viewDisplayedSize()
+    assert oy == max(0, fh - dh)
+
+
 def test_textedit_view_follow_mode_never_does_not_force_scroll():
     tev = ttk.TTkTextEditView(size=(10, 3))
     tev.setText('\n'.join(f'line-{i}' for i in range(10)))
