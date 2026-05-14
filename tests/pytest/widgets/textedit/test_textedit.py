@@ -612,18 +612,28 @@ def test_textedit_view_follow_mode_smart_tracks_only_while_at_bottom():
 
 @pytest.mark.parametrize('initial_text', ['', 'line-0'])
 def test_textedit_view_follow_mode_smart_from_underfilled_document_starts_following_when_full(initial_text):
-    tev = ttk.TTkTextEditView(size=(10, 3))
-    tev.setText(initial_text)
-    tev.setFollowMode(ttk.TTkK.TextEditFollow.SMART)
+    tev_1 = ttk.TTkTextEditView(size=(10, 3))
+    tev_1.setText(initial_text)
+    tev_1.setFollowMode(ttk.TTkK.TextEditFollow.SMART)
 
     for i in range(1, 7):
-        tev.append(f'line-{i}')
+        tev_1.append(f'line-{i}')
 
-    _, oy = tev.getViewOffsets()
-    _, fh = tev.viewFullAreaSize()
-    _, dh = tev.viewDisplayedSize()
+    _, oy = tev_1.getViewOffsets()
+    _, fh = tev_1.viewFullAreaSize()
+    _, dh = tev_1.viewDisplayedSize()
     assert oy == max(0, fh - dh)
 
+    tev_2 = ttk.TTkTextEditView(size=(10, 3),followMode=ttk.TTkK.TextEditFollow.SMART)
+    tev_2.setText(initial_text)
+
+    for i in range(1, 7):
+        tev_2.append(f'line-{i}')
+
+    _, oy = tev_2.getViewOffsets()
+    _, fh = tev_2.viewFullAreaSize()
+    _, dh = tev_2.viewDisplayedSize()
+    assert oy == max(0, fh - dh)
 
 def test_textedit_view_follow_mode_never_does_not_force_scroll():
     tev = ttk.TTkTextEditView(size=(10, 3))

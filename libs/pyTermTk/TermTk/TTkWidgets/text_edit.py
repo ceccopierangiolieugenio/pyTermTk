@@ -92,7 +92,7 @@ class TTkTextEdit(TTkAbstractScrollArea):
                  readOnly:bool=False,
                  multiLine:bool=True,
                  document:Optional[TTkTextDocument]=None,
-                 follow:bool=False,
+                 followMode:TTkK.TextEditFollow=TTkK.TextEditFollow.NEVER,
 
                  # TTkText init
                  textEditView:Optional[TTkTextEditView]=None,
@@ -108,7 +108,7 @@ class TTkTextEdit(TTkAbstractScrollArea):
         :type lineNumberStarting: int, optional
         '''
         super().__init__(parent=parent, visible=visible, **kwargs)
-        self._textEditView = textEditView if textEditView else TTkTextEditView(readOnly=readOnly, multiLine=multiLine, document=document, follow=follow)
+        self._textEditView = textEditView if textEditView else TTkTextEditView(readOnly=readOnly, multiLine=multiLine, document=document, followMode=followMode)
         # self.setFocusPolicy(self._textEditView.focusPolicy())
         # self._textEditView.setFocusPolicy(TTkK.ParentFocus)
         self._lineNumber = lineNumber

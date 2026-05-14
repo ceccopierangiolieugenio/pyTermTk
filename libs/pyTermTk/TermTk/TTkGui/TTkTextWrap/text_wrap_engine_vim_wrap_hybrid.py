@@ -190,9 +190,10 @@ class _WrapEngine_HybridVimWrap(_WrapEngine_Interface):
                     return _RetScreenPositions(main=_RetScreenPosition(x=x,y=y), extra=extra)
                 elif dt == line and row.last_slice and pos > row.stop:
                     data_line = text_document.dataLine(dt)
-                    if data_line is not None:
-                        l = data_line.substring(row.start, row.stop).tab2spaces(self._wrapState.tabSpaces)
-                        x, y = l.termWidth(), i
+                    if data_line is None:
+                        return _RetScreenPositions(main=_RetScreenPosition(x=0,y=0))
+                    l = data_line.substring(row.start, row.stop).tab2spaces(self._wrapState.tabSpaces)
+                    x, y = l.termWidth(), i
                     return _RetScreenPositions(main=_RetScreenPosition(x=x,y=y))
             line = self._clampLine(line)
             data_line = text_document.dataLine(line)
