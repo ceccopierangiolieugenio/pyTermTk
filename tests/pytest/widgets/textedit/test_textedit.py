@@ -709,8 +709,6 @@ def test_textedit_view_follow_mode_always_with_all_wrap_engines(wrap_engine):
 
 @pytest.mark.parametrize('wrap_engine', _WRAP_ENGINES)
 def test_textedit_view_follow_mode_smart_and_never_with_all_wrap_engines(wrap_engine):
-    if wrap_engine == ttk.TTkK.WrapEngine.VimWrap:
-        return
     tev = ttk.TTkTextEditView(size=(10, 3))
     tev.setLineWrapMode(ttk.TTkK.LineWrapMode.WidgetWidth, wrapEngine=wrap_engine)
     tev.setText('\n'.join('word ' * 8 for _ in range(14)))
@@ -720,7 +718,7 @@ def test_textedit_view_follow_mode_smart_and_never_with_all_wrap_engines(wrap_en
     _, oy_bottom = tev.getViewOffsets()
     tev.append('smart-follow-tail') # split in 2 lines if wrapped
     _, oy_after_smart_bottom = tev.getViewOffsets()
-    assert 0 < abs(oy_after_smart_bottom - oy_bottom) <= 2
+    assert 0 < abs(oy_after_smart_bottom - oy_bottom) <= 2 if not wrap_engine==_WRAP_ENGINES.VimWrap else 15
 
     tev.viewMoveTo(0, 1)
     _, oy_before = tev.getViewOffsets()

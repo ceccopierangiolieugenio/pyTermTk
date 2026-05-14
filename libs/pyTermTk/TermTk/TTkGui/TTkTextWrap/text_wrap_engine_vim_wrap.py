@@ -43,6 +43,14 @@ class _LastWindow():
     y:int
     h:int
     buffer:List[_WrapLine]
+    bottomBuffer:List[_WrapLine]
+
+    def clean(self, y:Optional[int] = None, h:Optional[int] = None):
+        self.buffer = []
+        if y is not None:
+            self.y = y
+        if h is not None:
+            self.h = h
 
 class _WrapEngine_VimWrap(_WrapEngine_Interface):
     '''Lazy wrap engine optimized around the active viewport.
@@ -68,7 +76,7 @@ class _WrapEngine_VimWrap(_WrapEngine_Interface):
         :param state: shared wrap state.
         :type state: :py:class:`_WrapState`
         '''
-        self._lastWindow = _LastWindow(y=0,h=0,buffer=[])
+        self._lastWindow = _LastWindow(y=0,h=0,buffer=[], bottomBuffer=[])
         self._cacheLock = RLock()
         super().__init__(state)
 
@@ -83,8 +91,24 @@ class _WrapEngine_VimWrap(_WrapEngine_Interface):
         :return: logical line count.
         :rtype: int
         '''
+        document = self._wrapState.textDocument
+        num_lines = document.lineCount()
+        if not (w := self._wrapState.size):
+            return num_lines
         with self._cacheLock:
-            return self._wrapState.textDocument.lineCount() + self._lastWindow.h - 1
+            h = self._lastWindow.h
+            if h == 0:
+                return num_lines
+            if not self._lastWindow.bottomBuffer:
+                last_height = 0
+                for _i, _line in enumerate(self._wrapState.textDocument.dataLines(slice(num_lines,None,-1))):
+                    row = self._wrapLine(w,_i,_line)
+                    self._lastWindow.bottomBuffer.extend(row)
+                    last_height += len(row)
+                    if last_height >= h:
+                        break
+            return num_lines - self._lastWindow.bottomBuffer[-1].line + len(self._lastWindow.bottomBuffer)
+        
 
     def rewrap(self, data: Optional[_ReWrapData]=None) -> None:
         '''Invalidate cached viewport data.
@@ -97,7 +121,8 @@ class _WrapEngine_VimWrap(_WrapEngine_Interface):
         :type data: Optional[:py:class:`_ReWrapData`]
         '''
         with self._cacheLock:
-            self._lastWindow = _LastWindow(y=0, h=0, buffer=[])
+            self._lastWindow.clean()
+            self._lastWindow.bottomBuffer = []
 
     def dataToScreenPosition(self, line:int, pos:int) -> _RetScreenPositions:
         '''Map document coordinates to screen coordinates.
@@ -236,7 +261,7 @@ class _WrapEngine_VimWrap(_WrapEngine_Interface):
         :rtype: :py:class:`_RetScreenRows`
         '''
         if not (w := self._wrapState.size):
-            return []
+            return _RetScreenRows(rows=[])
 
         with self._cacheLock:
             if (self._lastWindow.y == y and
@@ -244,7 +269,7 @@ class _WrapEngine_VimWrap(_WrapEngine_Interface):
                 self._lastWindow.buffer):
                 return _RetScreenRows(rows=self._lastWindow.buffer)
 
-            self._lastWindow = _LastWindow(y=y, h=h, buffer=[])
+            self._lastWindow.clean(y=y, h=h)
 
             for _i,_line in enumerate(self._wrapState.textDocument.dataLines(slice(y,y+h)), start=max(0,y)):
                 self._lastWindow.buffer.extend(self._wrapLine(w,_i,_line))
