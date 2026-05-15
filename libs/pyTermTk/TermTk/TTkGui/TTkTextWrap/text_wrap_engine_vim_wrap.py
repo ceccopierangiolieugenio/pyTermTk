@@ -81,14 +81,18 @@ class _WrapEngine_VimWrap(_WrapEngine_Interface):
         super().__init__(state)
 
     def size(self) -> int:
-        '''Return an approximate number of addressable screen rows.
+        '''Return the maximum addressable line count based on wrapped content.
 
-        For visible rows this behaves like wrapped coordinates. Outside the
-        cached viewport, this engine falls back to unwrapped line semantics,
-        so the returned value is intentionally an approximation suitable for
-        scrolling/navigation bounds.
+        Calculates the exact scroll position where the document ends, accounting
+        for line wrapping. By processing lines backward from the document end
+        until accumulating at least ``h`` wrapped rows, this method determines
+        where backward processing started in terms of unwrapped line indices,
+        then adds the accumulated wrapped row count.
 
-        :return: logical line count.
+        This ensures that at position ``size - 1``, scrolling up by one line
+        would still display wrapped content below the viewport's bottom border.
+
+        :return: maximum addressable line count for scrolling.
         :rtype: int
         '''
         document = self._wrapState.textDocument
@@ -107,7 +111,10 @@ class _WrapEngine_VimWrap(_WrapEngine_Interface):
                     self._lastWindow.bottomBuffer.extend(row)
                     if last_height >= h:
                         break
-            return num_lines - self._lastWindow.bottomBuffer[-1].line -1 + len(self._lastWindow.bottomBuffer)
+            # Total wrapped size = (unwrapped lines before processed range) +
+            # (wrapped rows accumulated from the end)
+            first_processed_line = num_lines - self._lastWindow.bottomBuffer[-1].line
+            return first_processed_line + len(self._lastWindow.bottomBuffer)
         
 
     def rewrap(self, data: Optional[_ReWrapData]=None) -> None:
