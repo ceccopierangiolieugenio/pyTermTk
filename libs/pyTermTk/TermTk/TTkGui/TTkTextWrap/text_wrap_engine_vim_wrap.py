@@ -101,13 +101,13 @@ class _WrapEngine_VimWrap(_WrapEngine_Interface):
                 return num_lines
             if not self._lastWindow.bottomBuffer:
                 last_height = 0
-                for _i, _line in enumerate(self._wrapState.textDocument.dataLines(slice(num_lines,None,-1))):
+                for _i, _line in enumerate(self._wrapState.textDocument.dataLines(slice(num_lines,None,-1)), start=1):
                     row = self._wrapLine(w,_i,_line)
-                    self._lastWindow.bottomBuffer.extend(row)
                     last_height += len(row)
+                    self._lastWindow.bottomBuffer.extend(row)
                     if last_height >= h:
                         break
-            return num_lines - self._lastWindow.bottomBuffer[-1].line + len(self._lastWindow.bottomBuffer)
+            return num_lines - self._lastWindow.bottomBuffer[-1].line -1 + len(self._lastWindow.bottomBuffer)
         
 
     def rewrap(self, data: Optional[_ReWrapData]=None) -> None:

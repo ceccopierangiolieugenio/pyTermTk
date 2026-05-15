@@ -197,10 +197,10 @@ def test_vim_wrap_size_returns_total_document_line_count():
     doc, tw = _mk_vim_wrap(text, width=1)
 
     # Before a viewport cache is built, h=0 contribution is -1.
-    assert tw.size() == doc.lineCount() - 1
+    assert tw.size() == doc.lineCount() 
 
     tw.screenRows(0, 5)
-    assert tw.size() == doc.lineCount() + 4
+    assert tw.size() == doc.lineCount() - 1
 
 
 def test_vim_wrap_empty_document():

@@ -718,8 +718,8 @@ def test_textedit_view_follow_mode_smart_and_never_with_all_wrap_engines(wrap_en
     _, oy_bottom = tev.getViewOffsets()
     tev.append('smart-follow-tail') # split in 2 lines if wrapped
     _, oy_after_smart_bottom = tev.getViewOffsets()
-    assert 0 < abs(oy_after_smart_bottom - oy_bottom) <= 2 if not wrap_engine==_WRAP_ENGINES.VimWrap else 15
-
+    assert 0 < abs(oy_after_smart_bottom - oy_bottom) <= (2 if not wrap_engine==_WRAP_ENGINES.VimWrap else 14)
+    
     tev.viewMoveTo(0, 1)
     _, oy_before = tev.getViewOffsets()
     tev.append('smart-do-not-follow') # split in 2 lines if wrapped
