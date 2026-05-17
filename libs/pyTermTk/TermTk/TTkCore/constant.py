@@ -412,8 +412,6 @@ class TTkConstant:
         '''Chunk based document Wrap, Default wrap [Fast] (Scrolling position is estimated)'''
         HybridWrap = auto()
         '''Hybrid implementation between a screen based Wrap and FastWrap, [Faster] (Scrolling position is estimated)'''
-        # VimWrap = auto()
-        # '''Wrap applied only in the displayed area, [Fastest] (the scrolling is snap to the beginning of the lines)'''
 
     class LineWrapMode(IntEnum):
         '''Those constants describes which wrapping status is required in the document

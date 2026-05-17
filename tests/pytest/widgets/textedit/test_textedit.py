@@ -814,7 +814,7 @@ def test_textedit_view_follow_mode_always_keeps_following_while_hidden(wrap_engi
 def test_textedit_view_follow_mode_smart_starts_following_after_initial_zero_height_all_engines(wrap_engine):
     '''SMART follow mode honours zero-height initialization for all wrap engines.
 
-    This specifically covers HybridVimWrap and VimWrap: when a widget is
+    This specifically covers HybridVimWrap: when a widget is
     created with height=0 (e.g. not yet attached to a visible tab) and
     SMART follow is set, ``_smartFollowing`` must be True so the view tracks
     the bottom once the widget is realized.
