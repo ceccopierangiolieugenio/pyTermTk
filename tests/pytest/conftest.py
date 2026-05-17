@@ -35,3 +35,69 @@ moduleInput.TTkInput = Mock_TTkInput
 
 sys.modules['TermTk.TTkCore.drivers.term_unix_common']  = moduleTerm
 sys.modules['TermTk.TTkCore.TTkTerm.input'] = moduleInput
+
+
+# ---------------------------------------------------------------------------
+# Pytest fixtures and helpers for common test utilities
+# ---------------------------------------------------------------------------
+
+import pytest
+from typing import Callable
+import TermTk as ttk
+
+
+class _FakeCanvas(ttk.TTkCanvas):
+    '''Lightweight test canvas with text-search convenience helpers.'''
+
+    def text_in_line(self, line:int, text:str) -> bool:
+        '''Check whether ``text`` appears in a specific canvas line.
+
+        :param line: target line index in the internal canvas buffer
+        :type line: int
+        :param text: substring to search for
+        :type text: str
+        :return: ``True`` if the text is found in the selected line, otherwise ``False``
+        :rtype: bool
+        '''
+        if 0 < line < len(self._data):
+            return text in ''.join(self._data[line])
+        return False
+    
+    def text_in_canvas(self, text:str) -> bool:
+        '''Check whether ``text`` appears in any line of the canvas.
+
+        :param text: substring to search for
+        :type text: str
+        :return: ``True`` if the text is found in at least one line, otherwise ``False``
+        :rtype: bool
+        '''
+        for data_line in self._data:
+            if text in ''.join(data_line):
+                return True
+        return False
+
+@pytest.fixture
+def fake_canvas() -> Callable[[int, int], _FakeCanvas]:
+    '''Factory fixture that creates TTkCanvas instances for testing.
+    
+    Usage:
+        def test_something(fake_canvas):
+            canvas = fake_canvas(10, 5)  # Create 10x5 canvas
+            # Use canvas in test
+    
+    Returns:
+        A callable that creates TTkCanvas instances with specified width and height.
+    '''
+    def _create_canvas(width: int = 10, height: int = 5) -> _FakeCanvas:
+        '''Create a TTkCanvas with the specified dimensions.
+        
+        :param width: canvas width in terminal cells, defaults to 10
+        :type width: int
+        :param height: canvas height in terminal cells, defaults to 5
+        :type height: int
+        :return: initialized TTkCanvas instance
+        :rtype: ttk.TTkCanvas
+        '''
+        return _FakeCanvas(width=width, height=height)
+
+    return _create_canvas
