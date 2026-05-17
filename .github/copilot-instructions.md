@@ -54,7 +54,7 @@ Widgets handle events by overriding template methods:
 - `keyEvent()`, `mousePressEvent()`, `paintEvent()` - Core events
 - `focusInEvent()`, `focusOutEvent()` - Focus management
 - `dropEvent()`, `dragEnterEvent()` - Drag & drop
-- Always return `True` if event is handled, `False` to propagate
+- Always return `True` if the event is handled by the widget; return `False` to allow propagation to parent widgets or other handlers
 
 ## Development Workflows
 
@@ -104,7 +104,7 @@ style = self.currentStyle()  # Get theme-aware colors
 - HTML5 export capabilities via `tools/webExporter/`
 
 ### Documentation & Docstrings
-Use **Sphinx-compatible docstring format** with Epytext-style field lists:
+Use **Sphinx-compatible docstrings** with Epytext-style field lists:
 ```python
 # In any sphinx reference
 # i.e. ':py:class:' or ':py:meth:'
@@ -202,14 +202,18 @@ i.e., whenever the user checks or unchecks it.
 ```
 
 **Key conventions**:
-- Use single quotes `'''` for docstrings
-- When adding Python code, type hints are required; use standard `typing` module types (or builtin generic types where equivalent) whenever possible
-- Include ASCII art for visual widgets showing borders/layout
-- Link to demo files with full GitHub URLs
-- Use `:py:class:` for cross-references to other classes
-- Document all parameters with `:param name:` and `:type name:`
-- Include `:return:` and `:rtype:` for non-void methods
-- Signal docstrings document emitted parameters, not the signal itself
+- **General formatting**:
+    - Use single quotes `'''` for docstrings.
+    - When adding Python code, type hints are required. Prefer standard `typing` types (or equivalent builtin generics).
+- **References and links**:
+    - Use `:py:class:` for class cross-references.
+    - Link demo files with full GitHub URLs.
+- **Method/member documentation**:
+    - Document parameters with `:param name:` and `:type name:`.
+    - Include `:return:` and `:rtype:` for non-void methods.
+    - For signals, document emitted parameters (not the signal object itself).
+- **Visual/widget docstrings**:
+    - Include ASCII art for visual widgets showing borders/layout.
 
 ## Apps Ecosystem
 The project includes several full applications demonstrating patterns:
@@ -224,6 +228,35 @@ Apps use the main library via path manipulation:
 sys.path.append(os.path.join(sys.path[0],'../../libs/pyTermTk'))
 import TermTk as ttk
 ```
+
+## Issue Investigation Workflow
+
+**CRITICAL PROCESS**: When investigating or fixing an issue, follow a strict test-first workflow:
+
+1. **Create Test First** - Before implementing any fix:
+   - Create a test case that reproduces the issue
+   - Place it in the appropriate test directory (`tests/pytest/`, or `apps/*/tests/`)
+   - The test should **fail** and demonstrate the issue
+   - Run the test to confirm it captures the problem
+
+2. **Verify Test Failure** - Ensure proof of failure:
+   - Run `make test` or the appropriate test runner
+   - Confirm the test fails with clear error messages
+   - Document what the failure shows about the issue
+   - Do NOT proceed to the solution until this is verified
+
+3. **Implement Solution** - Only after step 2:
+   - Write the minimal fix required to address the issue
+   - Run the test again to verify it now passes
+   - Run the full test suite to ensure no regressions
+
+**KEY RULE**: Never implement the solution and test at the same time. They must be separate steps:
+- ✅ Step 1: Test only (RED state)
+- ✅ Step 2: Verify failure (RED confirmed)
+- ✅ Step 3: Solution only (GREEN state)
+- ❌ NEVER: Write test + solution simultaneously
+
+This ensures the test proves the fix works and prevents false negatives where the test would pass regardless of the solution.
 
 ## Key Integration Points
 
