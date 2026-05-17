@@ -280,20 +280,26 @@ class TTkTextEdit(TTkAbstractScrollArea):
         :rtype: :py:class:`TTkTextDocument`
         '''
         return self._textEditView.document()
-    def wrapWidth(self, *args, **kwargs) -> int:
+    def wrapWidth(self) -> int:
         '''
         .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.wrapWidth`
 
-        .. seealso:: this method is forwarded to :py:meth:`TTkTextWrap.wrapWidth`
+        Return the current wrap width in terminal cells.
+
+        :return: wrap width.
+        :rtype: int
         '''
-        return self._textEditView.wrapWidth(*args, **kwargs)
-    def setWrapWidth(self, *args, **kwargs) -> None:
+        return self._textEditView.wrapWidth()
+    def setWrapWidth(self, width:int) -> None:
         '''
         .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.setWrapWidth`
 
-        .. seealso:: this method is forwarded to :py:meth:`TTkTextWrap.setWrapWidth`
+        Set wrap width and trigger a full rewrap.
+
+        :param width: target width in terminal cells.
+        :type width: int
         '''
-        return self._textEditView.setWrapWidth(*args, **kwargs)
+        return self._textEditView.setWrapWidth(width=width)
     def multiLine(self) -> bool:
         '''
         .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.multiLine`
@@ -326,20 +332,26 @@ class TTkTextEdit(TTkAbstractScrollArea):
         :type wrapEngine: :py:class:`TTkK.WrapEngine`
         '''
         return self._textEditView.setLineWrapMode(mode=mode, wrapEngine=wrapEngine)
-    def wordWrapMode(self, *args, **kwargs) -> TTkK.WrapMode:
+    def wordWrapMode(self) -> TTkK.WrapMode:
         '''
         .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.wordWrapMode`
 
-        .. seealso:: this method is forwarded to :py:meth:`TTkTextWrap.wordWrapMode`
+        Return the active word-wrap mode.
+
+        :return: current wrap mode.
+        :rtype: :py:class:`TTkK.WrapMode`
         '''
-        return self._textEditView.wordWrapMode(*args, **kwargs)
-    def setWordWrapMode(self, *args, **kwargs) -> None:
+        return self._textEditView.wordWrapMode()
+    def setWordWrapMode(self, mode:TTkK.WrapMode) -> None:
         '''
         .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.setWordWrapMode`
 
-        .. seealso:: this method is forwarded to :py:meth:`TTkTextWrap.setWordWrapMode`
+        Set the word-wrap mode and invalidate cached wrapping.
+
+        :param mode: new wrap mode.
+        :type mode: :py:class:`TTkK.WrapMode`
         '''
-        return self._textEditView.setWordWrapMode(*args, **kwargs)
+        return self._textEditView.setWordWrapMode(mode=mode)
     def textCursor(self) -> TTkTextCursor:
         '''
         .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.textCursor`
