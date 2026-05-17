@@ -81,7 +81,7 @@ class _FakeCanvas(ttk.TTkCanvas):
 
 @pytest.fixture
 def fake_canvas() -> Callable[[int, int], _FakeCanvas]:
-    '''Factory fixture that creates TTkCanvas instances for testing.
+    '''Factory fixture that creates _FakeCanvas instances for testing.
     
     Usage:
         def test_something(fake_canvas):
@@ -89,7 +89,7 @@ def fake_canvas() -> Callable[[int, int], _FakeCanvas]:
             # Use canvas in test
     
     Returns:
-        A callable that creates TTkCanvas instances with specified width and height.
+        A callable that creates _FakeCanvas instances with specified width and height.
     '''
     def _create_canvas(width: int = 10, height: int = 5) -> _FakeCanvas:
         '''Create a TTkCanvas with the specified dimensions.
