@@ -54,7 +54,7 @@ Widgets handle events by overriding template methods:
 - `keyEvent()`, `mousePressEvent()`, `paintEvent()` - Core events
 - `focusInEvent()`, `focusOutEvent()` - Focus management
 - `dropEvent()`, `dragEnterEvent()` - Drag & drop
-- Always return `True` if the event is handled by the widget; return `False` to allow propagation to parent widgets or other handlers
+- For `keyEvent()`, `mousePressEvent()`, `focusInEvent()`, `focusOutEvent()`, `dropEvent()`, and `dragEnterEvent()`: return `True` only when the event is handled by the widget; otherwise return `False` so it can propagate.
 
 ## Development Workflows
 
@@ -231,32 +231,28 @@ import TermTk as ttk
 
 ## Issue Investigation Workflow
 
-**CRITICAL PROCESS**: When investigating or fixing an issue, follow a strict test-first workflow:
+When investigating or fixing an issue, use this test-first sequence:
 
-1. **Create Test First** - Before implementing any fix:
-   - Create a test case that reproduces the issue
-   - Place it in the appropriate test directory (`tests/pytest/`, or `apps/*/tests/`)
-   - The test should **fail** and demonstrate the issue
-   - Run the test to confirm it captures the problem
+1. **RED: Create and run a failing test**
+    - Add a regression test in `tests/pytest/` or `apps/*/tests/`.
+    - Run it and confirm it fails with a clear error.
 
-2. **Verify Test Failure** - Ensure proof of failure:
-   - Run `make test` or the appropriate test runner
-   - Confirm the test fails with clear error messages
-   - Document what the failure shows about the issue
-   - Do NOT proceed to the solution until this is verified
+2. **Approval gate: Ask the user before coding the fix**
+    - Share the failing result and brief root cause.
+    - Ask for explicit approval.
+    - Do not change production code before approval.
 
-3. **Implement Solution** - Only after step 2:
-   - Write the minimal fix required to address the issue
-   - Run the test again to verify it now passes
-   - Run the full test suite to ensure no regressions
+3. **GREEN: Implement minimal fix after approval**
+    - Apply the smallest code change that addresses the failure.
+    - Re-run the failing test and confirm it passes.
 
-**KEY RULE**: Never implement the solution and test at the same time. They must be separate steps:
-- ✅ Step 1: Test only (RED state)
-- ✅ Step 2: Verify failure (RED confirmed)
-- ✅ Step 3: Solution only (GREEN state)
-- ❌ NEVER: Write test + solution simultaneously
+4. **Regression safety**
+    - Run relevant surrounding tests (or full suite when needed).
+    - Confirm no regressions were introduced.
 
-This ensures the test proves the fix works and prevents false negatives where the test would pass regardless of the solution.
+**Key constraints**:
+- Never write test and solution in the same step.
+- Never implement a fix before explicit user approval after RED is confirmed.
 
 ## Key Integration Points
 
