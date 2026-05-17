@@ -732,6 +732,23 @@ def test_textedit_view_follow_mode_smart_and_never_with_all_wrap_engines(wrap_en
     assert oy_never == oy_after
 
 
+@pytest.mark.parametrize('wrap_engine', _WRAP_ENGINES)
+def test_textedit_view_follow_mode_keeps_following_while_hidden(wrap_engine, fake_canvas):
+    canvas = fake_canvas(10, 3)
+    tev = ttk.TTkTextEditView(size=(10, 3), followMode=ttk.TTkK.TextEditFollow.SMART, visible=False)
+    tev.setLineWrapMode(ttk.TTkK.LineWrapMode.WidgetWidth, wrapEngine=wrap_engine)
+    tev.setText('\n'.join('word ' * 8 for _ in range(8)))
+
+    tev.scrollTo(ttk.TTkK.TextEditEdge.BOTTOM)
+    for _ in range(4):
+        tev.append('tail ' * 20)
+    
+    tev.append('Last Line')
+    tev.paintEvent(canvas=canvas)
+
+    assert canvas.text_in_line(line=2, text='Last Line')
+
+
 # ---------------------------------------------------------------------------
 # TTkTextEditView horizontal scrolling (LEFT/RIGHT) coverage
 # ---------------------------------------------------------------------------

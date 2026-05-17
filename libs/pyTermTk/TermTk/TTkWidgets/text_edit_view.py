@@ -395,6 +395,10 @@ class TTkTextEditView(TTkAbstractScrollView):
 
     @pyTTkSlot()
     def _wrapChanged(self):
+        should_follow_bottom = (
+            self._followMode == TTkK.TextEditFollow.ALWAYS or
+            (self._smartFollowing and self._followMode == TTkK.TextEditFollow.SMART )
+        )
         line = self._lineMap.line
         line_pos = self._lineMap.line_pos
         pos_y = self._lineMap.pos_y
@@ -403,41 +407,47 @@ class TTkTextEditView(TTkAbstractScrollView):
             screen_y = screen_position.extra.y
         else:
             screen_y = screen_position.main.y
-        if screen_y != pos_y:
+        if should_follow_bottom:
+            self.scrollTo(TTkK.TextEditEdge.BOTTOM)
+        elif screen_y != pos_y:
             ox, oy = self.getViewOffsets()
             self.viewMoveTo(ox, screen_y)
         else:
             self.update()
         self.textChanged.emit()
-        if self._followMode == TTkK.TextEditFollow.ALWAYS:
-            self.scrollTo(TTkK.TextEditEdge.BOTTOM)
-        elif self._smartFollowing and self._followMode == TTkK.TextEditFollow.SMART:
-            self.scrollTo(TTkK.TextEditEdge.BOTTOM)
 
     # forward textWrap Methods
-    def wrapWidth(self, *args, **kwargs) -> int:
-        '''
-        .. seealso:: this method is forwarded to :py:meth:`TTkTextWrap.wrapWidth`
-        '''
-        return self._textWrap.wrapWidth(*args, **kwargs)
+    def wrapWidth(self) -> int:
+        '''Return the current wrap width in terminal cells.
 
-    def setWrapWidth(self, *args, **kwargs) -> None:
+        :return: wrap width.
+        :rtype: int
         '''
-        .. seealso:: this method is forwarded to :py:meth:`TTkTextWrap.setWrapWidth`
-        '''
-        return self._textWrap.setWrapWidth(*args, **kwargs)
+        return self._textWrap.wrapWidth()
 
-    def wordWrapMode(self, *args, **kwargs) -> TTkK.WrapMode:
-        '''
-        .. seealso:: this method is forwarded to :py:meth:`TTkTextWrap.wordWrapMode`
-        '''
-        return self._textWrap.wordWrapMode(*args, **kwargs)
+    def setWrapWidth(self, width:int) -> None:
+        '''Set wrap width and trigger a full rewrap.
 
-    def setWordWrapMode(self, *args, **kwargs) -> None:
+        :param width: target width in terminal cells.
+        :type width: int
         '''
-        .. seealso:: this method is forwarded to :py:meth:`TTkTextWrap.setWordWrapMode`
+        return self._textWrap.setWrapWidth(width=width)
+
+    def wordWrapMode(self) -> TTkK.WrapMode:
+        '''Return the active word-wrap mode.
+
+        :return: current wrap mode.
+        :rtype: :py:class:`TTkK.WrapMode`
         '''
-        return self._textWrap.setWordWrapMode(*args, **kwargs)
+        return self._textWrap.wordWrapMode()
+
+    def setWordWrapMode(self, mode:TTkK.WrapMode) -> None:
+        '''Set the word-wrap mode and invalidate cached wrapping.
+
+        :param mode: new wrap mode.
+        :type mode: :py:class:`TTkK.WrapMode`
+        '''
+        return self._textWrap.setWordWrapMode(mode=mode)
 
     def extraSelections(self) -> List[ExtraSelection]:
         '''
