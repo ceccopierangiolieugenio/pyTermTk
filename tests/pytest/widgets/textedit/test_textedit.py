@@ -740,7 +740,7 @@ def test_textedit_view_follow_mode_smart_and_never_with_all_wrap_engines(wrap_en
     _, oy_bottom = tev.getViewOffsets()
     tev.append('smart-follow-tail') # split in 2 lines if wrapped
     _, oy_after_smart_bottom = tev.getViewOffsets()
-    assert 0 < abs(oy_after_smart_bottom - oy_bottom) <= (2 if not wrap_engine==_WRAP_ENGINES.VimWrap else 14)
+    assert 0 < abs(oy_after_smart_bottom - oy_bottom) <= 2
     
     tev.viewMoveTo(0, 1)
     _, oy_before = tev.getViewOffsets()
@@ -754,18 +754,7 @@ def test_textedit_view_follow_mode_smart_and_never_with_all_wrap_engines(wrap_en
     assert oy_never == oy_after
 
 
-@pytest.mark.parametrize('wrap_engine', [
-    pytest.param(e, marks=pytest.mark.xfail(
-        e == _WRAP_ENGINES.VimWrap,
-        reason=(
-            'VimWrap.screenRows(y, h) uses y as a document-line index, so it '
-            'returns empty rows when the scroll offset exceeds the document '
-            'line count (which happens with heavily-wrapped content). '
-            'Heavy-wrap scrolling is not supported by VimWrap by design.'
-        ),
-        strict=True,
-    )) for e in _WRAP_ENGINES
-])
+@pytest.mark.parametrize('wrap_engine', _WRAP_ENGINES)
 def test_textedit_view_follow_mode_keeps_following_while_hidden(wrap_engine, fake_canvas):
     canvas = fake_canvas(10, 3)
     tev = ttk.TTkTextEditView(size=(10, 3), followMode=ttk.TTkK.TextEditFollow.SMART, visible=False)

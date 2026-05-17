@@ -108,13 +108,13 @@ class _WrapEngine_VimWrap(_WrapEngine_Interface):
                 for _i, _line in enumerate(self._wrapState.textDocument.dataLines(slice(num_lines,None,-1)), start=1):
                     row = self._wrapLine(w,_i,_line)
                     last_height += len(row)
-                    self._lastWindow.bottomBuffer.extend(row)
-                    if last_height >= h:
+                    if last_height > h:
                         break
+                    self._lastWindow.bottomBuffer.extend(row)
             # Total wrapped size = (unwrapped lines before processed range) +
             # (wrapped rows accumulated from the end)
             first_processed_line = num_lines - self._lastWindow.bottomBuffer[-1].line
-            return first_processed_line + len(self._lastWindow.bottomBuffer)
+            return first_processed_line + h
         
 
     def rewrap(self, data: Optional[_ReWrapData]=None) -> None:

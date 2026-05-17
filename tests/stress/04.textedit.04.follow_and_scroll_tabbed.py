@@ -83,7 +83,7 @@ def demoTextEdit(root=None, document=None):
     # If no document is passed a default one is created,
     # In this showcase I want to be able to share the same
     # document among 2 textEdit widgets
-    te = ttk.TTkTextEdit(document=document, lineNumber=True, lineNumberStarting=1)
+    te = ttk.TTkTextEdit(document=document, lineNumber=True)
 
     te.setReadOnly(False)
 
