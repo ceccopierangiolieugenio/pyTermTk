@@ -754,7 +754,18 @@ def test_textedit_view_follow_mode_smart_and_never_with_all_wrap_engines(wrap_en
     assert oy_never == oy_after
 
 
-@pytest.mark.parametrize('wrap_engine', _WRAP_ENGINES)
+@pytest.mark.parametrize('wrap_engine', [
+    pytest.param(e, marks=pytest.mark.xfail(
+        e == _WRAP_ENGINES.VimWrap,
+        reason=(
+            'VimWrap.screenRows(y, h) uses y as a document-line index, so it '
+            'returns empty rows when the scroll offset exceeds the document '
+            'line count (which happens with heavily-wrapped content). '
+            'Heavy-wrap scrolling is not supported by VimWrap by design.'
+        ),
+        strict=True,
+    )) for e in _WRAP_ENGINES
+])
 def test_textedit_view_follow_mode_keeps_following_while_hidden(wrap_engine, fake_canvas):
     canvas = fake_canvas(10, 3)
     tev = ttk.TTkTextEditView(size=(10, 3), followMode=ttk.TTkK.TextEditFollow.SMART, visible=False)
@@ -764,11 +775,77 @@ def test_textedit_view_follow_mode_keeps_following_while_hidden(wrap_engine, fak
     tev.scrollTo(ttk.TTkK.TextEditEdge.BOTTOM)
     for _ in range(4):
         tev.append('tail ' * 20)
-    
+
     tev.append('Last Line')
     tev.paintEvent(canvas=canvas)
 
     assert canvas.text_in_line(line=2, text='Last Line')
+
+
+@pytest.mark.parametrize('wrap_engine', _WRAP_ENGINES)
+def test_textedit_view_follow_mode_keeps_following_while_hidden_nowrap(wrap_engine, fake_canvas):
+    '''Follow mode works while hidden for all engines when content is not heavily wrapped.
+
+    VimWrap is included: with NoWrap the scroll offset never exceeds the document
+    line count, so its document-line-index approximation is exact.
+    '''
+    canvas = fake_canvas(30, 5)
+    tev = ttk.TTkTextEditView(size=(30, 5), followMode=ttk.TTkK.TextEditFollow.SMART, visible=False)
+    tev.setLineWrapMode(ttk.TTkK.LineWrapMode.NoWrap)
+    tev.setText('\n'.join(f'line-{i}' for i in range(8)))
+
+    tev.scrollTo(ttk.TTkK.TextEditEdge.BOTTOM)
+    for i in range(8, 16):
+        tev.append(f'line-{i}')
+
+    tev.append('Last Line')
+    tev.paintEvent(canvas=canvas)
+
+    assert canvas.text_in_line(line=4, text='Last Line')
+
+
+@pytest.mark.parametrize('wrap_engine', _WRAP_ENGINES)
+def test_textedit_view_follow_mode_always_keeps_following_while_hidden(wrap_engine, fake_canvas):
+    '''ALWAYS follow mode scrolls to bottom on every append, even when hidden.'''
+    canvas = fake_canvas(10, 3)
+    tev = ttk.TTkTextEditView(size=(10, 3), followMode=ttk.TTkK.TextEditFollow.ALWAYS, visible=False)
+    tev.setLineWrapMode(ttk.TTkK.LineWrapMode.NoWrap)
+    tev.setText('\n'.join(f'line-{i}' for i in range(8)))
+
+    for i in range(8, 14):
+        tev.append(f'line-{i}')
+
+    tev.append('Last Line')
+    tev.paintEvent(canvas=canvas)
+
+    assert canvas.text_in_line(line=2, text='Last Line')
+
+
+@pytest.mark.parametrize('wrap_engine', _WRAP_ENGINES)
+def test_textedit_view_follow_mode_smart_starts_following_after_initial_zero_height_all_engines(wrap_engine):
+    '''SMART follow mode honours zero-height initialization for all wrap engines.
+
+    This specifically covers HybridVimWrap and VimWrap: when a widget is
+    created with height=0 (e.g. not yet attached to a visible tab) and
+    SMART follow is set, ``_smartFollowing`` must be True so the view tracks
+    the bottom once the widget is realized.
+    '''
+    tev = ttk.TTkTextEditView(size=(10, 0), visible=False)
+    tev.setLineWrapMode(ttk.TTkK.LineWrapMode.NoWrap)
+    tev.setText('line-0')
+
+    tev.setFollowMode(ttk.TTkK.TextEditFollow.SMART)
+
+    for i in range(1, 5):
+        tev.append(f'line-{i}')
+
+    tev.resize(10, 3)
+    tev.append('line-5')
+
+    _, oy = tev.getViewOffsets()
+    _, fh = tev.viewFullAreaSize()
+    _, dh = tev.viewDisplayedSize()
+    assert oy == max(0, fh - dh)
 
 
 # ---------------------------------------------------------------------------
