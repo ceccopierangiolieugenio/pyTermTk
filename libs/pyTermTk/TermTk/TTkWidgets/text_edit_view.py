@@ -664,9 +664,12 @@ class TTkTextEditView(TTkAbstractScrollView):
             self.scrollTo(TTkK.TextEditEdge.BOTTOM)
         elif  mode == TTkK.TextEditFollow.SMART:
             h = self.height()
-            _, oy = self.getViewOffsets()
-            _, _fh = self.viewFullAreaSize()
-            self._smartFollowing = oy+h >= _fh
+            if h <= 0:
+                self._smartFollowing = True
+            else:
+                _, oy = self.getViewOffsets()
+                _, _fh = self.viewFullAreaSize()
+                self._smartFollowing = oy+h >= _fh
 
     @pyTTkSlot()
     def scrollTo(self, position:TTkK.TextEditEdge) -> None:

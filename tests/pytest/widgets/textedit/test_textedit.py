@@ -635,6 +635,28 @@ def test_textedit_view_follow_mode_smart_from_underfilled_document_starts_follow
     _, dh = tev_2.viewDisplayedSize()
     assert oy == max(0, fh - dh)
 
+
+def test_textedit_view_follow_mode_smart_nowrap_starts_following_after_initial_zero_height():
+    tev = ttk.TTkTextEditView(size=(10, 0), visible=False)
+    tev.setLineWrapMode(ttk.TTkK.LineWrapMode.NoWrap)
+    tev.setText('line-0')
+
+    # Simulate enabling SMART before geometry is realized.
+    tev.setFollowMode(ttk.TTkK.TextEditFollow.SMART)
+
+    # Grow the document while still unrealized.
+    for i in range(1, 5):
+        tev.append(f'line-{i}')
+
+    # Realize final view height and keep appending.
+    tev.resize(10, 3)
+    tev.append('line-5')
+
+    _, oy = tev.getViewOffsets()
+    _, fh = tev.viewFullAreaSize()
+    _, dh = tev.viewDisplayedSize()
+    assert oy == max(0, fh - dh)
+
 def test_textedit_view_follow_mode_never_does_not_force_scroll():
     tev = ttk.TTkTextEditView(size=(10, 3))
     tev.setText('\n'.join(f'line-{i}' for i in range(10)))
