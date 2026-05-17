@@ -75,6 +75,9 @@ class _FakeCanvas(ttk.TTkCanvas):
             if text in ''.join(data_line):
                 return True
         return False
+    
+    def canvas_to_string(self) -> str:
+        return '\n'.join([''.join(line) for line in self._data])
 
 @pytest.fixture
 def fake_canvas() -> Callable[[int, int], _FakeCanvas]:
