@@ -42,7 +42,7 @@ _wrapEngines = {
     # TTkK.WrapEngine.VimWrap : _WrapEngine_VimWrap,
     TTkK.WrapEngine.FastWrap : _WrapEngine_FastWrap,
     TTkK.WrapEngine.FullWrap : _WrapEngine_FullWrap,
-    TTkK.WrapEngine.HybridVimWrap : _WrapEngine_HybridVimWrap,
+    TTkK.WrapEngine.HybridWrap : _WrapEngine_HybridVimWrap,
 }
 
 class TTkTextWrap():

@@ -69,7 +69,7 @@ def demoTextEditSecondary(document=None) -> ttk.TTkTextEdit:
 
 def demoTextEditThird(document=None) -> ttk.TTkTextEdit:
     te = ttk.TTkTextEdit(document=document, lineNumber=True)
-    te.setLineWrapMode(ttk.TTkK.WidgetWidth, wrapEngine=ttk.TTkK.WrapEngine.HybridVimWrap)
+    te.setLineWrapMode(ttk.TTkK.WidgetWidth, wrapEngine=ttk.TTkK.WrapEngine.HybridWrap)
     te.setWordWrapMode(ttk.TTkK.WordWrap)
     te.setReadOnly(False)
     te.scrollTo(ttk.TTkK.TextEditEdge.BOTTOM)
