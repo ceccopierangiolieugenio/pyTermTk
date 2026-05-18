@@ -1,0 +1,16 @@
+[gd_scene format=3 uid="uid://dcsrnp25u1fdy"]
+
+[ext_resource type="Script" uid="uid://c1vmo10wbvoqw" path="res://scripts/terminal_bridge_client.gd" id="1_vn2tx"]
+[ext_resource type="Script" uid="uid://d27h8nq5k2x8b" path="res://scripts/main.gd" id="2_ou6xa"]
+
+[node name="Main" type="Control" unique_id=1901478780]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("2_ou6xa")
+
+[node name="Bridge" type="Node" parent="." unique_id=1004575637]
+script = ExtResource("1_vn2tx")

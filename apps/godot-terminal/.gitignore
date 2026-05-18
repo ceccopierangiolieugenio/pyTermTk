@@ -1,0 +1,7 @@
+# Godot 4+ specific ignores
+.godot/
+/addons/py4godot
+/android/
+/assets/fonts/*.ttf
+/assets/fonts/*.ttf.*
+/bin/*
