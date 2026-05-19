@@ -22,7 +22,7 @@
 
 __all__ = ['TTkSignalDriver','TTkInputDriver']
 
-import signal
+import atexit, signal
 
 from ctypes import Structure, Union, byref, wintypes, windll
 
@@ -360,6 +360,7 @@ class TTkSignalDriver():
         # signal.signal(signal.SIGCONT, TTkSignalDriver._SIGCONT) # Resume
         signal.signal(signal.SIGINT,  TTkSignalDriver._SIGINT)  # Ctrl-C
 
+    @atexit.register
     def exit():
         signal.signal(signal.SIGINT,  signal.SIG_DFL)
 
