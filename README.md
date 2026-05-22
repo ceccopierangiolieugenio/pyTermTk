@@ -7,7 +7,7 @@
 [![HTML5](https://img.shields.io/badge/-HTML5-grey?logo=html5)](https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/info/features/crosscompatible.html)
 
 [![pypi_version](https://img.shields.io/badge/Twitter-pyTermTk-blue?logo=x&logoColor=blue)](https://twitter.com/hashtag/pyTermTk?src=hashtag_click&f=live)
-[![Static Badge](https://img.shields.io/badge/BlyeSky-pyTermTk-blue?logo=bluesky&logoColor=blue)](https://bsky.app/profile/piercecco.bsky.social)
+[![Static Badge](https://img.shields.io/badge/BlueSky-pyTermTk-blue?logo=bluesky&logoColor=blue)](https://bsky.app/profile/piercecco.bsky.social)
 [![Static Badge](https://img.shields.io/badge/Discord-pyTermTk-8A2BE2?logo=discord&logoColor=blue)](https://discord.gg/bqcSZvup)
 
 [![Python](https://img.shields.io/badge/Python-v3.9%5E-green?logo=python)](https://devguide.python.org/versions/)
@@ -25,20 +25,20 @@
 
 ## [pyTermTk](https://github.com/ceccopierangiolieugenio/pyTermTk)
 
-(**py**thon **Term**inal **T**ool**k**it) is a Text-based user interface library ([TUI](https://en.wikipedia.org/wiki/Text-based_user_interface))
-Evolved from the discontinued project [pyCuT](https://github.com/ceccopierangiolieugenio/pyCuT)
-and inspired by a mix of [Qt5](https://www.riverbankcomputing.com/static/Docs/PyQt5/),[GTK](https://pygobject.readthedocs.io/en/latest/), and [tkinter](https://docs.python.org/3/library/tkinter.html) api definition with a touch of personal interpretation
+(**py**thon **Term**inal **T**ool**k**it) is a text-based user interface library ([TUI](https://en.wikipedia.org/wiki/Text-based_user_interface)).
+Evolved from the discontinued project [pyCuT](https://github.com/ceccopierangiolieugenio/pyCuT),
+it is inspired by a mix of [Qt5](https://www.riverbankcomputing.com/static/Docs/PyQt5/), [GTK](https://pygobject.readthedocs.io/en/latest/), and [tkinter](https://docs.python.org/3/library/tkinter.html) API definitions with a touch of personal interpretation.
 
 https://github.com/user-attachments/assets/888e745a-ea00-4d03-b6ec-273319d54ea7
 
 ## [Features](https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/info/features/index.html)
-- [Self Contained](https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/info/installing.html#copy-termtk-folder) (no external lib required), Python 3.9 or above required.
-- [Cross compatible](https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/info/features/crosscompatible.html): [Linux](https://en.wikipedia.org/wiki/Linux)🐧, [MacOS](https://en.wikipedia.org/wiki/MacOS)🍎, [MS Windows](https://en.wikipedia.org/wiki/Microsoft_Windows)🪟, [HTML5](https://en.wikipedia.org/wiki/HTML5)🌍([Try](https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/sandbox/sandbox.html))
+- [Self-contained](https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/info/installing.html#copy-termtk-folder) (no external libs required), Python 3.9 or above required.
+- [Cross-compatible](https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/info/features/crosscompatible.html): [Linux](https://en.wikipedia.org/wiki/Linux)🐧, [macOS](https://en.wikipedia.org/wiki/MacOS)🍎, [MS Windows](https://en.wikipedia.org/wiki/Microsoft_Windows)🪟, [HTML5](https://en.wikipedia.org/wiki/HTML5)🌍 ([Try](https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/sandbox/sandbox.html))
 - [Basic widgets](https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/info/features/widgets.html#base-widgets) for [TUI](https://en.wikipedia.org/wiki/Text-based_user_interface) development (Button, Label, checkbox, ...)
 - [Specialized widgets](https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/info/features/widgets.html#specialised-widgets) to improve the usability (Windows, Frames, Tables, ...)
-- QT Like Layout system to help arrange the widgets in the terminal
+- Qt-like layout system to help arrange the widgets in the terminal
 - True color support
-- Ful/Half/Zero sized Unicode characters 😎
+- Full/Half/Zero-sized Unicode characters 😎
 - I am pretty sure there is [something else...](https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/info/features/index.html)
 
 ---
@@ -51,11 +51,11 @@ Powered by [Pyodide](https://pyodide.org/) and [xterm.js](https://xtermjs.org/) 
 
 ---
 
-## [the Tutorials](https://github.com/ceccopierangiolieugenio/pyTermTk/tree/main/tutorial) and [the Examples](https://github.com/ceccopierangiolieugenio/pyTermTk/tree/main/tutorial/000-examples.rst)
+## [The Tutorials](https://github.com/ceccopierangiolieugenio/pyTermTk/tree/main/tutorial) and [the Examples](https://github.com/ceccopierangiolieugenio/pyTermTk/tree/main/tutorial/000-examples.rst)
 Be inspired by [the Tutorials](https://github.com/ceccopierangiolieugenio/pyTermTk/tree/main/tutorial) and [the Examples](https://github.com/ceccopierangiolieugenio/pyTermTk/tree/main/tutorial/000-examples.rst)
 
-## [Api Definitions](https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/index.html#api-reference)
-Don't get bored by the [Api Definitions](https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/index.html#api-reference)
+## [API Reference](https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/index.html#api-reference)
+Don't get bored by the [API definitions](https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/index.html#api-reference)
 
 ## [ttkode](https://github.com/ceccopierangiolieugenio/pyTermTk/tree/main/apps/ttkode)
 Burn your fingers with the Terminal Studio Kode
@@ -63,7 +63,7 @@ Burn your fingers with the Terminal Studio Kode
 ## [ttkDesigner](https://github.com/ceccopierangiolieugenio/pyTermTk/tree/main/apps/ttkDesigner)
 Smell deliciousness with the official [pyTermTk](https://github.com/ceccopierangiolieugenio/pyTermTk) tool for designing and building Text-based user interfaces ([TUI](https://en.wikipedia.org/wiki/Text-based_user_interface)s)
 
-## [theDumbPaintTool](https://github.com/ceccopierangiolieugenio/pyTermTk/tree/main/apps/dumbPaintTool)
+## [the DumbPaintTool](https://github.com/ceccopierangiolieugenio/pyTermTk/tree/main/apps/dumbPaintTool)
 Unravel your inner artist with [The Terminal ASCII Photoshop](https://ceccopierangiolieugenio.itch.io/dumb-paint-tool)
 
 ---
@@ -92,18 +92,18 @@ cd pyTermTk
 # Showcase Demo
 python3 demo/demo.py -f -t
 
-# run the ttkDesigner
+# run ttkDesigner
 run.ttkDesigner.sh
 
 # run The Dumb Paint Tool
-# it require pillow
+# it requires pillow
 #   pip install pillow
 run.dumbPaintTool.sh
 
 # Text edit with "Pygments" highlight integrated
-# it require pygments
+# it requires pygments
 #   pip install pygments
-python3 tests/test.ui.018.TextEdit.Pygments.py README.md
+python3 tests/t.ui/test.ui.018.TextEdit.03.Pygments.py README.md
 ```
 
 ---
