@@ -39,13 +39,19 @@ from TermTk.TTkWidgets.text_edit_ruler import TTkTextEditRuler
 from TermTk.TTkAbstract.abstractscrollarea import TTkAbstractScrollArea, _ForwardData
 from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollViewGridLayout
 
+try:
+    from typing import TypeAlias
+except ImportError:
+    # TODO: Remove this workaround for Python 3.9
+    TypeAlias = type  # Fallback for Python < 3.10 without typing_extensions
+
 class TTkTextEdit(TTkAbstractScrollArea):
     __doc__ = '''
     :py:class:`TTkTextEdit` is a container widget which place :py:class:`TTkTextEditView` in a scrolling area with on-demand scroll bars.
 
     ''' + (TTkTextEditView.__doc__ or '')
 
-    ExtraSelection = TTkTextEditView.ExtraSelection
+    ExtraSelection: TypeAlias = TTkTextEditView.ExtraSelection
 
     _ttk_forward:_ForwardData = _ForwardData(
         forwardClass=TTkTextEditView ,
@@ -66,7 +72,7 @@ class TTkTextEdit(TTkAbstractScrollArea):
             "cut", "copy", "paste",
             "undo", "redo", "isUndoAvailable", "isRedoAvailable",
             "find", "ensureCursorVisible",
-            "follow", "setFollow",
+            "followMode", "setFollowMode",
             "scrollTo",
             # Exported Methods
             "toAnsi", "toRawText", "toPlainText" # , "toHtml", "toMarkdown",
@@ -86,7 +92,7 @@ class TTkTextEdit(TTkAbstractScrollArea):
                  readOnly:bool=False,
                  multiLine:bool=True,
                  document:Optional[TTkTextDocument]=None,
-                 follow:bool=False,
+                 followMode:TTkK.TextEditFollow=TTkK.TextEditFollow.NEVER,
 
                  # TTkText init
                  textEditView:Optional[TTkTextEditView]=None,
@@ -102,7 +108,7 @@ class TTkTextEdit(TTkAbstractScrollArea):
         :type lineNumberStarting: int, optional
         '''
         super().__init__(parent=parent, visible=visible, **kwargs)
-        self._textEditView = textEditView if textEditView else TTkTextEditView(readOnly=readOnly, multiLine=multiLine, document=document, follow=follow)
+        self._textEditView = textEditView if textEditView else TTkTextEditView(readOnly=readOnly, multiLine=multiLine, document=document, followMode=followMode)
         # self.setFocusPolicy(self._textEditView.focusPolicy())
         # self._textEditView.setFocusPolicy(TTkK.ParentFocus)
         self._lineNumber = lineNumber
@@ -274,20 +280,26 @@ class TTkTextEdit(TTkAbstractScrollArea):
         :rtype: :py:class:`TTkTextDocument`
         '''
         return self._textEditView.document()
-    def wrapWidth(self, *args, **kwargs) -> int:
+    def wrapWidth(self) -> int:
         '''
         .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.wrapWidth`
 
-        .. seealso:: this method is forwarded to :py:meth:`TTkTextWrap.wrapWidth`
+        Return the current wrap width in terminal cells.
+
+        :return: wrap width.
+        :rtype: int
         '''
-        return self._textEditView.wrapWidth(*args, **kwargs)
-    def setWrapWidth(self, *args, **kwargs) -> None:
+        return self._textEditView.wrapWidth()
+    def setWrapWidth(self, width:int) -> None:
         '''
         .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.setWrapWidth`
 
-        .. seealso:: this method is forwarded to :py:meth:`TTkTextWrap.setWrapWidth`
+        Set wrap width and trigger a full rewrap.
+
+        :param width: target width in terminal cells.
+        :type width: int
         '''
-        return self._textEditView.setWrapWidth(*args, **kwargs)
+        return self._textEditView.setWrapWidth(width=width)
     def multiLine(self) -> bool:
         '''
         .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.multiLine`
@@ -320,20 +332,26 @@ class TTkTextEdit(TTkAbstractScrollArea):
         :type wrapEngine: :py:class:`TTkK.WrapEngine`
         '''
         return self._textEditView.setLineWrapMode(mode=mode, wrapEngine=wrapEngine)
-    def wordWrapMode(self, *args, **kwargs) -> TTkK.WrapMode:
+    def wordWrapMode(self) -> TTkK.WrapMode:
         '''
         .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.wordWrapMode`
 
-        .. seealso:: this method is forwarded to :py:meth:`TTkTextWrap.wordWrapMode`
+        Return the active word-wrap mode.
+
+        :return: current wrap mode.
+        :rtype: :py:class:`TTkK.WrapMode`
         '''
-        return self._textEditView.wordWrapMode(*args, **kwargs)
-    def setWordWrapMode(self, *args, **kwargs) -> None:
+        return self._textEditView.wordWrapMode()
+    def setWordWrapMode(self, mode:TTkK.WrapMode) -> None:
         '''
         .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.setWordWrapMode`
 
-        .. seealso:: this method is forwarded to :py:meth:`TTkTextWrap.setWordWrapMode`
+        Set the word-wrap mode and invalidate cached wrapping.
+
+        :param mode: new wrap mode.
+        :type mode: :py:class:`TTkK.WrapMode`
         '''
-        return self._textEditView.setWordWrapMode(*args, **kwargs)
+        return self._textEditView.setWordWrapMode(mode=mode)
     def textCursor(self) -> TTkTextCursor:
         '''
         .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.textCursor`
@@ -474,29 +492,26 @@ class TTkTextEdit(TTkAbstractScrollArea):
 
         '''
         return self._textEditView.ensureCursorVisible()
-    def follow(self) -> bool:
+    def followMode(self) -> TTkK.TextEditFollow:
         '''
-        .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.follow`
+        .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.followMode`
 
-        This property holds whether the view follows the last line whenever the document changes.
+        This property holds the auto-scroll follow mode of the view.
 
-        :rtype: bool
+        :rtype: :py:class:`TTkK.TextEditFollow`
         '''
-        return self._textEditView.follow()
-    @pyTTkSlot(bool)
-    def setFollow(self, follow:bool) -> None:
+        return self._textEditView.followMode()
+    @pyTTkSlot(TTkK.TextEditFollow)
+    def setFollowMode(self, mode:TTkK.TextEditFollow) -> None:
         '''
-        .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.setFollow`
+        .. seealso:: this method is forwarded to :py:meth:`TTkTextEditView.setFollowMode`
 
-        Enable or disable the follow-bottom mode.
+        Set the auto-scroll follow mode.
 
-        When enabled, the view automatically scrolls to the last visible row
-        every time the underlying document changes.
-
-        :param follow: ``True`` to keep following the bottom row, ``False`` otherwise
-        :type follow: bool
+        :param mode: the follow mode
+        :type mode: :py:class:`TTkK.TextEditFollow`
         '''
-        return self._textEditView.setFollow(follow=follow)
+        return self._textEditView.setFollowMode(mode=mode)
     @pyTTkSlot()
     def scrollTo(self, position:TTkK.TextEditEdge) -> None:
         '''

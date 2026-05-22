@@ -39,10 +39,10 @@ class _WrapEngine_Interface():
     * :py:class:`_WrapEngine_FullWrap` -- eagerly wraps every document line into a
       pre-computed buffer that is kept in sync via the
       :py:attr:`TTkTextDocument.contentsChange` signal.
-    * :py:class:`_WrapEngine_VimWrap` -- lazily wraps only the visible window,
+    * :py:class:`_WrapEngine_HybridVimWrap` -- lazily wraps only the visible window,
       caching the last viewport for coordinate conversions.
-        * :py:class:`_WrapEngine_FastWrap` -- chunk-based lazy wrapping strategy
-            for large documents.
+    * :py:class:`_WrapEngine_FastWrap` -- chunk-based lazy wrapping strategy
+        for large documents.
     '''
     __slots__ = ('_wrapState',)
 
@@ -75,8 +75,7 @@ class _WrapEngine_Interface():
         Called when the wrap width, word-wrap mode, or the underlying
         document changes.  Engines that maintain a buffer (e.g.
         :py:class:`_WrapEngine_FullWrap`) rebuild it here; engines
-        that wrap lazily (e.g. :py:class:`_WrapEngine_NoWrap`,
-        :py:class:`_WrapEngine_VimWrap`) may be a no-op.
+        that wrap lazily (e.g. :py:class:`_WrapEngine_NoWrap`.
 
         :param data: optional incremental change descriptor.
         :type data: Optional[:py:class:`_ReWrapData`]
@@ -155,7 +154,7 @@ class _WrapEngine_Interface():
     def ensureScreenRows(self, y:int, h:int) -> None:
         '''Force materialization of wrapped rows in a viewport range.
 
-        For lazy-loading engines (FastWrap, VimWrap, HybridVimWrap), this
+        For lazy-loading engines (FastWrap, HybridWrap), this
         materializes the rows that would be returned by :py:meth:`screenRows`.
         For eager engines (FullWrap, NoWrap), this is typically a no-op.
 

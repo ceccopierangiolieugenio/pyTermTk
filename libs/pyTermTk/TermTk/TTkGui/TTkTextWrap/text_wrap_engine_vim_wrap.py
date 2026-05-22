@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-__all__:list = []
+__all__:list[str] = []
 
 from dataclasses import dataclass
 from threading import RLock
@@ -43,6 +43,14 @@ class _LastWindow():
     y:int
     h:int
     buffer:List[_WrapLine]
+    bottomBuffer:List[_WrapLine]
+
+    def clean(self, y:Optional[int] = None, h:Optional[int] = None):
+        self.buffer = []
+        if y is not None:
+            self.y = y
+        if h is not None:
+            self.h = h
 
 class _WrapEngine_VimWrap(_WrapEngine_Interface):
     '''Lazy wrap engine optimized around the active viewport.
@@ -68,23 +76,46 @@ class _WrapEngine_VimWrap(_WrapEngine_Interface):
         :param state: shared wrap state.
         :type state: :py:class:`_WrapState`
         '''
-        self._lastWindow = _LastWindow(y=0,h=0,buffer=[])
+        self._lastWindow = _LastWindow(y=0,h=0,buffer=[], bottomBuffer=[])
         self._cacheLock = RLock()
         super().__init__(state)
 
     def size(self) -> int:
-        '''Return an approximate number of addressable screen rows.
+        '''Return the maximum addressable line count based on wrapped content.
 
-        For visible rows this behaves like wrapped coordinates. Outside the
-        cached viewport, this engine falls back to unwrapped line semantics,
-        so the returned value is intentionally an approximation suitable for
-        scrolling/navigation bounds.
+        Calculates the exact scroll position where the document ends, accounting
+        for line wrapping. By processing lines backward from the document end
+        until accumulating at least ``h`` wrapped rows, this method determines
+        where backward processing started in terms of unwrapped line indices,
+        then adds the accumulated wrapped row count.
 
-        :return: logical line count.
+        This ensures that at position ``size - 1``, scrolling up by one line
+        would still display wrapped content below the viewport's bottom border.
+
+        :return: maximum addressable line count for scrolling.
         :rtype: int
         '''
+        document = self._wrapState.textDocument
+        num_lines = document.lineCount()
+        if not (w := self._wrapState.size):
+            return num_lines
         with self._cacheLock:
-            return self._wrapState.textDocument.lineCount() + self._lastWindow.h - 1
+            h = self._lastWindow.h
+            if h == 0:
+                return num_lines
+            if not self._lastWindow.bottomBuffer:
+                last_height = 0
+                for _i, _line in enumerate(self._wrapState.textDocument.dataLines(slice(num_lines,None,-1)), start=1):
+                    row = self._wrapLine(w,_i,_line)
+                    last_height += len(row)
+                    if last_height > h:
+                        break
+                    self._lastWindow.bottomBuffer.extend(row)
+            # Total wrapped size = (unwrapped lines before processed range) +
+            # (wrapped rows accumulated from the end)
+            first_processed_line = num_lines - self._lastWindow.bottomBuffer[-1].line
+            return first_processed_line + h
+        
 
     def rewrap(self, data: Optional[_ReWrapData]=None) -> None:
         '''Invalidate cached viewport data.
@@ -97,7 +128,8 @@ class _WrapEngine_VimWrap(_WrapEngine_Interface):
         :type data: Optional[:py:class:`_ReWrapData`]
         '''
         with self._cacheLock:
-            self._lastWindow = _LastWindow(y=0, h=0, buffer=[])
+            self._lastWindow.clean()
+            self._lastWindow.bottomBuffer = []
 
     def dataToScreenPosition(self, line:int, pos:int) -> _RetScreenPositions:
         '''Map document coordinates to screen coordinates.
@@ -236,7 +268,7 @@ class _WrapEngine_VimWrap(_WrapEngine_Interface):
         :rtype: :py:class:`_RetScreenRows`
         '''
         if not (w := self._wrapState.size):
-            return []
+            return _RetScreenRows(rows=[])
 
         with self._cacheLock:
             if (self._lastWindow.y == y and
@@ -244,7 +276,7 @@ class _WrapEngine_VimWrap(_WrapEngine_Interface):
                 self._lastWindow.buffer):
                 return _RetScreenRows(rows=self._lastWindow.buffer)
 
-            self._lastWindow = _LastWindow(y=y, h=h, buffer=[])
+            self._lastWindow.clean(y=y, h=h)
 
             for _i,_line in enumerate(self._wrapState.textDocument.dataLines(slice(y,y+h)), start=max(0,y)):
                 self._lastWindow.buffer.extend(self._wrapLine(w,_i,_line))

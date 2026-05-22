@@ -54,7 +54,7 @@ Widgets handle events by overriding template methods:
 - `keyEvent()`, `mousePressEvent()`, `paintEvent()` - Core events
 - `focusInEvent()`, `focusOutEvent()` - Focus management
 - `dropEvent()`, `dragEnterEvent()` - Drag & drop
-- Always return `True` if event is handled, `False` to propagate
+- For `keyEvent()`, `mousePressEvent()`, `focusInEvent()`, `focusOutEvent()`, `dropEvent()`, and `dragEnterEvent()`: return `True` only when the event is handled by the widget; otherwise return `False` so it can propagate.
 
 ## Development Workflows
 
@@ -104,7 +104,7 @@ style = self.currentStyle()  # Get theme-aware colors
 - HTML5 export capabilities via `tools/webExporter/`
 
 ### Documentation & Docstrings
-Use **Sphinx-compatible docstring format** with Epytext-style field lists:
+Use **Sphinx-compatible docstrings** with Epytext-style field lists:
 ```python
 # In any sphinx reference
 # i.e. ':py:class:' or ':py:meth:'
@@ -202,14 +202,18 @@ i.e., whenever the user checks or unchecks it.
 ```
 
 **Key conventions**:
-- Use single quotes `'''` for docstrings
-- When adding Python code, type hints are required; use standard `typing` module types (or builtin generic types where equivalent) whenever possible
-- Include ASCII art for visual widgets showing borders/layout
-- Link to demo files with full GitHub URLs
-- Use `:py:class:` for cross-references to other classes
-- Document all parameters with `:param name:` and `:type name:`
-- Include `:return:` and `:rtype:` for non-void methods
-- Signal docstrings document emitted parameters, not the signal itself
+- **General formatting**:
+    - Use single quotes `'''` for docstrings.
+    - When adding Python code, type hints are required. Prefer standard `typing` types (or equivalent builtin generics).
+- **References and links**:
+    - Use `:py:class:` for class cross-references.
+    - Link demo files with full GitHub URLs.
+- **Method/member documentation**:
+    - Document parameters with `:param name:` and `:type name:`.
+    - Include `:return:` and `:rtype:` for non-void methods.
+    - For signals, document emitted parameters (not the signal object itself).
+- **Visual/widget docstrings**:
+    - Include ASCII art for visual widgets showing borders/layout.
 
 ## Apps Ecosystem
 The project includes several full applications demonstrating patterns:
@@ -224,6 +228,31 @@ Apps use the main library via path manipulation:
 sys.path.append(os.path.join(sys.path[0],'../../libs/pyTermTk'))
 import TermTk as ttk
 ```
+
+## Issue Investigation Workflow
+
+When investigating or fixing an issue, use this test-first sequence:
+
+1. **RED: Create and run a failing test**
+    - Add a regression test in `tests/pytest/` or `apps/*/tests/`.
+    - Run it and confirm it fails with a clear error.
+
+2. **Approval gate: Ask the user before coding the fix**
+    - Share the failing result and brief root cause.
+    - Ask for explicit approval.
+    - Do not change production code before approval.
+
+3. **GREEN: Implement minimal fix after approval**
+    - Apply the smallest code change that addresses the failure.
+    - Re-run the failing test and confirm it passes.
+
+4. **Regression safety**
+    - Run relevant surrounding tests (or full suite when needed).
+    - Confirm no regressions were introduced.
+
+**Key constraints**:
+- Never write test and solution in the same step.
+- Never implement a fix before explicit user approval after RED is confirmed.
 
 ## Key Integration Points
 

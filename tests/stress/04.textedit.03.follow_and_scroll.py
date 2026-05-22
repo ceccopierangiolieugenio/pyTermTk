@@ -49,7 +49,7 @@ class RemoteController(ttk.TTkGridLayout):
         self.btn_TopLeft     = ttk.TTkButton(text="TopLeft")
         self.btn_BottomRight = ttk.TTkButton(text="BottomRight")
         self.btn_BottomLeft  = ttk.TTkButton(text="BottomLeft")
-        self.btn_Follow      = ttk.TTkButton(text=">> Follow <<", checkable=True)
+        self.btn_Follow      = ttk.TTkComboBox(list=[_fm.name for _fm in ttk.TTkK.TextEditFollow])
         self.addWidget(self.btn_Follow,      1,1)
         self.addWidget(self.btn_TopLeft,     0,0)
         self.addWidget(self.btn_Top,         0,1)
@@ -147,11 +147,9 @@ def demoTextEdit(root=None, document=None):
 
     lineWrap.setCurrentText(ttk.TTkK.LineWrapMode.NoWrap.name)
     wordWrap.setCurrentText(ttk.TTkK.WrapMode.WrapAnywhere.name)
+    remoteController.btn_Follow.setCurrentText(ttk.TTkK.TextEditFollow.NEVER)
 
     fixWidth.valueChanged.connect(te.setWrapWidth)
-
-    # Connect Follow checkbox to setFollow
-    remoteController.btn_Follow.toggled.connect(te.setFollow)
 
     # Connect Scroll buttons to scrollTo
     remoteController.btn_Top.clicked.connect(lambda: te.scrollTo(ttk.TTkK.TextEditEdge.TOP))
@@ -200,6 +198,14 @@ def demoTextEdit(root=None, document=None):
 
     wrapEngine.currentTextChanged.connect(_wrapEngineCallback)
 
+    @ttk.pyTTkSlot(str)
+    def _followModeChanged(_followModeName:str):
+        _followMode = ttk.TTkK.TextEditFollow[_followModeName]
+        te.setFollowMode(mode=_followMode)
+
+    # Connect Follow checkbox to setFollow
+    remoteController.btn_Follow.currentTextChanged.connect(_followModeChanged)
+
     return frame
 
 def main():
@@ -220,8 +226,9 @@ def main():
     demoTextEdit(split, document)
     demoTextEditSecondary(split, document)
     rootTree.layout().addWidget(split,0,0,1,2)
-    rootTree.layout().addWidget(quitbtn := ttk.TTkButton(border=True, text="Quit", maxWidth=6),1,0)
+    rootTree.layout().addWidget(quitbtn := ttk.TTkButton(border=True, text="Quit", maxWidth=6),1,0,2,1)
     rootTree.layout().addWidget(ttk.TTkKeyPressView(maxHeight=3),1,1)
+    rootTree.layout().addWidget(ttk.TTkLogViewer(maxHeight=6),2,1)
     quitbtn.clicked.connect(root.quit)
     root.mainloop()
 
