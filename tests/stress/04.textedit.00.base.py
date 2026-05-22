@@ -174,18 +174,25 @@ def main():
     windowed = args.w
 
     root = ttk.TTk()
+
     if windowed:
-        rootTree = ttk.TTkWindow(parent=root,pos = (0,0), size=(70,40), title="Test Text Edit", layout=ttk.TTkGridLayout(), border=True)
+        rootTree = ttk.TTkWindow(parent=root,pos = (0,0), size=(80,45), title="Test Text Edit - Follow & Scroll", layout=ttk.TTkGridLayout(), border=True)
     else:
         rootTree = root
         root.setLayout(ttk.TTkGridLayout())
+
+    rootSplit = ttk.TTkSplitter(parent=rootTree, orientation=ttk.TTkK.Direction.VERTICAL)
+    rootGrid = ttk.TTkGridLayout()
+    rootSplit.addItem(rootGrid)
+    rootSplit.addWidget(ttk.TTkLogViewer(),5,'Logs')
+
     split = ttk.TTkSplitter()
     document = ttk.TTkTextDocument()
     demoTextEdit(split, document)
     demoTextEditSecondary(split, document)
-    rootTree.layout().addWidget(split,0,0,1,2)
-    rootTree.layout().addWidget(quitbtn := ttk.TTkButton(border=True, text="Quit", maxWidth=6),1,0)
-    rootTree.layout().addWidget(ttk.TTkKeyPressView(maxHeight=3),1,1)
+    rootGrid.addWidget(split,0,0,1,2)
+    rootGrid.addWidget(quitbtn := ttk.TTkButton(border=True, text="Quit", maxWidth=6),1,0)
+    rootGrid.addWidget(ttk.TTkKeyPressView(maxHeight=3),1,1)
     quitbtn.clicked.connect(root.quit)
     root.mainloop()
 

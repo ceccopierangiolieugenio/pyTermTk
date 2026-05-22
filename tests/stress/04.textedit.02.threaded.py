@@ -134,15 +134,24 @@ def main():
     windowed = args.w
 
     root = ttk.TTk()
+
     if windowed:
-        rootTree = ttk.TTkWindow(parent=root,pos = (0,0), size=(70,40), title="Test Text Edit", layout=ttk.TTkVBoxLayout(), border=True)
+        rootTree = ttk.TTkWindow(parent=root,pos = (0,0), size=(80,45), title="Test Text Edit - Follow & Scroll", layout=ttk.TTkGridLayout(), border=True)
     else:
         rootTree = root
-        root.setLayout(ttk.TTkVBoxLayout())
+        root.setLayout(ttk.TTkGridLayout())
+
+    rootSplit = ttk.TTkSplitter(parent=rootTree, orientation=ttk.TTkK.Direction.VERTICAL)
+    rootGrid = ttk.TTkGridLayout()
+    rootSplit.addItem(rootGrid)
+    rootSplit.addWidget(ttk.TTkLogViewer(),5,'Logs')
+
     split = ttk.TTkSplitter()
     demoTextEdit(split)
-    rootTree.layout().addWidget(split)
-    rootTree.layout().addWidget(ttk.TTkLogViewer())
+    rootGrid.addWidget(split,0,0,1,2)
+    rootGrid.addWidget(quitbtn := ttk.TTkButton(border=True, text="Quit", maxWidth=6),1,0)
+    rootGrid.addWidget(ttk.TTkKeyPressView(maxHeight=3),1,1)
+    quitbtn.clicked.connect(root.quit)
     root.mainloop()
 
 if __name__ == "__main__":
