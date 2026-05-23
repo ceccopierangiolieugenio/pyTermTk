@@ -126,8 +126,8 @@ class TTkSplitter(TTkContainer):
                 self.insertWidget(index, widget)
             def addWidget(_, widget):
                 self.addWidget(widget)
-            def inserItem(_, item):
-                self.inserItem(item)
+            def insertItem(_, index, item):
+                self.insertItem(index, item)
             def addItem(_, item):
                 self.addItem(item)
         self.setLayout(_SplitterLayout())
