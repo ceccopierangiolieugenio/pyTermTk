@@ -471,17 +471,17 @@ class TTkComboBox(TTkContainer):
     def _callback(self, label:str) -> None:
         '''Internal callback when an item is selected from the popup list.
 
-        Updates the combobox selection, closes the popup, and restores focus.
+        Closes the popup, restores focus, and updates the combobox selection.
 
         :param label: the selected item text
         :type label: str
         '''
-        if self._lineEdit is not None:
-            self._lineEdit.setText(label)
-        self.setCurrentIndex(self._list.index(label))
         TTkHelper.removeOverlayAndChild(self._popupFrame)
         self._popupFrame = None
         self.setFocus()
+        if self._lineEdit is not None:
+            self._lineEdit.setText(label)
+        self.setCurrentIndex(self._list.index(label))
         self.update()
 
     def _pressEvent(self) -> bool:
