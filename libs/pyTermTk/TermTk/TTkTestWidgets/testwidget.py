@@ -22,6 +22,8 @@
 
 __all__ = ['TTkTestWidget']
 
+from typing import Optional
+
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkCore.string import TTkString
@@ -64,7 +66,7 @@ class TTkTestWidget(TTkFrame):
     ID = 1
     __slots__ = ('_l',)
     def __init__(self, *,
-                 name:str=None,
+                 name:Optional[str]=None,
                  **kwargs) -> None:
         name = name if name else f"TestWidget-{TTkTestWidget.ID}"
         super().__init__(name=name, **kwargs)
@@ -94,6 +96,8 @@ class TTkTestWidget(TTkFrame):
 
     def mousePressEvent(self, evt:TTkMouseEvent) -> bool:
         TTkLog.debug(f"{self._name} Test Mouse {evt}")
+        return True
 
     def mouseDragEvent(self, evt:TTkMouseEvent) -> bool:
         TTkLog.debug(f"{self._name} Test Mouse {evt}")
+        return True

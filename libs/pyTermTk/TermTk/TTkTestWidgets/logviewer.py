@@ -23,6 +23,7 @@
 __all__ = ['TTkLogViewer']
 
 import os
+from typing import Optional
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.color import TTkColor
@@ -80,7 +81,7 @@ class TTkLogViewer(TTkAbstractScrollArea):
     __slots__ = ('_logView',)
     def __init__(self, *,
                  # TTkWidget init
-                 parent:TTkWidget=None,
+                 parent:Optional[TTkWidget]=None,
                  visible:bool=True,
                  # TTkLogViewer init
                  follow:bool=False,

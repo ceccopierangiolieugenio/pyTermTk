@@ -371,9 +371,10 @@ class TTkColorDialogPicker(TTkWindow):
         self._returnType=returnType
         self._color:TTkColor=color if color and color!=TTkColor.RST else TTkColor.BLACK
         self._isForeground:bool = color.hasForeground() or not color.hasBackground()
+        main_grid_layout = TTkGridLayout()
         super().__init__(**kwargs)
         self.setWindowFlag(TTkK.WindowFlag.WindowMaximizeButtonHint | TTkK.WindowFlag.WindowCloseButtonHint)
-        self.setLayout(TTkGridLayout())
+        self.setLayout(main_grid_layout)
 
         colorLayout = TTkGridLayout() # Right
         leftLayout   = TTkLayout(minSize=(25,20), maxWidth=25) # Left
@@ -532,8 +533,8 @@ class TTkColorDialogPicker(TTkWindow):
         # Events
         self._colorCanvas.colorPicked.connect(_controlSetRGBColor)
 
-        self.layout().addItem(leftLayout ,0,0)
-        self.layout().addItem(colorLayout ,0,1)
+        main_grid_layout.addItem(leftLayout ,0,0)
+        main_grid_layout.addItem(colorLayout ,0,1)
 
         leftLayout.addItem(paletteLayout)
         leftLayout.addItem(customLayout)

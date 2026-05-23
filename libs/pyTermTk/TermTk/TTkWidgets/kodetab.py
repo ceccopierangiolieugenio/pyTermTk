@@ -22,7 +22,7 @@
 
 __all__ = ['TTkKodeTab']
 
-from typing import Callable, Iterator, Tuple, List, Any
+from typing import Callable, Iterator, Optional, Tuple, List, Any
 
 from TermTk.TTkCore.constant import  TTkK
 from TermTk.TTkCore.helper import  TTkHelper
@@ -55,6 +55,7 @@ class _TTkKodeTab(TTkTabWidget):
         '_frameOverlay','_baseWidget',
         #Signals
         'kodeTabCloseRequested')
+    _frameOverlay: Optional[Tuple[int,int,int,int]]
     def __init__(self, *,
                  baseWidget=None,
                  **kwargs) -> None:
@@ -135,23 +136,26 @@ class _TTkKodeTab(TTkTabWidget):
         else:
             return False
 
-        def _processDrop(data:List[Tuple[TTkWidget,TTkString]], orientation, offset):
-            fwold = self._baseWidget._getFirstWidget()
-            splitter = self.parentWidget()
-            index = splitter.indexOf(self)
-            if splitter.orientation() != orientation:
-                splitter.replaceWidget(index, splitter := TTkSplitter(orientation=orientation, style=self.parentWidget().classStyle))
-                splitter.setStyle(_splitter_NERD_1_style)
-                splitter.addWidget(self)
+        def _processDrop(data:List[Tuple[TTkWidget,TTkString]], orientation, offset) -> None:
+            _fw_old = self._baseWidget._getFirstWidget()
+            _splitter = self.parentWidget()
+            if not isinstance(_splitter, TTkSplitter):
+                raise ValueError(f"{_splitter} is not an instane of TTkSplitter")
+            index = _splitter.indexOf(self)
+            if _splitter.orientation() != orientation:
+                _splitter.replaceWidget(index, _new_splitter := TTkSplitter(orientation=orientation, style=_splitter.classStyle))
+                _new_splitter.setStyle(_splitter_NERD_1_style)
+                _new_splitter.addWidget(self)
+                _splitter = _new_splitter
                 index=offset
-            splitter.insertWidget(index+offset, kt:=_TTkKodeTab(baseWidget=self._baseWidget, border=self.border(), barType=self._tabStatus.barType, closable=self.tabsClosable()))
+            _splitter.insertWidget(index+offset, kt:=_TTkKodeTab(baseWidget=self._baseWidget, border=self.border(), barType=self._tabStatus.barType, closable=self.tabsClosable()))
             kt._dropEventProxy = self._dropEventProxy
             kt.kodeTabCloseRequested.connect(self._baseWidget._handleKodeTabCloseRequested)
             for (_w,_l) in data:
                 _ret = kt.addTab(_w,_l)
                 self._baseWidget.tabAdded.emit(kt, _ret)
-            if fwold!=(fwnew := self._baseWidget._getFirstWidget()) and fwold._hasMenu():
-                fwnew._importMenu(fwold)
+            if _fw_old!=(fwnew := self._baseWidget._getFirstWidget()) and _fw_old._hasMenu():
+                fwnew._importMenu(_fw_old)
 
         ret = True
         if y<3:

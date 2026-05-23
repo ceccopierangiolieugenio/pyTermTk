@@ -22,6 +22,8 @@
 
 __all__ = ['TTkTestAbstractScrollWidget']
 
+from typing import Optional
+
 from TermTk.TTkCore.signal import pyTTkSlot
 from TermTk.TTkCore.TTkTerm.inputmouse import TTkMouseEvent
 
@@ -31,7 +33,7 @@ class TTkTestAbstractScrollWidget(TTkAbstractScrollView):
     ID = 1
     __slots__ = ('_areaPos','_areaSize')
     def __init__(self, *,
-                 name:str=None,
+                 name:Optional[str]=None,
                  areaSize:tuple=(10,10),
                  areaPos:tuple=(0,0),
                  **kwargs) -> None:

@@ -28,7 +28,7 @@ from TermTk.TTkCore.cfg import TTkCfg
 from TermTk.TTkCore.signal import pyTTkSignal,pyTTkSlot
 from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkCore.util import TTkUtil
-from TermTk.TTkCore.string import TTkString
+from TermTk.TTkCore.string import TTkString, TTkStringType
 from TermTk.TTkLayouts.layout import TTkLayout
 from TermTk.TTkLayouts.gridlayout import TTkGridLayout
 from TermTk.TTkLayouts.boxlayout import TTkHBoxLayout
@@ -142,13 +142,14 @@ class TTkMessageBox(TTkWindow):
                'buttonSelected')
     def __init__(self, *,
                  icon:Icon=Icon.NoIcon,
-                 text:TTkString='',
-                 detailedText:TTkString='',
+                 text:TTkStringType='',
+                 detailedText:TTkStringType='',
                  standardButtons:StandardButton=StandardButton.Ok,
                  defaultButton:StandardButton=StandardButton.NoButton,
                  **kwargs) -> None:
         self.buttonSelected = pyTTkSignal(TTkMessageBox.StandardButton)
-        super().__init__(**kwargs|{'layout':TTkGridLayout()})
+        grid_layout = TTkGridLayout()
+        super().__init__(**kwargs|{'layout':grid_layout})
         self._icon = icon
         self._text = TTkString(text)
         self._detailedText = TTkString(detailedText)
@@ -157,21 +158,21 @@ class TTkMessageBox(TTkWindow):
 
         compressedData = TTkMessageBox._compressed_data.get(self._icon,'')
         self._widImage = TTkImage(rasteriser=TTkImage.HALFBLOCK)
-        self.layout().addWidget(self._widImage,0,0,4,1)
+        grid_layout.addWidget(self._widImage,0,0,4,1)
         if compressedData:
             data = TTkUtil.base64_deflate_2_obj(compressedData)
             self._widImage.setData(data)
             self._widImage.setMinimumSize(16,8)
 
-        self.layout().addItem(TTkLayout(),0,1,1,3)
-        self.layout().addItem(TTkLayout(),2,1,1,3)
+        grid_layout.addItem(TTkLayout(),0,1,1,3)
+        grid_layout.addItem(TTkLayout(),2,1,1,3)
 
         self._widLabel = TTkLabel(text=self._text)
         self._widLabel.setMinimumSize(*self._widLabel.size())
-        self.layout().addWidget(self._widLabel,1,2)
+        grid_layout.addWidget(self._widLabel,1,2)
 
         self._widBtnLayout = TTkHBoxLayout()
-        self.layout().addItem(self._widBtnLayout,3,1,1,3)
+        grid_layout.addItem(self._widBtnLayout,3,1,1,3)
 
         def _genClickedSlot(sb):
             @pyTTkSlot()

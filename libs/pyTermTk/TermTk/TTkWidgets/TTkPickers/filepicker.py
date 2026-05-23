@@ -179,12 +179,13 @@ class TTkFileDialogPicker(TTkWindow):
         self._fileMode = fileMode
         self._acceptMode = acceptMode
 
+        main_grid_layout = TTkGridLayout()
         self.setTitle(self._caption)
-        self.setLayout(TTkGridLayout())
+        self.setLayout(main_grid_layout)
 
         # Top (absPath)
         topLayout = TTkGridLayout()
-        self.layout().addItem(topLayout,0,0)
+        main_grid_layout.addItem(topLayout,0,0)
 
         self._lookPath = TTkComboBox(textAlign=TTkK.LEFT_ALIGN)
         self._btnPrev  = TTkButton(text="<",maxWidth=3, enabled=False)
@@ -221,7 +222,7 @@ class TTkFileDialogPicker(TTkWindow):
 
 
         bottomLayout = TTkGridLayout()
-        self.layout().addItem(bottomLayout,2,0)
+        main_grid_layout.addItem(bottomLayout,2,0)
         bottomLayout.addWidget(TTkLabel(text="File name:"     ,maxWidth=14),      0,0)
         bottomLayout.addWidget(TTkLabel(text="Files of type:" ,maxWidth=14),      1,0)
         bottomLayout.addWidget(self._leFileName  , 0,1)
@@ -231,7 +232,7 @@ class TTkFileDialogPicker(TTkWindow):
 
         # Center (self._fileTree, Bookmarks)
         splitter = TTkSplitter(border=True)
-        self.layout().addWidget(splitter,1,0)
+        main_grid_layout.addWidget(splitter,1,0)
 
         bookmarks = TTkList(parent=splitter)
         bookmarks.addItem(TTkString() + TTkCfg.theme.fileIconColor + TTkCfg.theme.fileIcon.computer + TTkColor.RST+" Computer", data='/')

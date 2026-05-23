@@ -22,6 +22,8 @@
 
 __all__ = ['TTkKeyPressView']
 
+from typing import List
+
 from TermTk.TTkCore.TTkTerm.input import TTkInput
 from TermTk.TTkCore.TTkTerm.inputkey import TTkKeyEvent, mod2str, key2str
 from TermTk.TTkCore.TTkTerm.inputmouse import TTkMouseEvent
@@ -40,7 +42,7 @@ class TTkKeyPressView(TTkWidget):
     def __init__(self, **kwargs) -> None:
         super().__init__(**kwargs)
         TTkInput.inputEvent.connect(self._processInput)
-        self._keys = []
+        self._keys:List[List] = []
         self._fadeDuration = 2.5
         self._anim = TTkPropertyAnimation(self, '_pushFade')
 

@@ -22,12 +22,14 @@
 
 __all__ = ['TTkTestWidgetSizes']
 
+from typing import Optional
+
 from TermTk.TTkWidgets.frame import TTkFrame
 
 class TTkTestWidgetSizes(TTkFrame):
     ID = 1
     def __init__(self, *,
-                 name:str=None,
+                 name:Optional[str]=None,
                  **kwargs) -> None:
         name = name if name else f"TestWidgetSizes-{TTkTestWidgetSizes.ID}"
         super().__init__(name=name, **kwargs)
