@@ -12,7 +12,7 @@ This file defines specialized agents for common pyTermTk development tasks.
 ### `tdd-fixer`
 **Use when**: Fixing bugs or implementing features using test-driven development (RED-GREEN-REFACTOR)
 
-Tests first, then implements the minimal fix.
+Tests first, then implements the minimal fix after approval.
 
 ```yaml
 name: tdd-fixer
@@ -22,26 +22,26 @@ toolRestrictions:
   - deny: github-*  # No GitHub automation
 instructions: |
   # TDD-First Fixer Agent
-  
+
   ## Workflow (Always Follow)
-  
-  1. **RED Phase**: 
+
+  1. **RED Phase**:
      - Create a failing test in `tests/pytest/` or `apps/*/tests/`
      - Run it and confirm failure with clear error
      - Share the failing result with user
-  
+
   2. **APPROVAL GATE**:
      - Never proceed without explicit user approval
      - User must approve the fix approach
-  
+
   3. **GREEN Phase**:
      - Implement minimal code change that makes test pass
      - Re-run test and confirm it passes
-  
+
   4. **SAFETY**:
-     - Run surrounding tests to catch regressions
+     - Run all tests in the same test directory/module as the changed code, e.g. `pytest tests/pytest/widgets/<name>/`
      - Confirm no other tests broke
-  
+
   ## Constraints
   - Never write test and solution in same step
   - Never implement before user approval
@@ -59,29 +59,29 @@ name: widget-builder
 description: "Use when: creating new TTkWidget subclasses. Generates scaffold with __slots__, signals, event handlers, Sphinx docs, and example."
 instructions: |
   # Widget Builder Agent
-  
+
   ## Widget Template Pattern
   All new widgets must follow:
-  
+
   ```python
   class TTkMyWidget(TTkWidget):  # or TTkContainer for composite
       '''MyWidget description with ASCII art.
-      
+
       Demo: <link>
       Online: <link>
       '''
-      
-      # Signals first
+
+      # Slots include private fields plus exposed signals (declare each once)
+      __slots__ = ('_private_var', 'mySignal')
+
+      _private_var: int
       mySignal: pyTTkSignal
-      
-      # Performance: always use slots
-      __slots__ = ('_private_var',)
-      
+
       # Signals defined in __init__
       def __init__(self, **kwargs):
           self.mySignal = pyTTkSignal(int)
           super().__init__(**kwargs|{'size': (w, h)})
-      
+
       # Event handlers return True if handled, False to propagate
       def keyEvent(self, evt):
           if evt.key == 'Enter':
@@ -89,11 +89,14 @@ instructions: |
               return True
           return False
   ```
-  
+
   ## Checklist
   - [ ] File: `libs/pyTermTk/TermTk/TTkWidgets/ttk_<name>.py`
   - [ ] Class inherits from `TTkWidget` or `TTkContainer`
   - [ ] Uses `__slots__` for all instance variables
+  - [ ] Every non-signal slot name starts with `_`
+  - [ ] Public slot names are exposed signals only
+  - [ ] Class-level type hints are declared for every slot entry
   - [ ] Defines signals with type hints
   - [ ] Signals initialized in `__init__`
   - [ ] Event methods return bool (True = handled, False = propagate)
@@ -112,20 +115,20 @@ name: test-writer
 description: "Use when: writing unit tests for widgets, signals, or layouts. Generates pytest structure with signal assertions, event simulation, and edge case coverage."
 instructions: |
   # Test Writer Agent
-  
+
   ## Test Structure
   Tests go in `tests/pytest/` and use pytest patterns.
-  
+
   ```python
   import pytest
   from TermTk import ...
-  
+
   class TestMyWidget:
       def test_initialization(self):
           """Widget initializes with defaults"""
           widget = TTkMyWidget()
           assert widget.someProperty == default_value
-      
+
       def test_signal_emission(self):
           """Signal emits correct value"""
           widget = TTkMyWidget()
@@ -133,7 +136,7 @@ instructions: |
           widget.mySignal.connect(lambda val: signal_called.append(val))
           widget.trigger()
           assert signal_called == [expected]
-      
+
       def test_event_handling(self):
           """Key/mouse events handled correctly"""
           widget = TTkMyWidget()
@@ -141,12 +144,12 @@ instructions: |
           evt = TTkKeyEvent(...)
           result = widget.keyEvent(evt)
           assert result == True  # or False if not handled
-      
+
       def test_edge_cases(self):
           """Boundary conditions and error states"""
           # Empty, None, max size, etc.
   ```
-  
+
   ## Guidelines
   - Test behavior, not implementation
   - Use fixtures for common setup
@@ -165,13 +168,13 @@ name: doc-writer
 description: "Use when: writing Sphinx docstrings, class/widget documentation, or API references. Generates Sphinx-compliant format with cross-refs, ASCII art, and runnable examples."
 instructions: |
   # Documentation Writer Agent
-  
+
   ## Docstring Format (Epytext-style)
-  
+
   ```python
   def setGeometry(self, x: int, y: int, width: int, height: int) -> None:
       '''Resize and move the widget.
-      
+
       :param x: horizontal position
       :type x: int
       :param y: vertical position
@@ -182,45 +185,45 @@ instructions: |
       :type height: int
       '''
   ```
-  
+
   ## Class Documentation
   Include: ASCII art demo, sandbox link, code example
-  
+
   ```python
   class TTkMyWidget(TTkWidget):
       '''TTkMyWidget: Brief description
-      
+
       Longer description here.
-      
+
       (`demo <https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/sandbox/...>`__)
-      
+
       ::
-      
+
           Visual representation
           with ASCII art
-      
+
       .. code:: python
-      
+
           import TermTk as ttk
           root = ttk.TTk()
           ttk.TTkMyWidget(parent=root)
           root.mainloop()
       '''
   ```
-  
+
   ## Signal Documentation
   Document emitted parameters, not the signal object:
-  
+
   ```python
   toggled: pyTTkSignal
   '''
   Emitted when state changes.
-  
+
   :param checked: True if checked
   :type checked: bool
   '''
   ```
-  
+
   ## Cross-references
   Use `:py:class:`, `:py:meth:` — full paths not required (Sphinx plugins resolve)
 ```

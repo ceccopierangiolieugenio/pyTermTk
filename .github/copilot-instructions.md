@@ -29,12 +29,21 @@ class TTkMyWidget(TTkWidget):  # Or TTkContainer for composite widgets
     # Signal declarations
     mySignal: pyTTkSignal
 
-    __slots__ = ('_private_vars',)  # Always use slots for performance
+    __slots__ = ('_private_var', 'mySignal')  # Private fields use leading '_'; exposed signals can be public
+
+    _private_var: int
+    mySignal: pyTTkSignal
 
     def __init__(self, **kwargs):
         self.mySignal = pyTTkSignal(int)  # Define signals in __init__
         super().__init__(**kwargs|{'size': (w, h)})  # Merge kwargs, set default size
 ```
+
+Slot naming/type rules for widgets:
+- Use `__slots__` in every widget and helper state class.
+- Every non-signal slot name must start with `_`.
+- Signals are the only slot entries allowed without `_` because they are part of the widget API.
+- Add class-level type annotations for every slot entry directly under `__slots__`.
 
 ### Signal-Slot System (Qt-inspired)
 Use type-safe signal-slot patterns:

@@ -1,6 +1,6 @@
 ---
 name: widget-creation
-description: "Use when: creating new TTkWidget subclasses with proper structure, signals, and documentation"
+description: "Use when: creating new TTkWidget subclasses with proper structure, signals, slots, and documentation"
 ---
 
 # Widget Creation Skill
@@ -35,40 +35,42 @@ from TermTk import TTkWidget, TTkColor, pyTTkSignal, pyTTkSlot
 
 class TTkMyWidget(TTkWidget):
     '''TTkMyWidget: [One-line description]
-    
+
     [Longer description of purpose and behavior]
-    
+
     (`demo <https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/sandbox/...>`__)
-    
+
     ::
-    
+
         [ASCII art showing visual representation]
         [Multiple lines if needed]
-    
+
     .. code:: python
-    
+
         import TermTk as ttk
-        
+
         root = ttk.TTk()
         widget = ttk.TTkMyWidget(parent=root)
         root.mainloop()
     '''
-    
-    # Signal declarations with type hints
-    stateChanged: pyTTkSignal
-    '''
-    Emitted when widget state changes.
-    
-    :param value: new state value
-    :type value: [type]
-    '''
-    
+
     # Performance: always use __slots__
     __slots__ = (
         '_privateVar',
         '_anotherVar',
+        'stateChanged',
     )
-    
+
+    _privateVar: int
+    _anotherVar: int
+    stateChanged: pyTTkSignal
+    '''
+    Emitted when widget state changes.
+
+    :param value: new state value
+    :type value: [type]
+    '''
+
     # Class-level styling
     classStyle = {
         'default':  {'color': TTkColor.fg("#dddd88"), 'borderColor': TTkColor.RST},
@@ -76,35 +78,35 @@ class TTkMyWidget(TTkWidget):
         'focus':    {'borderColor': TTkColor.fg("#ffff00")},
         'disabled': {'color': TTkColor.fg('#888888')}
     }
-    
+
     def __init__(self, **kwargs):
         '''Initialize the widget.
-        
+
         :param parent: parent widget
         :type parent: TTkWidget
         [Other parameters as needed]
         '''
-        # Define signals in __init__, not class-level
+        # Instantiate signals in __init__ (do not instantiate at class level)
         self.stateChanged = pyTTkSignal(int)
-        
+
         # Initialize private variables
-        self._privateVar = default_value
-        
+        self._privateVar = 0  # Replace with appropriate default for your widget
+
         # Call parent with merged kwargs and default size
-        super().__init__(**kwargs|{'size': (width, height)})
-    
+        super().__init__(**kwargs|{'size': (10, 3)})  # Replace with appropriate default dimensions
+
     # Property getters/setters
     def getValue(self) -> int:
         '''Get the current value.
-        
+
         :return: current value
         :rtype: int
         '''
         return self._privateVar
-    
+
     def setValue(self, value: int) -> None:
         '''Set the value.
-        
+
         :param value: new value
         :type value: int
         '''
@@ -112,7 +114,7 @@ class TTkMyWidget(TTkWidget):
             self._privateVar = value
             self.stateChanged.emit(value)
             self.update()
-    
+
     # Return True when this widget fully processes the event; otherwise return False to let parent widgets handle it.
     def keyEvent(self, evt) -> bool:
         '''Handle keyboard events.'''
@@ -120,18 +122,18 @@ class TTkMyWidget(TTkWidget):
             self.stateChanged.emit(self._privateVar)
             return True
         return False
-    
+
     def mousePressEvent(self, evt) -> bool:
         '''Handle mouse press events.'''
         # Handle click, return True if consumed
         return False
-    
+
     def paintEvent(self) -> None:
         '''Render the widget.'''
         # Use currentStyle() for theme-aware colors
         canvas = self.canvas
         style = self.currentStyle()
-        
+
         # Draw widget content
         canvas.drawText(pos=(0, 0), text="MyWidget")
 
@@ -148,30 +150,30 @@ from TermTk import TTkMyWidget
 
 class TestTTkMyWidget:
     '''Test suite for TTkMyWidget'''
-    
+
     def test_initialization(self):
         """Widget initializes with defaults"""
         widget = TTkMyWidget()
         assert widget.getValue() == 0  # Or expected default
-    
+
     def test_signal_emission(self):
         """Signal emits when state changes"""
         widget = TTkMyWidget()
         emitted = []
         widget.stateChanged.connect(lambda val: emitted.append(val))
-        
+
         widget.setValue(42)
         assert emitted == [42]
-    
+
     def test_key_event_handling(self):
         """Key events handled correctly"""
         widget = TTkMyWidget()
         from TermTk import TTkKeyEvent
-        
+
         evt = TTkKeyEvent(key='Enter')
         result = widget.keyEvent(evt)
         assert result == True  # Event was handled
-    
+
     def test_disabled_state(self):
         """Widget respects disabled state"""
         widget = TTkMyWidget()
@@ -193,18 +195,18 @@ import TermTk as ttk
 
 def main():
     root = ttk.TTk()
-    
+
     # Create and configure widget
     widget = ttk.TTkMyWidget(parent=root)
     widget.setValue(10)
-    
+
     # Connect signal
     @ttk.pyTTkSlot(int)
     def on_state_changed(value):
         print(f"State changed to: {value}")
-    
+
     widget.stateChanged.connect(on_state_changed)
-    
+
     root.mainloop()
 
 if __name__ == '__main__':
@@ -214,8 +216,8 @@ if __name__ == '__main__':
 ## Key Patterns to Follow
 
 ### Signals
-- Declare as class attribute with type hint
-- Define in `__init__` with specific type: `pyTTkSignal(int)` not `pyTTkSignal()`
+- Keep signal entries in `__slots__` and type-annotate them there
+- Instantiate signals in `__init__` with specific type: `pyTTkSignal(int)` not `pyTTkSignal()`
 - Emit with actual value: `self.stateChanged.emit(value)`
 
 ### __slots__
@@ -223,9 +225,19 @@ if __name__ == '__main__':
 __slots__ = (
     '_variable1',
     '_variable2',
+    'valueChanged',
     # Always use slots for memory efficiency
 )
+
+_variable1: int
+_variable2: int
+valueChanged: pyTTkSignal
 ```
+
+Rules:
+- All non-signal slot names must start with `_`.
+- Public (non-underscore) slot names are allowed only for exposed signals.
+- Add a class-level type annotation for each slot entry immediately below `__slots__`.
 
 ### Class Styling
 ```python
@@ -253,7 +265,11 @@ classStyle = {
 - [ ] File location: `libs/pyTermTk/TermTk/TTkWidgets/ttk_*.py`
 - [ ] Inherits from `TTkWidget` or `TTkContainer`
 - [ ] `__slots__` defined
+- [ ] Non-signal slot names use leading `_`
+- [ ] Public slot names are signals only
+- [ ] Every slot entry has a class-level type annotation
 - [ ] `__all__` export defined
+- [ ] Register the widget export in `libs/pyTermTk/TermTk/TTkWidgets/__init__.py` with `from .ttk_<widget_name> import TTkMyWidget`
 
 ### Signals and Events
 - [ ] Signals with type hints
@@ -270,7 +286,7 @@ classStyle = {
 - [ ] Flake8 passes
 
 ## Common Mistakes to Avoid
-- ❌ Signals defined at class level instead of `__init__`
+- ❌ Signals instantiated at class level instead of `__init__`
 - ❌ Event handlers don't return bool (should always return True/False)
 - ❌ Missing `__slots__` (memory waste)
 - ❌ Hardcoded colors instead of using theme via `currentStyle()`
