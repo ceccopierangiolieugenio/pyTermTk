@@ -177,6 +177,8 @@ class pyTTkSignal():
         for slot in args:
             if slot in self._connected_slots:
                 del self._connected_slots[slot]
+            if slot in self._connected_async_slots:
+                del self._connected_async_slots[slot]
 
     def emit(self, *args, **kwargs) -> None:
         if not self._mutex.acquire(False): return
@@ -191,12 +193,14 @@ class pyTTkSignal():
         self._mutex.release()
 
     def clear(self):
-        self._connected_slots = {}
+        self._connected_slots.clear()
+        self._connected_async_slots.clear()
 
     @staticmethod
     def clearAll():
         for s in pyTTkSignal._signals:
             s.clear()
+        pyTTkSignal._signals.clear()
 
     def forward(self):
         def _ret(*args, **kwargs) -> None:
