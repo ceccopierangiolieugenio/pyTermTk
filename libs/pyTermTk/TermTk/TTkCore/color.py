@@ -180,7 +180,7 @@ class TTkColor:
                  clean=False) -> None:
         self._fg  = fg
         self._bg  = bg
-        self._clean = clean or not (fg or bg)
+        self._clean = clean or (fg is None and bg is None)
         self._colorMod = colorMod
         self._buffer = ''
 
@@ -210,7 +210,7 @@ class TTkColor:
             return TTkColor(fg=fg, bg=bg, clean=clean)
 
     @staticmethod
-    def fg(*args, **kwargs) -> TTkColor:
+    def fg(color:str, *, link:str='', modifier:Optional[TTkColorModifier]=None) -> TTkColor:
         ''' Helper to generate a Foreground color
 
         Example:
@@ -221,26 +221,22 @@ class TTkColor:
             color_2 = TTkColor.fg(color='#00FF00')
             color_3 = TTkColor.fg('#0000FF', modifier=TTkColorGradient(increment=6))
 
-        :param str color: the color representation in (str)HEX
+        :param color: the color representation in (str)HEX
         :type color: str
-        :param str modifier: (experimental) the color modifier to be used to improve the **kinkiness**
+        :param link: (optional) hyperlink URL to associate with the color
+        :type link: str
+        :param modifier: (experimental) the color modifier to be used to improve the **kinkiness**
         :type modifier: TTkColorModifier, optional
 
         :return: :py:class:`TTkColor`
         '''
-        mod = kwargs.get('modifier', None )
-        link = kwargs.get('link', '' )
-        if len(args) > 0:
-            color = args[0]
-        else:
-            color = kwargs.get('color', "" )
         if link:
-            return _TTkColor_mod_link(fg=TTkColor.hexToRGB(color), colorMod=mod, link=link)
+            return _TTkColor_mod_link(fg=TTkColor.hexToRGB(color), colorMod=modifier, link=link)
         else:
-            return TTkColor(fg=TTkColor.hexToRGB(color), colorMod=mod)
+            return TTkColor(fg=TTkColor.hexToRGB(color), colorMod=modifier)
 
     @staticmethod
-    def bg(*args, **kwargs) -> TTkColor:
+    def bg(color:str, *, link:str='', modifier:Optional[TTkColorModifier]=None) -> TTkColor:
         ''' Helper to generate a Background color
 
         Example:
@@ -251,27 +247,23 @@ class TTkColor:
             color_2 = TTkColor.bg(color='#00FF00')
             color_3 = TTkColor.bg('#0000FF', modifier=TTkColorGradient(increment=6))
 
-        :param str color: the color representation in (str)HEX
+        :param color: the color representation in (str)HEX
         :type color: str
-        :param str modifier: (experimental) the color modifier to be used to improve the **kinkiness**
+        :param link: (optional) hyperlink URL to associate with the color
+        :type link: str
+        :param modifier: (experimental) the color modifier to be used to improve the **kinkiness**
         :type modifier: TTkColorModifier, optional
 
         :return: :py:class:`TTkColor`
         '''
-        mod = kwargs.get('modifier', None )
-        link = kwargs.get('link', '' )
-        if len(args) > 0:
-            color = args[0]
-        else:
-            color = kwargs.get('color', "" )
         if link:
-            return _TTkColor_mod_link(bg=TTkColor.hexToRGB(color), colorMod=mod, link=link)
+            return _TTkColor_mod_link(bg=TTkColor.hexToRGB(color), colorMod=modifier, link=link)
         else:
-            return TTkColor(bg=TTkColor.hexToRGB(color), colorMod=mod)
+            return TTkColor(bg=TTkColor.hexToRGB(color), colorMod=modifier)
 
     @staticmethod
-    def fgbg(fg:str='', bg:str='', link:str='', modifier:Optional[TTkColorModifier]=None) -> TTkColor:
-        ''' Helper to generate a Background color
+    def fgbg(fg:str='', bg:str='', *, link:str='', modifier:Optional[TTkColorModifier]=None) -> TTkColor:
+        ''' Helper to generate a Foreground and Background color
 
         Example:
 
@@ -281,11 +273,13 @@ class TTkColor:
             color_2 = TTkColor.fgbg(fg='#00FF00',bg='#0000FF')
             color_3 = TTkColor.fgbg('#0000FF','#0000FF', modifier=TTkColorGradient(increment=6))
 
-        :param str fg: the foreground color representation in (str)HEX
+        :param fg: the foreground color representation in (str)HEX
         :type fg: str
-        :param str bg: the background color representation in (str)HEX
+        :param bg: the background color representation in (str)HEX
         :type bg: str
-        :param str modifier: (experimental) the color modifier to be used to improve the **kinkiness**
+        :param link: (optional) hyperlink URL to associate with the color
+        :type link: str
+        :param modifier: (experimental) the color modifier to be used to improve the **kinkiness**
         :type modifier: TTkColorModifier, optional
 
         :return: :py:class:`TTkColor`
@@ -309,10 +303,10 @@ class TTkColor:
             return TTkColor.RST
 
     def hasForeground(self) -> bool:
-        return True if self._fg else False
+        return self._fg is not None
 
     def hasBackground(self) -> bool:
-        return True if self._bg else False
+        return self._bg is not None
 
     def bold(self) -> bool:
         return  False
