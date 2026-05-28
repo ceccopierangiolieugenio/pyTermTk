@@ -33,7 +33,8 @@
         "ttkode[test]",
         "pytest>=8.3.4",
         "flake8>=7.2.0",
-        "mypy>=1.15.0"
+        "mypy>=1.15.0",
+        "coverage>=7.14.1"
     ]
     docs = [
         "Sphinx==8.2.3; python_version>='3.11'",
