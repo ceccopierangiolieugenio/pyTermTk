@@ -160,3 +160,20 @@ def test_remove_selected_text_emits_expected_contents_change_payload() -> None:
 
     assert doc.toPlainText() == 'hello '
     assert calls[-1] == (0, 1, 1)
+
+
+def test_blinking_cursor_on_space_renders_visible_dot_marker() -> None:
+    _doc, cur = _mk_cursor('a b')
+
+    # Use multi-cursor mode so blinking cursor rendering is enabled.
+    cur.setPosition(line=0, pos=1)
+    cur.addCursor(line=0, pos=0)
+
+    out_lines = cur._getBlinkingCursors(
+        fr=0,
+        to=0,
+        lines=[ttk.TTkString('a b')],
+        color=ttk.TTkColor.RST,
+    )
+
+    assert str(out_lines[0]) == 'a∙b'
