@@ -367,6 +367,17 @@ class TTkString():
     def _tabCharPosWideChar(self, pos:int, tabSpaces:int=4, alignTabRight:bool=False):
         '''Wide-char aware implementation for :py:meth:`tabCharPos`.
 
+        i.e.
+
+        ::
+
+            pos                   X = 11
+            tab2Spaces |----------|---------------------|
+            Tabs             |-|  |  |-|     |-|   |
+            _text      L😁rem   ipsum   dolor   sit amet,
+            chars      .. ...t  .....t  .....t  ...t.....
+            ret                   x = 7 (tab is a char)
+
         :param pos: target visual column
         :type pos: int
         :param tabSpaces: tab stop size
