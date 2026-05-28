@@ -600,12 +600,6 @@ def test_ttkcolorgradient_cached_value_returned_on_repeated_lookup():
     assert first is second
 
 
-def test_ttkcolorgradient_copy_returns_same_instance():
-    grad = TTkColorGradient(increment=3)
-
-    assert grad.copy() is grad
-
-
 def test_ttkcolorgradient_horizontal_orientation_uses_x_axis():
     grad = TTkColorGradient(increment=5, orientation=TTkK.HORIZONTAL)
     base = TTkColor.fg('#202020', modifier=grad)

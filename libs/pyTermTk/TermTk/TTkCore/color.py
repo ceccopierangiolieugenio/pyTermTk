@@ -457,7 +457,7 @@ class TTkColor:
         :return: RGB tuple where each component is in ``0..255``
         :rtype: tuple[int, int, int]
         '''
-        hue = hsl[0]
+        hue = hsl[0] % 360
         sat = hsl[1] / 100
         lum = hsl[2] / 100
 
@@ -534,7 +534,7 @@ class TTkColor:
         return self._buffer
 
     def __eq__(self, other) -> bool:
-        if not other: return False
+        if not  isinstance(other, TTkColor): return False
         return (
             self._fg   == other._fg and
             self._bg   == other._bg )
@@ -844,7 +844,7 @@ class _TTkColor_mod_link(_TTkColor_mod):
         clean = self._clean
         fg   = self._fg or other._fg
         bg   = self._bg or other._bg
-        mod  = self._mod + otherMod
+        mod  = self._mod | otherMod
         link = self._link
         colorMod = self._colorMod or other._colorMod
         return _TTkColor_mod_link(
@@ -903,8 +903,13 @@ class TTkColorGradient(TTkColorModifier):
 
     __slots__ = ('_fgincrement', '_bgincrement', '_val', '_step', '_buffer', '_orientation')
     _increment: int; _val: int
-    _buffer: Dict[str,List[Optional[TTkColor]]]
-    def __init__(self, *args, **kwargs) -> None:
+    _buffer: Dict[str,Dict[int,TTkColor]]
+    def __init__(
+            self,
+            increment:Optional[int] = None,
+            fgincrement:int = 0,
+            bgincrement:int = 0,
+            orientation:TTkK.Direction = TTkK.Direction.VERTICAL) -> None:
         '''Create a linear incremental gradient modifier.
 
         Supported keyword arguments:
@@ -913,14 +918,13 @@ class TTkColorGradient(TTkColorModifier):
         - ``fgincrement`` and ``bgincrement`` for independent increments
         - ``orientation`` as :py:class:`TTkK.VERTICAL` or :py:class:`TTkK.HORIZONTAL`
         '''
-        super().__init__(*args, **kwargs)
-        if "increment" in kwargs:
-            self._fgincrement = kwargs.get("increment")
-            self._bgincrement = kwargs.get("increment")
+        if increment is not None:
+            self._fgincrement = increment
+            self._bgincrement = increment
         else:
-            self._fgincrement = kwargs.get("fgincrement",0)
-            self._bgincrement = kwargs.get("bgincrement",0)
-        self._orientation = kwargs.get("orientation", TTkK.VERTICAL)
+            self._fgincrement = fgincrement
+            self._bgincrement = bgincrement
+        self._orientation = orientation
         self._val = 0
         self._step = 1
         self._buffer = {}
@@ -949,7 +953,7 @@ class TTkColorGradient(TTkColorModifier):
         vx = x if self._orientation == TTkK.HORIZONTAL else y
         step = self._step
         def _applyGradient(c,incr):
-            if not c: return c
+            if not step or not c: return c
             multiplier = abs(self._val + vx)
             r = int(c[0])+ incr * multiplier // step
             g = int(c[1])+ incr * multiplier // step
@@ -962,9 +966,9 @@ class TTkColorGradient(TTkColorModifier):
         bname = str(color)
         # I made a buffer to keep all the gradient values to speed up the paint process
         if bname not in self._buffer:
-            self._buffer[bname] = [None]*(256*2)
+            self._buffer[bname] = {}
         id = self._val + vx - 256
-        if self._buffer[bname][id] is not None:
+        if id in self._buffer[bname]:
             return self._buffer[bname][id]
         copy = color.copy(modifier=False)
         copy._fg = _applyGradient(color._fg, self._fgincrement)
@@ -980,7 +984,13 @@ class TTkColorGradient(TTkColorModifier):
         :return: self
         :rtype: :py:class:`TTkColorGradient`
         '''
-        return self
+        ret = TTkColorGradient(
+            fgincrement=self._fgincrement,
+            bgincrement=self._bgincrement,
+            orientation=self._orientation
+        )
+        ret._buffer = self._buffer
+        return ret
 
 class TTkLinearGradient(TTkColorModifier):
     '''TTkLinearGradient'''
@@ -1023,6 +1033,8 @@ class TTkLinearGradient(TTkColorModifier):
         :return: interpolated color
         :rtype: :py:class:`TTkColor`
         '''
+        if not self._direction_squaredlength:
+            return base_color
         diffx, diffy = x - self._base_pos[0], y - self._base_pos[1]
         prod = diffx * self._direction[0] + diffy * self._direction[1]
         beta = prod/self._direction_squaredlength
