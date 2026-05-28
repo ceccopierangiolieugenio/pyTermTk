@@ -193,14 +193,19 @@ class TTkString():
         ret = TTkString()
         ret._text = self._text.lstrip(ch)
         ret._colors = self._colors[-len(ret._text):]
+        ret._checkWidth()
         return ret
 
     def charAt(self, pos:int) -> str:
         return self._text[pos]
 
     def setCharAt(self, pos:int, char:str) -> TTkString:
-        self._text = self._text[:pos]+char+self._text[pos+1:]
-        self._checkWidth()
+        if not (0 <= pos < len(self._text)):
+            raise IndexError()
+        ret = TTkString()
+        ret._text = self._text[:pos]+char+self._text[pos+1:]
+        ret._colors = self._colors
+        ret._checkWidth()
         return self
 
     def colorAt(self, pos:int) -> TTkColor:
@@ -209,7 +214,12 @@ class TTkString():
         return self._colors[pos]
 
     def setColorAt(self, pos, color) -> TTkString:
-        self._colors[pos] = color
+        if not (0 <= pos < len(self._colors)):
+            raise IndexError()
+        ret = TTkString()
+        ret._text = self._text
+        ret._colors = [*self._colors[:pos], color, *self._colors[pos+1:]]
+        ret._hasSpecialWidth = self._hasSpecialWidth
         return self
 
     def tab2spaces(self, tabSpaces=4) -> TTkString:
@@ -400,9 +410,13 @@ class TTkString():
         _newColors = []
         _ret = []
         _gen = _chGenerator()
+        _found = False
         for ch,color in _gen:
             if ch == '&':
-                ch,color = next(_gen)
+                _found =  True
+                continue
+            if _found:
+                _found = False
                 _ret.append(ch)
                 color += TTkColor.UNDERLINE
             _newText += ch
@@ -436,7 +450,7 @@ class TTkString():
             ret._text   = self._text.replace(*args, **kwargs)
         elif oldLen > newLen:
             start = 0
-            while pos := self._text.index(old, start) if old in self._text[start:] else None:
+            while (pos := (self._text.index(old, start) if old in self._text[start:] else None)) is not None:
                 ret._colors += self._colors[start:pos+newLen]
                 start = pos+oldLen
                 count -= 1
@@ -445,7 +459,7 @@ class TTkString():
             ret._text   = self._text.replace(*args, **kwargs)
         else:
             start = 0
-            while pos := self._text.index(old, start) if old in self._text[start:] else None:
+            while (pos := (self._text.index(old, start) if old in self._text[start:] else None)) is not None:
                 ret._colors += self._colors[start:pos+oldLen] + [self._colors[pos+oldLen-1]]*(newLen-oldLen)
                 start = pos+oldLen
                 if count == 0: break
