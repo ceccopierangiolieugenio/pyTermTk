@@ -206,7 +206,7 @@ class TTkString():
         ret._text = self._text[:pos]+char+self._text[pos+1:]
         ret._colors = self._colors
         ret._checkWidth()
-        return self
+        return ret
 
     def colorAt(self, pos:int) -> TTkColor:
         if pos >= len(self._colors):
