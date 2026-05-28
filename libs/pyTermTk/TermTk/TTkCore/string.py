@@ -161,10 +161,10 @@ class TTkString():
             ret._checkWidth()
         return ret
 
-    def __setitem__(self, index:int, value:Any):
+    def __setitem__(self, index:int, value:Any) -> None:
         raise NotImplementedError()
 
-    def __getitem__(self, index:int):
+    def __getitem__(self, index:int) -> Any:
         raise NotImplementedError()
 
     def __bool__(self) -> bool:
@@ -177,12 +177,27 @@ class TTkString():
         return complex(self._text)
 
     # Operators
-    def __lt__(self, other): return self._text <  other._text if issubclass(type(other),TTkString) else self._text <  other
-    def __le__(self, other): return self._text <= other._text if issubclass(type(other),TTkString) else self._text <= other
-    def __eq__(self, other): return self._text == other._text if issubclass(type(other),TTkString) else self._text == other
-    def __ne__(self, other): return self._text != other._text if issubclass(type(other),TTkString) else self._text != other
-    def __gt__(self, other): return self._text >  other._text if issubclass(type(other),TTkString) else self._text >  other
-    def __ge__(self, other): return self._text >= other._text if issubclass(type(other),TTkString) else self._text >= other
+    def __lt__(self, other:TTkStringType) -> bool:
+        return self._text < other._text if isinstance(other, TTkString) else self._text < other
+
+    def __le__(self, other:TTkStringType) -> bool:
+        return self._text <= other._text if isinstance(other, TTkString) else self._text <= other
+
+    def __eq__(self, other:object) -> bool:
+        if isinstance(other, TTkString):
+            return self._text == other._text
+        return self._text == other
+
+    def __ne__(self, other:object) -> bool:
+        if isinstance(other, TTkString):
+            return self._text != other._text
+        return self._text != other
+
+    def __gt__(self, other:TTkStringType) -> bool:
+        return self._text > other._text if isinstance(other, TTkString) else self._text > other
+
+    def __ge__(self, other:TTkStringType) -> bool:
+        return self._text >= other._text if isinstance(other, TTkString) else self._text >= other
 
     def sameAs(self, other:TTkStringType) -> bool:
         '''Check whether text and per-character colors are identical.
@@ -364,7 +379,7 @@ class TTkString():
             postxt += 1
         return len(self._text)
 
-    def _tabCharPosWideChar(self, pos:int, tabSpaces:int=4, alignTabRight:bool=False):
+    def _tabCharPosWideChar(self, pos:int, tabSpaces:int=4, alignTabRight:bool=False) -> int:
         '''Wide-char aware implementation for :py:meth:`tabCharPos`.
 
         i.e.
@@ -420,7 +435,7 @@ class TTkString():
         '''
         return self._text
 
-    def toAnsi(self, strip:bool=False):
+    def toAnsi(self, strip:bool=False) -> str:
         '''Return the ANSI escaped representation of the string.
 
         :param strip: remove leading/trailing reset sequences
@@ -715,7 +730,7 @@ class TTkString():
 
         return ret
 
-    def getData(self):
+    def getData(self) -> Tuple[Union[Tuple[str,...],List[str]],List[TTkColor]]:
         '''Return text and color data in terminal-rendered form.
 
         :return: tuple of characters and colors
@@ -726,7 +741,7 @@ class TTkString():
         else:
             return (tuple(self._text), self._colors)
 
-    def search(self, regexp:str, ignoreCase:bool=False):
+    def search(self, regexp:str, ignoreCase:bool=False) -> Optional[re.Match[str]]:
         ''' Return the **re.match** of the **regexp**
 
         :param regexp: the regular expression to be matched
@@ -739,7 +754,7 @@ class TTkString():
         '''
         return re.search(regexp, self._text, re.IGNORECASE if ignoreCase else 0)
 
-    def find(self, *args, **kwargs) -> Any:
+    def find(self, *args, **kwargs) -> int:
         '''Return the first index of a substring using ``str.find`` semantics.
 
         :return: start index of the first match, or ``-1`` if not found
@@ -807,7 +822,7 @@ class TTkString():
         return False
 
     @staticmethod
-    def _isSpecialWidthChar(ch):
+    def _isSpecialWidthChar(ch:str) -> bool:
         '''Check whether a character has non-standard display width.
 
         :param ch: input character
@@ -820,7 +835,7 @@ class TTkString():
                  unicodedata.category(ch) in ('Me','Mn') )
 
     @staticmethod
-    def _getWidthText(txt:str):
+    def _getWidthText(txt:str) -> int:
         '''Compute rendered width for a text snippet.
 
         :param txt: input text
@@ -846,7 +861,7 @@ class TTkString():
         return ( len(txt) -
             sum(unicodedata.category(ch) in ('Me','Mn') for ch in txt) )
 
-    def nextPos(self, pos):
+    def nextPos(self, pos:int) -> int:
         '''Return next editable character position.
 
         :param pos: current position
@@ -861,7 +876,7 @@ class TTkString():
                 return pos+i
         return len(self._text)
 
-    def prevPos(self, pos):
+    def prevPos(self, pos:int) -> int:
         '''Return previous editable character position.
 
         :param pos: current position
@@ -879,7 +894,7 @@ class TTkString():
                 return pos-i-1
         return 0
 
-    def _fastCheckWidth(self,a,b=None):
+    def _fastCheckWidth(self, a:Optional[int], b:Optional[int]=None) -> None:
         self._hasSpecialWidth = None if (
                 a is None and b is None ) else self._termWidthW()
 
@@ -891,7 +906,7 @@ class TTkString():
         tw = self._termWidthW() if any(ord(ch)>=0x300 for ch in self._text) else None
         self._hasSpecialWidth = tw if tw != len(self._text) else None
 
-    def _termWidthW(self):
+    def _termWidthW(self) -> int:
         ''' String displayed length
 
         This value consider the displayed size (Zero, Half, Full) of each character.
@@ -903,9 +918,9 @@ class TTkString():
              sum(unicodedata.east_asian_width(ch) == 'W' for ch in self._text) -
              sum(unicodedata.category(ch) in ('Me','Mn') for ch in self._text) )
 
-    def _getDataW_pts(self):
-        retTxt = []
-        retCol = []
+    def _getDataW_pts(self) -> Tuple[List[str],List[TTkColor]]:
+        retTxt = []  # type: List[str]
+        retCol = []  # type: List[TTkColor]
         for ch,color in zip(self._text,self._colors):
             if unicodedata.east_asian_width(ch) == 'W':
                 retTxt += (ch,'')
@@ -924,9 +939,9 @@ class TTkString():
                 retCol.append(color)
         return (retTxt, retCol)
 
-    def _getDataW_tty(self):
-        retTxt = []
-        retCol = []
+    def _getDataW_tty(self) -> Tuple[List[str],List[TTkColor]]:
+        retTxt = []  # type: List[str]
+        retCol = []  # type: List[TTkColor]
         for ch,color in zip(self._text,self._colors):
             if unicodedata.east_asian_width(ch) == 'W':
                 retTxt += ('■','■')
