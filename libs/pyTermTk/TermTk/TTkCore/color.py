@@ -610,7 +610,7 @@ class TTkColor:
             fg=self._fg,
             bg=self._bg,
             clean=self._clean,
-            colorMod=self._colorMod.copy() if modifier else None
+            colorMod=self._colorMod.copy() if modifier and self._colorMod else None
         )
 
 
@@ -766,7 +766,7 @@ class _TTkColor_mod(TTkColor):
             bg=self._bg,
             clean=self._clean,
             mod=self._mod,
-            colorMod=self._colorMod.copy() if modifier else None
+            colorMod=self._colorMod.copy() if modifier and self._colorMod else None
         )
 
 TTkColor.BOLD         = _TTkColor_mod(mod=TTkTermColor.BOLD)
@@ -887,7 +887,7 @@ class _TTkColor_mod_link(_TTkColor_mod):
             clean=self._clean,
             mod=self._mod,
             link=self._link,
-            colorMod=self._colorMod.copy() if modifier else None
+            colorMod=self._colorMod.copy() if modifier and self._colorMod else None
         )
 
 
