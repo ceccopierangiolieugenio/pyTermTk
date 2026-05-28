@@ -440,7 +440,7 @@ class TTkColor:
         else:
             hue = (r-g)/delta+4
 
-        sat = delta / (1 - abs(delta-1))
+        sat = delta / (1 - abs(2*lum-1))
         hue = int(hue*60) + ( 360 if hue < 0 else 0 )
         sat = int(sat*100)
         lum = int(lum*100)
