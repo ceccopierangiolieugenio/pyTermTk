@@ -306,3 +306,167 @@ def test_radd_with_plain_string_preserves_text():
     out = 'hello ' + txt
 
     assert str(out) == 'hello world'
+
+
+def test_add_with_plain_string_and_ttkstring_variants_preserves_text():
+    left = ttk.TTkString('ab', ttk.TTkColor.fg('#00ff00'))
+    right = ttk.TTkString('cd', ttk.TTkColor.fg('#ff0000'))
+
+    combined_str = left + 'ef'
+    combined_ttk = left + right
+    prepended_ttk = ttk.TTkString('00') + left
+
+    assert str(combined_str) == 'abef'
+    assert str(combined_ttk) == 'abcd'
+    assert str(prepended_ttk) == '00ab'
+
+
+def test_set_char_at_returns_updated_copy_and_preserves_original():
+    original = ttk.TTkString('abc', ttk.TTkColor.fg('#00ff00'))
+
+    updated = original.setCharAt(1, 'Z')
+
+    assert str(original) == 'abc'
+    assert str(updated) == 'aZc'
+    assert updated is not original
+    assert updated.colorAt(0) == original.colorAt(0)
+
+
+def test_item_accessors_raise_not_implemented():
+    txt = ttk.TTkString('abc')
+
+    with pytest.raises(NotImplementedError):
+        _ = txt[0]
+
+    with pytest.raises(NotImplementedError):
+        txt[0] = 'x'
+
+
+def test_isdigit_and_plain_get_data_behavior():
+    digits = ttk.TTkString('1234')
+    plain = ttk.TTkString('ab', ttk.TTkColor.fg('#112233'))
+
+    text, colors = plain.getData()
+
+    assert digits.isdigit() is True
+    assert ttk.TTkString('12a4').isdigit() is False
+    assert text == ('a', 'b')
+    assert len(colors) == 2
+    assert colors[0] == ttk.TTkColor.fg('#112233')
+
+
+def test_to_ansi_without_strip_includes_escape_wrappers():
+    txt = ttk.TTkString('ab', ttk.TTkColor.fg('#00ff00'))
+
+    ansi = txt.toAnsi(strip=False)
+
+    assert ansi.startswith('\u001b[0m')
+    assert 'ab' in ansi
+    assert ansi.endswith('\u001b[0m')
+
+
+def test_tab_char_pos_align_tab_right_maps_inside_tab_to_next_char():
+    txt = ttk.TTkString('a\tb')
+
+    assert txt.tabCharPos(2, 4, alignTabRight=True) == 2
+    assert txt.tabCharPos(3, 4, alignTabRight=True) == 2
+
+
+def test_join_accepts_generator_and_empty_input():
+    separator = ttk.TTkString('|')
+
+    generated = separator.join(ttk.TTkString(part) for part in ('a', 'b', 'c'))
+    empty = separator.join([])
+
+    assert str(generated) == 'a|b|c'
+    assert str(empty) == ''
+
+
+def test_next_prev_pos_handle_terminal_boundaries():
+    txt = ttk.TTkString('a\u0301')
+
+    assert txt.nextPos(1) == 2
+    assert txt.prevPos(0) == 0
+
+
+def test_set_color_with_invalid_range_leaves_colors_unchanged():
+    txt = ttk.TTkString('abc', ttk.TTkColor.fg('#123456'))
+
+    unchanged = txt.setColor(ttk.TTkColor.fg('#abcdef'), posFrom=3, posTo=1)
+
+    assert str(unchanged) == 'abc'
+    assert unchanged.sameAs(txt)
+
+
+def test_radd_with_ttkstring_preserves_text_and_colors():
+    left = ttk.TTkString('hi', ttk.TTkColor.fg('#111111'))
+    right = ttk.TTkString('yo', ttk.TTkColor.fg('#222222'))
+
+    combined = right.__radd__(left)
+
+    assert str(combined) == 'hiyo'
+    assert combined.colorAt(0) == ttk.TTkColor.fg('#111111')
+    assert combined.colorAt(2) == ttk.TTkColor.fg('#222222')
+
+
+def test_comparison_dunders_cover_string_and_ttkstring_operands():
+    a = ttk.TTkString('abc')
+    b = ttk.TTkString('abd')
+
+    assert a <= b
+    assert a <= 'abc'
+    assert a != b
+    assert a != 'abd'
+    assert b > a
+    assert b > 'abc'
+
+
+def test_align_returns_self_for_noop_and_single_word_justify():
+    txt = ttk.TTkString('word')
+
+    assert txt.align(width=0) is txt
+    assert txt.align(width=txt.termWidth()) is txt
+    assert txt.align(width=8, alignment=ttk.TTkK.JUSTIFY) is txt
+
+
+def test_align_wide_chars_trims_exact_and_overflow_widths():
+    txt = ttk.TTkString('界x', ttk.TTkColor.fg('#00ff00'))
+
+    exact = txt.align(width=2, alignment=ttk.TTkK.CENTER_ALIGN)
+    overflow = txt.align(width=1, alignment=ttk.TTkK.CENTER_ALIGN)
+
+    assert str(exact) == '界'
+    assert exact.colorAt(0) == ttk.TTkColor.fg('#00ff00')
+    assert str(overflow) != ''
+    assert overflow.termWidth() == 1
+
+
+def test_complete_color_with_invalid_range_applies_entire_string():
+    txt = ttk.TTkString('abc')
+
+    colorized = txt.completeColor(ttk.TTkColor.BOLD, posFrom=3, posTo=1)
+
+    assert str(colorized) == 'abc'
+    assert colorized.toAnsi(strip=True) != txt.toAnsi(strip=True)
+
+
+def test_wide_char_helper_statics_cover_empty_combining_and_wide_text():
+    assert ttk.TTkString._isWideCharData('界') is True
+    assert ttk.TTkString._isWideCharData('界x') is True
+    assert ttk.TTkString._isWideCharData('') is False
+    assert ttk.TTkString._isSpecialWidthChar('\u0301') is True
+    assert ttk.TTkString._isSpecialWidthChar('a') is False
+    assert ttk.TTkString._getWidthText('a\u0301界') == 3
+    assert ttk.TTkString._getLenTextWoZero('a\u0301界') == 2
+
+
+def test_wide_char_data_helpers_cover_points_and_tty_variants():
+    txt = ttk.TTkString('界\u0301a', ttk.TTkColor.fg('#00ff00'))
+
+    pts_text, pts_colors = txt._getDataW_pts()
+    tty_text, tty_colors = txt._getDataW_tty()
+
+    assert pts_text == ['界\u0301', '', 'a']
+    assert len(pts_colors) == 3
+    assert tty_text == ['■', '■', 'a']
+    assert len(tty_colors) == 3
