@@ -263,7 +263,7 @@ class TTkTextCursor():
         if pos < len(l):
             color = l.colorAt(pos)
         else:
-            color = TTkColor()
+            color = TTkColor.RST
         return color
 
     def setPosition(self, line:int, pos:int, moveMode:MoveMode=MoveMode.MoveAnchor, cID:int=0) -> None:
@@ -634,7 +634,7 @@ class TTkTextCursor():
                 if cp.pos == len(ret[cp.line-fr]):
                    ret[cp.line-fr] = ret[cp.line-fr]+TTkString('↵',color+TTkColor.BLINKING)
                 elif ret[cp.line-fr].charAt(cp.pos) == ' ':
-                    ret[cp.line-fr].setCharAt(pos=cp.pos, char='∙')
+                    ret[cp.line-fr] = ret[cp.line-fr].setCharAt(pos=cp.pos, char='∙')
                     # ret[p.line-fr].setColorAt(pos=p.pos, color=TTkCfg.theme.treeLineColor+TTkColor.BLINKING)
                 #elif ret[p.line-fr].charAt(p.pos) == '\t':
                 #    ret[p.line-fr].setCharAt(pos=p.pos, char='\t')

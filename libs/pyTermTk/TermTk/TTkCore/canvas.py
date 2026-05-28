@@ -22,7 +22,7 @@
 
 __all__ = ['TTkCanvas']
 
-from typing import Tuple
+from typing import List, Tuple
 
 from TermTk.TTkCore.TTkTerm.term import TTkTerm
 from TermTk.TTkCore.constant import TTkK
@@ -44,8 +44,8 @@ class TTkCanvas():
         '_data', '_colors',
         '_bufferedData', '_bufferedColors',
         '_visible', '_transparent', '_doubleBuffer')
-    _data:list[list[str]]
-    _colors:list[list[TTkColor]]
+    _data:List[List[str]]
+    _colors:List[List[TTkColor]]
     def __init__(self,
                  width:int=0,
                  height:int=0) -> None:
@@ -730,8 +730,8 @@ class TTkCanvas():
         lastcolor = TTkColor.RST
         empty = True
         ansi = ""
-        for y,(lda,ldb,lca,lcb) in enumerate(zip(data,oldData,colors,oldColors)):
-            for x,(da,db,ca,cb) in enumerate(zip(lda,ldb,lca,lcb)):
+        for y,(lda, ldb, lca, lcb) in enumerate(zip(data, oldData, colors, oldColors)):
+            for x,(da, db, ca, cb) in enumerate(zip(lda, ldb, lca, lcb)):
                 if da==db and ca==cb:
                     if not empty:
                         TTkTerm.push(ansi)

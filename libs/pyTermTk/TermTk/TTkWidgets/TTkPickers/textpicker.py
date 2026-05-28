@@ -196,7 +196,7 @@ class TTkTextDialogPicker(TTkWindow):
 
 
         def _setStyle():
-            color = TTkColor()
+            color = TTkColor.RST
             if cb_fg.checkState() == TTkK.Checked:
                 color += btn_fgColor.color()
             if cb_bg.checkState() == TTkK.Checked:
