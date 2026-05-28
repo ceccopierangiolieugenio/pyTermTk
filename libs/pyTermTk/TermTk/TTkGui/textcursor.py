@@ -263,7 +263,7 @@ class TTkTextCursor():
         if pos < len(l):
             color = l.colorAt(pos)
         else:
-            color = TTkColor()
+            color = TTkColor.RST
         return color
 
     def setPosition(self, line:int, pos:int, moveMode:MoveMode=MoveMode.MoveAnchor, cID:int=0) -> None:

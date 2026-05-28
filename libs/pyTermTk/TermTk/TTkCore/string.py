@@ -210,7 +210,7 @@ class TTkString():
 
     def colorAt(self, pos:int) -> TTkColor:
         if pos >= len(self._colors):
-            return TTkColor()
+            return TTkColor.RST
         return self._colors[pos]
 
     def setColorAt(self, pos, color) -> TTkString:
