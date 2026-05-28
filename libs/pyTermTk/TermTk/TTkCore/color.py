@@ -214,12 +214,12 @@ class TTkColor:
 
     @staticmethod
     def ansi(ansi:str) -> TTkColor:
-        ''' Parse an ansi string and return the color representing it
+        '''Parse an ANSI escape sequence and return the represented color.
 
-        :param str ansi: the ansi string to be parsed
+        :param ansi: ANSI escape sequence to parse
         :type ansi: str
 
-        :return: the :py:class:`TTkColor` representing the ansi value
+        :return: the :py:class:`TTkColor` representing the ANSI value
         :rtype: :py:class:`TTkColor`
         '''
         fg,bg,mod,clean = TTkTermColor.ansi2rgb(ansi)
@@ -562,8 +562,16 @@ class TTkColor:
                     clean=clean)
 
     def __sub__(self, other) -> str:
-        '''
-        I am abusing this operator in order to save time in the diff resolv between two adjacent colors
+        '''Return a transition ANSI sequence from ``other`` to ``self``.
+
+        The subtraction operator is used as an optimization while diffing
+        adjacent colors during rendering.
+
+        :param other: previous color used for diffing
+        :type other: :py:class:`TTkColor`
+
+        :return: ANSI sequence required to switch from ``other`` to ``self``
+        :rtype: str
         '''
         if ( None == self._bg   != other._bg or
              None == self._fg   != other._fg ):
@@ -894,9 +902,23 @@ class _TTkColor_mod_link(_TTkColor_mod):
 class TTkColorModifier():
     '''Base interface for runtime color modifiers.'''
 
-    def __init__(self, *args, **kwargs) -> None: pass
-    def setParam(self, *args, **kwargs) -> None: pass
-    def copy(self) -> TTkColorModifier: return self
+    def __init__(self, *args, **kwargs) -> None:
+        '''Initialize a color modifier.'''
+        pass
+
+    def setParam(self, *args, **kwargs) -> None:
+        '''Update runtime parameters used by the modifier.'''
+        pass
+
+    def copy(self) -> TTkColorModifier:
+        '''Return a copy of the modifier.
+
+        Base modifiers are immutable and return ``self``.
+
+        :return: modifier copy or shared instance
+        :rtype: :py:class:`TTkColorModifier`
+        '''
+        return self
 
 class TTkColorGradient(TTkColorModifier):
     '''TTkColorGradient'''
@@ -912,11 +934,20 @@ class TTkColorGradient(TTkColorModifier):
             orientation:TTkK.Direction = TTkK.Direction.VERTICAL) -> None:
         '''Create a linear incremental gradient modifier.
 
-        Supported keyword arguments:
-
-        - ``increment`` to apply the same increment to foreground/background
-        - ``fgincrement`` and ``bgincrement`` for independent increments
-        - ``orientation`` as :py:class:`TTkK.VERTICAL` or :py:class:`TTkK.HORIZONTAL`
+        :param increment: shared increment for foreground and background;
+                          when provided it overrides ``fgincrement`` and
+                          ``bgincrement``
+        :type increment: int | None
+        :param fgincrement: foreground incremental step when ``increment`` is
+                            not provided
+        :type fgincrement: int
+        :param bgincrement: background incremental step when ``increment`` is
+                            not provided
+        :type bgincrement: int
+        :param orientation: gradient direction, either
+                            :py:attr:`TTkK.Direction.VERTICAL` or
+                            :py:attr:`TTkK.Direction.HORIZONTAL`
+        :type orientation: :py:class:`TTkK.Direction`
         '''
         if increment is not None:
             self._fgincrement = increment
@@ -977,11 +1008,12 @@ class TTkColorGradient(TTkColorModifier):
         return self._buffer[bname][id]
 
     def copy(self):
-        '''Return this modifier instance.
+        '''Return a gradient modifier copy sharing the computed cache.
 
-        Gradients are shared and internally buffered, so the same instance is reused.
+        The returned instance keeps the same increments and orientation,
+        and shares the internal cache to avoid recomputing gradient steps.
 
-        :return: self
+        :return: copied gradient modifier
         :rtype: :py:class:`TTkColorGradient`
         '''
         ret = TTkColorGradient(
