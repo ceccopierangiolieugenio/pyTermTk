@@ -220,7 +220,7 @@ class TTkString():
         ret._text = self._text
         ret._colors = [*self._colors[:pos], color, *self._colors[pos+1:]]
         ret._hasSpecialWidth = self._hasSpecialWidth
-        return self
+        return ret
 
     def tab2spaces(self, tabSpaces=4) -> TTkString:
         '''Return the string representation with the tabs (converted in spaces) trimmed and aligned'''
@@ -488,14 +488,14 @@ class TTkString():
         :type posTo: int, optional
         '''
         ret = TTkString()
-        ret._text  += self._text
+        ret._text = self._text
         ret._hasTab = self._hasTab
         ret._hasSpecialWidth = self._hasSpecialWidth
         if match:
             ret._colors = self._colors.copy()
             start=0
             lenMatch = len(match)
-            while pos := self._text.index(match, start) if match in self._text[start:] else None:
+            while (pos := self._text.index(match, start) if match in self._text[start:] else None) is not None:
                 start = pos+lenMatch
                 for i in range(pos, pos+lenMatch):
                     ret._colors[i] |= color
