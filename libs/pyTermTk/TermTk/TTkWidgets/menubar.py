@@ -36,20 +36,19 @@ from TermTk.TTkWidgets.menu import TTkMenuButton
 class TTkMenuBarButton(TTkMenuButton):
     classStyle = TTkMenuButton.classStyle | {
                 'default': TTkMenuButton.classStyle['default'] |
-                           {'borderColor':TTkColor.RST, 'shortcutColor': TTkColor.fg("#dddddd") + TTkColor.UNDERLINE,
+                           {'borderColor':TTkColor.RST,
                             'glyphs':('├','─','┤','┄','┄','▶')},
                 'clicked': TTkMenuButton.classStyle['clicked'] |
                            {'color': TTkColor.fg("#ffff88")},
             }
 
-    __slots__=('_shortcut')
+    __slots__ = ()
     def __init__(self, *,
                  text:TTkString=...,
                  data:object=None,
                  checkable:bool=False,
                  checked:bool=False,
                  **kwargs) -> None:
-        self._shortcut = []
         super().__init__(text=text, data=data, checkable=checkable, checked=checked, **kwargs)
         self.setCheckable(self.isCheckable())
 
@@ -70,7 +69,7 @@ class TTkMenuBarButton(TTkMenuButton):
         borderColor = style['borderColor']
         glyphs      = style['glyphs']
         textColor   = style['color']
-        scColor     = style['shortcutColor']
+
         if self._checkable:
             text = ('▣ ' if self._checked else '□ ') + self.text()
         else:
@@ -80,8 +79,6 @@ class TTkMenuBarButton(TTkMenuButton):
         canvas.drawText(pos=(1+text.termWidth(),0), color=borderColor ,text=glyphs[0])
         canvas.drawText(pos=(1,0), color=textColor ,text=text)
 
-        for sc in self._shortcut:
-            canvas.drawChar(pos=(0,sc+1), char=text.charAt(sc), color=scColor)
 
 class TTkMenuBarLayout(TTkHBoxLayout):
     '''TTkMenuBarLayout'''
@@ -101,9 +98,9 @@ class TTkMenuBarLayout(TTkHBoxLayout):
     def addMenu(self,text:TTkString, data:object=None, checkable:bool=False, checked:bool=False, alignment=TTkK.LEFT_ALIGN):
         '''addMenu'''
         text = text if issubclass(type(text),TTkString) else TTkString(text)
-        text, shortcuts = text.extractShortcuts()
+        text, mnemonics = text.extractShortcuts()  # TTkString.mnemonicColor
         button = TTkMenuBarButton(text=text, data=data, checkable=checkable, checked=checked)
-        for ch in shortcuts:
+        for ch in mnemonics:
             shortcut = TTkShortcut(key=TTkK.CTRL | ord(ch.upper()))
             shortcut.activated.connect(button.shortcutEvent)
         self._mbItems(alignment).addWidget(button)
