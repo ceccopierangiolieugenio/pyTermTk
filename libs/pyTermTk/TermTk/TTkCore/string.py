@@ -63,6 +63,7 @@ class TTkString():
         # Combination of constructors (Highly Unrecommended)
         str7 = TTkString("test 7", color=TTkColor.fg('#FF0000'))
     '''
+    mnemonicColor = TTkColor.fg("#dddddd") + TTkColor.UNDERLINE
     unicodeWideOverflowColor = TTkColor.fg("#888888")+TTkColor.bg("#000088")
 
     __slots__ = ('_text','_colors','_baseColor','_hasTab','_hasSpecialWidth')
@@ -551,7 +552,7 @@ class TTkString():
             if _found:
                 _found = False
                 _ret.append(ch)
-                color += TTkColor.UNDERLINE
+                color += self.mnemonicColor  # UNDERLINE
             _newText += ch
             _newColors.append(color)
         return TTkString._importString1(_newText,_newColors), _ret
