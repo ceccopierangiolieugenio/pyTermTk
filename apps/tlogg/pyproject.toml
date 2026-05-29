@@ -27,7 +27,8 @@ dependencies = [
     'pyTermTk>=0.50.0-a0',
     'appdirs',
     'copykitten',
-    'pyyaml'
+    'pyyaml',
+    'pygments'
 ]
 
 [project.urls]
