@@ -1,0 +1,9 @@
+name: "pyTermTk CodeQL config"
+
+# Keep analysis focused on source code and avoid generated artifacts.
+paths-ignore:
+  - build/**
+  - tmp/**
+  - '**/*.egg-info/**'
+  - '**/__pycache__/**'
+  - docs/source/_build/**

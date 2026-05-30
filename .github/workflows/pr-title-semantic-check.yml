@@ -1,0 +1,44 @@
+name: PR Title Semantic Check
+
+on:
+  pull_request:
+    branches: [ main ]
+    types: [opened, edited, reopened, synchronize, ready_for_review]
+
+permissions:
+  contents: read
+
+jobs:
+  semantic-pr-title:
+    name: Validate PR title (Conventional Commits)
+    runs-on: self-hosted
+    steps:
+      - name: Check PR title format
+        shell: bash
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
+        run: |
+          set -euo pipefail
+
+          # Allowed: type(scope): subject
+          # Also allowed: type!: subject or type(scope)!: subject
+          pattern='^(build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test)(\([a-z0-9._/-]+\))?(!)?: [^[:space:]].*$'
+
+          if [[ "$PR_TITLE" =~ $pattern ]]; then
+            echo "✅ PR title is semantic: $PR_TITLE"
+            exit 0
+          fi
+
+          echo "❌ PR title is not semantic: $PR_TITLE"
+          echo ""
+          echo "Expected Conventional Commits format:"
+          echo "  type(scope): short description"
+          echo "  type: short description"
+          echo "  type!: breaking change description"
+          echo ""
+          echo "Allowed types: build, chore, ci, docs, feat, fix, perf, refactor, revert, style, test"
+          echo "Examples:"
+          echo "  feat(workflow): validate PR title format"
+          echo "  fix: handle empty release metadata"
+          echo "  refactor(ci)!: drop legacy publish path"
+          exit 1

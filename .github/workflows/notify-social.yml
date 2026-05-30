@@ -1,7 +1,8 @@
-name: Release Sandbox
+name: Notify Social
 
 permissions:
   contents: read
+  actions: read
 
 on:
   workflow_dispatch:
@@ -10,75 +11,140 @@ on:
         description: The changed app
         type: string
         default: pyTermTk
-      version:
-        description: The app version
+      run_id:
+        description: Workflow run ID to download artifacts from
         type: string
-        default: v0.0.0
-      discord-message:
-        description: The release message
-        type: string
-        default: pyTermTk released
-      github-discussion-message:
-        description: The release message
-        type: string
-        default: pyTermTk released
+        required: true
+      notify_discord:
+        description: Notify on Discord
+        type: boolean
+        default: false
+      notify_github_discussion:
+        description: Notify on GitHub Discussion
+        type: boolean
+        default: false
+      notify_bluesky:
+        description: Notify on Bluesky
+        type: boolean
+        default: false
+      notify_twitter:
+        description: Notify on Twitter
+        type: boolean
+        default: false
   workflow_call:
     inputs:
       app:
         description: The changed app
         type: string
         default: pyTermTk
-      version:
-        description: The app version
+      run_id:
+        description: Workflow run ID to download artifacts from
         type: string
-        default: v0.0.0
-      discord-message:
-        description: The release message
-        type: string
-        default: pyTermTk released
-      github-discussion-message:
-        description: The release message
-        type: string
-        default: pyTermTk released
+        required: true
+      notify_discord:
+        description: Notify on Discord
+        type: boolean
+        default: false
+      notify_github_discussion:
+        description: Notify on GitHub Discussion
+        type: boolean
+        default: false
+      notify_bluesky:
+        description: Notify on Bluesky
+        type: boolean
+        default: false
+      notify_twitter:
+        description: Notify on Twitter
+        type: boolean
+        default: false
 
 jobs:
-  notify-discord:
-    name: Notify Discord
+  notify:
+    name: Notify ${{ inputs.app }} to the socials
+    continue-on-error: true
     runs-on: self-hosted
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           ref: ${{ github.sha }}
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         with:
-          python-version: "3.x"
-      - name: Instrall deps
+          python-version: '3.x'
+      - name: Install dependencies
+        shell: bash
+        run:
+          pip install -e 'tools/ci[social]'
+
+      - uses: actions/download-artifact@v8
+        with:
+          name: release-metadata.json
+          run-id: ${{ inputs.run_id }}
+
+      - name: Extract ${{ inputs.app }} params
+        id: app-params
         run: |
-          python -m pip install discord.py
-      - name: Deploy Discord message
+          echo "params<<_EOF" >> $GITHUB_OUTPUT
+            release-helper \
+              --config .release-please-config.json \
+              --manifest .release-please-manifest.json \
+              --release release-metadata.json \
+              --app-filter ${{ inputs.app }} \
+              matrix all >> $GITHUB_OUTPUT
+          echo "_EOF" >> $GITHUB_OUTPUT
+
+      - name: Validate extracted params
+        shell: bash
+        run: |
+          PARAMS='${{ steps.app-params.outputs.params }}'
+          if [[ -z "$PARAMS" || "$PARAMS" == "{}" ]]; then
+            echo "No release metadata found for app=${{ inputs.app }} in run_id=${{ inputs.run_id }}"
+            exit 1
+          fi
+          _NAME="$(jq -r '.name // empty' <<< "$PARAMS")"
+          _VERSION="$(jq -r '.version // empty' <<< "$PARAMS")"
+          if [[ -z "$_NAME" || -z "$_VERSION" ]]; then
+            echo "Invalid params payload: $PARAMS"
+            exit 1
+          fi
+
+      - name: Notify ${{ fromJson(steps.app-params.outputs.params).name }} on Discord
+        if: ${{ inputs.notify_discord }}
+        continue-on-error: true
         env:
-          MESSAGE: ${{ inputs.discord-message }}
+          RN: ${{ fromJson(steps.app-params.outputs.params).release_notes }}
+          MESSAGE: ${{ fromJson(steps.app-params.outputs.params).release_notes }}
           DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
         run: |
-          python tools/ci/social/notify_discord.py ${{ inputs.app }} ${{ inputs.version }}
+          notify-discord ${{ fromJson(steps.app-params.outputs.params).name }} ${{ fromJson(steps.app-params.outputs.params).version }}
 
-  notify-github-discussion:
-    name: Notify Github Discussion
-    runs-on: self-hosted
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: ${{ github.sha }}
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.x"
-      - name: Deploy Github Discussion
+      - name: Notify ${{ fromJson(steps.app-params.outputs.params).name }} on Github Discussion
+        if: ${{ inputs.notify_github_discussion }}
+        continue-on-error: true
         env:
-          DISCUSSION_BODY: ${{ inputs.github-discussion-message}}
-          GH_DISCUSSION_TOKEN: ${{ secrets.GH_PAT_TOKEN }}
+          RN: ${{ fromJson(steps.app-params.outputs.params).release_notes }}
+          MESSAGE: ${{ fromJson(steps.app-params.outputs.params).release_notes }}
+          GITHUB_TOKEN: ${{ secrets.GH_PAT_TOKEN }}
+          GH_DISCUSSION_TOKEN: ${{ secrets.GH_DISCUSSION_TOKEN }}
         run: |
-          export DISCUSSION_TITLE="${{ inputs.app }} ${{ inputs.version }} Released!!!"
-          python tools/ci/social/notify_github_discussion.py ${{ inputs.app }} ${{ inputs.version }}
+          notify-gh-discussion ${{ fromJson(steps.app-params.outputs.params).name }} ${{ fromJson(steps.app-params.outputs.params).version }}
 
+      - name: Notify ${{ fromJson(steps.app-params.outputs.params).name }} on Bluesky
+        if: ${{ inputs.notify_bluesky }}
+        continue-on-error: true
+        env:
+          BLUESKY_APP_PWD: ${{ secrets.BLUESKY_APP_PWD }}
+          BLUESKY_APP_IDENTIFIER: ${{ secrets.BLUESKY_APP_IDENTIFIER }}
+        run: |
+          notify-bluesky ${{ fromJson(steps.app-params.outputs.params).name }} ${{ fromJson(steps.app-params.outputs.params).version }}
 
+      - name: Notify ${{ fromJson(steps.app-params.outputs.params).name }} on Twitter
+        if: ${{ inputs.notify_twitter }}
+        continue-on-error: true
+        env:
+          X_API_KEY: ${{ secrets.X_API_KEY }}
+          X_API_SECRET: ${{ secrets.X_API_SECRET }}
+          X_ACCESS_TOKEN: ${{ secrets.X_ACCESS_TOKEN }}
+          X_ACCESS_TOKEN_SECRET: ${{ secrets.X_ACCESS_TOKEN_SECRET }}
+        run: |
+          notify-twitter ${{ fromJson(steps.app-params.outputs.params).name }} ${{ fromJson(steps.app-params.outputs.params).version }}
 

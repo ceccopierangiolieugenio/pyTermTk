@@ -30,7 +30,7 @@ import fileinput
 from dataclasses import dataclass
 from enum import Enum
 
-from typing import List, Dict, Union
+from typing import Any, List, Dict, Union
 
 class MatrixType(Enum):
     ALL = "all"
@@ -55,7 +55,7 @@ class _AppData():
             "pypi" : self.pypi,
             "itch" : self.itch,
             "tag" : self.tag,
-            "release-notes" : self.release_notes
+            "release_notes" : self.release_notes
         }
 
 def _print_info(apps_data:List[_AppData]) -> None:
@@ -76,7 +76,7 @@ def _print_info(apps_data:List[_AppData]) -> None:
 #     echo 🆗 No new release found for ${_NAME}
 #   fi
 # done
-def _upgrade_files(apps_data:List[_AppData], rp_data:Dict, dry_run:bool) -> None:
+def _upgrade_files(apps_data:List[_AppData], rp_data:Dict[str, Any], dry_run:bool) -> None:
     _ttk = [_a for _a in apps_data if _a.name=='pyTermTk'][0]
     for _a in apps_data:
         print(f"{_a.name} : {_a.version}")
@@ -106,7 +106,7 @@ def _upgrade_files(apps_data:List[_AppData], rp_data:Dict, dry_run:bool) -> None
                     print(pattern.sub(replacement, line), end="")
 
 
-def _gen_matrix(matrix_type: MatrixType, rp_data:Dict, apps_data:List[_AppData]) -> List[_AppData]:
+def _gen_matrix(matrix_type: MatrixType, rp_data:Dict[str, Any], apps_data:List[_AppData]) -> List[_AppData]:
     if matrix_type == MatrixType.PYPI:
         apps = [app for app in apps_data if app.pypi]
     elif matrix_type == MatrixType.ITCH:
@@ -133,10 +133,12 @@ def _gen_matrix(matrix_type: MatrixType, rp_data:Dict, apps_data:List[_AppData])
     return apps
 
 def main():
-    parser = argparse.ArgumentParser(description="Release Helper Script")
+    parser = argparse.ArgumentParser(description="Utilities for release metadata and matrix generation")
     # Configuration File Argument
-    parser.add_argument("--config",   metavar="config_file", type=argparse.FileType("r"), help="Path to the configuration file")
-    parser.add_argument("--manifest", metavar="config_file", type=argparse.FileType("r"), help="Path to the configuration file")
+    parser.add_argument("--config", metavar="config_file", help="Path to the release configuration JSON")
+    parser.add_argument("--manifest", metavar="manifest_file", help="Path to the manifest versions JSON")
+    parser.add_argument("--release", metavar="release_file", help="Path to the release-please outputs JSON")
+    parser.add_argument("--app-filter", metavar="app_filter", help="Filter output to a single app name")
 
     subparsers = parser.add_subparsers(title="Features", dest="feature")
 
@@ -144,7 +146,7 @@ def main():
     info_parser = subparsers.add_parser("info", help="Print release info")
 
     upgrade_parser = subparsers.add_parser("upgrade", help="update the app versions")
-    upgrade_parser.add_argument("--dry-run", action="store_true", help="Do not apply thw changes")
+    upgrade_parser.add_argument("--dry-run", action="store_true", help="Show planned changes without applying them")
 
     # Apps Feature
     apps_parser = subparsers.add_parser("apps", help="Apps related operations")
@@ -161,29 +163,31 @@ def main():
     config = {}
     if args.config:
         try:
-            config = json.load(args.config)  # Parse the JSON file
+            with open(args.config, 'r') as f:
+                config = json.load(f)  # Parse the JSON file
             # print(f"Loaded configuration: {json.dumps(config, indent=2)}")
         except json.JSONDecodeError:
-            print(f"Error: Configuration file '{args.config.name}' is not valid JSON.")
+            print(f"Error: Configuration file '{args.config}' is not valid JSON.")
             sys.exit(1)
 
     # Load and parse configuration file if provided
     manifest = {}
     if args.manifest:
         try:
-            manifest = json.load(args.manifest)  # Parse the JSON file
+            with open(args.manifest, 'r') as f:
+                manifest = json.load(f)  # Parse the JSON file
             # print(f"Loaded manifesturation: {json.dumps(manifest, indent=2)}")
         except json.JSONDecodeError:
-            print(f"Error: Configuration file '{args.manifest.name}' is not valid JSON.")
+            print(f"Error: Configuration file '{args.manifest}' is not valid JSON.")
             sys.exit(1)
 
-    input_data = {}
-    if not sys.stdin.isatty(): # or sys.stdin.peek(1):
+    release = {}
+    if args.release:
         try:
-            read = sys.stdin.read()
-            input_data = json.loads(read)
+            with open(args.release, 'r') as f:
+                release = json.load(f)  # Parse the JSON file
         except json.JSONDecodeError:
-            print("Error: Invalid JSON input.")
+            print(f"Error: Release file '{args.release}' is not valid JSON.")
             sys.exit(1)
 
     apps_data = [
@@ -201,7 +205,7 @@ def main():
         _print_info(apps_data)
     elif args.feature == "upgrade":
         print(args)
-        _upgrade_files(apps_data, input_data, args.dry_run)
+        _upgrade_files(apps_data, release, args.dry_run)
     elif args.feature == "apps":
         if args.list:
             print("Available Apps:")
@@ -214,14 +218,21 @@ def main():
             apps_parser.print_help()
     elif args.feature == "matrix":
         matrix_type = MatrixType(args.type)
-        matrix = _gen_matrix(matrix_type, input_data, apps_data)
+        matrix = _gen_matrix(matrix_type, release, apps_data)
         # print(json.dumps(
         #         {
         #             'has_matrix': bool(matrix),
         #             'matrix':[app.to_dict() for app in matrix]
         #         }
         #     , indent=2))
-        print(json.dumps([app.to_dict() for app in matrix], indent=2))
+        if args.app_filter:
+            apps_filtered = [app.to_dict() for app in matrix if app.name == args.app_filter]
+            if apps_filtered:
+                print(json.dumps(apps_filtered[0], indent=2))
+            else:
+                print('{}')
+        else:
+            print(json.dumps([app.to_dict() for app in matrix], indent=2))
     else:
         parser.print_help()
 

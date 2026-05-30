@@ -34,11 +34,13 @@ jobs:
       matrix-pypi: ${{ steps.set-matrix.outputs.matrix_pypi }}
       matrix-itch: ${{ steps.set-matrix.outputs.matrix_itch }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           ref: ${{ github.sha }}
+
       - name: Trust git directory
         run: git config --global --add safe.directory $GITHUB_WORKSPACE
+
       - uses: googleapis/release-please-action@v4
         timeout-minutes: 15
         id: release-please
@@ -46,20 +48,40 @@ jobs:
           token: ${{ secrets.GH_PAT_TOKEN }}
           config-file: .release-please-config.json
           manifest-file: .release-please-manifest.json
+
       - name: Print outputs
         shell: bash
         env:
           OUTPUTS: ${{ toJSON(steps.release-please.outputs) }}
         run: |
           echo OUTPUTS: "$OUTPUTS"
-      - name: Set up Python 3.11
-        uses: actions/setup-python@v5
+
+      - uses: actions/setup-python@v6
         with:
-          python-version: '3.11'
+          python-version: '3.x'
+
       - name: Install dependencies
         shell: bash
         run:
           pip install -e 'tools/ci[social]'
+
+      - name: Save Release
+        if: ${{ steps.release-please.outputs.releases_created == 'true'}}
+        shell: bash
+        env:
+          RP_OUT: ${{ toJson(steps.release-please.outputs) }}
+        run: |
+          release-save \
+            --release ${{ github.workspace }}/release-metadata.json \
+            <<< ${RP_OUT}
+
+      - name: Upload Artifact
+        if: ${{ steps.release-please.outputs.releases_created == 'true'}}
+        uses: actions/upload-artifact@v7
+        with:
+          name: release-metadata.json
+          path: ${{ github.workspace }}/release-metadata.json
+
       - name: Update Version
         if: ${{ steps.release-please.outputs.prs_created == 'true'}}
         shell: bash
@@ -67,6 +89,19 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GH_PAT_TOKEN }}
           RP_OUT: ${{ toJson(steps.release-please.outputs) }}
         run: |
+          _CLONE_DIR=$(mktemp -d)
+
+          echo '::group::Setup Git'
+            git config --global user.name 'Eugenio Parodi - Action'
+            git config --global user.email 'ceccopierangioliegenio@googlemail.com'
+            git clone \
+              -b ${{ fromJson(steps.release-please.outputs.pr).headBranchName }} \
+              https://${GITHUB_TOKEN}@github.com/ceccopierangiolieugenio/pyTermTk.git \
+              ${_CLONE_DIR}
+          echo '::endgroup::'
+
+          cd ${_CLONE_DIR}
+
           _get_name(){
             _ITEM=$1
             jq -r ".packages[\"${_ITEM}\"][\"package-name\"]" .release-please-config.json
@@ -76,22 +111,15 @@ jobs:
             jq -r ".[\"${_ITEM}\"]" .release-please-manifest.json
           }
 
-          echo '::group::Setup Git'
-            git config --global user.name 'Eugenio Parodi - Action'
-            git config --global user.email 'ceccopierangioliegenio@googlemail.com'
-            git clone \
-              -b ${{ fromJson(steps.release-please.outputs.pr).headBranchName }} \
-              https://${GITHUB_TOKEN}@github.com/ceccopierangiolieugenio/pyTermTk.git \
-              pyTermTk.new
-          echo '::endgroup::'
 
-          cd pyTermTk.new
+
 
           echo '::group::🍧 Print the Versions'
             release-helper \
               --config .release-please-config.json \
               --manifest .release-please-manifest.json \
-              info <<< '{}'
+              --release ${{ github.workspace }}/release-metadata.json \
+              info
           echo '::endgroup::'
 
           echo '::group::🍓 Update the Versions'
@@ -105,7 +133,8 @@ jobs:
             release-helper \
               --config .release-please-config.json \
               --manifest .release-please-manifest.json \
-              upgrade <<< ${RP_OUT}
+              --release ${{ github.workspace }}/release-metadata.json \
+              upgrade
 
 
             cp libs/pyTermTk/CHANGELOG.md CHANGELOG.md
@@ -122,7 +151,9 @@ jobs:
               git push
             fi
           echo '::endgroup::'
-      - name: Define the Matrix strategy
+
+      - name: Define the Matrix strategy1
+        if: ${{ steps.release-please.outputs.releases_created == 'true'}}
         id: set-matrix
         env:
           RP_OUT: ${{ toJson(steps.release-please.outputs) }}
@@ -131,22 +162,26 @@ jobs:
             release-helper \
               --config .release-please-config.json \
               --manifest .release-please-manifest.json \
-              matrix all <<< ${RP_OUT} >> $GITHUB_OUTPUT
+              --release ${{ github.workspace }}/release-metadata.json \
+              matrix all >> $GITHUB_OUTPUT
           echo "_EOF" >> $GITHUB_OUTPUT
 
           echo "matrix_itch<<_EOF" >> $GITHUB_OUTPUT
             release-helper \
               --config .release-please-config.json \
               --manifest .release-please-manifest.json \
-              matrix itch <<< ${RP_OUT} >> $GITHUB_OUTPUT
+              --release ${{ github.workspace }}/release-metadata.json \
+              matrix itch >> $GITHUB_OUTPUT
           echo "_EOF" >> $GITHUB_OUTPUT
 
           echo "matrix_pypi<<_EOF" >> $GITHUB_OUTPUT
             release-helper \
               --config .release-please-config.json \
               --manifest .release-please-manifest.json \
-              matrix pypi <<< ${RP_OUT} >> $GITHUB_OUTPUT
+              --release ${{ github.workspace }}/release-metadata.json \
+              matrix pypi >> $GITHUB_OUTPUT
           echo "_EOF" >> $GITHUB_OUTPUT
+
 
   pyTermTk-deploy-artifacts:
     if: ${{ fromJson(needs.release-please.outputs.rp_out)['libs/pyTermTk--release_created'] }}
@@ -156,7 +191,7 @@ jobs:
     name: Deploy pyTermTk to github release
     needs: release-please
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           ref: ${{ github.sha }}
       - name: Create Artifacts
@@ -190,17 +225,19 @@ jobs:
           TAG_NAME: ${{ fromJson(needs.release-please.outputs.rp_out)['libs/pyTermTk--tag_name'] }}
         run: |
           _TMP=${{ steps.create-artifacts.outputs.artifacts_dir }}
-          gh release upload ${TAG_NAME} ${_TMP}/TermTk.tgz
-          gh release upload ${TAG_NAME} ${_TMP}/tutorial.tgz
-          gh release upload ${TAG_NAME} ${_TMP}/tests.tgz
-          gh release upload ${TAG_NAME} ${_TMP}/demo.tgz
+          gh release upload ${TAG_NAME} ${_TMP}/TermTk.tgz --clobber
+          gh release upload ${TAG_NAME} ${_TMP}/tutorial.tgz --clobber
+          gh release upload ${TAG_NAME} ${_TMP}/tests.tgz --clobber
+          gh release upload ${TAG_NAME} ${_TMP}/demo.tgz --clobber
           rm -rf ${_TMP}
+
 
   pyTermTk-deploy-sandbox:
     name: Deploy pyTermTk Sandbox
     uses: ./.github/workflows/release-sandbox.yml
     needs: release-please
     secrets: inherit
+
 
   pyTermTk-deploy-sandbox-bin:
     if: ${{ fromJson(needs.release-please.outputs.rp_out)['libs/pyTermTk--release_created'] }}
@@ -211,6 +248,7 @@ jobs:
       - pyTermTk-deploy-artifacts
     secrets: inherit
 
+
   pyTermTk-deploy-docs:
     if: ${{ fromJson(needs.release-please.outputs.rp_out)['libs/pyTermTk--release_created'] }}
     name: Deploy pyTermTk Docs
@@ -220,12 +258,14 @@ jobs:
       - pyTermTk-deploy-artifacts
     secrets: inherit
 
+
   publish-pypi:
     if:  ${{ needs.release-please.outputs.matrix-pypi != '[]' }}
     name: Publish pypi ${{ matrix.name }}
     needs:
       - release-please
     strategy:
+      fail-fast: false
       matrix:
         include: ${{ fromJson(needs.release-please.outputs.matrix-pypi) }}
     uses: ./.github/workflows/python-publish.yml
@@ -234,22 +274,6 @@ jobs:
       pkg_folder: ${{ matrix.path }}
     secrets: inherit
 
-  # publish-itch:
-  #   name: Publish Itch ${{ matrix.name }}
-  #   needs:
-  #     - release-please
-  #     - generate-matrix
-  #   runs-on: self-hosted
-  #   strategy:
-  #     matrix:
-  #       include: ${{ fromJson(needs.generate-matrix.outputs.matrix-itch) }}
-  #   steps:
-  #     - name: Build ${{ matrix.name }}
-  #       run: |
-  #         echo "Building ${{ matrix.name }} at path: ${{ matrix.path }}"
-  #   uses: ./.github/workflows/itch-publish.yml
-  #   with:
-  #     pkg_name: dumb-paint-tool
 
   publish-dumbPaintTool-itch:
     if: ${{ fromJson(needs.release-please.outputs.rp_out)['apps/dumbPaintTool--release_created'] }}
@@ -266,48 +290,16 @@ jobs:
     name: Notify ${{ matrix.name }} to the socials
     needs:
       - release-please
-    runs-on: self-hosted
     strategy:
+      fail-fast: false
       matrix:
         include: ${{ fromJson(needs.release-please.outputs.matrix) }}
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: ${{ github.sha }}
-      - name: Set up Python 3.11
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-      - name: Install dependencies
-        shell: bash
-        run:
-          pip install -e 'tools/ci[social]'
-      - name: Notify ${{ matrix.name }} on Discord
-        env:
-          RN: ${{ matrix.release-notes }}
-          MESSAGE: ${{ matrix.release-notes }}
-          DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
-        run: |
-          notify-discord ${{ matrix.name }} v${{ matrix.version }}
-      - name: Notify ${{ matrix.name }} on Github Discussion
-        env:
-          RN: ${{ matrix.release-notes }}
-          MESSAGE: ${{ matrix.release-notes }}
-          GITHUB_TOKEN: ${{ secrets.GH_PAT_TOKEN }}
-          GH_DISCUSSION_TOKEN: ${{ secrets.GH_DISCUSSION_TOKEN }}
-        run: |
-          notify-gh-discussion ${{ matrix.name }} v${{ matrix.version }}
-      - name: Notify ${{ matrix.name }} on Bluesky
-        env:
-          BLUESKY_APP_PWD: ${{ secrets.BLUESKY_APP_PWD }}
-          BLUESKY_APP_IDENTIFIER: ${{ secrets.BLUESKY_APP_IDENTIFIER }}
-        run: |
-          notify-bluesky ${{ matrix.name }} v${{ matrix.version }}
-      - name: Notify ${{ matrix.name }} on Twitter
-        env:
-          X_API_KEY: ${{ secrets.X_API_KEY }}
-          X_API_SECRET: ${{ secrets.X_API_SECRET }}
-          X_ACCESS_TOKEN: ${{ secrets.X_ACCESS_TOKEN }}
-          X_ACCESS_TOKEN_SECRET: ${{ secrets.X_ACCESS_TOKEN_SECRET }}
-        run: |
-          notify-twitter ${{ matrix.name }} ${{ matrix.version }}
+    uses: ./.github/workflows/notify-social.yml
+    with:
+      app: ${{ matrix.name }}
+      run_id: ${{ github.run_id }}
+      notify_discord: true
+      notify_github_discussion: true
+      notify_bluesky: true
+      notify_twitter: true
+    secrets: inherit
