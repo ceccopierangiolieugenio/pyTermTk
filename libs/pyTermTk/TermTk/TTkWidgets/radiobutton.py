@@ -105,7 +105,7 @@ class TTkRadioButton(TTkWidget):
         else:
             self._checked = checked
 
-        if not isinstance(self.text, TTkString):
+        if not isinstance(text, TTkString):
             self._text = TTkString(text)
         else:
             self._text = text
