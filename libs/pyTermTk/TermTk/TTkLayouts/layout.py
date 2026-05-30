@@ -193,6 +193,7 @@ class TTkLayout(TTkLayoutItem):
     '''
     __slots__ = ('_items', '_zSortedItems')
     _items:List[TTkLayoutItem]
+    _zSortedItems:List[TTkLayoutItem]
     def __init__(self, **kwargs) -> None:
         TTkLayoutItem.__init__(self, layoutItemType=TTkK.LayoutItemTypes.LayoutItem, **kwargs)
         self._items = []
@@ -286,9 +287,9 @@ class TTkLayout(TTkLayoutItem):
         self._items[index:index] = items
         self._zSortItems()
         #self.update()
+        parent_widget = self.parentWidget()
         for item in items:
             item.setParent(self)
-            parent_widget = self.parentWidget()
             if isinstance(item, TTkWidgetItem):
                 item.widget().setParent(parent_widget)
         if parent_widget and parent_widget.isVisible():
@@ -409,13 +410,11 @@ class TTkLayout(TTkLayoutItem):
         return minx, miny, maxx-minx, maxy-miny
 
     def update(self, *args, **kwargs) -> None:
-        ret = False
         for i in self._items:
             if isinstance(i, TTkWidgetItem) and (_wid:=i._widget):
-                ret = ret or _wid.update(*args, **kwargs)
+                _wid.update(*args, **kwargs)
             elif isinstance(i, TTkLayout):
-                ret = ret or i.update(*args, **kwargs)
-        return ret
+                i.update(*args, **kwargs)
 
 class TTkWidgetItem(TTkLayoutItem):
     __slots__ = ('_widget',)
@@ -433,11 +432,11 @@ class TTkWidgetItem(TTkLayoutItem):
 
     def isEmpty(self): return self._widget is None
 
-    def minimumSize(self)   -> int: return self._widget.minimumSize()
+    def minimumSize(self)   -> Tuple[int,int]: return self._widget.minimumSize()
     def minDimension(self,o)-> int: return self._widget.minDimension(o)
     def minimumHeight(self) -> int: return self._widget.minimumHeight()
     def minimumWidth(self)  -> int: return self._widget.minimumWidth()
-    def maximumSize(self)   -> int: return self._widget.maximumSize()
+    def maximumSize(self)   -> Tuple[int,int]: return self._widget.maximumSize()
     def maxDimension(self,o)-> int: return self._widget.maxDimension(o)
     def maximumHeight(self) -> int: return self._widget.maximumHeight()
     def maximumWidth(self)  -> int: return self._widget.maximumWidth()

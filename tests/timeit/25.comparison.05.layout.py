@@ -37,7 +37,7 @@ import TermTk as ttk
 from TermTk.TTkLayouts.layout import TTkWidgetItem, TTkLayoutItem, TTkLayout
 
 layouts = [
-    TTkLayout() if i%4 else TTkWidgetItem()
+    TTkLayout() if i%4 else TTkWidgetItem(widget=ttk.TTkWidget())
     for i in range(400)
 ]
 
