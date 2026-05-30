@@ -767,7 +767,7 @@ class TTkCanvas():
             count = 0
             chBk = ''
             for x,(da,db,ca,cb) in enumerate(zip(lda,ldb,lca,lcb)):
-                if da==db and ca==cb:
+                if da is db and ca is cb:
                     if not empty:
                         ansi += "" if not chBk else chBk*count if count<=4 else f"{chBk}\033[{count-1}b"
                         TTkTerm.push(ansi)
@@ -782,7 +782,7 @@ class TTkCanvas():
                     empty = False
                     count = 0
                     chBk = ''
-                if color != lastcolor:
+                if color is not lastcolor:
                     ansi += ("" if not chBk else chBk*count if count<=4 else f"{chBk}\033[{count-1}b") + str(color-lastcolor)
                     lastcolor = color
                     count = 0
