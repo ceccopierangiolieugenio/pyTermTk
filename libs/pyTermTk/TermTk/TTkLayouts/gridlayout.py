@@ -295,7 +295,7 @@ class TTkGridLayout(TTkLayout):
                 if _grid_item is not None and \
                    isinstance(_grid_item, TTkWidgetItem) and \
                    _grid_item.widget() in widgets:
-                    _grid_item = None
+                    self._gridItems[gridRow][gridCol] = None
         self._reshapeGrid(self._gridUsedsize())
 
     def itemAtPosition(self, row: int, col: int):
