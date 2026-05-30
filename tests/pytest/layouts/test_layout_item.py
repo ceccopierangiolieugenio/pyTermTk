@@ -41,6 +41,7 @@ def test_layout_item_initialization_respects_pos_size_and_bounds_overrides():
         col=3,
         rowspan=2,
         colspan=3,
+        layoutItemType=ttk.TTkK.LayoutItemTypes.LayoutItem
     )
 
     assert item.pos() == (5, 6)
@@ -57,6 +58,7 @@ def test_layout_item_span_value_splitting_for_first_and_following_cells():
         colspan=2,
         minSize=(10, 7),
         maxSize=(11, 8),
+        layoutItemType=ttk.TTkK.LayoutItemTypes.LayoutItem
     )
 
     assert item.minimumWidthSpan(5) == 5
@@ -73,11 +75,14 @@ def test_layout_item_span_value_splitting_for_first_and_following_cells():
 
 
 def test_layout_item_setters_update_geometry_parent_and_layer_values():
-    item = ttk.TTkLayoutItem(z=7)
+    item = ttk.TTkLayoutItem(
+        z=7,
+        layoutItemType=ttk.TTkK.LayoutItemTypes.LayoutItem
+    )
 
     item.setOffset(9, 4)
     item.setGeometry(1, 2, 3, 4)
-    parent = ttk.TTkLayoutItem()
+    parent = ttk.TTkLayoutItem(layoutItemType=ttk.TTkK.LayoutItemTypes.LayoutItem)
     item.setParent(parent)
 
     assert item.offset() == (9, 4)

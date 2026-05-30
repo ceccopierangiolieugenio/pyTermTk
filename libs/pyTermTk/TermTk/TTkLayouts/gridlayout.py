@@ -27,7 +27,7 @@
 __all__ = ['TTkGridLayout']
 
 from TermTk.TTkCore.constant import TTkK
-from TermTk.TTkLayouts.layout import TTkLayout
+from TermTk.TTkLayouts.layout import TTkLayout, TTkWidgetItem
 
 class TTkGridLayout(TTkLayout):
     '''
@@ -291,10 +291,11 @@ class TTkGridLayout(TTkLayout):
         TTkLayout.removeWidgets(self, widgets)
         for gridRow in range(self._rows):
             for gridCol in range(self._cols):
-                if self._gridItems[gridRow][gridCol] is not None and \
-                   self._gridItems[gridRow][gridCol]._layoutItemType == TTkK.WidgetItem and \
-                   self._gridItems[gridRow][gridCol].widget() in widgets:
-                    self._gridItems[gridRow][gridCol] = None
+                _grid_item = self._gridItems[gridRow][gridCol]
+                if _grid_item is not None and \
+                   isinstance(_grid_item, TTkWidgetItem) and \
+                   _grid_item.widget() in widgets:
+                    _grid_item = None
         self._reshapeGrid(self._gridUsedsize())
 
     def itemAtPosition(self, row: int, col: int):
@@ -315,7 +316,7 @@ class TTkGridLayout(TTkLayout):
         for gridRow in range(self._rows):
             item = self.itemAtPosition(gridRow,gridCol)
             if item is not None and \
-               ( item._layoutItemType == TTkK.LayoutItem or item.isVisible() ):
+               ( isinstance(item, TTkLayout) or item.isVisible() ):
                     anyItem = True
                     w = item.minimumWidthSpan(gridCol)
                     if colw < w:
@@ -330,7 +331,7 @@ class TTkGridLayout(TTkLayout):
         for gridCol in range(self._cols):
             item = self.itemAtPosition(gridRow,gridCol)
             if item is not None and \
-               ( item._layoutItemType == TTkK.LayoutItem or item.isVisible() ):
+               ( isinstance(item, TTkLayout) or item.isVisible() ):
                     anyItem = True
                     h = item.minimumHeightSpan(gridRow)
                     if rowh < h:
@@ -345,7 +346,7 @@ class TTkGridLayout(TTkLayout):
         for gridRow in range(self._rows):
             item = self.itemAtPosition(gridRow,gridCol)
             if item is not None and \
-               ( item._layoutItemType == TTkK.LayoutItem or item.isVisible() ):
+               ( isinstance(item, TTkLayout) or item.isVisible() ):
                     anyItem = True
                     w = item.maximumWidthSpan(gridCol)
                     if colw > w:
@@ -360,7 +361,7 @@ class TTkGridLayout(TTkLayout):
         for gridCol in range(self._cols):
             item = self.itemAtPosition(gridRow,gridCol)
             if item is not None and \
-               ( item._layoutItemType == TTkK.LayoutItem or item.isVisible() ):
+               ( isinstance(item, TTkLayout) or item.isVisible() ):
                     anyItem = True
                     h = item.maximumHeightSpan(gridRow)
                     if rowh > h:
@@ -479,10 +480,10 @@ class TTkGridLayout(TTkLayout):
             h = sum( vertSizes[row+i][1] for i in range(item._rowspan) )
             item.setGeometry(x, y, w, h)
             #TTkLog.debug(f"Children: {item.geometry()}")
-            if item._layoutItemType == TTkK.WidgetItem and not item.isEmpty():
+            if isinstance(item, TTkWidgetItem) and not item.isEmpty():
                 #TTkLog.debug(f"Children name: {item.widget()._name}")
                 item.widget().update(*args, **kwargs)
-            elif item._layoutItemType == TTkK.LayoutItem:
+            elif isinstance(item, TTkLayout):
                 item.update(*args, **kwargs)
         self._horSizes = horSizes
         self._verSizes = vertSizes
