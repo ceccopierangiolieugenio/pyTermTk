@@ -22,6 +22,7 @@
     ]
 
 [project.scripts]
+    release-save = "ci_tools.release_save:main"
     release-helper = "ci_tools.release_helper:main"
     notify-discord = "ci_tools.social.notify_discord:main"
     notify-bluesky = "ci_tools.social.notify_bluesky:main"

@@ -45,8 +45,8 @@ jobs:
         working-directory: ${{ inputs.pkg_folder }}
 
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.x"
       - name: Build release distributions
@@ -60,7 +60,7 @@ jobs:
             python -m build
           echo '::endgroup::'
       - name: Upload distributions
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: release-dist-${{ inputs.pkg_name }}
           path: ${{ inputs.pkg_folder }}/dist/
@@ -74,7 +74,7 @@ jobs:
       id-token: write
 
     steps:
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.x"
       - name: Retrieve release distributions

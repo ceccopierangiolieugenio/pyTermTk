@@ -1,0 +1,92 @@
+name: Workflow Health Check
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - '.github/workflows/*.yml'
+      - '.github/workflows/*.yaml'
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/*.yml'
+      - '.github/workflows/*.yaml'
+  schedule:
+    - cron: '17 5 * * 1'
+
+permissions:
+  contents: read
+
+jobs:
+  actionlint:
+    name: Validate GitHub Actions workflows
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Install actionlint
+        shell: bash
+        env:
+          # Safe bump process:
+          # 1) Set this to an exact released tag (vX.Y.Z), never 'latest'.
+          # 2) Keep checksum verification enabled below.
+          # 3) Optional sanity check: compare with release checksums file in the same tag.
+          ACTIONLINT_TAG_VERSION: v1.7.12
+        run: |
+          set -euo pipefail
+
+          version="${ACTIONLINT_TAG_VERSION#v}"
+          case "$OSTYPE" in
+            linux-*)  os="linux" ;;
+            darwin*)  os="darwin" ;;
+            freebsd*) os="freebsd" ;;
+            *)
+              echo "Unsupported OSTYPE: $OSTYPE" >&2
+              exit 1
+              ;;
+          esac
+
+          machine="$(uname -m)"
+          case "$machine" in
+            x86_64)        arch="amd64" ;;
+            i?86)          arch="386" ;;
+            aarch64|arm64) arch="arm64" ;;
+            arm*)          arch="armv6" ;;
+            *)
+              echo "Unsupported architecture: $machine" >&2
+              exit 1
+              ;;
+          esac
+
+          file="actionlint_${version}_${os}_${arch}.tar.gz"
+          checksums="actionlint_${version}_checksums.txt"
+          base_url="https://github.com/rhysd/actionlint/releases/download/v${version}"
+
+          curl -fsSLo "$file" "${base_url}/${file}"
+          curl -fsSLo "$checksums" "${base_url}/${checksums}"
+
+          expected="$(awk -v f="$file" '$2 == f { print $1 }' "$checksums")"
+          if [ -z "$expected" ]; then
+            echo "Checksum not found for $file" >&2
+            exit 1
+          fi
+
+          if command -v sha256sum >/dev/null 2>&1; then
+            echo "${expected}  ${file}" | sha256sum -c -
+          else
+            actual="$(shasum -a 256 "$file" | awk '{print $1}')"
+            if [ "$actual" != "$expected" ]; then
+              echo "Checksum mismatch for $file" >&2
+              exit 1
+            fi
+          fi
+
+          tar -xzf "$file" actionlint
+          chmod +x ./actionlint
+          rm -f "$file" "$checksums"
+
+      - name: Run actionlint
+        shell: bash
+        run: |
+          ./actionlint -color
