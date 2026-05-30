@@ -26,15 +26,11 @@ from __future__ import annotations
 
 import sys,os
 
-from dataclasses import dataclass
-from bisect import bisect_left, bisect_right
 import timeit
-
-from typing import List, Tuple, Iterator
 
 sys.path.append(os.path.join(sys.path[0],'../../libs/pyTermTk/'))
 import TermTk as ttk
-from TermTk.TTkLayouts.layout import TTkWidgetItem, TTkLayoutItem, TTkLayout
+from TermTk.TTkLayouts.layout import TTkWidgetItem, TTkLayout
 
 layouts = [
     TTkLayout() if i%4 else TTkWidgetItem(widget=ttk.TTkWidget())
