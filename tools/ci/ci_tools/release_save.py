@@ -22,16 +22,9 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import re
 import sys
-import glob
 import json
 import argparse
-import fileinput
-from dataclasses import dataclass
-from enum import Enum
-
-from typing import List, Dict, Union
 
 def main():
     parser = argparse.ArgumentParser(description="Release Helper Script")
