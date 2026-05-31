@@ -60,7 +60,7 @@ class TTkLayout(TTkLayoutItem):
     _items:List[TTkLayoutItem]
     _zSortedItems:List[TTkLayoutItem]
     def __init__(self, **kwargs) -> None:
-        TTkLayoutItem.__init__(self, layoutItemType=TTkK.LayoutItemTypes.LayoutItem, **kwargs)
+        TTkLayoutItem.__init__(self, **kwargs)
         self._items = []
         self._zSortedItems = []
 
@@ -281,3 +281,5 @@ class TTkLayout(TTkLayoutItem):
             elif isinstance(i, TTkLayout):
                 i.update(*args, **kwargs)
 
+    def layoutItemType(self) -> TTkK.LayoutItemTypes:
+        return TTkK.LayoutItemTypes.WidgetItem

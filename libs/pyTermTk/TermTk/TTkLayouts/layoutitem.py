@@ -80,7 +80,6 @@ class TTkLayoutItem():
                  col:int=0,
                  rowspan:int=1,
                  colspan:int=1,
-                 layoutItemType:TTkK.LayoutItemTypes,
                  maxWidth:int=0x10000,
                  maxHeight:int=0x10000,
                  maxSize:Optional[Tuple[int,int]]=None,
@@ -101,7 +100,6 @@ class TTkLayoutItem():
         self._col = col
         self._rowspan = rowspan
         self._colspan = colspan
-        self._layoutItemType = layoutItemType
         self._sMax,    self._sMin    = False, False
         self._sMaxVal, self._sMinVal = 0, 0
         self._maxw, self._maxh = maxSize if maxSize else (maxWidth,maxHeight)
@@ -170,7 +168,8 @@ class TTkLayoutItem():
         self._layer = layer
         self._z = (self._z & TTkLayoutItem.LAYERMASK) | layer
 
-    def layoutItemType(self): return self._layoutItemType
+    def layoutItemType(self) -> TTkK.LayoutItemTypes:
+        raise NotImplementedError()
 
 
 class TTkWidgetItem(TTkLayoutItem):
@@ -179,7 +178,7 @@ class TTkWidgetItem(TTkLayoutItem):
     def __init__(self, *,
                  widget,
                  **kwargs) -> None:
-        TTkLayoutItem.__init__(self, layoutItemType=TTkK.LayoutItemTypes.WidgetItem, **kwargs)
+        TTkLayoutItem.__init__(self, **kwargs)
         self._widget = widget
 
     def widget(self) -> TTkWidget:
@@ -204,3 +203,6 @@ class TTkWidgetItem(TTkLayoutItem):
 
     def setGeometry(self, x, y, w, h):
         self._widget.setGeometry(x, y, w, h)
+
+    def layoutItemType(self) -> TTkK.LayoutItemTypes:
+        return TTkK.LayoutItemTypes.WidgetItem
