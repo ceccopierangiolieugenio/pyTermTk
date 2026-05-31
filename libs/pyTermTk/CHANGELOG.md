@@ -1,5 +1,31 @@
 # Changelog
 
+## [0.51.0-a0](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/pyTermTk-v0.50.0-a0...pyTermTk-v0.51.0-a0) (2026-05-31)
+
+
+### ⚠ BREAKING CHANGES
+
+* **textEdit:** Implement auto-scroll follow modes for text editor and improve tests ([#631](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/631))
+
+### Fixes
+
+* **combobox:** select after focus ([#635](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/635)) ([1e1e9b2](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/1e1e9b23b4f9049fc798f2e0a7f08bf1b49ad545))
+* **signal:** clear all slot refs ([#637](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/637)) ([8ce27d5](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/8ce27d53a45fee36a769421175236aa1d58ebe83))
+* **splitter:** layout insertItem() ([#636](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/636)) ([1e42af9](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/1e42af9e41e70ed819fc38c850b84e7045df5ce2))
+
+
+### Chores
+
+* **menubar:** cleanup unused shortcutColor style ([#639](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/639)) ([b4c2977](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/b4c297753801319c57d081c1570150281f5e5451))
+* **textEdit:** Implement auto-scroll follow modes for text editor and improve tests ([#631](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/631)) ([f821bf0](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/f821bf09d5fb8c47cf136d09c737ab94095d4cdc))
+
+
+### Refactors
+
+* add type hints for better code clarity and maintainability ([889b321](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/889b321e9f5f3d5072e69c95249423a65d5dafba))
+* fix and improve test coverage for TTkColor and TTkStrings ([#638](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/638)) ([08bf756](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/08bf7561dfbf04f4fe1f4aa9864a8e6a101d0201))
+* layout item type checks and add type hints to widgets ([#644](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/644)) ([e6380eb](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/e6380eb4699f41f2c64c1c885ff2febd7931ffb2))
+
 ## [0.50.0-a0](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/pyTermTk-v0.49.0-a0...pyTermTk-v0.50.0-a0) (2026-05-08)
 
 
