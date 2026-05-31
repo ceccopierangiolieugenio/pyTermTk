@@ -27,7 +27,8 @@
 __all__ = ['TTkHBoxLayout', 'TTkVBoxLayout']
 
 from TermTk.TTkCore.constant import TTkK
-from TermTk.TTkLayouts.gridlayout import TTkGridLayout
+
+from .gridlayout import TTkGridLayout
 
 class TTkHBoxLayout(TTkGridLayout):
     ''' The TTkHBoxLayout class lines up widgets horizontally

@@ -27,7 +27,8 @@
 __all__ = ['TTkGridLayout']
 
 from TermTk.TTkCore.constant import TTkK
-from TermTk.TTkLayouts.layout import TTkLayout, TTkWidgetItem
+from .layout import TTkLayout
+from .layoutitem import TTkWidgetItem
 
 class TTkGridLayout(TTkLayout):
     '''
