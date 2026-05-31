@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.48.3-a0](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/tlogg-v0.48.2-a0...tlogg-v0.48.3-a0) (2026-05-31)
+
+
+### Fixes
+
+* add pygments to tlogg's dependencies ([#640](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/640)) ([7fdd643](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/7fdd643fbadb89ed9607605e0f086a2781beb89c))
+
 ## [0.48.2-a0](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/tlogg-v0.48.1-a0...tlogg-v0.48.2-a0) (2026-05-08)
 
 
