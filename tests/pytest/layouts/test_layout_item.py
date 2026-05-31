@@ -40,7 +40,7 @@ def test_layout_item_initialization_respects_pos_size_and_bounds_overrides():
         row=2,
         col=3,
         rowspan=2,
-        colspan=3,
+        colspan=3
     )
 
     assert item.pos() == (5, 6)
@@ -56,7 +56,7 @@ def test_layout_item_span_value_splitting_for_first_and_following_cells():
         rowspan=3,
         colspan=2,
         minSize=(10, 7),
-        maxSize=(11, 8),
+        maxSize=(11, 8)
     )
 
     assert item.minimumWidthSpan(5) == 5

@@ -27,10 +27,11 @@
 __all__ = ['TTkHBoxLayout', 'TTkVBoxLayout']
 
 from TermTk.TTkCore.constant import TTkK
-from TermTk.TTkLayouts.gridlayout import TTkGridLayout
+
+from .gridlayout import TTkGridLayout
 
 class TTkHBoxLayout(TTkGridLayout):
-    ''' The TTkHBoxLayout class lines up widgets horizontally
+    '''The :py:class:`TTkHBoxLayout` class lines up widgets horizontally.
 
     ::
 
@@ -47,7 +48,7 @@ class TTkHBoxLayout(TTkGridLayout):
     pass
 
 class TTkVBoxLayout(TTkGridLayout):
-    ''' The TTkVBoxLayout class lines up widgets vertically
+    '''The :py:class:`TTkVBoxLayout` class lines up widgets vertically.
 
     ::
 
@@ -63,10 +64,33 @@ class TTkVBoxLayout(TTkGridLayout):
          ╚═════════════════════════════╝
     '''
     def addItem(self, item):
+        '''Add a layout item on the next available vertical slot.
+
+        :param item: the item to be added
+        :type item: :py:class:`TTkLayoutItem`
+        '''
         TTkGridLayout.addItems(self, [item], direction=TTkK.VERTICAL)
+
     def addItems(self, items):
+        '''Add layout items stacked vertically.
+
+        :param items: the items to be added
+        :type items: list[:py:class:`TTkLayoutItem`]
+        '''
         TTkGridLayout.addItems(self,  items, direction=TTkK.VERTICAL)
+
     def addWidget(self, widget):
+        '''Add a widget on the next available vertical slot.
+
+        :param widget: the widget to be added
+        :type widget: :py:class:`TTkWidget`
+        '''
         TTkGridLayout.addWidgets(self, [widget], direction=TTkK.VERTICAL)
+
     def addWidgets(self, widgets):
+        '''Add widgets stacked vertically.
+
+        :param widgets: the widgets to be added
+        :type widgets: list[:py:class:`TTkWidget`]
+        '''
         TTkGridLayout.addWidgets(self,  widgets, direction=TTkK.VERTICAL)

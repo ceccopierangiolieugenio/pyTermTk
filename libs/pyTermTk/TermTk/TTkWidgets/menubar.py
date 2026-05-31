@@ -22,6 +22,8 @@
 
 __all__ = ['TTkMenuBarButton', 'TTkMenuBarLayout']
 
+from typing import Any, Dict, List
+
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.helper import TTkHelper
 from TermTk.TTkCore.color import TTkColor
@@ -34,7 +36,7 @@ from TermTk.TTkLayouts.boxlayout import TTkHBoxLayout
 from TermTk.TTkWidgets.menu import TTkMenuButton
 
 class TTkMenuBarButton(TTkMenuButton):
-    classStyle = TTkMenuButton.classStyle | {
+    classStyle:Dict[str,Dict[str,Any]] = TTkMenuButton.classStyle | {
                 'default': TTkMenuButton.classStyle['default'] |
                            {'borderColor':TTkColor.RST,
                             'glyphs':('├','─','┤','┄','┄','▶')},
@@ -44,7 +46,7 @@ class TTkMenuBarButton(TTkMenuButton):
 
     __slots__ = ()
     def __init__(self, *,
-                 text:TTkString=...,
+                 text:TTkString=TTkString(),
                  data:object=None,
                  checkable:bool=False,
                  checked:bool=False,
@@ -83,6 +85,7 @@ class TTkMenuBarButton(TTkMenuButton):
 class TTkMenuBarLayout(TTkHBoxLayout):
     '''TTkMenuBarLayout'''
     __slots__ = ('_itemsLeft', '_itemsCenter', '_itemsRight', '_buttons')
+    _buttons:List[TTkMenuBarButton]
     def __init__(self, **kwargs) -> None:
         self._buttons = []
         super().__init__(**kwargs)

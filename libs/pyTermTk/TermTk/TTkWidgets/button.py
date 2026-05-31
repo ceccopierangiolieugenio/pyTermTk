@@ -22,6 +22,8 @@
 
 __all__ = ['TTkButton']
 
+from typing import Any, Dict
+
 from TermTk.TTkCore.cfg import TTkCfg
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.string import TTkString, TTkStringType
@@ -71,7 +73,7 @@ class TTkButton(TTkWidget):
     :type checked: bool
     '''
 
-    classStyle = {
+    classStyle:Dict[str,Dict[str,Any]] = {
                 'default':     {'color': TTkColor.fg("#dddd88")+TTkColor.bg("#000044"),
                                 'borderColor': TTkColor.RST,
                                 'grid':1},

@@ -239,15 +239,15 @@ class TTkTreeWidgetItem(TTkAbstractItemModel):
 
     .. code-block:: python
 
-        cities = TTkWidgetItem(["Cities"])
-        osloItem = TTkWidgetItem(["Oslo"], parent=cities)
+        cities = TTkTreeWidgetItem(["Cities"])
+        osloItem = TTkTreeWidgetItem(["Oslo"], parent=cities)
 
     or
 
     .. code-block:: python
 
-        cities = TTkWidgetItem(["Cities"])
-        osloItem = TTkWidgetItem(["Oslo"]
+        cities = TTkTreeWidgetItem(["Cities"])
+        osloItem = TTkTreeWidgetItem(["Oslo"]
         cities.addChild(osloItem)
 
     '''

@@ -7,3 +7,8 @@ paths-ignore:
   - '**/*.egg-info/**'
   - '**/__pycache__/**'
   - docs/source/_build/**
+
+query-filters:
+  # Suppress "Module-level cyclic import" findings.
+  - exclude:
+      id: py/cyclic-import

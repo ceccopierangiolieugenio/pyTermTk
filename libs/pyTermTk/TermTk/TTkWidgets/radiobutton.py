@@ -20,12 +20,16 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
+
 __all__ = ['TTkRadioButton']
+
+from typing import Dict, List, Optional
 
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.cfg import TTkCfg
 from TermTk.TTkCore.color import TTkColor
-from TermTk.TTkCore.string import TTkString
+from TermTk.TTkCore.string import TTkString, TTkStringType
 from TermTk.TTkCore.signal import pyTTkSignal
 from TermTk.TTkCore.TTkTerm.inputkey import TTkKeyEvent
 from TermTk.TTkCore.TTkTerm.inputmouse import TTkMouseEvent
@@ -65,7 +69,7 @@ class TTkRadioButton(TTkWidget):
                                 'rbContentColor': TTkColor.fg("#dddd88")+TTkColor.bg("#000044")+TTkColor.BOLD},
             }
 
-    _radioLists = {}
+    _radioLists:Dict[str,List[TTkRadioButton]] = {}
     __slots__ = (
         '_checked', '_text', '_radiogroup',
         # Signals
@@ -74,8 +78,8 @@ class TTkRadioButton(TTkWidget):
     def __init__(self, *,
                  radiogroup:str='DefaultGroup',
                  checked:bool=False,
-                 checkStatus:TTkK.CheckState = None,
-                 text:TTkString='',
+                 checkStatus:Optional[TTkK.CheckState] = None,
+                 text:TTkStringType='',
                  **kwargs) -> None:
         '''
         :param str text: the text shown on the radio button, defaults to ""
@@ -95,11 +99,16 @@ class TTkRadioButton(TTkWidget):
         self._radiogroup = radiogroup
         # self.checked = pyTTkSignal()
         self._checked = checked
+
         if checkStatus is not None :
             self._checked = checkStatus==TTkK.Checked
         else:
             self._checked = checked
-        self._text = TTkString(text)
+
+        if not isinstance(text, TTkString):
+            self._text = TTkString(text)
+        else:
+            self._text = text
 
         TTkWidget.__init__(self, **kwargs)
 

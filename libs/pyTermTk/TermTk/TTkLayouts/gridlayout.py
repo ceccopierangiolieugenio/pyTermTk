@@ -26,8 +26,11 @@
 
 __all__ = ['TTkGridLayout']
 
+from typing import List
+
 from TermTk.TTkCore.constant import TTkK
-from TermTk.TTkLayouts.layout import TTkLayout
+from .layout import TTkLayout
+from .layoutitem import TTkWidgetItem, TTkLayoutItem
 
 class TTkGridLayout(TTkLayout):
     '''
@@ -50,10 +53,15 @@ class TTkGridLayout(TTkLayout):
          ╚═════════╧═════════╧╧═════════╝
 
     :param int columnMinWidth: the minimum width of the column, optional, defaults to 0
-    :param int rowMinHeight: the minimum height of the column, optional, defaults to 0
+    :param int rowMinHeight: the minimum height of the row, optional, defaults to 0
     '''
 
-    __slots__ = ('_gridItems','_columnMinWidth','_rowMinHeight', '_rows', '_cols', '_horSizes', '_verSizes')
+    __slots__ = (
+        '_gridItems','_columnMinWidth','_rowMinHeight',
+        '_rows', '_cols', '_horSizes', '_verSizes')
+    _gridItems:List[List[TTkLayoutItem]]
+    _horSizes:List[List[int]]
+    _verSizes:List[List[int]]
     def __init__(self, *,
                  columnMinWidth:int=0,
                  rowMinHeight:int=0,
@@ -65,9 +73,14 @@ class TTkGridLayout(TTkLayout):
         self._verSizes = []
         self._columnMinWidth = columnMinWidth
         self._rowMinHeight = rowMinHeight
-        TTkLayout.__init__(self, **kwargs)
+        super().__init__(**kwargs)
 
     def _gridUsedsize(self):
+        '''Return the effective grid size used by placed items.
+
+        :return: ``(rows, cols)`` used by current items and their spans
+        :rtype: tuple[int, int]
+        '''
         rows = 0
         cols = 0
         for gridRow in range(self._rows):
@@ -78,6 +91,11 @@ class TTkGridLayout(TTkLayout):
         return (rows, cols)
 
     def _reshapeGrid(self, size):
+        '''Resize the internal 2D grid storage to ``size``.
+
+        :param size: target ``(rows, cols)``
+        :type size: tuple[int, int]
+        '''
         rows, cols = size
         self._rows, self._cols = size
 
@@ -106,31 +124,51 @@ class TTkGridLayout(TTkLayout):
                 self._gridItems[gridRow] += [None]*(cols-sizeRow)
 
     def gridSize(self):
+        '''Return current allocated grid size as ``(rows, cols)``.'''
         return self._rows, self._cols
 
     def getSizes(self):
+        '''Return cached horizontal and vertical slot sizes.
+
+        :return: ``(horSizes, verSizes)``
+        :rtype: tuple[list, list]
+        '''
         return self._horSizes, self._verSizes
 
     def columnMinWidth(self):
+        '''Return the minimum width used for empty columns.'''
         return self._columnMinWidth
 
     def setColumnMinWidth(self, cmw):
+        '''Set the minimum width used for empty columns.
+
+        :param cmw: minimum empty-column width
+        :type cmw: int
+        '''
         if self._columnMinWidth == cmw: return
         self._columnMinWidth = cmw
         self.update()
 
     def rowMinHeight(self):
+        '''Return the minimum height used for empty rows.'''
         return self._rowMinHeight
 
     def setRowMinHeight(self, rmh):
+        '''Set the minimum height used for empty rows.
+
+        :param rmh: minimum empty-row height
+        :type rmh: int
+        '''
         if self._rowMinHeight == rmh: return
         self._rowMinHeight = rmh
         self.update()
 
     def gridItems(self):
+        '''Return the internal 2D grid matrix of layout items.'''
         return self._gridItems
 
     def repack(self):
+        '''Remove empty rows/columns and compact item row/column indices.'''
         rown=coln= -1
         # remove empty rows
         for r in reversed(range(self._rows)):
@@ -158,6 +196,11 @@ class TTkGridLayout(TTkLayout):
         self.update()
 
     def insertColumn(self, col):
+        '''Insert an empty column at ``col`` and shift items to the right.
+
+        :param col: column index where the new column is inserted
+        :type col: int
+        '''
         self._cols += 1
         for c in self.children():
             if c._col >= col:
@@ -167,6 +210,11 @@ class TTkGridLayout(TTkLayout):
         self.update()
 
     def insertRow(self, row):
+        '''Insert an empty row at ``row`` and shift items downward.
+
+        :param row: row index where the new row is inserted
+        :type row: int
+        '''
         self._rows += 1
         for c in self.children():
             if c._row >= row:
@@ -184,7 +232,7 @@ class TTkGridLayout(TTkLayout):
         :param int col:     the col of the grid, optional, defaults to None
         :param int rowspan: the rows used by the widget, optional, defaults to 1
         :param int colspan: the cols used by the widget, optional, defaults to 1
-        :param direction: The direction the new item will be added if row/col are not specified, defaults to defaults to :py:class:`~TermTk.TTkCore.constant.TTkConstant.Direction.HORIZONTAL`
+        :param direction: The direction the new item will be added if row/col are not specified, defaults to :py:class:`~TermTk.TTkCore.constant.TTkConstant.Direction.HORIZONTAL`
         :type direction: :py:class:`TTkConstant.Direction`
         '''
         TTkGridLayout.addWidgets(self,[widget], row, col, rowspan, colspan, direction)
@@ -198,7 +246,7 @@ class TTkGridLayout(TTkLayout):
         :param int col:     the col of the grid, optional, defaults to None
         :param int rowspan: the rows used by the widget, optional, defaults to 1
         :param int colspan: the cols used by the widget, optional, defaults to 1
-        :param direction: The direction the new items will be added if row/col are not specified, defaults to defaults to :py:class:`~TermTk.TTkCore.constant.TTkConstant.Direction.HORIZONTAL`
+        :param direction: The direction the new items will be added if row/col are not specified, defaults to :py:class:`~TermTk.TTkCore.constant.TTkConstant.Direction.HORIZONTAL`
         :type direction: :py:class:`TTkConstant.Direction`
         '''
         self.removeWidgets(widgets)
@@ -207,7 +255,15 @@ class TTkGridLayout(TTkLayout):
         for w in widgets:
             w.update()
 
-    def replaceItem(self, item, index): pass
+    def replaceItem(self, item, index):
+        '''Not implemented for grid layout indexed replacement.
+
+        :param item: replacement item
+        :type item: :py:class:`TTkLayoutItem`
+        :param index: linear index
+        :type index: int
+        '''
+        pass
 
     def addItem(self, item, row=None, col=None, rowspan=1, colspan=1, direction=TTkK.HORIZONTAL):
         '''Add the item to this :py:class:`TTkGridLayout`
@@ -218,7 +274,7 @@ class TTkGridLayout(TTkLayout):
         :param int col:     the col of the grid, optional, defaults to None
         :param int rowspan: the rows used by the item, optional, defaults to 1
         :param int colspan: the cols used by the item, optional, defaults to 1
-        :param direction: The direction the new item will be added if row/col are not specified, defaults to defaults to :py:class:`~TermTk.TTkCore.constant.TTkConstant.Direction.HORIZONTAL`
+        :param direction: The direction the new item will be added if row/col are not specified, defaults to :py:class:`~TermTk.TTkCore.constant.TTkConstant.Direction.HORIZONTAL`
         :type direction: :py:class:`TTkConstant.Direction`
         '''
         self.addItems([item],row,col,rowspan,colspan,direction)
@@ -232,7 +288,7 @@ class TTkGridLayout(TTkLayout):
         :param int col:     the col of the grid, optional, defaults to None
         :param int rowspan: the rows used by the item, optional, defaults to 1
         :param int colspan: the cols used by the item, optional, defaults to 1
-        :param direction: The direction the new items will be added if row/col are not specified, defaults to defaults to :py:class:`~TermTk.TTkCore.constant.TTkConstant.Direction.HORIZONTAL`
+        :param direction: The direction the new items will be added if row/col are not specified, defaults to :py:class:`~TermTk.TTkCore.constant.TTkConstant.Direction.HORIZONTAL`
         :type direction: :py:class:`TTkConstant.Direction`
         '''
         nitems = len(items)
@@ -274,9 +330,19 @@ class TTkGridLayout(TTkLayout):
         TTkLayout.addItems(self, items)
 
     def removeItem(self, item):
+        '''Remove a single layout item from the grid.
+
+        :param item: item to remove
+        :type item: :py:class:`TTkLayoutItem`
+        '''
         self.removeItems([item])
 
     def removeItems(self, items):
+        '''Remove multiple layout items and clear their grid cells.
+
+        :param items: items to remove
+        :type items: list[:py:class:`TTkLayoutItem`]
+        '''
         TTkLayout.removeItems(self, items)
         for gridRow in range(self._rows):
             for gridCol in range(self._cols):
@@ -285,19 +351,41 @@ class TTkGridLayout(TTkLayout):
         self._reshapeGrid(self._gridUsedsize())
 
     def removeWidget(self, widget):
+        '''Remove a single widget from the grid.
+
+        :param widget: widget to remove
+        :type widget: :py:class:`TTkWidget`
+        '''
         self.removeWidgets([widget])
 
     def removeWidgets(self, widgets):
+        '''Remove multiple widgets from the grid.
+
+        :param widgets: widgets to remove
+        :type widgets: list[:py:class:`TTkWidget`]
+        '''
         TTkLayout.removeWidgets(self, widgets)
         for gridRow in range(self._rows):
             for gridCol in range(self._cols):
-                if self._gridItems[gridRow][gridCol] is not None and \
-                   self._gridItems[gridRow][gridCol]._layoutItemType == TTkK.WidgetItem and \
-                   self._gridItems[gridRow][gridCol].widget() in widgets:
+                _grid_item = self._gridItems[gridRow][gridCol]
+                if _grid_item is not None and \
+                   isinstance(_grid_item, TTkWidgetItem) and \
+                   _grid_item.widget() in widgets:
                     self._gridItems[gridRow][gridCol] = None
         self._reshapeGrid(self._gridUsedsize())
 
     def itemAtPosition(self, row: int, col: int):
+        '''Return the item occupying ``(row, col)``.
+
+        Spanned items are returned for any covered cell.
+
+        :param row: grid row
+        :type row: int
+        :param col: grid column
+        :type col: int
+        :return: layout item at this position
+        :rtype: :py:class:`TTkLayoutItem` or None
+        '''
         if ( row<0 or row >= self._rows or
              col<0 or col >= self._cols ):
             return None
@@ -310,12 +398,19 @@ class TTkGridLayout(TTkLayout):
         return None
 
     def minimumColWidth(self, gridCol: int) -> int:
+        '''Return the minimum width required for a column.
+
+        :param gridCol: column index
+        :type gridCol: int
+        :return: minimum column width
+        :rtype: int
+        '''
         colw = 0
         anyItem = False
         for gridRow in range(self._rows):
             item = self.itemAtPosition(gridRow,gridCol)
             if item is not None and \
-               ( item._layoutItemType == TTkK.LayoutItem or item.isVisible() ):
+               ( isinstance(item, TTkLayout) or item.isVisible() ):
                     anyItem = True
                     w = item.minimumWidthSpan(gridCol)
                     if colw < w:
@@ -325,12 +420,19 @@ class TTkGridLayout(TTkLayout):
         return colw
 
     def minimumRowHeight(self, gridRow: int):
+        '''Return the minimum height required for a row.
+
+        :param gridRow: row index
+        :type gridRow: int
+        :return: minimum row height
+        :rtype: int
+        '''
         rowh = 0
         anyItem = False
         for gridCol in range(self._cols):
             item = self.itemAtPosition(gridRow,gridCol)
             if item is not None and \
-               ( item._layoutItemType == TTkK.LayoutItem or item.isVisible() ):
+               ( isinstance(item, TTkLayout) or item.isVisible() ):
                     anyItem = True
                     h = item.minimumHeightSpan(gridRow)
                     if rowh < h:
@@ -340,12 +442,19 @@ class TTkGridLayout(TTkLayout):
         return rowh
 
     def maximumColWidth(self, gridCol: int) -> int:
+        '''Return the maximum width allowed for a column.
+
+        :param gridCol: column index
+        :type gridCol: int
+        :return: maximum column width
+        :rtype: int
+        '''
         colw = 0x10000
         anyItem = False
         for gridRow in range(self._rows):
             item = self.itemAtPosition(gridRow,gridCol)
             if item is not None and \
-               ( item._layoutItemType == TTkK.LayoutItem or item.isVisible() ):
+               ( isinstance(item, TTkLayout) or item.isVisible() ):
                     anyItem = True
                     w = item.maximumWidthSpan(gridCol)
                     if colw > w:
@@ -355,12 +464,19 @@ class TTkGridLayout(TTkLayout):
         return colw
 
     def maximumRowHeight(self, gridRow: int):
+        '''Return the maximum height allowed for a row.
+
+        :param gridRow: row index
+        :type gridRow: int
+        :return: maximum row height
+        :rtype: int
+        '''
         rowh = 0x10000
         anyItem = False
         for gridCol in range(self._cols):
             item = self.itemAtPosition(gridRow,gridCol)
             if item is not None and \
-               ( item._layoutItemType == TTkK.LayoutItem or item.isVisible() ):
+               ( isinstance(item, TTkLayout) or item.isVisible() ):
                     anyItem = True
                     h = item.maximumHeightSpan(gridRow)
                     if rowh > h:
@@ -370,21 +486,21 @@ class TTkGridLayout(TTkLayout):
         return rowh
 
     def minimumWidth(self) -> int:
-        ''' process the widgets and get the min size '''
+        '''Return the layout minimum width from all grid columns.'''
         minw = 0
         for gridCol in range(self._cols):
             minw += self.minimumColWidth(gridCol)
         return minw
 
     def minimumHeight(self) -> int:
-        ''' process the widgets and get the min size '''
+        '''Return the layout minimum height from all grid rows.'''
         minh = 0
         for gridRow in range(self._rows):
             minh += self.minimumRowHeight(gridRow)
         return minh
 
     def maximumWidth(self) -> int:
-        ''' process the widgets and get the min size '''
+        '''Return the layout maximum width from all grid columns.'''
         if not self._rows:
             return 0x1000
         maxw = 0
@@ -393,7 +509,7 @@ class TTkGridLayout(TTkLayout):
         return maxw
 
     def maximumHeight(self) -> int:
-        ''' process the widgets and get the min size '''
+        '''Return the layout maximum height from all grid rows.'''
         if not self._cols:
             return 0x1000
         maxh = 0
@@ -403,6 +519,7 @@ class TTkGridLayout(TTkLayout):
 
 
     def update(self, *args, **kwargs) -> None:
+        '''Recompute cell geometry and update child widgets/layouts.'''
         _, _, w, h = self.geometry()
         newx, newy = 0, 0
 
@@ -479,10 +596,10 @@ class TTkGridLayout(TTkLayout):
             h = sum( vertSizes[row+i][1] for i in range(item._rowspan) )
             item.setGeometry(x, y, w, h)
             #TTkLog.debug(f"Children: {item.geometry()}")
-            if item._layoutItemType == TTkK.WidgetItem and not item.isEmpty():
+            if isinstance(item, TTkWidgetItem) and not item.isEmpty():
                 #TTkLog.debug(f"Children name: {item.widget()._name}")
                 item.widget().update(*args, **kwargs)
-            elif item._layoutItemType == TTkK.LayoutItem:
+            elif isinstance(item, TTkLayout):
                 item.update(*args, **kwargs)
         self._horSizes = horSizes
         self._verSizes = vertSizes

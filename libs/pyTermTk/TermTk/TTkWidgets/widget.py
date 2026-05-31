@@ -97,8 +97,8 @@ class TTkWidget(TMouseEvents, TKeyEvents, TDragEvents):
     :type widget: TTkWidget
     '''
 
-    classStyle = {
-                'default':     {'color': TTkColor.RST,           'borderColor': TTkColor.RST},
+    classStyle:Dict[str,Dict[str,Any]] = {
+                'default':     {'color': TTkColor.RST,             'borderColor': TTkColor.RST},
                 'disabled':    {'color': TTkColor.fg('#888888'), 'borderColor': TTkColor.fg('#888888')},
                 # 'hover':       {'color': TTkColor.fg('#00FF00')+TTkColor.bg('#0077FF')},
                 # 'checked':     {'color': TTkColor.fg('#00FF00')+TTkColor.bg('#00FFFF')},
@@ -704,7 +704,7 @@ class TTkWidget(TMouseEvents, TKeyEvents, TDragEvents):
         :return: the maximum dimension
         :rtype: int
         '''
-        if orientation == TTkK.HORIZONTAL:
+        if orientation is TTkK.HORIZONTAL:
             return self.maximumWidth()
         else:
             return self.maximumHeight()

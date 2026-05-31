@@ -1029,7 +1029,7 @@ class TTkTabWidget(TTkFrame):
             return self._tabWidgets.index(widget)
         return -1
 
-    def tabButton(self, index:int) -> TTkTabButton:
+    def tabButton(self, index:int) -> Optional[TTkTabButton]:
         '''tabButton'''
         return self._tabStatus.tabBar.tabButton(index)
 

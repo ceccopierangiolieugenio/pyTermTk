@@ -622,7 +622,7 @@ class TTkConstant:
         '''The user can interact with the item.'''
 
     # LayoutItem Types
-    class LayoutItemTypes(int):
+    class LayoutItemTypes(IntEnum):
         '''Types used internally in :mod:`~TermTk.TTkLayouts`
 
         .. autosummary::
