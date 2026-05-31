@@ -60,22 +60,36 @@ class TTkLayout(TTkLayoutItem):
     _items:List[TTkLayoutItem]
     _zSortedItems:List[TTkLayoutItem]
     def __init__(self, **kwargs) -> None:
-        TTkLayoutItem.__init__(self, **kwargs)
+        super().__init__(**kwargs)
         self._items = []
         self._zSortedItems = []
 
     def children(self):
+        '''Return the list of direct child layout items.'''
         return self._items
 
     def count(self):
+        '''Return the number of direct child layout items.'''
         return len(self._items)
 
     def itemAt(self, index):
+        '''Return the item at ``index`` or ``None`` when out of range.
+
+        :param index: child index
+        :type index: int
+        :return: the layout item at ``index`` if available
+        :rtype: :py:class:`TTkLayoutItem` or None
+        '''
         if index < len(self._items):
             return self._items[index]
         return None
 
     def setParent(self, parent):
+        '''Set the parent layout item and propagate parent widget ownership.
+
+        :param parent: parent layout item or widget-like owner
+        :type parent: object
+        '''
         if parent is None:
             self._parent = parent
         elif isinstance(parent, TTkLayoutItem):
@@ -88,6 +102,11 @@ class TTkLayout(TTkLayoutItem):
                 item.widget().setParent(self.parentWidget())
 
     def parentWidget(self):
+        '''Return the widget owning this layout branch.
+
+        :return: nearest parent widget in the hierarchy
+        :rtype: :py:class:`TTkWidget` or None
+        '''
         parent = self._parent
         if parent is None: return None
         if isinstance(parent, TTkWidgetItem):
@@ -122,27 +141,65 @@ class TTkLayout(TTkLayoutItem):
                 yield from child.iterWidgets(onlyVisible, recurse)
 
     def _zSortItems(self):
+        '''Sort child items by z-order and cache the sorted list.'''
         self._zSortedItems = sorted(self._items, key=lambda item: item._z)
 
     @property
-    def zSortedItems(self): return self._zSortedItems
+    def zSortedItems(self):
+        '''Return child items sorted by z-order.'''
+        return self._zSortedItems
 
     def replaceItem(self, item, index):
+        '''Replace the item at ``index`` with ``item``.
+
+        :param item: replacement item
+        :type item: :py:class:`TTkLayoutItem`
+        :param index: target index to replace
+        :type index: int
+        :raises ValueError: if ``index`` is outside the valid range
+        '''
         if index < 0 or index >= len(self._items):
             raise ValueError(f"The {index=} is not inside the items list")
         self.removeItem(item=self._items[index])
         self.insertItem(item=item,index=index)
 
     def addItem(self, item):
+        '''Append a layout item.
+
+        :param item: item to append
+        :type item: :py:class:`TTkLayoutItem`
+        '''
         self.insertItems(len(self._items),[item])
 
     def addItems(self, items):
+        '''Append multiple layout items.
+
+        :param items: items to append
+        :type items: list[:py:class:`TTkLayoutItem`]
+        '''
         self.insertItems(len(self._items),items)
 
     def insertItem(self, index, item):
+        '''Insert a single item at ``index``.
+
+        :param index: insertion index
+        :type index: int
+        :param item: item to insert
+        :type item: :py:class:`TTkLayoutItem`
+        '''
         return self.insertItems(index,[item])
 
     def insertItems(self, index, items):
+        '''Insert multiple items at ``index`` and re-parent them.
+
+        Widgets passed directly are converted to their associated
+        :py:class:`TTkWidgetItem` wrapper before insertion.
+
+        :param index: insertion index
+        :type index: int
+        :param items: items or widgets to insert
+        :type items: list
+        '''
         for i,item in enumerate(items):
             if not isinstance(widget:=item, TTkLayoutItem):
                 if widget.parentWidget() and widget.parentWidget().layout():
@@ -178,19 +235,35 @@ class TTkLayout(TTkLayoutItem):
         self.insertItems(len(self._items),widgets)
 
     def insertWidget(self, index, widget):
-        '''insertWidget'''
+        '''Insert a widget at ``index``.
+
+        :param index: insertion index
+        :type index: int
+        :param widget: widget to insert
+        :type widget: :py:class:`TTkWidgets`
+        '''
         self.insertItems(index, [widget])
 
     def insertWidgets(self, index, widgets):
-        '''insertWidgets'''
+        '''Insert widgets at ``index``.
+
+        :param index: insertion index
+        :type index: int
+        :param widgets: widgets to insert
+        :type widgets: list of :py:class:`TTkWidgets`
+        '''
         self.insertItems(index, widgets)
 
     def removeItem(self, item):
-        '''removeItem'''
+        '''Remove a single layout item.
+
+        :param item: item to remove
+        :type item: :py:class:`TTkLayoutItem`
+        '''
         self.removeItems([item])
 
     def clear(self) -> None:
-        '''clear'''
+        '''Remove and detach all items from this layout.'''
         for item in self._items:
             if isinstance(item, TTkWidgetItem):
                 item.widget().setParent(None)
@@ -199,7 +272,11 @@ class TTkLayout(TTkLayoutItem):
         self._zSortItems()
 
     def removeItems(self, items):
-        '''removeItems'''
+        '''Remove a list of layout items if present.
+
+        :param items: items to remove
+        :type items: list[:py:class:`TTkLayoutItem`]
+        '''
         for item in items.copy():
             if item in self._items:
                 self._items.remove(item)
@@ -230,6 +307,13 @@ class TTkLayout(TTkLayoutItem):
                 item.removeWidgets(widgets)
 
     def _findBranchWidget(self, widget):
+        '''Find the direct branch item containing ``widget``.
+
+        :param widget: widget to search in the layout tree
+        :type widget: :py:class:`TTkWidget`
+        :return: direct child branch that contains the widget
+        :rtype: :py:class:`TTkLayoutItem` or None
+        '''
         for item in self._items:
             if isinstance(item, TTkLayout):
                 if item._findBranchWidget(widget) is not None:
@@ -240,7 +324,11 @@ class TTkLayout(TTkLayoutItem):
         return None
 
     def raiseWidget(self, widget):
-        '''raiseWidget'''
+        '''Raise a widget (and its branch) to the top z-order.
+
+        :param widget: widget to raise
+        :type widget: :py:class:`TTkWidget`
+        '''
         item = self._findBranchWidget(widget)
         item._z = item._z if (maxz:=max(TTkLayoutItem.LAYERMASK & i._z for i in self._items))==(TTkLayoutItem.LAYERMASK & item._z)!=0 else item._layer|maxz+1
         if isinstance(item, TTkLayout):
@@ -248,7 +336,11 @@ class TTkLayout(TTkLayoutItem):
         self._zSortItems()
 
     def lowerWidget(self, widget):
-        '''lowerWidget'''
+        '''Lower a widget (and its branch) to the bottom z-order.
+
+        :param widget: widget to lower
+        :type widget: :py:class:`TTkWidget`
+        '''
         item = self._findBranchWidget(widget)
         for i in self._items: i._z+=1
         item._z = item._layer
@@ -257,13 +349,28 @@ class TTkLayout(TTkLayoutItem):
         self._zSortItems()
 
     def setGeometry(self, x, y, w, h):
-        '''setGeometry'''
+        '''Set layout geometry and propagate a layout update when changed.
+
+        :param x: horizontal position
+        :type x: int
+        :param y: vertical position
+        :type y: int
+        :param w: width
+        :type w: int
+        :param h: height
+        :type h: int
+        '''
         ax, ay, aw, ah = self.geometry()
         if ax==x and ay==y and aw==w and ah==h: return
         TTkLayoutItem.setGeometry(self, x, y, w, h)
         self.update(repaint=True, updateLayout=True)
 
     def fullWidgetAreaGeometry(self):
+        '''Return the bounding geometry that encloses all child items.
+
+        :return: ``(x, y, width, height)`` bounding box
+        :rtype: tuple[int, int, int, int]
+        '''
         if not self._items: return 0,0,0,0
         minx,miny,maxx,maxy = 0x10000,0x10000,-0x10000,-0x10000
         for item in self._items:
@@ -275,6 +382,7 @@ class TTkLayout(TTkLayoutItem):
         return minx, miny, maxx-minx, maxy-miny
 
     def update(self, *args, **kwargs) -> None:
+        '''Propagate update requests to child widgets and nested layouts.'''
         for i in self._items:
             if isinstance(i, TTkWidgetItem) and (_wid:=i._widget):
                 _wid.update(*args, **kwargs)
@@ -282,4 +390,5 @@ class TTkLayout(TTkLayoutItem):
                 i.update(*args, **kwargs)
 
     def layoutItemType(self) -> TTkK.LayoutItemTypes:
+        '''Return :py:attr:`TTkK.LayoutItemTypes.LayoutItem`.'''
         return TTkK.LayoutItemTypes.LayoutItem

@@ -704,7 +704,7 @@ class TTkWidget(TMouseEvents, TKeyEvents, TDragEvents):
         :return: the maximum dimension
         :rtype: int
         '''
-        if orientation == TTkK.HORIZONTAL:
+        if orientation is TTkK.HORIZONTAL:
             return self.maximumWidth()
         else:
             return self.maximumHeight()
