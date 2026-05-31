@@ -202,8 +202,9 @@ class TTkLayout(TTkLayoutItem):
         '''
         for i,item in enumerate(items):
             if not isinstance(widget:=item, TTkLayoutItem):
-                if widget.parentWidget() and widget.parentWidget().layout():
-                    widget.parentWidget().layout().removeWidget(self)
+                parent_widget = widget.parentWidget()
+                if parent_widget and parent_widget.layout():
+                    parent_widget.layout().removeWidget(widget)
                 item = widget.widgetItem()
                 items[i]=item
         self._items[index:index] = items
