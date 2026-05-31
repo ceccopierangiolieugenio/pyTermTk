@@ -37,26 +37,26 @@ layouts = [
     for i in range(400)
 ]
 
-def test_ti_1_Bisect_01_01():
-    return sum(i._layoutItemType == ttk.TTkK.LayoutItemTypes.LayoutItem for i in layouts)
+# def test_ti_1_Bisect_01_01():
+#     return sum(i._layoutItemType == ttk.TTkK.LayoutItemTypes.LayoutItem for i in layouts)
 
-def test_ti_1_Bisect_01_02():
-    return sum(isinstance(i, TTkLayout) for i in layouts)
+# def test_ti_1_Bisect_01_02():
+#     return sum(isinstance(i, TTkLayout) for i in layouts)
 
-def test_ti_1_Bisect_01_03():
-    return sum(i._layoutItemType == ttk.TTkK.LayoutItemTypes.WidgetItem for i in layouts)
+# def test_ti_1_Bisect_01_03():
+#     return sum(i._layoutItemType == ttk.TTkK.LayoutItemTypes.WidgetItem for i in layouts)
 
-def test_ti_1_Bisect_01_04():
-    return sum(isinstance(i, TTkWidgetItem) for i in layouts)
+# def test_ti_1_Bisect_01_04():
+#     return sum(isinstance(i, TTkWidgetItem) for i in layouts)
 
-def test_ti_1_Bisect_01_05():
-    return sum(isinstance(i, ttk.TTkWidget) for i in layouts)
+# def test_ti_1_Bisect_01_05():
+#     return sum(isinstance(i, ttk.TTkWidget) for i in layouts)
 
-def test_ti_1_Bisect_01_06():
-    return sum(i._layoutItemType is ttk.TTkK.LayoutItemTypes.LayoutItem for i in layouts)
+# def test_ti_1_Bisect_01_06():
+#     return sum(i._layoutItemType is ttk.TTkK.LayoutItemTypes.LayoutItem for i in layouts)
 
-def test_ti_1_Bisect_01_07():
-    return sum(i._layoutItemType is ttk.TTkK.LayoutItemTypes.WidgetItem for i in layouts)
+# def test_ti_1_Bisect_01_07():
+#     return sum(i._layoutItemType is ttk.TTkK.LayoutItemTypes.WidgetItem for i in layouts)
 
 loop = 10000
 

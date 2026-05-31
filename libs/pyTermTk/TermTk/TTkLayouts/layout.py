@@ -282,4 +282,4 @@ class TTkLayout(TTkLayoutItem):
                 i.update(*args, **kwargs)
 
     def layoutItemType(self) -> TTkK.LayoutItemTypes:
-        return TTkK.LayoutItemTypes.WidgetItem
+        return TTkK.LayoutItemTypes.LayoutItem
