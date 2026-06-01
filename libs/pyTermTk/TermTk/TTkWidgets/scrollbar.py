@@ -259,19 +259,3 @@ class TTkScrollBar(TTkWidget):
         self._value = v
         self.valueChanged.emit(v)
         self.update()
-
-    def color(self):
-        return self._color
-
-    def setColor(self, color):
-        if self._color != color:
-            self._color = color
-            self.update()
-
-    def focusColor(self):
-        return self._focusColor
-
-    def setFocusColor(self, color):
-        if self._focusColor != color:
-            self._focusColor = color
-            self.update()
