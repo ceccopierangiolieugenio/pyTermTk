@@ -649,7 +649,8 @@ class TTkListWidget(TTkAbstractScrollView):
         # if not self._highlighted: return False
         if ( not self._searchText and evt.type == TTkK.Character and evt.key==" " ) or \
            ( evt.type == TTkK.SpecialKey and evt.key == TTkK.Key_Enter ):
-            self._itemTriggered(self._highlighted)
+            if self._highlighted is not None:
+                self._itemTriggered(self._highlighted)
 
         elif evt.type == TTkK.Character:
             # Add this char to the search text
@@ -673,7 +674,7 @@ class TTkListWidget(TTkAbstractScrollView):
                self._filteredItems):
             # Handle the arrow/movement keys
             index = 0
-            if self._highlighted:
+            if self._highlighted is not None:
                 if self._highlighted not in self._filteredItems:
                     self._highlighted = self._filteredItems[0]
                 index = self._filteredItems.index(self._highlighted)

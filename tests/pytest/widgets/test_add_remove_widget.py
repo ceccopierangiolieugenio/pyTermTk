@@ -428,3 +428,49 @@ def test_nested_layout_widgets_04():
     assert widget1.parentWidget() is container2
     assert widget2.parentWidget() is container2
 
+
+def test_move_widget_item_between_containers_add_item_detaches_source_layout():
+    '''
+    Test moving an existing :py:class:`TTkWidgetItem` between container layouts using addItem().
+    The widget item must be detached from the source layout, and operations on the old layout
+    must not affect the widget once moved.
+    '''
+    container1 = ttk.TTkContainer()
+    container2 = ttk.TTkContainer()
+    widget = ttk.TTkWidget()
+
+    container1.layout().addWidget(widget)
+    container2.layout().addItem(widget.widgetItem())
+
+    assert widget.parentWidget() is container2
+    assert container1.layout().count() == 0
+    assert container2.layout().count() == 1
+
+    # Removing from the old layout must not detach the moved widget.
+    container1.layout().removeWidget(widget)
+    assert widget.parentWidget() is container2
+    assert container2.layout().count() == 1
+
+
+def test_move_widget_item_between_containers_insert_item_detaches_source_layout():
+    '''
+    Test moving an existing :py:class:`TTkWidgetItem` between container layouts using insertItem().
+    Inserting at a specific index must preserve destination order while removing the item from
+    its original layout.
+    '''
+    container1 = ttk.TTkContainer()
+    container2 = ttk.TTkContainer()
+    moved = ttk.TTkWidget()
+    existing = ttk.TTkWidget()
+
+    container1.layout().addWidget(moved)
+    container2.layout().addWidget(existing)
+
+    container2.layout().insertItem(0, moved.widgetItem())
+
+    assert moved.parentWidget() is container2
+    assert container1.layout().count() == 0
+    assert container2.layout().count() == 2
+    assert container2.layout().itemAt(0).widget() is moved
+    assert container2.layout().itemAt(1).widget() is existing
+
