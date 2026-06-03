@@ -23,7 +23,7 @@
 __all__ = ['TTkSignalDriver','TTkInputDriver']
 
 import sys, os, re
-import signal
+import atexit, signal
 from select import select
 
 try: import fcntl, termios, tty
@@ -84,6 +84,7 @@ class TTkSignalDriver():
         signal.signal(signal.SIGCONT, TTkSignalDriver._SIGCONT) # Resume
         signal.signal(signal.SIGINT,  TTkSignalDriver._SIGINT)  # Ctrl-C
 
+    @atexit.register
     def exit():
         signal.signal(signal.SIGINT,  signal.SIG_DFL)
 
