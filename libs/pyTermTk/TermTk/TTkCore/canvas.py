@@ -22,7 +22,7 @@
 
 __all__ = ['TTkCanvas']
 
-from typing import List, Tuple
+from typing import List, Optional, Tuple, cast
 
 from TermTk.TTkCore.TTkTerm.term import TTkTerm
 from TermTk.TTkCore.constant import TTkK
@@ -31,8 +31,14 @@ from TermTk.TTkCore.cfg import TTkCfg
 from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkCore.string import TTkString
 
+_CanvasDataBuffer = List[List[str]]
+_CanvasColorBuffer = List[List[TTkColor]]
+
 class TTkCanvas():
-    ''' Init the Canvas object
+    ''' TTkCanvas:
+
+    A low-level drawing surface that stores characters and colors before they
+    are composed into widgets or flushed to the terminal.
 
     :param width: the width of the Canvas
     :type width: int
@@ -44,8 +50,10 @@ class TTkCanvas():
         '_data', '_colors',
         '_bufferedData', '_bufferedColors',
         '_visible', '_transparent', '_doubleBuffer')
-    _data:List[List[str]]
-    _colors:List[List[TTkColor]]
+    _data: _CanvasDataBuffer
+    _colors: _CanvasColorBuffer
+    _bufferedData: _CanvasDataBuffer
+    _bufferedColors: _CanvasColorBuffer
     def __init__(self,
                  width:int=0,
                  height:int=0) -> None:
@@ -63,17 +71,31 @@ class TTkCanvas():
         # TTkLog.debug((self._width, self._height))
 
     def transparent(self) -> bool:
+        ''' Returns whether the canvas treats empty cells as transparent.
+
+        :return: ``True`` when empty cells preserve the destination canvas
+        :rtype: bool
+        '''
         return self._transparent
 
-    def setTransparent(self, tr=True):
+    def setTransparent(self, tr:bool=True) -> None:
+        ''' Enables or disables transparent composition for this canvas.
+
+        :param tr: ``True`` to preserve destination cells where nothing is drawn
+        :type tr: bool
+        '''
         self._transparent = tr
         self.clean()
 
-    def enableDoubleBuffer(self):
+    def enableDoubleBuffer(self) -> None:
+        ''' Initializes the secondary buffer used for buffered terminal updates.
+        '''
         self._doubleBuffer = True
         self._bufferedData, self._bufferedColors = self.copyBuffers()
 
-    def updateSize(self):
+    def updateSize(self) -> None:
+        ''' Rebuilds the internal buffers when the requested canvas size changes.
+        '''
         if not self._visible: return
         w,h = self._newWidth, self._newHeight
         if w  == self._width and h == self._height:
@@ -93,9 +115,14 @@ class TTkCanvas():
         self._width  = w
 
     def size(self) -> Tuple[int,int]:
+        ''' Returns the current canvas size.
+
+        :return: the width and height of the canvas
+        :rtype: tuple[int, int]
+        '''
         return (self._width, self._height)
 
-    def resize(self, w, h):
+    def resize(self, w: int, h: int) -> None:
         ''' resize the canvas keeping or cutting the current one
 
         :param  w: the width of the new canvas
@@ -104,7 +131,9 @@ class TTkCanvas():
         self._newWidth = w
         self._newHeight = h
 
-    def clean(self):
+    def clean(self) -> None:
+        ''' Clears the canvas content using either blanks or transparent cells.
+        '''
         if not self._visible: return
         w,h = self._width, self._height
         if self._transparent:
@@ -116,31 +145,67 @@ class TTkCanvas():
         self._data   = [baseData.copy()   for _ in range(h)]
         self._colors = [baseColors.copy() for _ in range(h)]
 
-    def copy(self):
+    def copy(self) -> TTkCanvas:
+        ''' Creates a detached copy of the canvas content.
+
+        :return: a new canvas with duplicated size and buffers
+        :rtype: :py:class:`TTkCanvas`
+        '''
         ret = TTkCanvas()
         ret._width = self._width
         ret._height = self._height
         ret._data, ret._colors = self.copyBuffers()
+        return ret
 
-    def copyBuffers(self):
+    def copyBuffers(self) -> Tuple[_CanvasDataBuffer, _CanvasColorBuffer]:
+        ''' Duplicates the current character and color buffers.
+
+        :return: copies of the data and color buffers
+        :rtype: tuple[list[list[str]], list[list[:py:class:`TTkColor`]]]
+        '''
         h = self._height
         retData   = [self._data[i].copy()   for i in range(h)]
         retColors = [self._colors[i].copy() for i in range(h)]
         return retData, retColors
 
-    def hide(self):
+    def hide(self) -> None:
+        ''' Marks the canvas as hidden so draw operations become no-ops.
+        '''
         self._visible = False
 
-    def show(self):
+    def show(self) -> None:
+        ''' Marks the canvas as visible again.
+        '''
         self._visible = True
 
-    def _set(self, _y, _x, _ch, _col=TTkColor.RST):
+    def _set(
+            self,
+            _y: int,
+            _x: int,
+            _ch: str,
+            _col: TTkColor = TTkColor.RST) -> None:
         if 0 <= _y < self._height and \
            0 <= _x < self._width  :
             self._data[_y][_x] = _ch
             self._colors[_y][_x] = _col.mod(_x,_y)
 
-    def fill(self, pos=(0,0), size=None, char=' ', color=TTkColor.RST):
+    def fill(
+            self,
+            pos: Tuple[int,int] = (0,0),
+            size: Optional[Tuple[int,int]] = None,
+            char: str = ' ',
+            color: TTkColor = TTkColor.RST) -> None:
+        ''' Fills a rectangular region with a character and color.
+
+        :param pos: the top-left position of the fill area
+        :type pos: tuple[int, int]
+        :param size: the width and height of the fill area, defaults to the full canvas
+        :type size: tuple[int, int] | None
+        :param char: the character written into each cell
+        :type char: str
+        :param color: the color applied to the filled cells
+        :type color: :py:class:`TTkColor`
+        '''
         w,h = self.size()
         if not size:
             size=(w,h)
@@ -168,7 +233,20 @@ class TTkCanvas():
             for iy in range(fya,fyb):
                 self._colors[iy][fxa:fxb] = fillColor
 
-    def drawVLine(self, pos, size, color=TTkColor.RST):
+    def drawVLine(
+            self,
+            pos: Tuple[int,int],
+            size: int,
+            color: TTkColor = TTkColor.RST) -> None:
+        ''' Draws a themed vertical line segment.
+
+        :param pos: the top position of the line
+        :type pos: tuple[int, int]
+        :param size: the height of the line
+        :type size: int
+        :param color: the color used for the line glyphs
+        :type color: :py:class:`TTkColor`
+        '''
         if size == 0: return
         x,y = pos
         ln = TTkCfg.theme.vline
@@ -178,7 +256,20 @@ class TTkCanvas():
             for i in range(1,size-1):
                 self._set(y+i, x, ln[1], color)
 
-    def drawHLine(self, pos, size, color=TTkColor.RST):
+    def drawHLine(
+            self,
+            pos: Tuple[int,int],
+            size: int,
+            color: TTkColor = TTkColor.RST) -> None:
+        ''' Draws a themed horizontal line segment.
+
+        :param pos: the left position of the line
+        :type pos: tuple[int, int]
+        :param size: the width of the line
+        :type size: int
+        :param color: the color used for the line glyphs
+        :type color: :py:class:`TTkColor`
+        '''
         if size == 0: return
         x,y = pos
         ln = TTkCfg.theme.hline
@@ -197,7 +288,26 @@ class TTkCanvas():
         colors     = [TTkColor] # list of colors (for each column)
         alignments = [TTkK.alignment] # list of txtalignments (for each column)
     '''
-    def drawTableLine(self, pos, items, sizes, colors, alignments ):
+    def drawTableLine(
+            self,
+            pos: Tuple[int,int],
+            items: List[str],
+            sizes: List[int],
+            colors: List[TTkColor],
+            alignments: List[TTkK.Alignment] ) -> None:
+        ''' Draws a single row of table cells with per-column formatting.
+
+        :param pos: the starting position of the first cell
+        :type pos: tuple[int, int]
+        :param items: the strings to render in each column
+        :type items: list[str]
+        :param sizes: the width of each column
+        :type sizes: list[int]
+        :param colors: the color used for each column
+        :type colors: list[:py:class:`TTkColor`]
+        :param alignments: the alignment used for each column
+        :type alignments: list[:py:class:`TTkK.Alignment`]
+        '''
         x,y = pos
         for i in range(0,len(items)):
             txt = items[i]
@@ -208,18 +318,54 @@ class TTkCanvas():
                 self.drawText(pos=(x,y), text=txt, width=w, color=color, alignment=align)
                 x += w + 1
 
-    def drawChar(self, pos, char, color=TTkColor.RST):
+    def drawChar(
+            self,
+            pos: Tuple[int,int],
+            char: str,
+            color: TTkColor = TTkColor.RST) -> None:
+        ''' Draws a single character at the given position.
+
+        :param pos: the target position
+        :type pos: tuple[int, int]
+        :param char: the character to draw
+        :type char: str
+        :param color: the color applied to the character
+        :type color: :py:class:`TTkColor`
+        '''
         if not self._visible: return
         x,y = pos
         self._set(y, x, char, color)
 
 
-    def drawTTkString(self, pos, text:TTkString, width=None, color=TTkColor.RST, alignment=TTkK.NONE, forceColor=False):
+    def drawTTkString(
+            self,
+            pos: Tuple[int,int],
+            text: TTkString,
+            width: Optional[int] = None,
+            color: TTkColor = TTkColor.RST,
+            alignment: TTkK.Alignment = TTkK.Alignment.NONE,
+            forceColor: bool = False) -> None:
+        ''' Draws a :py:class:`TTkString` with alignment and optional color override.
+
+        This method keeps a dedicated fast path because text drawing is used in
+        most widgets and needs to minimize conversion overhead.
+
+        :param pos: the top-left position where the string is drawn
+        :type pos: tuple[int, int]
+        :param text: the formatted text object to render
+        :type text: :py:class:`TTkString`
+        :param width: the output width, defaults to the string terminal width
+        :type width: int | None
+        :param color: an additional color merged with the string colors
+        :type color: :py:class:`TTkColor`
+        :param alignment: the alignment used inside ``width``
+        :type alignment: :py:class:`TTkK.Alignment`
+        :param forceColor: ``True`` to ignore embedded string colors and use only ``color``
+        :type forceColor: bool
         '''
-            NOTE:
-            drawText is one of the most abused functions,
-            there is some redundant code here in order to reduce the footprint
-        '''
+        # NOTE:
+        # drawText is one of the most abused functions,
+        # there is some redundant code here in order to reduce the footprint
         if not self._visible: return
 
         # Check the size and bounds
@@ -252,12 +398,35 @@ class TTkCanvas():
             self._data[y][x+b-1]   = TTkCfg.theme.unicodeWideOverflowCh[1]
             self._colors[y][x+b-1] = TTkString.unicodeWideOverflowColor
 
-    def drawText(self, text="", pos=(0,0), width=None, color=TTkColor.RST, alignment=TTkK.NONE, forceColor=False):
+    def drawText(
+            self,
+            text: str = "",
+            pos: Tuple[int,int] = (0,0),
+            width: Optional[int] = None,
+            color: TTkColor = TTkColor.RST,
+            alignment: TTkK.Alignment = TTkK.Alignment.NONE,
+            forceColor: bool = False) -> None:
+        ''' Draws plain text with optional alignment and color.
+
+        This method keeps a dedicated fast path because text drawing is used in
+        most widgets and needs to minimize conversion overhead.
+
+        :param text: the string to render
+        :type text: str
+        :param pos: the top-left position where the text is drawn
+        :type pos: tuple[int, int]
+        :param width: the output width, defaults to the text length
+        :type width: int | None
+        :param color: the color applied to the text
+        :type color: :py:class:`TTkColor`
+        :param alignment: the alignment used inside ``width``
+        :type alignment: :py:class:`TTkK.Alignment`
+        :param forceColor: kept for API parity with :py:meth:`drawTTkString`
+        :type forceColor: bool
         '''
-            NOTE:
-            drawText is one of the most abused functions,
-            there is some redundant code here in order to reduce the footprint
-        '''
+        # NOTE:
+        # drawText is one of the most abused functions,
+        # there is some redundant code here in order to reduce the footprint
         if not self._visible: return
         if isinstance(text, TTkString):
             return self.drawTTkString(pos, text, width, color, alignment, forceColor)
@@ -293,7 +462,29 @@ class TTkCanvas():
         for i in range(0, min(len(arr),self._width-x)):
             self._set(y, x+i, arr[i], color)
 
-    def drawBoxTitle(self, pos, size, text, align=TTkK.CENTER_ALIGN, color=TTkColor.RST, colorText=TTkColor.RST, grid=0):
+    def drawBoxTitle(
+            self,
+            pos: Tuple[int,int],
+            size: Tuple[int,int],
+            text: TTkString,
+            align: TTkK.Alignment = TTkK.Alignment.CENTER_ALIGN,
+            color: TTkColor = TTkColor.RST,
+            colorText: TTkColor = TTkColor.RST) -> None:
+        ''' Draws a titled label embedded into the top border of a box.
+
+        :param pos: the top-left position of the surrounding box
+        :type pos: tuple[int, int]
+        :param size: the size of the surrounding box
+        :type size: tuple[int, int]
+        :param text: the title text to render
+        :type text: :py:class:`TTkString`
+        :param align: the title alignment along the top border
+        :type align: :py:class:`TTkK.Alignment`
+        :param color: the border color around the title
+        :type color: :py:class:`TTkColor`
+        :param colorText: the color of the title text
+        :type colorText: :py:class:`TTkColor`
+        '''
         if not self._visible: return
         x,y = pos
         w,h = size
@@ -312,14 +503,44 @@ class TTkCanvas():
 
         self._set(y,l, '╸', color)
         self._set(y,r, '╺', color)
-        self.drawText(pos=(l+1,y),text=text,color=colorText)
+        self.drawTTkString(pos=(l+1,y), text=text, color=colorText)
 
+    def drawBox(
+            self,
+            pos: Tuple[int,int],
+            size: Tuple[int,int],
+            color: TTkColor = TTkColor.RST,
+            grid: int = 0) -> None:
+        ''' Draws a rectangular box using the configured grid theme.
 
-
-    def drawBox(self, pos, size, color=TTkColor.RST, grid=0):
+        :param pos: the top-left position of the box
+        :type pos: tuple[int, int]
+        :param size: the width and height of the box
+        :type size: tuple[int, int]
+        :param color: the color applied to the box border
+        :type color: :py:class:`TTkColor`
+        :param grid: the themed grid variant to use
+        :type grid: int
+        '''
         self.drawGrid(pos=pos, size=size, color=color, grid=grid)
 
-    def drawButtonBox(self, pos, size, color=TTkColor.RST, grid=0):
+    def drawButtonBox(
+            self,
+            pos: Tuple[int,int],
+            size: Tuple[int,int],
+            color: TTkColor = TTkColor.RST,
+            grid: int =0) -> None:
+        ''' Draws a button-style border using the button box theme.
+
+        :param pos: the top-left position of the box
+        :type pos: tuple[int, int]
+        :param size: the width and height of the box
+        :type size: tuple[int, int]
+        :param color: the color applied to the border
+        :type color: :py:class:`TTkColor`
+        :param grid: the themed button box variant to use
+        :type grid: int
+        '''
         if not self._visible: return
         x,y = pos
         w,h = size
@@ -338,11 +559,37 @@ class TTkCanvas():
                 self._set(i, x,     gg[3], color)
                 self._set(i, x+w-1, gg[5], color)
 
-    def drawGrid(self, pos, size, hlines=[], vlines=[], color=TTkColor.RST, grid=0):
+    def drawGrid(
+            self,
+            pos: Tuple[int,int],
+            size: Tuple[int,int],
+            hlines: List[int] = [],
+            vlines: List[int] = [],
+            color: TTkColor = TTkColor.RST,
+            grid: int = 0) -> None:
+        ''' Draws a bordered grid with optional internal horizontal and vertical lines.
+
+        :param pos: the top-left position of the grid
+        :type pos: tuple[int, int]
+        :param size: the width and height of the grid
+        :type size: tuple[int, int]
+        :param hlines: row offsets for inner horizontal separators
+        :type hlines: list[int]
+        :param vlines: column offsets for inner vertical separators
+        :type vlines: list[int]
+        :param color: the color applied to the grid glyphs
+        :type color: :py:class:`TTkColor`
+        :param grid: the themed grid variant to use
+        :type grid: int
+        '''
         if not self._visible: return
         x,y = pos
         w,h = size
         gg = TTkCfg.theme.grid[grid]
+
+        if not gg:
+            return
+
         # 4 corners
         self._set(y,     x,     gg[0x00], color)
         self._set(y,     x+w-1, gg[0x03], color)
@@ -381,7 +628,26 @@ class TTkCanvas():
             for ix in vlines:
                 self._set(y+iy, x+ix, gg[0x0A], color)
 
-    def drawScroll(self, pos, size, slider, orientation, color=TTkColor.RST):
+    def drawScroll(
+            self,
+            pos: Tuple[int,int],
+            size: int,
+            slider: Tuple[int,int],
+            orientation: TTkK.Direction,
+            color: TTkColor = TTkColor.RST) -> None:
+        ''' Draws a horizontal or vertical scrollbar.
+
+        :param pos: the top-left position of the scrollbar
+        :type pos: tuple[int, int]
+        :param size: the total length of the scrollbar including arrow cells
+        :type size: int
+        :param slider: the slider start and end positions relative to ``pos``
+        :type slider: tuple[int, int]
+        :param orientation: the scrollbar orientation
+        :type orientation: :py:class:`TTkK.Direction`
+        :param color: the color applied to the scrollbar glyphs
+        :type color: :py:class:`TTkColor`
+        '''
         if not self._visible: return
         x,y = pos
         f,t = slider # slider from-to position
@@ -400,150 +666,23 @@ class TTkCanvas():
             self._set(y+size-1,x, TTkCfg.theme.vscroll[3], color) # Down Arrow
             self._set(y,x, TTkCfg.theme.vscroll[0], color)        # Up Arrow
 
-    def drawTabMenuButton(
-            self, pos, size, text, slim=False,
-            color=TTkColor.RST, borderColor=TTkColor.RST,
-            sideBorder=TTkK.LEFT|TTkK.RIGHT):
-        x,y = pos
-        w,h = size
-        textPos = pos
-        tt = TTkCfg.theme.tab
-        # phase 0 - Draw the Bottom bar
-        if slim:
-            borderLeft  = tt[18] if sideBorder & TTkK.LEFT  else  tt[19]
-            borderRight = tt[20] if sideBorder & TTkK.RIGHT else  tt[19]
-            bottomBar = borderLeft+tt[19]*(w-2)+borderRight
-            self.drawText(pos=(x,y+1), text=bottomBar, color=borderColor)
-        else:
-            borderLeft  = tt[27] if sideBorder & TTkK.LEFT  else  tt[12]
-            borderRight = tt[28] if sideBorder & TTkK.RIGHT else  tt[12]
-            bottomBar = borderLeft+tt[12]*(w-2)+borderRight
-            self.drawText(pos=(x,y+2), text=bottomBar, color=borderColor)
-            textPos = (x,y+1)
-        self.drawText(pos=textPos, text=text, color=color)
+    def drawHChart(
+            self,
+            pos: Tuple[int,int],
+            values: Tuple[List[int],List[int]],
+            zoom: float = 1.0,
+            color: TTkColor = TTkColor.RST) -> None:
+        ''' Draws a compact two-series vertical chart using braille cells.
 
-    def drawTabButton(self, pos, size, sideEnd, small, status, color=TTkColor.RST):
-        x,y = pos
-        w,h = size
-        tt = TTkCfg.theme.tab
-        label = ' '*(w-2)
-        if small:
-            if status == TTkK.Checked:
-                txtCenter = tt[10] + label        + tt[10]
-                txtBottom = tt[21] + tt[5] *(w-2) + tt[22]
-            else:
-                txtCenter = tt[9]  + label        + tt[9]
-                txtBottom = tt[18] + tt[19]*(w-2) + tt[20]
-            self.drawText(pos=(x,y+0),color=color,text=txtCenter)
-            self.drawText(pos=(x,y+1),color=color,text=txtBottom)
-        else:
-            if status == TTkK.Checked:
-                txtTop    = tt[4]  + tt[5] *(w-2) + tt[6]
-                cLeft  = tt[33] if sideEnd & TTkK.LEFT  else tt[10]
-                cRight = tt[33] if sideEnd & TTkK.RIGHT else tt[10]
-                txtCenter = cLeft + label        + cRight
-                bLeft  = tt[11] if sideEnd & TTkK.LEFT  else tt[14]
-                bRight = tt[15] if sideEnd & TTkK.RIGHT else tt[14]
-                txtBottom = bLeft + tt[12]*(w-2) + bRight
-            elif status == TTkK.PartiallyChecked:
-                txtTop    = tt[0]  + tt[1] *(w-2) + tt[3]
-                txtCenter = tt[9]  + label           + tt[9]
-                bLeft  = tt[11] if sideEnd & TTkK.LEFT  else tt[13]
-                bRight = tt[15] if sideEnd & TTkK.RIGHT else tt[13]
-                txtBottom = bLeft + tt[12]*(w-2) + bRight
-            else:
-                txtTop    = tt[0]  + tt[1] *(w-2) + tt[3]
-                txtCenter = tt[9]  + label           + tt[9]
-                bLeft  = tt[11] if sideEnd & TTkK.LEFT  else tt[12]
-                bRight = tt[15] if sideEnd & TTkK.RIGHT else tt[12]
-                txtBottom = bLeft + tt[12]*(w-2) + bRight
-            self.drawText(pos=(x,y+0),color=color,text=txtTop)
-            self.drawText(pos=(x,y+1),color=color,text=txtCenter)
-            self.drawText(pos=(x,y+2),color=color,text=txtBottom)
-
-    def drawTabWidgetBottomLine(self, pos, size):
-        x,y = pos
-        w,h = size
-        tt = TTkCfg.theme.tab
-        txtLine = tt[11] + tt[12]*(w-2) + tt[15]
-        self.drawText(pos=(x,y),text=txtLine)
-
-    def drawTab(
-            self, pos, size,
-            labels, labelsPos, selected,
-            offset,  leftScroller, rightScroller, slim=False, menu=False,
-            color=TTkColor.RST, borderColor=TTkColor.RST, selectColor=TTkColor.RST, offsetColor=TTkColor.RST,
-            sideBorder=TTkK.LEFT|TTkK.RIGHT):
-        x,y = pos
-        w,h = size
-        tt = TTkCfg.theme.tab
-        # phase 0 - Draw the Bottom bar
-        if slim:
-            borderLeft  = tt[18] if sideBorder & TTkK.LEFT  else tt[29] if leftScroller  else tt[19]
-            borderRight = tt[20] if sideBorder & TTkK.RIGHT else tt[29] if rightScroller else tt[19]
-            bottomBar = borderLeft+tt[19]*(w-2)+borderRight
-            bottomPos = y+1
-        else:
-            borderLeft  = tt[11] if sideBorder & TTkK.LEFT  else tt[13] if leftScroller  else tt[12]
-            borderRight = tt[15] if sideBorder & TTkK.RIGHT else tt[13] if rightScroller else tt[12]
-            bottomBar = borderLeft+tt[12]*(w-2)+borderRight
-            bottomPos = y+2
-        self.drawText(pos=(x,bottomPos),text=bottomBar, color=borderColor)
-        # phase 1 - Draw From left  to 'Selected'
-        # phase 2 - Draw From right to 'Selected'
-        def _drawTabSlim(x,y,a,b,c,d,e,txt,txtColor,borderColor):
-            lentext = len(txt)
-            center = a+txt+b
-            bottom = c+d*(lentext)+e
-            self.drawText(pos=(x,y),text=center, color=borderColor)
-            self.drawText(pos=(x+1,y),text=txt, color=txtColor)
-            self.drawText(pos=(x,y+1),text=bottom, color=borderColor)
-        def _drawTab(x,y,a,b,c,d,e,f,g,h,i,j,k,l,m,txt,txtColor,borderColor,slim):
-            if slim: return _drawTabSlim(x,y,i,j,k,l,m,txt,txtColor,borderColor)
-            lentext = len(txt)
-            top =    a+b*lentext+c
-            center = d+txt+e
-            bottom = f+g*(lentext)+h
-            self.drawText(pos=(x,y+0),text=top, color=borderColor)
-            self.drawText(pos=(x,y+1),text=center, color=borderColor)
-            self.drawText(pos=(x+1,y+1),text=txt, color=txtColor)
-            self.drawText(pos=(x,y+2),text=bottom, color=borderColor)
-
-        for i in list(         range(offset              )) + \
-                 list(reversed(range(offset+1, len(labels)) )):
-            text = labels[i]
-            posx = labelsPos[i]
-            _drawTab(x+posx,y,tt[0],tt[1],tt[3],tt[9],tt[9],tt[12],tt[12],tt[12],tt[9],tt[9],tt[23],tt[19],tt[24], text, color, borderColor, slim)
-        # phase 3 - Draw 'Selected'
-        if selected != -1:
-            i = selected
-            text = labels[i]
-            posx = labelsPos[i]
-            _drawTab(x+posx,y,tt[4],tt[5],tt[6],tt[10],tt[10],tt[14],tt[12],tt[14],tt[10],tt[10],tt[21],tt[12],tt[22], text, selectColor, borderColor, slim)
-        if selected != offset:
-            i = offset
-            text = labels[i]
-            posx = labelsPos[i]
-            _drawTab(x+posx,y,tt[0],tt[1],tt[3],tt[9],tt[9],tt[13],tt[12],tt[13],tt[9],tt[9],tt[18],tt[19],tt[20], text, offsetColor, borderColor, slim)
-        # phase 4 - Draw left right tilt
-        if leftScroller:
-            top =    tt[7]+tt[1]
-            center = tt[9]+tt[31]
-            if slim:
-                self.drawText(pos=(x,y),text=center, color=borderColor)
-            else:
-                self.drawText(pos=(x,y+0),text=top, color=borderColor)
-                self.drawText(pos=(x,y+1),text=center, color=borderColor)
-        if rightScroller:
-            top =    tt[1]+tt[8]
-            center = tt[32]+tt[9]
-            if slim:
-                self.drawText(pos=(x+w-2,y),text=center, color=borderColor)
-            else:
-                self.drawText(pos=(x+w-2,y+0),text=top, color=borderColor)
-                self.drawText(pos=(x+w-2,y+1),text=center, color=borderColor)
-
-    def drawHChart(self, pos, values, zoom=1.0, color=TTkColor.RST):
+        :param pos: the baseline position of the chart
+        :type pos: tuple[int, int]
+        :param values: the two value series to combine into each braille cell
+        :type values: tuple[list[int], list[int]]
+        :param zoom: a scale factor applied before rasterizing the chart
+        :type zoom: float
+        :param color: the color applied to the chart glyphs
+        :type color: :py:class:`TTkColor`
+        '''
         x,y=pos
         v1,v2 = values
         gb=TTkCfg.theme.braille
@@ -599,12 +738,22 @@ class TTkCanvas():
             #    TTkLog.debug(f"z:{zl1,zl2},t:{t1,t2},i:{i} {t1-i*4} {t2-i*4} o:{o1,o2}, {hex(braille)}")
             self._set(y-i-1,x, gb[braille], color)
 
-    def drawMenuBarBg(self, pos, size, color=TTkColor.RST ):
+    def drawMenuBarBg(
+            self,
+            pos: Tuple[int,int],
+            size: int,
+            color: TTkColor = TTkColor.RST ) -> None:
+        ''' Draws the themed background strip for a menu bar.
+
+        :param pos: the starting position of the menu bar background
+        :type pos: tuple[int, int]
+        :param size: the total width of the menu bar background
+        :type size: int
+        :param color: the color applied to the background glyphs
+        :type color: :py:class:`TTkColor`
+        '''
         mb = TTkCfg.theme.menuBar
         self.drawText(pos=pos, text=f"{mb[3]}{mb[1]*(size-2)}{mb[4]}", color=color)
-
-    def execPaint(self, winw, winh):
-        pass
 
     '''
     geom  = (x,y,w,h)
@@ -618,7 +767,23 @@ class TTkCanvas():
                           0                      self._width
     self._canvas:         |----|xxxxxx|----------|
     '''
-    def paintCanvas(self, canvas, geom, _slice, bound):
+    def paintCanvas(
+            self,
+            canvas: TTkCanvas,
+            geom: Tuple[int,int,int,int],
+            _slice: Tuple[int,int,int,int],
+            bound: Tuple[int,int,int,int]) -> None:
+        ''' Paints another canvas onto this one inside the given geometry and bounds.
+
+        :param canvas: the source canvas to compose onto this canvas
+        :type canvas: :py:class:`TTkCanvas`
+        :param geom: destination geometry as ``(x, y, width, height)``
+        :type geom: tuple[int, int, int, int]
+        :param _slice: reserved slice information for compatibility with callers
+        :type _slice: tuple[int, int, int, int]
+        :param bound: clipping bounds as ``(x, y, width, height)``
+        :type bound: tuple[int, int, int, int]
+        '''
         # TTkLog.debug(f"PaintCanvas:{geom=} {bound=} {self._widget._name=} {self._data[0] if self._data else 1234}")
         x, y, w, h  = geom
         bx,by,bw,bh = bound
@@ -681,7 +846,12 @@ class TTkCanvas():
                 self._data[y+iy][b]   = TTkCfg.theme.unicodeWideOverflowCh[0]
                 self._colors[y+iy][b] = TTkString.unicodeWideOverflowColor
 
-    def toAnsi(self):
+    def toAnsi(self) -> str:
+        ''' Serializes the full canvas content into ANSI text.
+
+        :return: the canvas rendered as newline-separated ANSI escape sequences
+        :rtype: str
+        '''
         # TTkLog.debug("pushToTerminal")
         ret = ""
         rstColor = str(TTkColor.RST)
@@ -701,7 +871,23 @@ class TTkCanvas():
                 ret += ansi + '\n'
         return ret
 
-    def pushToTerminal(self, x, y, w, h):
+    def pushToTerminal(
+            self,
+            x: int,
+            y: int,
+            w: int,
+            h: int) -> None:
+        ''' Pushes the full canvas to the terminal without diffing.
+
+        :param x: unused compatibility parameter for the destination x coordinate
+        :type x: int
+        :param y: unused compatibility parameter for the destination y coordinate
+        :type y: int
+        :param w: unused compatibility parameter for the destination width
+        :type w: int
+        :param h: unused compatibility parameter for the destination height
+        :type h: int
+        '''
         # TTkLog.debug("pushToTerminal")
         lastcolor = TTkColor.RST
         for y in range(0, self._height):
@@ -715,7 +901,9 @@ class TTkCanvas():
                 ansi+=ch
             TTkTerm.push(ansi)
 
-    def cleanBuffers(self):
+    def cleanBuffers(self) -> None:
+        ''' Resets the secondary buffers used by buffered terminal painting.
+        '''
         if not self._visible: return
         w,h = self._width, self._height
         baseData = [' ']*w
@@ -723,7 +911,23 @@ class TTkCanvas():
         self._bufferedData   = [baseData.copy()   for _ in range(h)]
         self._bufferedColors = [baseColors.copy() for _ in range(h)]
 
-    def pushToTerminalBuffered(self, x, y, w, h):
+    def pushToTerminalBuffered(
+            self,
+            x: int,
+            y: int,
+            w: int,
+            h: int) -> None:
+        ''' Pushes only changed cells to the terminal using the secondary buffer.
+
+        :param x: unused compatibility parameter for the destination x coordinate
+        :type x: int
+        :param y: unused compatibility parameter for the destination y coordinate
+        :type y: int
+        :param w: unused compatibility parameter for the destination width
+        :type w: int
+        :param h: unused compatibility parameter for the destination height
+        :type h: int
+        '''
         # TTkLog.debug("pushToTerminal")
         data, colors = self._data, self._colors
         oldData, oldColors = self._bufferedData, self._bufferedColors
@@ -756,7 +960,23 @@ class TTkCanvas():
         self._bufferedData, self._bufferedColors = data, colors
         self._data,         self._colors         = oldData, oldColors
 
-    def pushToTerminalBufferedNew(self, x, y, w, h):
+    def pushToTerminalBufferedNew(
+            self,
+            x: int,
+            y: int,
+            w: int,
+            h: int) -> None:
+        ''' Pushes buffered terminal updates with run-length compression.
+
+        :param x: unused compatibility parameter for the destination x coordinate
+        :type x: int
+        :param y: unused compatibility parameter for the destination y coordinate
+        :type y: int
+        :param w: unused compatibility parameter for the destination width
+        :type w: int
+        :param h: unused compatibility parameter for the destination height
+        :type h: int
+        '''
         # TTkLog.debug("pushToTerminal")
         data, colors = self._data, self._colors
         oldData, oldColors = self._bufferedData, self._bufferedColors
