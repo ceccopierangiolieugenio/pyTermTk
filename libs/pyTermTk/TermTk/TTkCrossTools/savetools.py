@@ -110,12 +110,7 @@ from enum import Enum
 from dataclasses import dataclass
 
 from typing import Callable,Optional,List,Tuple,Dict,Any,Protocol,Type
-
-try:
-    from typing import TypeAlias
-except ImportError:
-    # TODO: Remove this workaround for Python 3.9
-    TypeAlias = type  # Fallback for Python < 3.10 without typing_extensions
+from typing import TypeAlias
 
 from TermTk import pyTTkSlot, pyTTkSignal
 from TermTk import TTkLog

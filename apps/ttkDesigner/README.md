@@ -1,6 +1,6 @@
 ![Linux](https://img.shields.io/badge/-Linux-grey?logo=linux)
 ![Usage](https://img.shields.io/badge/Usage-Terminal%20User%20Interface-yellow)
-![Python](https://img.shields.io/badge/Python-v3.9%5E-green?logo=python)
+![Python](https://img.shields.io/badge/Python-v3.10%5E-green?logo=python)
 ![pyTermTk_version](https://img.shields.io/github/v/tag/ceccopierangiolieugenio/pyTermTk?label=version)
 [![Test Status](https://img.shields.io/github/actions/workflow/status/ceccopierangiolieugenio/pyTermTk/testing.yml?branch=main&label=tests)](https://github.com/ceccopierangiolieugenio/pyTermTk/actions?query=workflow%3Atesting)
 [![pypi_version](https://img.shields.io/pypi/v/ttkDesigner?label=pypi)](https://pypi.org/project/ttkDesigner)

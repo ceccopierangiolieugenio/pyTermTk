@@ -22,18 +22,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-# flake8: noqa
-# This file uses match statements (Python 3.10+) which cause syntax errors in Python 3.9
-
-from __future__ import annotations
-
-import sys, os
-
-from dataclasses import dataclass
-from enum import Enum,Flag,auto
 import timeit
-
-from typing import List, Tuple, Iterator
 
 
 test_list = [_i for _i in range(10000)]

@@ -9,7 +9,7 @@
     authors = [
         {name = "Eugenio Parodi", email = "ceccopierangiolieugenio@googlemail.com"},
     ]
-    requires-python = ">=3.9"
+    requires-python = ">=3.10"
     dependencies = [
         'GitPython==3.1.50'
     ]

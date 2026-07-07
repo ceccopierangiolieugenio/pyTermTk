@@ -70,6 +70,6 @@ These integration tests can be completed when the UI testing infrastructure is a
 Tests require:
 - pytest
 - pyTermTk
-- Python 3.9+
+- Python 3.10+
 
 All dependencies are listed in the main `pyproject.toml` file.

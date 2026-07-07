@@ -22,23 +22,12 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-# flake8: noqa
-# This file uses match statements (Python 3.10+) which cause syntax errors in Python 3.9
 
 from __future__ import annotations
 
-import sys, os
-
 from dataclasses import dataclass
-from enum import Enum,Flag,auto
 import timeit
 
-from typing import List, Tuple, Iterator
-
-# match statement requires Python 3.10+
-if sys.version_info < (3, 10):
-    print("This test requires Python 3.10 or higher (match statement not available)")
-    sys.exit(0)
 
 def test_ti_01_01_ma():
     ret = 0

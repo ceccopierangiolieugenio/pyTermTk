@@ -22,45 +22,14 @@
 
 __all__:list[str] = []
 
-import sys
+from bisect import bisect_left, bisect_right
 from dataclasses import dataclass
-import math
 from threading import RLock
 from typing import Final, List, Optional, Tuple
-
 
 from .text_wrap import _WrapEngine_Interface
 from .text_wrap_data import _RetScreenPosition, _RetScreenPositions, _RetScreenRows, _WrapLine, _ReWrapData, _WrapState
 
-# TODO: remove Python 3.9 compatibility routine once dropped support
-# Python 3.9 compatibility: key parameter was added in Python 3.10
-if sys.version_info >= (3, 10):
-    from bisect import bisect_left, bisect_right
-else:
-    from bisect import bisect_left as _bisect_left, bisect_right as _bisect_right
-    class _BisectKeyLine:
-        __slots__ = ('_buf', '_key')
-        _buf:List[_WrapLine]
-        def __init__(self, buf:List[_WrapLine], key):
-            self._buf = buf
-            self._key = key
-        def __len__(self) -> int:
-            return len(self._buf)
-        def __getitem__(self, i) -> int:
-            return self._key(self._buf[i])
-    def bisect_left(a, x, lo=0, hi=None, *, key=None):
-        '''Compatibility wrapper for bisect_left with key parameter support.'''
-        if key is None:
-            return _bisect_left(a, x, lo, hi if hi is not None else len(a))
-        keys = _BisectKeyLine(a, key)
-        return _bisect_left(keys, x, lo, hi if hi is not None else len(a))
-
-    def bisect_right(a, x, lo=0, hi=None, *, key=None):
-        '''Compatibility wrapper for bisect_right with key parameter support.'''
-        if key is None:
-            return _bisect_right(a, x, lo, hi if hi is not None else len(a))
-        keys = _BisectKeyLine(a, key)
-        return _bisect_right(keys, x, lo, hi if hi is not None else len(a))
 
 _WRAP_CHUNK_LINES: Final[int] = 128
 

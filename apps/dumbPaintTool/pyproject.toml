@@ -10,7 +10,7 @@ description = "the Dumb Paint Tool is THE Terminal ASCII Photoshop"
 authors = [
     {name = "Eugenio Parodi", email = "ceccopierangiolieugenio@googlemail.com"},
 ]
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 dependencies = [
     'pyTermTk>=0.50.0-a0',
     'pyperclip',
