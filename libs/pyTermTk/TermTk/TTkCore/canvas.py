@@ -24,11 +24,10 @@ from __future__ import annotations
 
 __all__ = ['TTkCanvas']
 
-from typing import List, Optional, Tuple, cast
+from typing import List, Optional, Tuple
 
 from TermTk.TTkCore.TTkTerm.term import TTkTerm
 from TermTk.TTkCore.constant import TTkK
-from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.cfg import TTkCfg
 from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkCore.string import TTkString
