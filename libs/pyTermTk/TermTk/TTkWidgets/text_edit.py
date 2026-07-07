@@ -22,7 +22,7 @@
 
 __all__ = ['TTkTextEditView', 'TTkTextEdit', 'TTkTextEditRuler']
 
-from typing import List, Optional, TYPE_CHECKING, TypeAlias
+from typing import List, Optional, TypeAlias
 
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.color import TTkColor
