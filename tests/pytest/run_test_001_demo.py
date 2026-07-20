@@ -22,6 +22,7 @@
 # SOFTWARE.
 
 import sys, os
+import re
 import argparse
 import queue
 import pickle
@@ -57,10 +58,13 @@ class TTkRecord(ttk.TTk):
             for d in data:
                 self.put(d)
 
-    __slots__ = ('_record', '_events', '_key_events', '_mouse_events', '_screen_events')
+    __slots__ = ('_record', '_events', '_key_events', '_mouse_events', '_screen_events', '_glyphCount')
+    _ansi_re = re.compile(r'\x1b\[[^a-zA-Z]*[a-zA-Z]')
+
     def __init__(self, *args, **kwargs):
         super().__init__( *args, **kwargs)
         self._record = kwargs.get('record', True)
+        self._glyphCount = 0
         self._events        = self._RecordQueue()
         self._key_events    = self._RecordQueue()
         self._mouse_events  = self._RecordQueue()
@@ -75,6 +79,15 @@ class TTkRecord(ttk.TTk):
     def _mainloop(self):
         if self._record:
             return super()._mainloop()
+        original_push = ttk.TTkTerm.push
+        ansi_re = self._ansi_re
+        record = self
+        def _counting_push(*args):
+            s = str(*args)
+            stripped = ansi_re.sub('', s)
+            record._glyphCount += len(stripped)
+            original_push(*args)
+        ttk.TTkTerm.push = _counting_push
         self.show()
         while (evt := self._events.get()) != self.QUIT_EVENT:
             mevt,kevt = None, None
@@ -90,6 +103,7 @@ class TTkRecord(ttk.TTk):
             #    width, height = self._screen_events.get()
             #    super()._win_resize_cb(width, height)
             super()._processInput(kevt, mevt)
+        ttk.TTkTerm.push = original_push
         return None
 
     def _processInput(self, kevt, mevt):
@@ -144,15 +158,19 @@ if __name__ == "__main__":
         root.mainloop()
         root.saveQueue(args.record)
         args.record.close()
+        ttk.TTkHelper.quit()
+        print(f"\n\nGlyph count: {root._glyphCount}")
     elif args.play:
         root = TTkRecord(title="pyTermTk Demo Record", record=False)
         root.loadQueue(args.play)
         winTabbed1 = ttk.TTkWindow(parent=root,pos=(0,0), size=(80,24), title="pyTermTk Showcase", border=True, layout=ttk.TTkGridLayout())
         demo.demoShowcase(winTabbed1, True)
         root.mainloop()
+        ttk.TTkHelper.quit()
+        print(f"\n\nGlyph count: {root._glyphCount}")
     else:
         demo.main()
-    ttk.TTkHelper.quit()
+        ttk.TTkHelper.quit()
 
 def test_demo():
     root = ttk.TTk(layout=ttk.TTkGridLayout())
@@ -177,6 +195,7 @@ def test_recording1():
     demo.demoShowcase(winTabbed1, True)
     root.mainloop()
     ttk.TTkHelper.quit()
+    print(f"\n\nGlyph count: {root._glyphCount}")
 
 def test_recording2():
     # ttk.TTkLog.use_default_file_logging()
@@ -187,6 +206,7 @@ def test_recording2():
     demo.demoShowcase(winTabbed1, True)
     root.mainloop()
     ttk.TTkHelper.quit()
+    print(f"\n\nGlyph count: {root._glyphCount}")
 
 def test_recording3():
     # ttk.TTkLog.use_default_file_logging()
@@ -197,3 +217,4 @@ def test_recording3():
     demo.demoShowcase(winTabbed1, True)
     root.mainloop()
     ttk.TTkHelper.quit()
+    print(f"\n\nGlyph count: {root._glyphCount}")
