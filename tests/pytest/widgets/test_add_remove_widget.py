@@ -428,3 +428,136 @@ def test_nested_layout_widgets_04():
     assert widget1.parentWidget() is container2
     assert widget2.parentWidget() is container2
 
+
+def test_grid_layout_reshape_after_column_removal():
+    '''
+    Regression test for _reshapeGrid comparing cols against _horSizes (not _gridItems).
+    Build a non-square grid (1 row x 3 cols), remove the last column's widget,
+    and verify the grid shrinks correctly.
+    '''
+    grid = ttk.TTkGridLayout()
+    container = ttk.TTkContainer()
+    container.setLayout(grid)
+
+    w1 = ttk.TTkWidget()
+    w2 = ttk.TTkWidget()
+    w3 = ttk.TTkWidget()
+
+    grid.addWidget(w1, row=0, col=0)
+    grid.addWidget(w2, row=0, col=1)
+    grid.addWidget(w3, row=0, col=2)
+
+    assert grid._rows == 1
+    assert grid._cols == 3
+    assert len(grid._horSizes) == 3
+
+    grid.removeWidget(w3)
+
+    assert grid._rows == 1
+    assert grid._cols == 2
+    assert len(grid._horSizes) == 2
+    assert grid.itemAtPosition(0, 0).widget() is w1
+    assert grid.itemAtPosition(0, 1).widget() is w2
+
+    grid.removeWidget(w2)
+
+    assert grid._cols == 1
+    assert len(grid._horSizes) == 1
+    assert grid.itemAtPosition(0, 0).widget() is w1
+
+
+def test_move_widget_item_between_containers_add_item_detaches_source_layout():
+    '''
+    Test moving an existing :py:class:`TTkWidgetItem` between container layouts using addItem().
+    The widget item must be detached from the source layout, and operations on the old layout
+    must not affect the widget once moved.
+    '''
+    container1 = ttk.TTkContainer()
+    container2 = ttk.TTkContainer()
+    widget = ttk.TTkWidget()
+
+    container1.layout().addWidget(widget)
+    container2.layout().addItem(widget.widgetItem())
+
+    assert widget.parentWidget() is container2
+    assert container1.layout().count() == 0
+    assert container2.layout().count() == 1
+
+    # Removing from the old layout must not detach the moved widget.
+    container1.layout().removeWidget(widget)
+    assert widget.parentWidget() is container2
+    assert container2.layout().count() == 1
+
+
+def test_move_widget_item_between_containers_insert_item_detaches_source_layout():
+    '''
+    Test moving an existing :py:class:`TTkWidgetItem` between container layouts using insertItem().
+    Inserting at a specific index must preserve destination order while removing the item from
+    its original layout.
+    '''
+    container1 = ttk.TTkContainer()
+    container2 = ttk.TTkContainer()
+    moved = ttk.TTkWidget()
+    existing = ttk.TTkWidget()
+
+    container1.layout().addWidget(moved)
+    container2.layout().addWidget(existing)
+
+    container2.layout().insertItem(0, moved.widgetItem())
+
+    assert moved.parentWidget() is container2
+    assert container1.layout().count() == 0
+    assert container2.layout().count() == 2
+    assert container2.layout().itemAt(0).widget() is moved
+    assert container2.layout().itemAt(1).widget() is existing
+
+
+def test_grid_layout_remove_widgets_nested():
+    '''
+    Test that TTkGridLayout.removeWidgets() recurses into nested sub-layouts
+    to remove widgets that are not direct children of the grid.
+    '''
+    container = ttk.TTkContainer()
+    grid = ttk.TTkGridLayout()
+    container.setLayout(grid)
+
+    nested_layout = ttk.TTkLayout()
+    widget_in_nested = ttk.TTkWidget()
+    nested_layout.addWidget(widget_in_nested)
+
+    widget_direct = ttk.TTkWidget()
+    grid.addItem(nested_layout, row=0, col=0)
+    grid.addItem(widget_direct.widgetItem(), row=0, col=1)
+
+    assert nested_layout.count() == 1
+    assert grid.count() == 2
+
+    grid.removeWidgets([widget_in_nested])
+
+    assert nested_layout.count() == 0
+    assert grid.count() == 2
+    assert widget_direct.parentWidget() is container
+
+
+def test_add_widget_to_second_unparented_grid_removes_from_first():
+    '''
+    Regression: when a widget is added to a grid layout that has no parent container,
+    then added to a second grid layout, it must be removed from the first layout.
+    This exercises the case where parentWidget() returns None on the source layout.
+    '''
+    grid1 = ttk.TTkGridLayout()
+    grid2 = ttk.TTkGridLayout()
+
+    widget = ttk.TTkWidget()
+    grid1.addWidget(widget, row=0, col=0)
+
+    assert widget.widgetItem() in grid1._items
+    assert grid1.count() == 1
+
+    grid2.addWidgets([widget], row=0, col=0)
+
+    assert widget.widgetItem() not in grid1._items
+    assert widget.widgetItem() in grid2._items
+    assert grid1.count() == 0
+    assert grid2.count() == 1
+

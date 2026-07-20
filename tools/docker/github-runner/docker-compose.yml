@@ -1,0 +1,8 @@
+
+services:
+  runner:
+    image: github-runner:latest
+    restart: unless-stopped
+    command:
+      - "${GITHUB_TOKEN}"
+      - "${HOSTNAME}"

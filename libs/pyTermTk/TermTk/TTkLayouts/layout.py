@@ -28,7 +28,7 @@ from __future__ import annotations
 
 __all__ = ['TTkLayoutItem', 'TTkLayout', 'TTkWidgetItem']
 
-from typing import TYPE_CHECKING, Generator, List
+from typing import TYPE_CHECKING, Generator, List, Optional
 
 from TermTk.TTkCore.constant import TTkK
 
@@ -101,7 +101,7 @@ class TTkLayout(TTkLayoutItem):
             if isinstance(item, TTkWidgetItem):
                 item.widget().setParent(self.parentWidget())
 
-    def parentWidget(self):
+    def parentWidget(self) -> Optional[TTkWidget]:
         '''Return the widget owning this layout branch.
 
         :return: nearest parent widget in the hierarchy
@@ -111,8 +111,9 @@ class TTkLayout(TTkLayoutItem):
         if parent is None: return None
         if isinstance(parent, TTkWidgetItem):
             return parent.widget()
-        else:
+        elif isinstance(parent, TTkLayout):
             return parent.parentWidget()
+        return None
 
     def iterWidgets(
             self,
@@ -200,17 +201,31 @@ class TTkLayout(TTkLayoutItem):
         :param items: items or widgets to insert
         :type items: list
         '''
-        for i,item in enumerate(items):
+        normalizedItems = list(items)
+        for i,item in enumerate(normalizedItems):
             if not isinstance(widget:=item, TTkLayoutItem):
-                if widget.parentWidget() and widget.parentWidget().layout():
-                    widget.parentWidget().layout().removeWidget(self)
-                item = widget.widgetItem()
-                items[i]=item
-        self._items[index:index] = items
+                parent_widget = widget.parentWidget()
+                if parent_widget and parent_widget.layout():
+                    parent_widget.layout().removeWidget(widget)
+                normalizedItems[i] = widget.widgetItem()
+            elif isinstance(widget_item:=item, TTkWidgetItem):
+                widget = widget_item.widget()
+                parent_widget = widget.parentWidget()
+                if parent_widget and (pl := parent_widget.layout()) and pl is not self:
+                    pl.removeItem(widget_item)
+                elif (parent_layout := widget_item.parent()) and parent_layout is not self:
+                    parent_layout.removeItem(widget_item)
+            elif isinstance(layout_item:=item, TTkLayout):
+                parent_widget = layout_item.parentWidget()
+                if parent_widget and (pl := parent_widget.layout()) and pl is not self:
+                    pl.removeItem(layout_item)
+                elif (parent_layout := layout_item.parent()) and parent_layout is not self:
+                    parent_layout.removeItem(layout_item)
+        self._items[index:index] = normalizedItems
         self._zSortItems()
         #self.update()
         parent_widget = self.parentWidget()
-        for item in items:
+        for item in normalizedItems:
             item.setParent(self)
             if isinstance(item, TTkWidgetItem):
                 item.widget().setParent(parent_widget)
@@ -299,12 +314,15 @@ class TTkLayout(TTkLayoutItem):
         :param widgets: the widget to be removed
         :type widgets: list of :py:class:`TTkWidgets`
         '''
-        for item in reversed(self._items):
+        itemsToRemove = []
+        for item in self._items:
             if isinstance(item, TTkWidgetItem):
-               if item.widget() in widgets:
-                    self.removeItem(item)
+                if item.widget() in widgets:
+                    itemsToRemove.append(item)
             elif isinstance(item, TTkLayout):
                 item.removeWidgets(widgets)
+        if itemsToRemove:
+            self.removeItems(itemsToRemove)
 
     def _findBranchWidget(self, widget):
         '''Find the direct branch item containing ``widget``.

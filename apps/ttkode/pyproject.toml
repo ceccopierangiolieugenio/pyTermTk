@@ -10,7 +10,7 @@
         {name = "Eugenio Parodi", email = "ceccopierangiolieugenio@googlemail.com"},
     ]
     description = "Terminal ToolKit Studio Code editor"
-    requires-python = ">=3.9"
+    requires-python = ">=3.10"
     license = {text = "MIT"}
     classifiers = [
         "Programming Language :: Python :: 3",

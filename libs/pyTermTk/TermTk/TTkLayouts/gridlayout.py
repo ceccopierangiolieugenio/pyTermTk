@@ -26,7 +26,7 @@
 
 __all__ = ['TTkGridLayout']
 
-from typing import List
+from typing import List, Tuple
 
 from TermTk.TTkCore.constant import TTkK
 from .layout import TTkLayout
@@ -90,7 +90,7 @@ class TTkGridLayout(TTkLayout):
                     cols = max(cols, gridCol+item._colspan)
         return (rows, cols)
 
-    def _reshapeGrid(self, size):
+    def _reshapeGrid(self, size:Tuple[int,int]) -> None:
         '''Resize the internal 2D grid storage to ``size``.
 
         :param size: target ``(rows, cols)``
@@ -108,9 +108,9 @@ class TTkGridLayout(TTkLayout):
             self._verSizes += [(0,0)]*(rows-len(self._verSizes))
 
         # remove extra cols
-        if   cols < len(self._gridItems):
-            self._horSizes  = self._verSizes[:cols]
-        elif cols > len(self._gridItems):
+        if   cols < len(self._horSizes):
+            self._horSizes  = self._horSizes[:cols]
+        elif cols > len(self._horSizes):
             self._horSizes += [(0,0)]*(cols-len(self._horSizes))
 
         for gridRow in range(len(self._gridItems)):
@@ -249,7 +249,6 @@ class TTkGridLayout(TTkLayout):
         :param direction: The direction the new items will be added if row/col are not specified, defaults to :py:class:`~TermTk.TTkCore.constant.TTkConstant.Direction.HORIZONTAL`
         :type direction: :py:class:`TTkConstant.Direction`
         '''
-        self.removeWidgets(widgets)
         items = [w.widgetItem() for w in widgets]
         TTkGridLayout.addItems(self, items, row, col, rowspan, colspan, direction)
         for w in widgets:
@@ -263,7 +262,7 @@ class TTkGridLayout(TTkLayout):
         :param index: linear index
         :type index: int
         '''
-        pass
+        raise NotImplementedError('TTkGridLayout.replaceItem() is not supported. Use addItem/removeItem with row/col coordinates.')
 
     def addItem(self, item, row=None, col=None, rowspan=1, colspan=1, direction=TTkK.HORIZONTAL):
         '''Add the item to this :py:class:`TTkGridLayout`
@@ -292,7 +291,9 @@ class TTkGridLayout(TTkLayout):
         :type direction: :py:class:`TTkConstant.Direction`
         '''
         nitems = len(items)
-        self.removeItems(items)
+        existing = [item for item in items if item in self._items]
+        if existing:
+            self.removeItems(existing)
         if row is None and col is None:
             # Append The widget at the end
             if direction==TTkK.HORIZONTAL:
@@ -327,7 +328,7 @@ class TTkGridLayout(TTkLayout):
             else:
                 row += rowspan
 
-        TTkLayout.addItems(self, items)
+        super().addItems(items)
 
     def removeItem(self, item):
         '''Remove a single layout item from the grid.
@@ -343,11 +344,24 @@ class TTkGridLayout(TTkLayout):
         :param items: items to remove
         :type items: list[:py:class:`TTkLayoutItem`]
         '''
-        TTkLayout.removeItems(self, items)
-        for gridRow in range(self._rows):
-            for gridCol in range(self._cols):
-                if self._gridItems[gridRow][gridCol] in items:
-                    self._gridItems[gridRow][gridCol] = None
+        # Keep only direct children items from this layout.
+        direct_items = [item for item in items if item in self._items]
+        super().removeItems(direct_items)
+        for item in direct_items:
+            row = item._row
+            col = item._col
+            if (0 <= row < self._rows and 0 <= col < self._cols and
+                    self._gridItems[row][col] is item):
+                self._gridItems[row][col] = None
+                continue
+            for gridRow in range(self._rows):
+                for gridCol in range(self._cols):
+                    if self._gridItems[gridRow][gridCol] is item:
+                        self._gridItems[gridRow][gridCol] = None
+                        break
+                else:
+                    continue
+                break
         self._reshapeGrid(self._gridUsedsize())
 
     def removeWidget(self, widget):
@@ -364,15 +378,15 @@ class TTkGridLayout(TTkLayout):
         :param widgets: widgets to remove
         :type widgets: list[:py:class:`TTkWidget`]
         '''
-        TTkLayout.removeWidgets(self, widgets)
-        for gridRow in range(self._rows):
-            for gridCol in range(self._cols):
-                _grid_item = self._gridItems[gridRow][gridCol]
-                if _grid_item is not None and \
-                   isinstance(_grid_item, TTkWidgetItem) and \
-                   _grid_item.widget() in widgets:
-                    self._gridItems[gridRow][gridCol] = None
-        self._reshapeGrid(self._gridUsedsize())
+        itemsToRemove = []
+        for item in self._items:
+            if isinstance(item, TTkWidgetItem):
+                if item.widget() in widgets:
+                    itemsToRemove.append(item)
+            elif isinstance(item, TTkLayout):
+                item.removeWidgets(widgets)
+        if itemsToRemove:
+            self.removeItems(itemsToRemove)
 
     def itemAtPosition(self, row: int, col: int):
         '''Return the item occupying ``(row, col)``.
@@ -517,6 +531,42 @@ class TTkGridLayout(TTkLayout):
             maxh += self.maximumRowHeight(gridRow)
         return maxh
 
+    @staticmethod
+    def _parseSizes(sizes, space) -> List[List[int]]:
+        iterate = True
+        freeSpace = space
+        leftSlots = len(sizes)
+        ret = [[0,0] for _ in range(leftSlots)]
+
+        while iterate and leftSlots > 0:
+            iterate = False
+            for item in sizes:
+                if item[3] != -1: continue
+                if freeSpace < 0: freeSpace=0
+                sliceSize = freeSpace//leftSlots
+                mins = item[1]
+                maxs = item[2]
+                if sliceSize >= maxs:
+                    iterate = True
+                    freeSpace -= maxs
+                    leftSlots -= 1
+                    item[3] = maxs
+                elif sliceSize < mins:
+                    iterate = True
+                    freeSpace -= mins
+                    leftSlots -= 1
+                    item[3] = mins
+
+        # Push the sizes
+        for item in sizes:
+            ret[item[0]] = [0,item[3]]
+            if item[3] == -1:
+                sliceSize = freeSpace//leftSlots
+                ret[item[0]] = [0,sliceSize]
+                freeSpace -= sliceSize
+                leftSlots -= 1
+        return ret
+
 
     def update(self, *args, **kwargs) -> None:
         '''Recompute cell geometry and update child widgets/layouts.'''
@@ -542,41 +592,8 @@ class TTkGridLayout(TTkLayout):
         # TTkLog.debug(f"Height: w,h:({w,h}) mh:{minHeight} sh:{sortedHeights}")
         # TTkLog.debug(f"width:  w,h:({w,h}) mw:{minWidth}  sw:{sortedWidths}")
 
-        def parseSizes(sizes, space, out):
-            iterate = True
-            freeSpace = space
-            leftSlots = len(sizes)
-            while iterate and leftSlots > 0:
-                iterate = False
-                for item in sizes:
-                    if item[3] != -1: continue
-                    if freeSpace < 0: freeSpace=0
-                    sliceSize = freeSpace//leftSlots
-                    mins = item[1]
-                    maxs = item[2]
-                    if sliceSize >= maxs:
-                        iterate = True
-                        freeSpace -= maxs
-                        leftSlots -= 1
-                        item[3] = maxs
-                    elif sliceSize < mins:
-                        iterate = True
-                        freeSpace -= mins
-                        leftSlots -= 1
-                        item[3] = mins
-            # Push the sizes
-            for item in sizes:
-                out[item[0]] = [0,item[3]]
-                if item[3] == -1:
-                    sliceSize = freeSpace//leftSlots
-                    out[item[0]] = [0,sliceSize]
-                    freeSpace -= sliceSize
-                    leftSlots -= 1
-
-        vertSizes = [None]*len(sortedHeights)
-        horSizes  = [None]*len(sortedWidths)
-        parseSizes(sortedHeights,h, vertSizes)
-        parseSizes(sortedWidths, w, horSizes)
+        vertSizes = self._parseSizes(sortedHeights,h)
+        horSizes  = self._parseSizes(sortedWidths, w)
 
         for i in horSizes:
             i[0] = newx
@@ -603,4 +620,3 @@ class TTkGridLayout(TTkLayout):
                 item.update(*args, **kwargs)
         self._horSizes = horSizes
         self._verSizes = vertSizes
-        return True

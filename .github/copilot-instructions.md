@@ -71,7 +71,7 @@ Widgets handle events by overriding template methods:
 - **Unit tests**: `pytest tests/pytest/` (run via Makefile: `make test`)
 - **Performance tests**: `tests/timeit/` - Contains signal/slot benchmarks and optimization tests
 - **Manual tests**: `tests/t.*/` - Interactive UI tests
-- **CI**: Tests run on Python 3.9-3.14 with flake8 linting
+- **CI**: Tests run on Python 3.10-3.14 with flake8 linting
 
 ### Build & Deploy
 - **Local build**: `pip install -e libs/pyTermTk` (uses `pip`)

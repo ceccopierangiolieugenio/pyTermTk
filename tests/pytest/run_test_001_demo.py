@@ -31,8 +31,9 @@ sys.path.append(os.path.join(sys.path[0],'../../demo'))
 sys.path.append(os.path.join(sys.path[0],'../../libs/pyTermTk'))
 
 import demo
+import TermTk as ttk
 
-class TTkRecord(demo.ttk.TTk):
+class TTkRecord(ttk.TTk):
     class _RecordQueue(queue.Queue):
         def __init__(self, *args, **kwargs):
             super().__init__( *args, **kwargs)
@@ -71,9 +72,10 @@ class TTkRecord(demo.ttk.TTk):
     QUIT_EVENT   = 0x08
     TIME_EVENT   = 0x10
 
-    def _mainLoop(self):
+    def _mainloop(self):
         if self._record:
-            return super()._mainLoop()
+            return super()._mainloop()
+        self.show()
         while (evt := self._events.get()) != self.QUIT_EVENT:
             mevt,kevt = None, None
             if evt == self.MOUSE_EVENT:
@@ -88,6 +90,7 @@ class TTkRecord(demo.ttk.TTk):
             #    width, height = self._screen_events.get()
             #    super()._win_resize_cb(width, height)
             super()._processInput(kevt, mevt)
+        return None
 
     def _processInput(self, kevt, mevt):
         if mevt:
@@ -136,7 +139,7 @@ if __name__ == "__main__":
 
     if args.record:
         root = TTkRecord(title="pyTermTk Demo Record", record=True, mouseTrack=mouseTrack)
-        winTabbed1 = demo.ttk.TTkWindow(parent=root,pos=(0,0), size=(80,24), title="pyTermTk Showcase", border=True, layout=demo.ttk.TTkGridLayout())
+        winTabbed1 = ttk.TTkWindow(parent=root,pos=(0,0), size=(80,24), title="pyTermTk Showcase", border=True, layout=ttk.TTkGridLayout())
         demo.demoShowcase(winTabbed1, True)
         root.mainloop()
         root.saveQueue(args.record)
@@ -144,49 +147,53 @@ if __name__ == "__main__":
     elif args.play:
         root = TTkRecord(title="pyTermTk Demo Record", record=False)
         root.loadQueue(args.play)
-        winTabbed1 = demo.ttk.TTkWindow(parent=root,pos=(0,0), size=(80,24), title="pyTermTk Showcase", border=True, layout=demo.ttk.TTkGridLayout())
+        winTabbed1 = ttk.TTkWindow(parent=root,pos=(0,0), size=(80,24), title="pyTermTk Showcase", border=True, layout=ttk.TTkGridLayout())
         demo.demoShowcase(winTabbed1, True)
         root.mainloop()
     else:
         demo.main()
+    ttk.TTkHelper.quit()
 
 def test_demo():
-    root = demo.ttk.TTk(layout=demo.ttk.TTkGridLayout())
+    root = ttk.TTk(layout=ttk.TTkGridLayout())
     assert demo.demoShowcase(root) is not None
-    root.quit()
+    ttk.TTkHelper.quit()
 
 def message_handler(mode, context, message):
     msgType = "NONE"
-    if   mode == demo.ttk.TTkLog.InfoMsg:     msgType = "[INFO]"
-    elif mode == demo.ttk.TTkLog.WarningMsg:  msgType = "[WARNING]"
-    elif mode == demo.ttk.TTkLog.CriticalMsg: msgType = "[CRITICAL]"
-    elif mode == demo.ttk.TTkLog.FatalMsg:    msgType = "[FATAL]"
-    elif mode == demo.ttk.TTkLog.ErrorMsg:    msgType = "[ERROR]"
+    if   mode == ttk.TTkLog.InfoMsg:     msgType = "[INFO]"
+    elif mode == ttk.TTkLog.WarningMsg:  msgType = "[WARNING]"
+    elif mode == ttk.TTkLog.CriticalMsg: msgType = "[CRITICAL]"
+    elif mode == ttk.TTkLog.FatalMsg:    msgType = "[FATAL]"
+    elif mode == ttk.TTkLog.ErrorMsg:    msgType = "[ERROR]"
     print(f"{msgType} {context.file} {message}")
 
 def test_recording1():
-    # demo.ttk.TTkLog.use_default_file_logging()
-    demo.ttk.TTkLog.installMessageHandler(message_handler)
+    # ttk.TTkLog.use_default_file_logging()
+    ttk.TTkLog.installMessageHandler(message_handler)
     root = TTkRecord(title="pyTermTk Demo Record", record=False)
     root.loadQueue(open('tmp/test.input.001.bin', 'rb'))
-    winTabbed1 = demo.ttk.TTkWindow(parent=root,pos=(0,0), size=(80,24), title="pyTermTk Showcase", border=True, layout=demo.ttk.TTkGridLayout())
+    winTabbed1 = ttk.TTkWindow(parent=root,pos=(0,0), size=(80,24), title="pyTermTk Showcase", border=True, layout=ttk.TTkGridLayout())
     demo.demoShowcase(winTabbed1, True)
     root.mainloop()
+    ttk.TTkHelper.quit()
 
 def test_recording2():
-    # demo.ttk.TTkLog.use_default_file_logging()
-    demo.ttk.TTkLog.installMessageHandler(message_handler)
+    # ttk.TTkLog.use_default_file_logging()
+    ttk.TTkLog.installMessageHandler(message_handler)
     root = TTkRecord(title="pyTermTk Demo Record", record=False)
     root.loadQueue(open('tmp/test.input.002.bin', 'rb'))
-    winTabbed1 = demo.ttk.TTkWindow(parent=root,pos=(0,0), size=(80,24), title="pyTermTk Showcase", border=True, layout=demo.ttk.TTkGridLayout())
+    winTabbed1 = ttk.TTkWindow(parent=root,pos=(0,0), size=(80,24), title="pyTermTk Showcase", border=True, layout=ttk.TTkGridLayout())
     demo.demoShowcase(winTabbed1, True)
     root.mainloop()
+    ttk.TTkHelper.quit()
 
 def test_recording3():
-    # demo.ttk.TTkLog.use_default_file_logging()
-    demo.ttk.TTkLog.installMessageHandler(message_handler)
+    # ttk.TTkLog.use_default_file_logging()
+    ttk.TTkLog.installMessageHandler(message_handler)
     root = TTkRecord(title="pyTermTk Demo Record", record=False)
     root.loadQueue(open('tmp/test.input.003.bin', 'rb'))
-    winTabbed1 = demo.ttk.TTkWindow(parent=root,pos=(0,0), size=(80,24), title="pyTermTk Showcase", border=True, layout=demo.ttk.TTkGridLayout())
+    winTabbed1 = ttk.TTkWindow(parent=root,pos=(0,0), size=(80,24), title="pyTermTk Showcase", border=True, layout=ttk.TTkGridLayout())
     demo.demoShowcase(winTabbed1, True)
     root.mainloop()
+    ttk.TTkHelper.quit()

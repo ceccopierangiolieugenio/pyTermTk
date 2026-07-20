@@ -10,7 +10,7 @@
 [![Static Badge](https://img.shields.io/badge/BlueSky-pyTermTk-blue?logo=bluesky&logoColor=blue)](https://bsky.app/profile/piercecco.bsky.social)
 [![Static Badge](https://img.shields.io/badge/Discord-pyTermTk-8A2BE2?logo=discord&logoColor=blue)](https://discord.gg/bqcSZvup)
 
-[![Python](https://img.shields.io/badge/Python-v3.9%5E-green?logo=python)](https://devguide.python.org/versions/)
+[![Python](https://img.shields.io/badge/Python-v3.100%5E-green?logo=python)](https://devguide.python.org/versions/)
 [![Test Status](https://img.shields.io/github/actions/workflow/status/ceccopierangiolieugenio/pyTermTk/testing.yml?branch=main&label=tests)](https://github.com/ceccopierangiolieugenio/pyTermTk/actions?query=workflow%3Atesting)
 [![pyTermTk_version](https://img.shields.io/github/v/tag/ceccopierangiolieugenio/pyTermTk?label=version)](https://github.com/ceccopierangiolieugenio/pyTermTk/releases)
 [![pypi_version](https://img.shields.io/pypi/v/pyTermTk?label=pypi)](https://pypi.org/project/pyTermTk)
@@ -32,7 +32,7 @@ it is inspired by a mix of [Qt5](https://www.riverbankcomputing.com/static/Docs/
 https://github.com/user-attachments/assets/888e745a-ea00-4d03-b6ec-273319d54ea7
 
 ## [Features](https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/info/features/index.html)
-- [Self-contained](https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/info/installing.html#copy-termtk-folder) (no external libs required), Python 3.9 or above required.
+- [Self-contained](https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/info/installing.html#copy-termtk-folder) (no external libs required), Python 3.10 or above required.
 - [Cross-compatible](https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/info/features/crosscompatible.html): [Linux](https://en.wikipedia.org/wiki/Linux)🐧, [macOS](https://en.wikipedia.org/wiki/MacOS)🍎, [MS Windows](https://en.wikipedia.org/wiki/Microsoft_Windows)🪟, [HTML5](https://en.wikipedia.org/wiki/HTML5)🌍 ([Try](https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/sandbox/sandbox.html))
 - [Basic widgets](https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/info/features/widgets.html#base-widgets) for [TUI](https://en.wikipedia.org/wiki/Text-based_user_interface) development (Button, Label, checkbox, ...)
 - [Specialized widgets](https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/info/features/widgets.html#specialised-widgets) to improve the usability (Windows, Frames, Tables, ...)
