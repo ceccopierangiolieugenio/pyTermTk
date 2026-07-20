@@ -474,3 +474,30 @@ def test_move_widget_item_between_containers_insert_item_detaches_source_layout(
     assert container2.layout().itemAt(0).widget() is moved
     assert container2.layout().itemAt(1).widget() is existing
 
+
+def test_grid_layout_remove_widgets_nested():
+    '''
+    Test that TTkGridLayout.removeWidgets() recurses into nested sub-layouts
+    to remove widgets that are not direct children of the grid.
+    '''
+    container = ttk.TTkContainer()
+    grid = ttk.TTkGridLayout()
+    container.setLayout(grid)
+
+    nested_layout = ttk.TTkLayout()
+    widget_in_nested = ttk.TTkWidget()
+    nested_layout.addWidget(widget_in_nested)
+
+    widget_direct = ttk.TTkWidget()
+    grid.addItem(nested_layout, row=0, col=0)
+    grid.addItem(widget_direct.widgetItem(), row=0, col=1)
+
+    assert nested_layout.count() == 1
+    assert grid.count() == 2
+
+    grid.removeWidgets([widget_in_nested])
+
+    assert nested_layout.count() == 0
+    assert grid.count() == 2
+    assert widget_direct.parentWidget() is container
+
