@@ -90,6 +90,7 @@ class TTkRecord(ttk.TTk):
             #    width, height = self._screen_events.get()
             #    super()._win_resize_cb(width, height)
             super()._processInput(kevt, mevt)
+        return None
 
     def _processInput(self, kevt, mevt):
         if mevt:
