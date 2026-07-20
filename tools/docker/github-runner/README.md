@@ -6,6 +6,9 @@
 #   docker build --build-arg RUNNER_TOKEN=${_GITHUB_TOKEN} -t github-runner .
 
 docker build -t github-runner .
+
+# To force an x86 build
+docker build build -t github-runner --platform linux/amd64 .
 ```
 
 # Run the runner
