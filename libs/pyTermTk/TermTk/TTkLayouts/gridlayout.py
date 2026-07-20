@@ -536,7 +536,7 @@ class TTkGridLayout(TTkLayout):
         iterate = True
         freeSpace = space
         leftSlots = len(sizes)
-        ret = [[0,0]] * leftSlots
+        ret = [[0,0] for _ in range(leftSlots)]
 
         while iterate and leftSlots > 0:
             iterate = False
