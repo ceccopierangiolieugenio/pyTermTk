@@ -291,7 +291,9 @@ class TTkGridLayout(TTkLayout):
         :type direction: :py:class:`TTkConstant.Direction`
         '''
         nitems = len(items)
-        self.removeItems(items)
+        existing = [item for item in items if item in self._items]
+        if existing:
+            self.removeItems(existing)
         if row is None and col is None:
             # Append The widget at the end
             if direction==TTkK.HORIZONTAL:

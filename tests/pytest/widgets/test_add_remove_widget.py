@@ -429,6 +429,43 @@ def test_nested_layout_widgets_04():
     assert widget2.parentWidget() is container2
 
 
+def test_grid_layout_reshape_after_column_removal():
+    '''
+    Regression test for _reshapeGrid comparing cols against _horSizes (not _gridItems).
+    Build a non-square grid (1 row x 3 cols), remove the last column's widget,
+    and verify the grid shrinks correctly.
+    '''
+    grid = ttk.TTkGridLayout()
+    container = ttk.TTkContainer()
+    container.setLayout(grid)
+
+    w1 = ttk.TTkWidget()
+    w2 = ttk.TTkWidget()
+    w3 = ttk.TTkWidget()
+
+    grid.addWidget(w1, row=0, col=0)
+    grid.addWidget(w2, row=0, col=1)
+    grid.addWidget(w3, row=0, col=2)
+
+    assert grid._rows == 1
+    assert grid._cols == 3
+    assert len(grid._horSizes) == 3
+
+    grid.removeWidget(w3)
+
+    assert grid._rows == 1
+    assert grid._cols == 2
+    assert len(grid._horSizes) == 2
+    assert grid.itemAtPosition(0, 0).widget() is w1
+    assert grid.itemAtPosition(0, 1).widget() is w2
+
+    grid.removeWidget(w2)
+
+    assert grid._cols == 1
+    assert len(grid._horSizes) == 1
+    assert grid.itemAtPosition(0, 0).widget() is w1
+
+
 def test_move_widget_item_between_containers_add_item_detaches_source_layout():
     '''
     Test moving an existing :py:class:`TTkWidgetItem` between container layouts using addItem().
