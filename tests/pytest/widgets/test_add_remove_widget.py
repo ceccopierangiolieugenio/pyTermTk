@@ -538,3 +538,26 @@ def test_grid_layout_remove_widgets_nested():
     assert grid.count() == 2
     assert widget_direct.parentWidget() is container
 
+
+def test_add_widget_to_second_unparented_grid_removes_from_first():
+    '''
+    Regression: when a widget is added to a grid layout that has no parent container,
+    then added to a second grid layout, it must be removed from the first layout.
+    This exercises the case where parentWidget() returns None on the source layout.
+    '''
+    grid1 = ttk.TTkGridLayout()
+    grid2 = ttk.TTkGridLayout()
+
+    widget = ttk.TTkWidget()
+    grid1.addWidget(widget, row=0, col=0)
+
+    assert widget.widgetItem() in grid1._items
+    assert grid1.count() == 1
+
+    grid2.addWidgets([widget], row=0, col=0)
+
+    assert widget.widgetItem() not in grid1._items
+    assert widget.widgetItem() in grid2._items
+    assert grid1.count() == 0
+    assert grid2.count() == 1
+

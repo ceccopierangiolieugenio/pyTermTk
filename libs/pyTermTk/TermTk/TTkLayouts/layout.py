@@ -213,10 +213,14 @@ class TTkLayout(TTkLayoutItem):
                 parent_widget = widget.parentWidget()
                 if parent_widget and (pl := parent_widget.layout()) and pl is not self:
                     pl.removeItem(widget_item)
+                elif (parent_layout := widget_item.parent()) and parent_layout is not self:
+                    parent_layout.removeItem(widget_item)
             elif isinstance(layout_item:=item, TTkLayout):
                 parent_widget = layout_item.parentWidget()
                 if parent_widget and (pl := parent_widget.layout()) and pl is not self:
                     pl.removeItem(layout_item)
+                elif (parent_layout := layout_item.parent()) and parent_layout is not self:
+                    parent_layout.removeItem(layout_item)
         self._items[index:index] = normalizedItems
         self._zSortItems()
         #self.update()
