@@ -20,10 +20,12 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-__all__ = []
+__all__:list[str] = []
 
 from TermTk.TTkCore.log import TTkLog
-from TermTk.TTkWidgets.TTkTerminal.mode            import TTkTerminalModes
+
+from .mode            import TTkTerminalModes
+from .terminalview_base import _TTkTerminalViewBase
 
 class _termLog():
     # debug = TTkLog.debug
@@ -45,7 +47,8 @@ class _termLog():
 # terminal.py : TTkTerminal
 # Due to the huge amount of Escape commands required to be handled
 # I decided to split tham in multiple files
-class _TTkTerminal_CSI_DEC():
+class _TTkTerminal_CSI_DEC(_TTkTerminalViewBase):
+    __slots__ = ()
     # CSI ? Pm h
     #           DEC Private Mode Set (DECSET).
     #             Ps = 1  ⇒  Application Cursor Keys (MODE_DECCKM), VT100.

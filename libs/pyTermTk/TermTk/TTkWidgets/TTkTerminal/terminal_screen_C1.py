@@ -20,14 +20,12 @@
     # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
     # SOFTWARE.
 
-__all__ = []
+__all__:list[str] = []
 
-# Note:
-# This Class is supposed to be inherited by and only by
-# terminal_screen.py : _TTkTerminalScreen
-# Due to the huge amount of Escape commands required to be handled
-# I decided to split tham in multiple files
-class _TTkTerminalScreen_C1():
+from .terminal_screen_base import _TTkTerminalScreenBase
+
+class _TTkTerminalScreen_C1(_TTkTerminalScreenBase):
+    __slots__ = ()
     # C1 (8-Bit) Control Characters
     #
     # The xterm program recognizes both 8-bit and 7-bit control characters.
@@ -38,7 +36,7 @@ class _TTkTerminalScreen_C1():
     # ESC D
     #      Index (IND  is 0x84).
     #      Move the cursor down and scroll at the edge
-    def _C1_D(self):
+    def _C1_D(self) -> None:
         x,y = self._terminalCursor
         t,b = self._scrollingRegion
         h = self._h
@@ -56,7 +54,7 @@ class _TTkTerminalScreen_C1():
     # ESC M
     #      Reverse Index (RI  is 0x8d).
     #      Move the cursor Up and scroll at the edge
-    def _C1_M(self):
+    def _C1_M(self) -> None:
         x,y = self._terminalCursor
         t,b = self._scrollingRegion
         h = self._h

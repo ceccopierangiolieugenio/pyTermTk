@@ -20,12 +20,12 @@
     # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
     # SOFTWARE.
 
-__all__ = []
+__all__:list[str] = []
 
 import collections
 from dataclasses import dataclass
 
-from typing import List
+from typing import List, Tuple
 
 from TermTk.TTkCore.canvas import TTkCanvas
 
@@ -43,54 +43,45 @@ class _TTkTerminalScreen(_TTkTerminalScreen_CSI, _TTkTerminalScreen_C1):
         class _CP:
             line: int = 0
             pos:  int = 0
-            def setVal(self,x,y):
+            def setVal(self,x:int,y:int) -> None:
                 self.pos=x
                 self.line=y
-            def clear(self):
+            def clear(self) -> None:
                 self.line = 0
                 self.pos = 0
-            def toNum(self):
+            def toNum(self) -> int:
                 return self.pos | self.line << 16
         __slots__ = ('anchor','position')
-        def __init__(self):
+        def __init__(self) -> None:
             self.anchor   = _TTkTerminalScreen._SelectCursor._CP()
             self.position = _TTkTerminalScreen._SelectCursor._CP()
 
         def __str__(self) -> str:
             return f"a:({self.anchor.pos},{self.anchor.line}) p:({self.position.pos},{self.position.line})"
-        def select(self, x, y, moveAnchor=True):
+        def select(self, x:int, y:int, moveAnchor:bool=True) -> None:
             x=max(0,x)
             y=max(0,y)
             self.position.setVal(x,y)
             if moveAnchor:
                 self.anchor.setVal(x,y)
-        def selectionStart(self):
+        def selectionStart(self) -> _CP:
             if self.position.toNum() > self.anchor.toNum():
                 return self.anchor
             else:
                 return self.position
-        def selectionEnd(self):
+        def selectionEnd(self) -> _CP:
             if self.position.toNum() >= self.anchor.toNum():
                 return self.position
             else:
                 return self.anchor
-        def hasSelection(self):
+        def hasSelection(self) -> bool:
             return self.position!=self.anchor
-        def clear(self):
+        def clear(self) -> None:
             self.anchor.clear()
             self.position.clear()
 
-    __slots__ = ('_lines', '_terminalCursor',
-                 '_selectCursor',
-                 '_scrollingRegion',
-                 '_bufferSize', '_bufferedLines',
-                 '_w', '_h', '_color', '_canvas',
-                 '_canvasNewLine', '_canvasLineSize',
-                 '_last',
-                 # Signals
-                 'bell', 'bufferedLinesChanged'
-                 )
-    def __init__(self, w=80, h=24, bufferSize=1000, color=TTkColor.RST) -> None:
+    __slots__ = ()
+    def __init__(self, w:int=80, h:int=24, bufferSize:int=1000, color:TTkColor=TTkColor.RST) -> None:
         self.bell = pyTTkSignal()
         self.bufferedLinesChanged = pyTTkSignal()
         self._w = w
@@ -106,16 +97,16 @@ class _TTkTerminalScreen(_TTkTerminalScreen_CSI, _TTkTerminalScreen_C1):
         self._color = color
         self._canvas = TTkCanvas(width=w, height=h)
 
-    def color(self):
+    def color(self) -> TTkColor:
         return self._color
 
-    def setColor(self, color):
+    def setColor(self, color:TTkColor) -> None:
         self._color = color
 
-    def getCursor(self):
+    def getCursor(self) -> Tuple[int,int]:
         return self._terminalCursor
 
-    def resize(self, w, h):
+    def resize(self, w:int, h:int) -> None:
         # I normalize the size to the default terminal
         # to avoid negative or zerosized term
         w = max(3,w)
@@ -144,7 +135,7 @@ class _TTkTerminalScreen(_TTkTerminalScreen_CSI, _TTkTerminalScreen_C1):
         x,y = self._terminalCursor
         self._terminalCursor = (max(0,min(x,w-1)),max(0,min(y,h-1)))
 
-    def _pushTxt(self, txt:str, irm:bool=False):
+    def _pushTxt(self, txt:str, irm:bool=False) -> None:
         x,y = self._terminalCursor
         w,h = self._w, self._h
         st,sb = self._scrollingRegion
@@ -167,7 +158,7 @@ class _TTkTerminalScreen(_TTkTerminalScreen_CSI, _TTkTerminalScreen_C1):
                     x=0
                     y+=1
                     if y >= sb:
-                        self._CSI_S_SU(y-sb+1, None) # scroll up
+                        self._CSI_S_SU(y-sb+1, 0) # scroll up
                         y=sb-1
                     self._terminalCursor = (x,y)
                     self._canvasNewLine[y] = True
@@ -207,7 +198,7 @@ class _TTkTerminalScreen(_TTkTerminalScreen_CSI, _TTkTerminalScreen_C1):
                 self._canvasLineSize[y] = max(self._canvasLineSize[y],x)
             self._terminalCursor = (x,y)
 
-    def pushLine(self, line:str, irm:bool=False):
+    def pushLine(self, line:str, irm:bool=False) -> None:
         if not line: return
         w,h = self._w, self._h
         st,sb = self._scrollingRegion
@@ -220,7 +211,7 @@ class _TTkTerminalScreen(_TTkTerminalScreen_CSI, _TTkTerminalScreen_C1):
                 x,y = self._terminalCursor
                 y+=1
                 if y >= sb:
-                    self._CSI_S_SU(y-sb+1, None) # scroll up
+                    self._CSI_S_SU(y-sb+1, 0) # scroll up
                     y=sb-1
                 self._terminalCursor = (x,y)
             ls = l.split('\r')
@@ -236,7 +227,7 @@ class _TTkTerminalScreen(_TTkTerminalScreen_CSI, _TTkTerminalScreen_C1):
                         self._terminalCursor = (x,y)
                     self._pushTxt(lll,irm)
 
-    def select(self, x, y, moveAnchor=True):
+    def select(self, x:int, y:int, moveAnchor:bool=True) -> None:
         # line = getLineFromX(x)
         # pos  = getPosFromX(linne,x)
         # Convert x/y in line/pos
@@ -259,9 +250,9 @@ class _TTkTerminalScreen(_TTkTerminalScreen_CSI, _TTkTerminalScreen_C1):
             ret.pop()
         return ret
 
-    def getSelected(self):
+    def getSelected(self) -> TTkString:
         if not self._selectCursor.hasSelection():
-            return ""
+            return TTkString()
         ret = []
 
         st = self._selectCursor.selectionStart()

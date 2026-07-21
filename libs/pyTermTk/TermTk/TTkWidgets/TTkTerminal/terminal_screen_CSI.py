@@ -24,14 +24,12 @@ __all__:list[str] = []
 
 from TermTk.TTkCore.string import TTkString
 
-# Note:
-# This Class is supposed to be inherited by and only by
-# terminal_screen.py : _TTkTerminalScreen
-# Due to the huge amount of Escape commands required to be handled
-# I decided to split tham in multiple files
-class _TTkTerminalScreen_CSI():
+from .terminal_screen_base import _TTkTerminalScreenBase
+
+class _TTkTerminalScreen_CSI(_TTkTerminalScreenBase):
+    __slots__ = ()
     # CSI Ps @  Insert Ps (Blank) Character(s) (default = 1) (ICH).
-    def _CSI___ICH(self, ps, _):
+    def _CSI___ICH(self, ps:int, _:int) -> None:
         x,y = self._terminalCursor
         w = self._w
         self._canvas._data[y][x:x] = ['']*ps
@@ -41,52 +39,52 @@ class _TTkTerminalScreen_CSI():
 
     # CSI Ps SP @   (SP = Space)
     #           Shift left Ps columns(s) (default = 1) (SL), ECMA-48.
-    # def _CSI___SL( self, ps, _):
+    # def _CSI___SL( self, ps:int, _:int) -> None:
     #     x,y = self._terminalCursor
     #     self._canvas.drawText(' '*ps,pos=(x,y))
 
     # CSI Ps A  Cursor Up Ps Times (default = 1) (CUU).
-    def _CSI_A_CUU(self, ps, _):
+    def _CSI_A_CUU(self, ps:int, _:int) -> None:
         x,y = self._terminalCursor
         self._terminalCursor = (x,max(0,y-ps))
 
     # CSI Ps SP A   (SP = Space)
     #           Shift right Ps columns(s) (default = 1) (SR), ECMA-48.
-    # def _CSI_A_SR( self, ps, _):
+    # def _CSI_A_SR( self, ps:int, _:int) -> None:
     #     x,y = self._terminalCursor
     #     w,h = self._w, self._h
     #     self._terminalCursor = (min(x+ps,w-1),y)
 
     # CSI Ps B  Cursor Down Ps Times (default = 1) (CUD).
-    def _CSI_B_CUD(self, ps, _):
+    def _CSI_B_CUD(self, ps:int, _:int) -> None:
         x,y = self._terminalCursor
         w,h = self._w, self._h
         self._terminalCursor = (x,min(y+ps,h-1))
 
     # CSI Ps C  Cursor Forward Ps Times (default = 1) (CUF).
-    def _CSI_C_CUF(self, ps, _):
+    def _CSI_C_CUF(self, ps:int, _:int) -> None:
          x,y = self._terminalCursor
          w,h = self._w, self._h
          self._terminalCursor = (min(x+ps,w-1),y)
 
     # CSI Ps D  Cursor Backward Ps Times (default = 1) (CUB).
-    def _CSI_D_CUB(self, ps, _):
+    def _CSI_D_CUB(self, ps:int, _:int) -> None:
          x,y = self._terminalCursor
          self._terminalCursor = (max(0,x-ps),y)
 
     # CSI Ps E  Cursor Next Line Ps Times (default = 1) (CNL).
-    def _CSI_E_CNL(self, ps, _):
+    def _CSI_E_CNL(self, ps:int, _:int) -> None:
         x,y = self._terminalCursor
         w,h = self._w, self._h
         self._terminalCursor = (0,min(y+ps,h-1))
 
     # CSI Ps F  Cursor Preceding Line Ps Times (default = 1) (CPL).
-    def _CSI_F_CPL(self, ps, _):
+    def _CSI_F_CPL(self, ps:int, _:int) -> None:
         x,y = self._terminalCursor
         self._terminalCursor = (0,max(0,y-ps))
 
     # CSI Ps G  Cursor Character Absolute  [column] (default = [row,1]) (CHA).
-    def _CSI_G_CHA(self, col, _):
+    def _CSI_G_CHA(self, col:int, _:int) -> None:
         x,y = self._terminalCursor
         w,h = self._w, self._h
         self._terminalCursor = (min(col-1,w-1),y)
@@ -94,19 +92,19 @@ class _TTkTerminalScreen_CSI():
 
     # CSI Ps ; Ps H
     #           Cursor Position [row;column] (default = [1,1]) (CUP).
-    def _CSI_H_CUP(self, row, col):
+    def _CSI_H_CUP(self, row:int, col:int) -> None:
         w,h = self._w, self._h
         self._terminalCursor = (min(col-1,w-1), min(row-1,h-1))
 
     # CSI Ps I  Cursor Forward Tabulation Ps tab stops (default = 1) (CHT).
-    # def _CSI_I_CHT(self, ps, _): pass
+    # def _CSI_I_CHT(self, ps:int, _:int) -> None: pass
 
     # CSI Ps J  Erase in Display (ED), VT100.
     #             Ps = 0  ⇒  Erase Below (default).
     #             Ps = 1  ⇒  Erase Above.
     #             Ps = 2  ⇒  Erase All.
     #             Ps = 3  ⇒  Erase Saved Lines, xterm.
-    def _CSI_J_ED(self, ps, _):
+    def _CSI_J_ED(self, ps:int, _:int) -> None:
         x,y = self._terminalCursor
         w,h = self._w,self._h
         if ps == 0:
@@ -129,7 +127,7 @@ class _TTkTerminalScreen_CSI():
     #             Ps = 0  ⇒  Erase to Right (default).
     #             Ps = 1  ⇒  Erase to Left.
     #             Ps = 2  ⇒  Erase All.
-    def _CSI_K_EL(self, ps, _):
+    def _CSI_K_EL(self, ps:int, _:int) -> None:
         x,y = self._terminalCursor
         w,h = self._w,self._h
         if ps == 0:
@@ -146,7 +144,7 @@ class _TTkTerminalScreen_CSI():
     #             Ps = 2  ⇒  Selective Erase All.
 
     # CSI Ps L  Insert Ps Line(s) (default = 1) (IL).
-    def _CSI_L_IL(self, ps, _):
+    def _CSI_L_IL(self, ps:int, _:int) -> None:
         x,y = self._terminalCursor
         t,b = self._scrollingRegion
         w,h = self._w, self._h
@@ -164,7 +162,7 @@ class _TTkTerminalScreen_CSI():
 
 
     # CSI Ps M  Delete Ps Line(s) (default = 1) (DL).
-    def _CSI_M_DL(self, ps, _):
+    def _CSI_M_DL(self, ps:int, _:int) -> None:
         x,y = self._terminalCursor
         t,b = self._scrollingRegion
         w,h = self._w, self._h
@@ -193,7 +191,7 @@ class _TTkTerminalScreen_CSI():
     #   x  = 3   |
     #   ps = 2
     #   s2 = "abcfg"
-    def _CSI_P_DCH(self, ps, _):
+    def _CSI_P_DCH(self, ps:int, _:int) -> None:
         x,y = self._terminalCursor
         w,h = self._w, self._h
         ps = min(ps,w-x)
@@ -221,7 +219,7 @@ class _TTkTerminalScreen_CSI():
     #           XTPOPCOLOR (default = 0) (XTREPORTCOLORS), xterm.
 
     # CSI Ps S  Scroll up Ps lines (default = 1) (SU), VT420, ECMA-48.
-    def _CSI_S_SU(self, ps, _=None):
+    def _CSI_S_SU(self, ps:int, _:int=0) -> None:
         t,b = self._scrollingRegion
         w,h = self._w, self._h
         #TODO: Avoid this HACK... HAHAHHAHAHHAHA H HAHAHAHAH AHAHAHA HHAHA HA
@@ -328,7 +326,7 @@ class _TTkTerminalScreen_CSI():
     #               rather than a failure.
 
     # CSI Ps T  Scroll down Ps lines (default = 1) (SD), VT420.
-    def _CSI_T_SD(self, ps, _=None):
+    def _CSI_T_SD(self, ps:int, _:int=0) -> None:
         t,b = self._scrollingRegion
         w,h = self._w, self._h
         #TODO: Avoid this HACK
@@ -370,7 +368,7 @@ class _TTkTerminalScreen_CSI():
     #           (See discussion of Title Modes).
 
     # CSI Ps X  Erase Ps Character(s) (default = 1) (ECH).
-    def _CSI_X_ECH(self, ps, _):
+    def _CSI_X_ECH(self, ps:int, _:int) -> None:
         x,y = self._terminalCursor
         w,h = self._w, self._h
         ps = min(ps,w-x)
@@ -380,23 +378,23 @@ class _TTkTerminalScreen_CSI():
         self._canvas._colors[y] = self._canvas._colors[y][:w]
 
     # CSI Ps Z  Cursor Backward Tabulation Ps tab stops (default = 1) (CBT).
-    def _CSI_Z_CBT(self, ps, _): pass
+    def _CSI_Z_CBT(self, ps:int, _:int) -> None: pass
 
     # CSI Ps ^  Scroll down Ps lines (default = 1) (SD), ECMA-48.
     #           This was a publication error in the original ECMA-48 5th
     #           edition (1991) corrected in 2003.
-    def _CSI___SD(self, ps, _): pass
+    def _CSI___SD(self, ps:int, _:int) -> None: pass
 
     # CSI Ps `  Character Position Absolute  [column] (default = [row,1])
     #           (HPA).
-    def _CSI___HPA(self, ps, _): pass
+    def _CSI___HPA(self, ps:int, _:int) -> None: pass
 
     # CSI Ps a  Character Position Relative  [columns] (default = [row,col+1])
     #           (HPR).
-    def _CSI_a_HPR(self, ps, _): pass
+    def _CSI_a_HPR(self, ps:int, _:int) -> None: pass
 
     # CSI Ps b  Repeat the preceding graphic character Ps times (REP).
-    def _CSI_b_REP(self, ps, _):
+    def _CSI_b_REP(self, ps:int, _:int) -> None:
         if self._last:
             self._pushTxt(self._last*ps)
 
@@ -439,14 +437,14 @@ class _TTkTerminalScreen_CSI():
     #           controls (DECSNLS, DECSCPP, DECSLPP) to adjust its visible
     #           window's size.  The "cursor coupling" controls (DECHCCM,
     #           DECPCCM, DECVCCM) are ignored.
-    def _CSI_c_Pri_DA(self, ps, _): pass
+    def _CSI_c_Pri_DA(self, ps:int, _:int) -> None: pass
 
     # CSI = Ps c
     #           Send Device Attributes (Tertiary DA).
     #             Ps = 0  ⇒  report Terminal Unit ID (default), VT400.  XTerm
     #           uses zeros for the site code and serial number in its DECRPTUI
     #           response.
-    # def _CSI_c_Ter_DA(self, ps, _): pass
+    # def _CSI_c_Ter_DA(self, ps:int, _:int) -> None: pass
 
     # CSI > Ps c
     #           Send Device Attributes (Secondary DA).
@@ -472,22 +470,22 @@ class _TTkTerminalScreen_CSI():
     #           the XFree86 patch number, starting with 95).  In a DEC
     #           terminal, Pc indicates the ROM cartridge registration number
     #           and is always zero.
-    # def _CSI_c_DA(self, ps, _): pass
+    # def _CSI_c_DA(self, ps:int, _:int) -> None: pass
 
     # CSI Ps d  Line Position Absolute  [row] (default = [1,column]) (VPA).
-    def _CSI_d_VPA(self, ps, _):
+    def _CSI_d_VPA(self, ps:int, _:int) -> None:
         x,y = self._terminalCursor
         w,h = self._w, self._h
         self._terminalCursor = (x,max(0,min(h-1,ps-1)))
 
     # CSI Ps e  Line Position Relative  [rows] (default = [row+1,column])
     #           (VPR).
-    def _CSI_e_VPR(self, ps, _): pass
+    def _CSI_e_VPR(self, ps:int, _:int) -> None: pass
 
     # CSI Ps ; Ps f
     #           Horizontal and Vertical Position [row;column] (default =
     #           [1,1]) (HVP).
-    def _CSI_f_HVP(self, row, col):
+    def _CSI_f_HVP(self, row:int, col:int) -> None:
         w,h = self._w, self._h
         self._terminalCursor = (min(col-1,w-1), min(row-1,h-1))
 
@@ -496,7 +494,7 @@ class _TTkTerminalScreen_CSI():
     #           later terminals (and xterm) do the same, for compatibility.
     #             Ps = 0  ⇒  Clear Current Column (default).
     #             Ps = 3  ⇒  Clear All.
-    def _CSI_g_TBC(self, ps, _): pass
+    def _CSI_g_TBC(self, ps:int, _:int) -> None: pass
 
     # CSI Pm h  Set Mode (SM).
     #             Ps = 2  ⇒  Keyboard Action Mode (KAM).
@@ -504,7 +502,7 @@ class _TTkTerminalScreen_CSI():
     #             Ps = 1 2  ⇒  Send/receive (SRM).
     #             Ps = 2 0  ⇒  Automatic Newline (LNM).
     #             Ps = 3 4  ⇒  Normal Cursor Visibility
-    def _CSI_h_SM(self, ps, _): pass
+    def _CSI_h_SM(self, ps:int, _:int) -> None: pass
 
     # CSI ? Pm h
     #           DEC Private Mode Set (DECSET).
@@ -630,7 +628,7 @@ class _TTkTerminalScreen_CSI():
     #             Ps = 2 0 0 4  ⇒  Set bracketed paste mode, xterm.
     #             Ps = 2 0 0 5  ⇒  Enable readline character-quoting, xterm.
     #             Ps = 2 0 0 6  ⇒  Enable readline newline pasting, xterm.
-    # def _CSI__(self, ps, _): pass
+    # def _CSI__(self, ps:int, _:int) -> None: pass
 
     # CSI Ps i  Media Copy (MC).
     #             Ps = 0  ⇒  Print screen (default).
@@ -638,7 +636,7 @@ class _TTkTerminalScreen_CSI():
     #             Ps = 5  ⇒  Turn on printer controller mode.
     #             Ps = 1 0  ⇒  HTML screen dump, xterm.
     #             Ps = 1 1  ⇒  SVG screen dump, xterm.
-    def _CSI_i_MC(self, ps, _): pass
+    def _CSI_i_MC(self, ps:int, _:int) -> None: pass
 
     # CSI ? Ps i
     #           Media Copy (MC), DEC-specific.
@@ -647,7 +645,7 @@ class _TTkTerminalScreen_CSI():
     #             Ps = 5  ⇒  Turn on autoprint mode.
     #             Ps = 1 0  ⇒  Print composed display, ignores DECPEX.
     #             Ps = 1 1  ⇒  Print all pages.
-    # def _CSI__(self, ps, _): pass
+    # def _CSI__(self, ps:int, _:int) -> None: pass
 
     # CSI Pm l  Reset Mode (RM).
     #             Ps = 2  ⇒  Keyboard Action Mode (KAM).
@@ -655,7 +653,7 @@ class _TTkTerminalScreen_CSI():
     #             Ps = 1 2  ⇒  Send/receive (SRM).
     #             Ps = 2 0  ⇒  Normal Linefeed (LNM).
     #             Ps = 3 4  ⇒  Normal Cursor Visibility
-    def _CSI_l_RM(self, ps, _): pass
+    def _CSI_l_RM(self, ps:int, _:int) -> None: pass
 
     # CSI ? Pm l
     #           DEC Private Mode Reset (DECRST).
@@ -776,7 +774,7 @@ class _TTkTerminalScreen_CSI():
     #             Ps = 2 0 0 4  ⇒  Reset bracketed paste mode, xterm.
     #             Ps = 2 0 0 5  ⇒  Disable readline character-quoting, xterm.
     #             Ps = 2 0 0 6  ⇒  Disable readline newline pasting, xterm.
-    # def _CSI__(self, ps, _): pass
+    # def _CSI__(self, ps:int, _:int) -> None: pass
 
     # CSI Pm m  Character Attributes (SGR).
     #             Ps = 0  ⇒  Normal (default), VT100.
@@ -916,10 +914,10 @@ class _TTkTerminalScreen_CSI():
     #           and the resource directColor is true, then rather than
     #           choosing the closest match, xterm asks the X server to
     #           directly render a given color.
-    def _CSI_m_SGR(self, ps, _): pass
+    def _CSI_m_SGR(self, ps:int, _:int) -> None: pass
 
     # CSI > Pp ; Pv m
-    # def _CSI__(self, ps, _): pass
+    # def _CSI__(self, ps:int, _:int) -> None: pass
     # CSI > Pp m
     #           Set/reset key modifier options (XTMODKEYS), xterm.  Set or
     #           reset resource-values used by xterm to decide whether to
@@ -941,7 +939,7 @@ class _TTkTerminalScreen_CSI():
     #
     #           If no parameters are given, all resources are reset to their
     #           initial values.
-    # def _CSI__(self, ps, _): pass
+    # def _CSI__(self, ps:int, _:int) -> None: pass
 
     # CSI ? Pp m
     #           Query key modifier options (XTQMODKEYS), xterm.
@@ -985,7 +983,7 @@ class _TTkTerminalScreen_CSI():
     #           codes.  The modifyFunctionKeys and modifyKeyboard resources
     #           can change the form of the string sent from the modified F1
     #           key.
-    # def _CSI_n_DSR(self, ps, _): pass
+    # def _CSI_n_DSR(self, ps:int, _:int) -> None: pass
 
     # CSI > Ps n
     #           Disable key modifier options, xterm.  These modifiers may be
@@ -1127,7 +1125,7 @@ class _TTkTerminalScreen_CSI():
     #             Ps = 2 1  ⇒  Extinguish Num Lock.
     #             Ps = 2 2  ⇒  Extinguish Caps Lock.
     #             Ps = 2 3  ⇒  Extinguish Scroll Lock.
-    def _CSI_q_DECLL(self, ps, _): pass
+    def _CSI_q_DECLL(self, ps:int, _:int) -> None: pass
 
     # CSI Ps SP q
     #           Set cursor style (DECSCUSR), VT520.
@@ -1153,7 +1151,7 @@ class _TTkTerminalScreen_CSI():
     # CSI Ps ; Ps r
     #           Set Scrolling Region [top;bottom] (default = full size of
     #           window) (DECSTBM), VT100.
-    def _CSI_r_DECSTBM(self, top, bottom):
+    def _CSI_r_DECSTBM(self, top:int, bottom:int) -> None:
         self._scrollingRegion = (top-1, bottom)
 
     # CSI ? Pm r
@@ -1173,7 +1171,7 @@ class _TTkTerminalScreen_CSI():
 
     # CSI s     Save cursor, available only when DECLRMM is disabled (SCOSC,
     #           also ANSI.SYS).
-    def _CSI_s_SCOSC(self, _, __): pass
+    def _CSI_s_SCOSC(self, _:int, __:int) -> None: pass
 
     # CSI Pl ; Pr s
     #           Set left and right margins (DECSLRM), VT420 and up.  This is
@@ -1304,7 +1302,7 @@ class _TTkTerminalScreen_CSI():
     #             Pm denotes the attributes to reverse, i.e.,  1, 4, 5, 7.
 
     # CSI u     Restore cursor (SCORC, also ANSI.SYS).
-    def _CSI_u_SCORC(self, _, __): pass
+    def _CSI_u_SCORC(self, _:int, __:int) -> None: pass
 
     # CSI Ps SP u
     #           Set margin-bell volume (DECSMBV), VT520.
@@ -1356,7 +1354,7 @@ class _TTkTerminalScreen_CSI():
     #             Pn = 1  ⇐  2 8  receive 38.4k baud.
     #             Pn = 1  ⇐  clock multiplier.
     #             Pn = 0  ⇐  STP flags.
-    def _CSI_x_DECREQTPARM(self, x, __): pass
+    def _CSI_x_DECREQTPARM(self, x:int, __:int) -> None: pass
 
     # CSI Ps * x
     #           Select Attribute Change Extent (DECSACE), VT420 and up.
@@ -1422,7 +1420,7 @@ class _TTkTerminalScreen_CSI():
     #           Push video attributes onto stack (XTPUSHSGR), xterm.  The
     #           optional parameters correspond to the SGR encoding for video
     #           attributes, except for colors (which do not have a unique SGR
-    #           code):
+    #           code) -> None:
     #             Ps = 1  ⇒  Bold.
     #             Ps = 2  ⇒  Faint.
     #             Ps = 3  ⇒  Italicized.
