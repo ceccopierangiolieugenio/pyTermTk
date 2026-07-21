@@ -590,7 +590,11 @@ class TestTerminalScrollbackBuffer:
             screen._terminalCursor = (0, 0)
             screen._pushTxt(f"L{i}")
             screen._CSI_S_SU(1)
-        assert len(screen._bufferedLines) <= 5
+        assert len(screen._bufferedLines) == 5
+        # Buffer should contain the 5 most recent scrolled-off lines (L5-L9)
+        texts = [str(line) for line in screen._bufferedLines]
+        assert texts[0] == "L5", f"Expected oldest buffered line 'L5', got '{texts[0]}'"
+        assert texts[4] == "L9", f"Expected newest buffered line 'L9', got '{texts[4]}'"
 
     def test_get_buffer_includes_scrollback(self):
         screen = _TTkTerminalScreen(w=10, h=3, bufferSize=100)
