@@ -50,9 +50,5 @@ class _TTkTerminalViewBase(TTkAbstractScrollView):
     _screen_normal: _TTkTerminalScreen
     _screen_alt: _TTkTerminalScreen
 
-    def enableWidgetCursor(self, enable: bool = True) -> None:
-        raise NotImplementedError()
-    def size(self) -> tuple[int, int]:
-        raise NotImplementedError()
-    def _screenChanged(self) -> None:
-        raise NotImplementedError()
+    def _screenChanged(self) -> None: ...
+
