@@ -44,8 +44,8 @@ class _TTkTerminalScreenBase():
 
     _w: int
     _h: int
-    _color: 'TTkColor'
-    _canvas: 'TTkCanvas'
+    _color: TTkColor
+    _canvas: TTkCanvas
     _canvasNewLine: list[bool]
     _canvasLineSize: list[int]
     _terminalCursor: tuple[int, int]
@@ -55,8 +55,8 @@ class _TTkTerminalScreenBase():
     _last: 'str | None'
     _selectCursor: Any
     _lines: Any
-    bell: 'pyTTkSignal'
-    bufferedLinesChanged: 'pyTTkSignal'
+    bell: pyTTkSignal
+    bufferedLinesChanged: pyTTkSignal
 
     def _pushTxt(self, txt: str, irm: bool = False) -> None: ...
     def _CSI_S_SU(self, ps: int, _: Any = None) -> None: ...

@@ -20,7 +20,11 @@
     # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
     # SOFTWARE.
 
+from __future__ import annotations
+
 __all__:list[str] = []
+
+from typing import Callable
 
 from TermTk.TTkCore.string import TTkString
 
@@ -1516,7 +1520,7 @@ class _TTkTerminalScreen_CSI(_TTkTerminalScreenBase):
     #             Ps = 1  ⇒  indicator (default)
     #             Ps = 2  ⇒  host-writable.
 
-    _CSI_MAP = {
+    _CSI_MAP: dict[str, Callable[[_TTkTerminalScreen_CSI, int, int], None]] = {
         '@': _CSI___ICH,    # CSI Ps @        Insert Ps (Blank) Character(s) (default = 1) (ICH).
         # '@': _CSI___SL,   #
         'A': _CSI_A_CUU,    # CSI Ps A        Cursor Up Ps Times (default = 1) (CUU).

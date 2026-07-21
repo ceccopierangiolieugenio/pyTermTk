@@ -20,7 +20,11 @@
     # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
     # SOFTWARE.
 
+from __future__ import annotations
+
 __all__:list[str] = []
+
+from typing import Callable
 
 from .terminal_screen_base import _TTkTerminalScreenBase
 
@@ -103,7 +107,7 @@ class _TTkTerminalScreen_C1(_TTkTerminalScreenBase):
     #
     #
     # These control characters are used in the vtXXX emulation.
-    _C1_MAP = {
+    _C1_MAP: dict[str, Callable[[_TTkTerminalScreen_C1], None]] = {
         'D' : _C1_D,
         'M' : _C1_M
     }

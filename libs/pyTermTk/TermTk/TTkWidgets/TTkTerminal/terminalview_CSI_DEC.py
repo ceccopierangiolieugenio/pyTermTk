@@ -20,8 +20,11 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
+
 __all__:list[str] = []
 
+from typing import Callable
 from TermTk.TTkCore.log import TTkLog
 
 from .mode            import TTkTerminalModes
@@ -63,7 +66,7 @@ class _TTkTerminal_CSI_DEC(_TTkTerminalViewBase):
     #                DOWN  = \033[B
     #                LEFT  = \033[C
     #                RIGHT = \033[D
-    def _CSI_DEC_SR_1_MODE_DECCKM(self, s):
+    def _CSI_DEC_SR_1_MODE_DECCKM(self, s: bool) -> None:
         if s:
             self._keyboard.flags |= TTkTerminalModes.MODE_DECCKM
         else:
@@ -75,7 +78,7 @@ class _TTkTerminal_CSI_DEC(_TTkTerminalViewBase):
     # CSI ? Pm l
     #           DEC Private Mode Reset (DECRST).
     #             Ps = 2 5  ⇒  Hide cursor (DECTCEM), VT220.
-    def _CSI_DEC_SR_25_DECTCEM(self, s):
+    def _CSI_DEC_SR_25_DECTCEM(self, s: bool) -> None:
         self.enableWidgetCursor(enable=s)
 
     # CSI ? Pm h
@@ -87,7 +90,7 @@ class _TTkTerminal_CSI_DEC(_TTkTerminalViewBase):
     #           DEC Private Mode Reset (DECRST).
     #             Ps = 1 0 0 0  ⇒  Don't send Mouse X & Y on button press and
     #           release.  See the section Mouse Tracking.
-    def _CSI_DEC_SR_1000(self, s):
+    def _CSI_DEC_SR_1000(self, s: bool) -> None:
         self._mouse.reportPress = s
         self._mouse.reportDrag  = False
         self._mouse.reportMove  = False
@@ -101,7 +104,7 @@ class _TTkTerminal_CSI_DEC(_TTkTerminalViewBase):
     #           DEC Private Mode Reset (DECRST).
     #             Ps = 1 0 0 2  ⇒  Don't use Cell Motion Mouse Tracking,
     #           xterm.  See the section Button-event tracking.
-    def _CSI_DEC_SR_1002(self, s):
+    def _CSI_DEC_SR_1002(self, s: bool) -> None:
         self._mouse.reportPress = s
         self._mouse.reportDrag  = s
         self._mouse.reportMove  = False
@@ -115,7 +118,7 @@ class _TTkTerminal_CSI_DEC(_TTkTerminalViewBase):
     #           DEC Private Mode Reset (DECRST).
     #             Ps = 1 0 0 3  ⇒  Don't use All Motion Mouse Tracking, xterm.
     #           See the section Any-event tracking.
-    def _CSI_DEC_SR_1003(self, s):
+    def _CSI_DEC_SR_1003(self, s: bool) -> None:
         self._mouse.reportPress = s
         self._mouse.reportDrag  = s
         self._mouse.reportMove  = s
@@ -127,7 +130,7 @@ class _TTkTerminal_CSI_DEC(_TTkTerminalViewBase):
     # CSI ? Pm l
     #           DEC Private Mode Reset (DECRST).
     #             Ps = 1 0 0 4  ⇒  Don't send FocusIn/FocusOut events, xterm.
-    def _CSI_DEC_SR_1004(self, s):
+    def _CSI_DEC_SR_1004(self, s: bool) -> None:
         _termLog.warn(f"Unhandled 1004 Focus In/Out event {s=}")
 
 
@@ -137,7 +140,7 @@ class _TTkTerminal_CSI_DEC(_TTkTerminalViewBase):
     # CSI ? Pm l
     #           DEC Private Mode Reset (DECRST).
     #             Ps = 1 0 0 6  ⇒  Disable SGR Mouse Mode, xterm.
-    def _CSI_DEC_SR_1006(self, s):
+    def _CSI_DEC_SR_1006(self, s: bool) -> None:
         self._mouse.sgrMode = s
         _termLog.info(f"1006 SGR Mouse Mode {s=}")
 
@@ -147,7 +150,7 @@ class _TTkTerminal_CSI_DEC(_TTkTerminalViewBase):
     # CSI ? Pm l
     #           DEC Private Mode Reset (DECRST).
     #             Ps = 1 0 1 5  ⇒  Disable urxvt Mouse Mode.
-    def _CSI_DEC_SR_1015(self, s):
+    def _CSI_DEC_SR_1015(self, s: bool) -> None:
         _termLog.warn(f"1015 {s=} Unimplemented: _CSI_DEC_SR_1015 urxvt Mouse Mode.")
 
     # CSI ? Pm h
@@ -159,7 +162,7 @@ class _TTkTerminal_CSI_DEC(_TTkTerminalViewBase):
     #             Ps = 1 0 4 7  ⇒  Use Normal Screen Buffer, xterm.  Clear the
     #           screen first if in the Alternate Screen Buffer.  This may be
     #           disabled by the titeInhibit resource.
-    def _CSI_DEC_SR_1047(self, s):
+    def _CSI_DEC_SR_1047(self, s: bool) -> None:
         if s:
             self._screen_current = self._screen_alt
         else:
@@ -175,7 +178,7 @@ class _TTkTerminal_CSI_DEC(_TTkTerminalViewBase):
     #           DEC Private Mode Reset (DECRST).
     #             Ps = 1 0 4 8  ⇒  Restore cursor as in DECRC, xterm.  This
     #           may be disabled by the titeInhibit resource.
-    def _CSI_DEC_SR_1048(self, s):
+    def _CSI_DEC_SR_1048(self, s: bool) -> None:
             pass
 
     # CSI ? Pm h
@@ -191,7 +194,7 @@ class _TTkTerminal_CSI_DEC(_TTkTerminalViewBase):
     #           resource.  This combines the effects of the 1 0 4 7  and 1 0 4
     #           8  modes.  Use this with terminfo-based applications rather
     #           than the 4 7  mode.
-    def _CSI_DEC_SR_1049(self, s):
+    def _CSI_DEC_SR_1049(self, s: bool) -> None:
         self._CSI_DEC_SR_1047(s)
         self._CSI_DEC_SR_1048(s)
 
@@ -201,10 +204,10 @@ class _TTkTerminal_CSI_DEC(_TTkTerminalViewBase):
     # CSI ? Pm l
     #           DEC Private Mode Reset (DECRST).
     #             Ps = 2 0 0 4  ⇒  Reset bracketed paste mode, xterm.
-    def _CSI_DEC_SR_2004(self, s):
+    def _CSI_DEC_SR_2004(self, s: bool) -> None:
         self._terminal.bracketedMode = s
 
-    _CSI_DEC_SET_RST_MAP = {
+    _CSI_DEC_SET_RST_MAP: dict[int, Callable[[_TTkTerminal_CSI_DEC, bool], None]] = {
         1   : _CSI_DEC_SR_1_MODE_DECCKM,
         25  : _CSI_DEC_SR_25_DECTCEM,
         1000: _CSI_DEC_SR_1000,

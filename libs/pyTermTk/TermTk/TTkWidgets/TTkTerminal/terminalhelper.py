@@ -22,6 +22,7 @@
 
 __all__ = ['TTkTerminalHelper']
 
+from io import FileIO
 import os, pty, threading
 import struct, fcntl, termios
 from select import select
@@ -75,8 +76,15 @@ class TTkTerminalHelper():
                  '_fdLock',
                  #Signals
                  'terminalClosed', 'dataOut')
+
+    _fd: int | None
+    _pid: int | None
+    _inout: FileIO | None
+    _quit_pipe: tuple[int, int] | None
+    _term: TTkTerminal | None
+
     def __init__(self, *,
-                 term:TTkTerminal=None) -> None:
+                 term:TTkTerminal) -> None:
         '''
         :param term: The terminal handled by this helper.
         :type term: :py:class:`TTkTerminal`
@@ -88,12 +96,10 @@ class TTkTerminalHelper():
         self._inout = None
         self._pid = None
         self._quit_pipe = None
-        self._term = None
         self._size = (80,24)
         self._fdLock = threading.Lock()
         TTkHelper.quitEvent.connect(self._quit)
-        if term:
-            self.attachTTkTerminal(term)
+        self.attachTTkTerminal(term)
 
     def attachTTkTerminal(self, term:TTkTerminal) -> None:
         '''
@@ -109,14 +115,14 @@ class TTkTerminalHelper():
         term.termResized.connect(self.resize)
         term.closed.connect(self._quit)
 
-    def runShell(self, program:str=None) -> None:
+    def runShell(self, program:str='') -> None:
         '''
         Run a "program" attaching it the the pty session linked to this terminal.
 
         :param program: The program required to run, defaults to the cmd defined bu the "SHELL" env variable or "sh" if missing
         :type program: str, optional
         '''
-        self._shell = program if program else self._shell
+        self._shell = [program] if program else self._shell
         if isinstance(self._shell, str):
             self._shell = [self._shell]
         elif type(self._shell) not in [list,tuple]:
@@ -125,8 +131,9 @@ class TTkTerminalHelper():
         self._pid, self._fd = pty.fork()
 
         if self._pid == 0:
-            def _spawnTerminal(argv=self._shell, env=os.environ):
-                env=env.copy()
+            def _spawnTerminal() -> None:
+                argv=self._shell
+                env=os.environ.copy()
                 env.pop("TERMTK_GPM",None)
                 env.pop("TERMTK_MOUSE",None)
                 env['TERM']='screen'
@@ -184,7 +191,7 @@ class TTkTerminalHelper():
                 self._inout.write(data)
 
     @pyTTkSlot()
-    def _quit(self):
+    def _quit(self) -> None:
         TTkHelper.quitEvent.disconnect(self._quit)
         if pid := self._pid:
             try:
@@ -215,12 +222,19 @@ class TTkTerminalHelper():
         .. caution:: Do not touch this! (unless you know what you are doing)
         '''
 
+        if self._quit_pipe is None:
+            return
+
+        if self._inout is None:
+            return
+
         while rs := select( [self._inout,self._quit_pipe[0]], [], [])[0]:
             if self._quit_pipe[0] in rs:
                 with self._fdLock:
                     os.close(self._quit_pipe[0])
                     os.close(self._quit_pipe[1])
-                    os.close(self._fd)
+                    if self._fd is not None:
+                        os.close(self._fd)
                     self._fd = None
                     self._inout = None
                 return
@@ -248,10 +262,10 @@ class TTkTerminalHelper():
 
                 # out = out.decode('utf-8','ignore')
                 try:
-                    out = out.decode()
+                    out_dec = out.decode()
                 except Exception as e:
                     TTkLog.error(f"{e=}")
-                    TTkLog.error(f"Failed to decode {out}")
-                    out = out.decode('utf-8','ignore')
+                    TTkLog.error(f"Failed to decode {out!r}")
+                    out_dec = out.decode('utf-8','ignore')
 
-                self.dataOut.emit(out)
+                self.dataOut.emit(out_dec)

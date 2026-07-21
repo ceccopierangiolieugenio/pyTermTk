@@ -24,7 +24,7 @@ __all__ = ['TTkTerminalView']
 
 import re
 
-from typing import List
+from typing import Any, Generator, List
 
 from dataclasses import dataclass
 
@@ -64,7 +64,7 @@ class _termLog():
     # fatal = lambda _:None
     mouse = lambda _:None
 
-class TTkTerminalView(TTkAbstractScrollView, _TTkTerminal_CSI_DEC):
+class TTkTerminalView(_TTkTerminal_CSI_DEC):
     '''
     :py:class:`TTkTerminalView` is a terminal emulator fot TermTk
 
@@ -202,17 +202,9 @@ class TTkTerminalView(TTkAbstractScrollView, _TTkTerminal_CSI_DEC):
         '''
         return self._termResized
 
-    __slots__ = (
-            '_termLoop', '_newSize',
-            '_clipboard', '_selecting',
-            '_buffer_lines', '_buffer_screen',
-            '_keyboard', '_mouse', '_terminal',
-            '_screen_current', '_screen_normal', '_screen_alt',
-            # Signals
-            '_bell',
-            '_titleChanged', '_terminalClosed', '_textSelected',
-            '_termData','_termResized')
-    def __init__(self, **kwargs) -> None:
+    __slots__ = ()
+
+    def __init__(self, **kwargs:dict[str, Any]) -> None:
         #Signals
         self._bell = pyTTkSignal()
         self._terminalClosed = pyTTkSignal()
@@ -253,12 +245,12 @@ class TTkTerminalView(TTkAbstractScrollView, _TTkTerminal_CSI_DEC):
         self._screen_alt.bufferedLinesChanged.connect(self._screenChanged)
 
     @pyTTkSlot()
-    def _screenChanged(self):
+    def _screenChanged(self) -> None:
         self.viewMoveTo(0, len(self._screen_current._bufferedLines))
         self.viewChanged.emit()
 
     @pyTTkSlot()
-    def _viewChangedHandler(self):
+    def _viewChangedHandler(self) -> None:
         self.update()
 
     def viewFullAreaSize(self) -> tuple[int,int]:
@@ -275,12 +267,12 @@ class TTkTerminalView(TTkAbstractScrollView, _TTkTerminal_CSI_DEC):
         '''
         return self.size()
 
-    def resizeEvent(self, w: int, h: int):
+    def resizeEvent(self, w: int, h: int) -> None:
         self._newSize = (w,h)
         # self._screen_alt.resize(w,h)
         # self._screen_normal.resize(w,h)
         self.termResized.emit(w,h)
-        return super().resizeEvent(w, h)
+        super().resizeEvent(w, h)
 
     # xterm escape sequences from:
     # https://invisible-island.net/xterm/ctlseqs/ctlseqs.html
@@ -324,13 +316,14 @@ class TTkTerminalView(TTkAbstractScrollView, _TTkTerminal_CSI_DEC):
         '''
         return self._screen_current.getBuffer()
 
-    def _loopGenerator(self):
-        def _checkSize():
-            if self._newSize:
+    def _loopGenerator(self) -> Generator[None, str, None]:
+        def _checkSize() -> None:
+            if self._newSize is not None:
                 TTkLog.debug(f"{self._newSize=}")
                 self._screen_alt.resize(*self._newSize)
                 self._screen_normal.resize(*self._newSize)
                 self._newSize = None
+
         yield
         SGR_SET = TTkTermColor.SGR_SET # Precacing those variables to
         SGR_RST = TTkTermColor.SGR_RST # speedup the search
@@ -339,7 +332,8 @@ class TTkTerminalView(TTkAbstractScrollView, _TTkTerminal_CSI_DEC):
             _checkSize()
             # Entry Point 1
             out = yield
-            if not out: return
+            if not out:
+                return
             _checkSize()
 
             sout = (leftUnhandled+out).split('\033')
@@ -368,8 +362,8 @@ class TTkTerminalView(TTkAbstractScrollView, _TTkTerminal_CSI_DEC):
                 ################################################
                 if m := TTkTerminalView.re_DEC_SET_RST.match(slice):
                     en = m.end()
-                    qm = (m.group(1) == '?')
-                    sr = (m.group(3) == 'h')
+                    qm = bool(m.group(1) == '?')
+                    sr = bool(m.group(3) == 'h')
                     pms = [int(_pm) for _pm in m.group(2).split(';')]
                     if qm:
                         for pm in pms:
@@ -459,22 +453,22 @@ class TTkTerminalView(TTkAbstractScrollView, _TTkTerminal_CSI_DEC):
                     en = m.end()
                     fn = m.group(5)
                     defval = self._CSI_Default_MAP.get(fn,(1,1))
-                    y  = ps = int(y) if (y:=m.group(2)) else defval[0]
+                    y = ps = int(y) if (y:=m.group(2)) else defval[0]
                     sep = m.group(3)
                     x =       int(x) if (x:=m.group(4)) else defval[1]
                     _termLog.debug(f"{mg[0]}{fn} = ps:{y=} {sep=} {x=} {fn=}")
                     if fn in ['n']:
                         # Handle the non screen related functions
-                        _ex = self._CSI_MAP.get(
+                        _ex_csi = self._CSI_MAP.get(
                                 fn,
                                 lambda a,b,c: _termLog.error(f"Unhandled <ESC>[{mg[0]}{fn} = ps:{y=} {sep=} {x=} {fn=}"))
-                        _ex(self,y,x)
+                        _ex_csi(self,y,x)
                     else:
                         # Handle the screen related functions
-                        _ex = self._screen_current._CSI_MAP.get(
+                        _ex_csi = self._screen_current._CSI_MAP.get(
                                 fn,
                                 lambda a,b,c: _termLog.error(f"Unhandled <ESC>[{mg[0]}{fn} = ps:{y=} {sep=} {x=} {fn=}"))
-                        _ex(self._screen_current,y,x)
+                        _ex_csi(self._screen_current,y,x)
                     slice = slice[en:]
 
                 ################################################
@@ -512,7 +506,7 @@ class TTkTerminalView(TTkAbstractScrollView, _TTkTerminal_CSI_DEC):
                     slice = ""
 
                     # I am using a closure in order to exit the routine at the end
-                    def __processDCSEscapeGenerator():
+                    def __processDCSEscapeGenerator() -> tuple[bool, str]:
                         for dcs in escapeGenerator:
                             if dcs[0] == '\\':
                                 _termLog.warn(f"DCS: {self._terminal.DCSstring} - Not Handled")
@@ -531,7 +525,8 @@ class TTkTerminalView(TTkAbstractScrollView, _TTkTerminal_CSI_DEC):
                         while True:
                             # Entry Point 2
                             out = yield
-                            if not out: return (), ""
+                            if not out:
+                                return
 
                             sout = out.split('\033')
                             self._terminal.DCSstring += sout[0]
@@ -770,7 +765,7 @@ class TTkTerminalView(TTkAbstractScrollView, _TTkTerminal_CSI_DEC):
                     slice = slice[1:]
                     oscString = ""
 
-                    def __checkOSCBell(__osc:str, __oscString:str):
+                    def __checkOSCBell(__osc:str, __oscString:str) -> tuple[bool, str, str]:
                         if '\a' in __osc: # BEL (Ctrl-G) (\a) as terminator
                             belIndex = __osc.index('\a')
                             __oscString += __osc[:belIndex]
@@ -779,12 +774,12 @@ class TTkTerminalView(TTkAbstractScrollView, _TTkTerminal_CSI_DEC):
                         return False, "", __oscString
 
                     # I am using a closure in order to exit the routine at the end
-                    def __processOSCEscapeGenerator(__oscString:str):
+                    def __processOSCEscapeGenerator(__oscString:str) -> tuple[bool, str, str]:
                         _slice = ""
                         for __osc in escapeGenerator:
                             if __osc[0] == '\\': # ST (0x9c) (<ESC> \) as terminator
                                 return True, __osc[1:], __oscString
-                            _ret, _slice = __checkOSCBell(__osc, __oscString)
+                            _ret, _slice, __oscString = __checkOSCBell(__osc, __oscString)
                             if _ret:
                                 return _ret, _slice, __oscString
                         return False, "", __oscString
@@ -802,7 +797,8 @@ class TTkTerminalView(TTkAbstractScrollView, _TTkTerminal_CSI_DEC):
                         while True:
                             # Entry Point 3
                             out = yield
-                            if not out: return (), ""
+                            if not out:
+                                return
 
                             sout = out.split('\033')
                             oscString += sout[0]
@@ -835,10 +831,10 @@ class TTkTerminalView(TTkAbstractScrollView, _TTkTerminal_CSI_DEC):
                 #   ESC H   Horizontal Tab Set
                 elif slice and slice[0] in ('D','E','H','M','O','P','V','W','X','Z'):
                     # Handle the screen related functions
-                    _ex = self._screen_current._C1_MAP.get(
+                    _ex_c1 = self._screen_current._C1_MAP.get(
                             slice[0],
-                            lambda : _termLog.error(f"Unhandled C1 <ESC>{slice[0]}"))
-                    _ex(self._screen_current)
+                            lambda _ : _termLog.error(f"Unhandled C1 <ESC>{slice[0]}"))
+                    _ex_c1(self._screen_current)
                     slice = slice[1:]
                 ################################################
                 # Everything else
@@ -854,7 +850,7 @@ class TTkTerminalView(TTkAbstractScrollView, _TTkTerminal_CSI_DEC):
             self.setWidgetCursor(pos=self._screen_current.getCursor())
             _termLog.debug(f"wc:{self._screen_current.getCursor()}")
 
-    def pasteEvent(self, txt:str):
+    def pasteEvent(self, txt:str) -> bool:
         if self._terminal.bracketedMode:
             txt = "\033[200~"+txt+"\033[201~"
         self.termData.emit(txt.encode())
@@ -958,7 +954,7 @@ class TTkTerminalView(TTkAbstractScrollView, _TTkTerminal_CSI_DEC):
     #           Use the same mouse response format as the 1006 control, but
     #           report position in pixels rather than character cells.
 
-    def _sendMouse(self, evt):
+    def _sendMouse(self, evt:TTkMouseEvent) -> bool:
         if not self._mouse.reportPress:
             return False
         if ( not self._mouse.reportDrag and
@@ -1057,7 +1053,7 @@ class TTkTerminalView(TTkAbstractScrollView, _TTkTerminal_CSI_DEC):
             return self._sendMouse(evt)
         return False
 
-    def paintEvent(self, canvas: TTkCanvas):
+    def paintEvent(self, canvas: TTkCanvas) -> None:
         w,h = self.size()
         ox,oy = self.getViewOffsets()
         self._screen_current.paintEvent(canvas,w,h,ox,oy)
@@ -1093,7 +1089,7 @@ class TTkTerminalView(TTkAbstractScrollView, _TTkTerminal_CSI_DEC):
     #           codes.  The modifyFunctionKeys and modifyKeyboard resources
     #           can change the form of the string sent from the modified F1
     #           key.
-    def _CSI_n_DSR(self, ps, _):
+    def _CSI_n_DSR(self, ps:int, _:Any) -> None:
         x,y = self._screen_current.getCursor()
         if ps==6:
             self.termData.emit(f"\033[{y+1};{x+1}R".encode())
@@ -1175,7 +1171,7 @@ class TTkTerminalView(TTkAbstractScrollView, _TTkTerminal_CSI_DEC):
     #             Ps = 2 3 ; 2  ⇒  Restore xterm window title from stack.
     #             Ps >= 2 4  ⇒  Resize to Ps lines (DECSLPP), VT340 and VT420.
     #           xterm adapts this by resizing its window.
-    def _CSI_t_XTWINOPS(self, ps, _):
+    def _CSI_t_XTWINOPS(self, ps:int, _:Any) -> None:
         pass
 
     _CSI_MAP = {
@@ -1194,7 +1190,7 @@ class TTkTerminalView(TTkAbstractScrollView, _TTkTerminal_CSI_DEC):
     #             Ps = 1 2  ⇒  Send/receive (SRM).
     #             Ps = 2 0  ⇒  Normal Linefeed (LNM).
     #             Ps = 3 4  ⇒  Normal Cursor Visibility
-    def _CSI_SM_RM(self, ps, s):
+    def _CSI_SM_RM(self, ps:int, s:bool) -> None:
         if ps == 4: # Insert/Replace Mode
             self._terminal.IRM = s
         elif ps == 34:
@@ -1202,7 +1198,7 @@ class TTkTerminalView(TTkAbstractScrollView, _TTkTerminal_CSI_DEC):
         else:
             _termLog.error(f"Unhandled (SM) <ESC>{ps}{'h' if s else 'l'}")
 
-    def _CSI_DEC_SET_RST(self, ps, s):
+    def _CSI_DEC_SET_RST(self, ps:int, s:bool) -> None:
         _dec = self._CSI_DEC_SET_RST_MAP.get(
                 ps,
                 lambda a,b: _termLog.error(f"Unhandled (DEC) <ESC>[{ps}{'h' if s else 'l'}"))

@@ -24,18 +24,35 @@ __all__:list[str] = []
 
 from typing import Any, TYPE_CHECKING
 
+from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollView
+
 if TYPE_CHECKING:
     from .terminal_screen import _TTkTerminalScreen
 
-class _TTkTerminalViewBase():
-    __slots__ = ()
+class _TTkTerminalViewBase(TTkAbstractScrollView):
+    __slots__ = (
+        '_termLoop', '_newSize',
+        '_clipboard', '_selecting',
+        '_buffer_lines', '_buffer_screen',
+        '_keyboard', '_mouse', '_terminal',
+        '_screen_current', '_screen_normal', '_screen_alt',
+        # Signals
+        '_bell',
+        '_titleChanged', '_terminalClosed', '_textSelected',
+        '_termData','_termResized'
+    )
 
+    _newSize: tuple[int,int] | None
     _keyboard: Any
     _mouse: Any
     _terminal: Any
-    _screen_normal: '_TTkTerminalScreen'
-    _screen_alt: '_TTkTerminalScreen'
+    _screen_current: _TTkTerminalScreen
+    _screen_normal: _TTkTerminalScreen
+    _screen_alt: _TTkTerminalScreen
 
-    def enableWidgetCursor(self, enable: bool = True) -> None: ...
-    def size(self) -> tuple[int, int]: ...
-    def _screenChanged(self) -> None: ...
+    def enableWidgetCursor(self, enable: bool = True) -> None:
+        raise NotImplementedError()
+    def size(self) -> tuple[int, int]:
+        raise NotImplementedError()
+    def _screenChanged(self) -> None:
+        raise NotImplementedError()
