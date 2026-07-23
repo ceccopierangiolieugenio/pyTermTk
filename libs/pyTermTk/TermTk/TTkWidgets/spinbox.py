@@ -26,7 +26,7 @@ from TermTk.TTkCore.cfg import TTkCfg
 from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
-from TermTk.TTkCore.TTkTerm.inputkey import TTkKeyEvent
+from TermTk.TTkCore.TTkTerm.inputkey import TTkKeyEvent, TTkKeyEvent_SpecialKey
 from TermTk.TTkCore.TTkTerm.inputmouse import TTkMouseEvent
 
 from TermTk.TTkLayouts import TTkGridLayout
@@ -139,7 +139,7 @@ class TTkSpinBox(TTkContainer):
         return True
 
     def keyEvent(self, evt:TTkKeyEvent) -> bool:
-        if evt.type == TTkK.SpecialKey:
+        if isinstance(evt, TTkKeyEvent_SpecialKey):
             if evt.key == TTkK.Key_Up:
                 self.setValue(self._value+1)
                 return True

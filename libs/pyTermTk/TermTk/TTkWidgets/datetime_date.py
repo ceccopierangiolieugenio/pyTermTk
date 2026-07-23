@@ -33,7 +33,7 @@ from TermTk.TTkCore.string import TTkString
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.helper import TTkHelper
 from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
-from TermTk.TTkCore.TTkTerm.inputkey import TTkKeyEvent
+from TermTk.TTkCore.TTkTerm.inputkey import TTkKeyEvent, TTkKeyEvent_Character, TTkKeyEvent_SpecialKey
 from TermTk.TTkCore.TTkTerm.inputmouse import TTkMouseEvent
 from TermTk.TTkLayouts import TTkGridLayout
 from TermTk.TTkWidgets.widget import TTkWidget
@@ -216,7 +216,7 @@ class TTkDate(TTkWidget):
 
     def keyEvent(self, evt:TTkKeyEvent) -> bool:
         selected = self._state.selected
-        if evt.type == TTkK.SpecialKey:
+        if isinstance(evt, TTkKeyEvent_SpecialKey):
             self._state.digit = 0
             self._state.selected = selected
 
@@ -283,7 +283,7 @@ class TTkDate(TTkWidget):
             if evt.key == TTkK.Key_Enter:
                 self._state.selected = _FieldSelected.NONE
                 return True
-        else:
+        elif isinstance(evt, TTkKeyEvent_Character):
             if self._state.selected == _FieldSelected.CAL:
                 self._showForm()
                 self.update()

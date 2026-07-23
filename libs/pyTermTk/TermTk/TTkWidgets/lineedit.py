@@ -33,7 +33,7 @@ from TermTk.TTkCore.helper import TTkHelper
 from TermTk.TTkCore.string import TTkString, TTkStringType
 from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
-from TermTk.TTkCore.TTkTerm.inputkey import TTkKeyEvent
+from TermTk.TTkCore.TTkTerm.inputkey import TTkKeyEvent, TTkKeyEvent_Character, TTkKeyEvent_SpecialKey
 from TermTk.TTkCore.TTkTerm.inputmouse import TTkMouseEvent
 
 from TermTk.TTkGui.clipboard import TTkClipboard
@@ -390,7 +390,7 @@ class TTkLineEdit(TTkWidget):
 
     def keyEvent(self, evt:TTkKeyEvent) -> bool:
         baseText = self._text
-        if evt.type == TTkK.SpecialKey:
+        if isinstance(evt, TTkKeyEvent_SpecialKey):
             # Don't Handle the special focus switch key
             if evt.key in (
                 TTkK.Key_Tab, TTkK.Key_Up, TTkK.Key_Down):
@@ -450,7 +450,7 @@ class TTkLineEdit(TTkWidget):
 
             if evt.key == TTkK.Key_Enter:
                 self.returnPressed.emit()
-        elif isinstance(evt.key,str):
+        elif isinstance(evt, TTkKeyEvent_Character):
             text = self._text
 
             if self._selectionFrom < self._selectionTo:

@@ -30,28 +30,29 @@ from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.helper import TTkHelper
 from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
-from TermTk.TTkCore.TTkTerm.inputkey import TTkKeyEvent
+from TermTk.TTkCore.TTkTerm.inputkey import TTkKeyEvent, TTkKeyEvent_Character, TTkKeyEvent_SpecialKey
 
 if TYPE_CHECKING:
     from TermTk.TTkWidgets.widget import TTkWidget
 
+
 class _TTkStandardKey():
     pass
 
+
 class _TTkKeySequence():
     __slots__ = ('_key',)
+    _key: TTkKeyEvent
     def __init__(self, key:int):
         mod = (
             ( TTkK.ControlModifier if key & TTkK.CTRL  else 0 ) |
             ( TTkK.AltModifier     if key & TTkK.ALT   else 0 ) |
             ( TTkK.ShiftModifier   if key & TTkK.SHIFT else 0 ) )
         key &= ~(TTkK.CTRL|TTkK.ALT|TTkK.SHIFT|TTkK.META)
-        t = TTkK.SpecialKey if mod else TTkK.Character
-        self._key = TTkKeyEvent(type=t, key=key, mod=mod, code="")
         if mod:
-            self._key = TTkKeyEvent(mod=mod, code="", type=TTkK.SpecialKey, key=key )
+            self._key = TTkKeyEvent_SpecialKey(mod=mod, code="", key=key )
         else:
-            self._key = TTkKeyEvent(mod=mod, code="", type=TTkK.Character,  key=chr(key) )
+            self._key = TTkKeyEvent_Character(mod=mod, code="", key=chr(key) )
 
     def __hash__(self) -> int:
         return self._key.__hash__()

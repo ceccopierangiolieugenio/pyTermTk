@@ -83,17 +83,17 @@ class FileViewer(ttk.TTkAbstractScrollView):
         self._searchRe = searchRe
         self.update()
 
-    def viewFullAreaSize(self) -> (int, int):
+    def viewFullAreaSize(self) -> tuple[int, int]:
         w = 10+self._fileBuffer.getWidth()
         h = self._fileBuffer.getLen()
         return ( w , h )
 
-    def viewDisplayedSize(self) -> (int, int):
+    def viewDisplayedSize(self) -> tuple[int, int]:
         return self.size()
 
     def keyEvent(self, evt):
         # Enable CTRL+C = Copy
-        if ( evt.type == ttk.TTkK.SpecialKey and
+        if ( isinstance(evt, ttk.TTkKeyEvent_SpecialKey) and
              evt.mod  == ttk.TTkK.ControlModifier and
              evt.key  == ttk.TTkK.Key_C ):
                 self._copy()
@@ -255,7 +255,7 @@ class FileViewerSearch(FileViewer):
         self.viewMoveTo(ox, lineToMove)
         self.update()
 
-    def viewFullAreaSize(self) -> (int, int):
+    def viewFullAreaSize(self) -> tuple[int, int]:
         if self._indexes is None:
             w = 2+self._fileBuffer.getWidth()
             h = self._fileBuffer.getLen()

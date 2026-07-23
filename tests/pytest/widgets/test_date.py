@@ -4,7 +4,7 @@ import calendar
 from unittest.mock import Mock, patch, MagicMock
 
 from TermTk.TTkCore.constant import TTkK
-from TermTk.TTkCore.TTkTerm.inputkey import TTkKeyEvent
+from TermTk.TTkCore.TTkTerm.inputkey import TTkKeyEvent, TTkKeyEvent_Character, TTkKeyEvent_SpecialKey
 from TermTk.TTkCore.TTkTerm.inputmouse import TTkMouseEvent
 from TermTk.TTkWidgets.datetime_date import TTkDate, _FieldSelected, _TTkTimeWidgetState
 
@@ -301,31 +301,31 @@ class TestTTkDateKeyEvents:
         """Test forward Tab navigation through fields."""
         # Start with NONE, tab to YEARS
         self.widget._state.selected = _FieldSelected.NONE
-        evt = TTkKeyEvent(TTkK.SpecialKey, TTkK.Key_Tab, "", TTkK.NoModifier)
+        evt = TTkKeyEvent_SpecialKey(TTkK.Key_Tab, "", TTkK.NoModifier)
         result = self.widget.keyEvent(evt)
         assert result is True
         assert self.widget._state.selected == _FieldSelected.YEARS
 
         # From YEARS to MONTHS
-        evt = TTkKeyEvent(TTkK.SpecialKey, TTkK.Key_Tab, "", TTkK.NoModifier)
+        evt = TTkKeyEvent_SpecialKey(TTkK.Key_Tab, "", TTkK.NoModifier)
         result = self.widget.keyEvent(evt)
         assert result is True
         assert self.widget._state.selected == _FieldSelected.MONTHS
 
         # From MONTHS to DAYS
-        evt = TTkKeyEvent(TTkK.SpecialKey, TTkK.Key_Tab, "", TTkK.NoModifier)
+        evt = TTkKeyEvent_SpecialKey(TTkK.Key_Tab, "", TTkK.NoModifier)
         result = self.widget.keyEvent(evt)
         assert result is True
         assert self.widget._state.selected == _FieldSelected.DAYS
 
         # From DAYS to CAL
-        evt = TTkKeyEvent(TTkK.SpecialKey, TTkK.Key_Tab, "", TTkK.NoModifier)
+        evt = TTkKeyEvent_SpecialKey(TTkK.Key_Tab, "", TTkK.NoModifier)
         result = self.widget.keyEvent(evt)
         assert result is True
         assert self.widget._state.selected == _FieldSelected.CAL
 
         # From CAL should return False
-        evt = TTkKeyEvent(TTkK.SpecialKey, TTkK.Key_Tab, "", TTkK.NoModifier)
+        evt = TTkKeyEvent_SpecialKey(TTkK.Key_Tab, "", TTkK.NoModifier)
         result = self.widget.keyEvent(evt)
         assert result is False
 
@@ -333,38 +333,38 @@ class TestTTkDateKeyEvents:
         """Test backward Tab navigation (Shift+Tab)."""
         # Start with NONE, shift+tab to CAL
         self.widget._state.selected = _FieldSelected.NONE
-        evt = TTkKeyEvent(TTkK.SpecialKey, TTkK.Key_Tab, "", TTkK.ShiftModifier)
+        evt = TTkKeyEvent_SpecialKey(TTkK.Key_Tab, "", TTkK.ShiftModifier)
         result = self.widget.keyEvent(evt)
         assert result is True
         assert self.widget._state.selected == _FieldSelected.CAL
 
         # From CAL to DAYS
-        evt = TTkKeyEvent(TTkK.SpecialKey, TTkK.Key_Tab, "", TTkK.ShiftModifier)
+        evt = TTkKeyEvent_SpecialKey(TTkK.Key_Tab, "", TTkK.ShiftModifier)
         result = self.widget.keyEvent(evt)
         assert result is True
         assert self.widget._state.selected == _FieldSelected.DAYS
 
         # From DAYS to MONTHS
-        evt = TTkKeyEvent(TTkK.SpecialKey, TTkK.Key_Tab, "", TTkK.ShiftModifier)
+        evt = TTkKeyEvent_SpecialKey(TTkK.Key_Tab, "", TTkK.ShiftModifier)
         result = self.widget.keyEvent(evt)
         assert result is True
         assert self.widget._state.selected == _FieldSelected.MONTHS
 
         # From MONTHS to YEARS
-        evt = TTkKeyEvent(TTkK.SpecialKey, TTkK.Key_Tab, "", TTkK.ShiftModifier)
+        evt = TTkKeyEvent_SpecialKey(TTkK.Key_Tab, "", TTkK.ShiftModifier)
         result = self.widget.keyEvent(evt)
         assert result is True
         assert self.widget._state.selected == _FieldSelected.YEARS
 
         # From YEARS should return False
-        evt = TTkKeyEvent(TTkK.SpecialKey, TTkK.Key_Tab, "", TTkK.ShiftModifier)
+        evt = TTkKeyEvent_SpecialKey(TTkK.Key_Tab, "", TTkK.ShiftModifier)
         result = self.widget.keyEvent(evt)
         assert result is False
 
     def test_arrow_navigation_right(self):
         """Test right arrow navigation."""
         self.widget._state.selected = _FieldSelected.YEARS
-        evt = TTkKeyEvent(TTkK.SpecialKey, TTkK.Key_Right, "", TTkK.NoModifier)
+        evt = TTkKeyEvent_SpecialKey(TTkK.Key_Right, "", TTkK.NoModifier)
         result = self.widget.keyEvent(evt)
         assert result is True
         assert self.widget._state.selected == _FieldSelected.MONTHS
@@ -372,7 +372,7 @@ class TestTTkDateKeyEvents:
     def test_arrow_navigation_left(self):
         """Test left arrow navigation."""
         self.widget._state.selected = _FieldSelected.MONTHS
-        evt = TTkKeyEvent(TTkK.SpecialKey, TTkK.Key_Left, "", TTkK.NoModifier)
+        evt = TTkKeyEvent_SpecialKey(TTkK.Key_Left, "", TTkK.NoModifier)
         result = self.widget.keyEvent(evt)
         assert result is True
         assert self.widget._state.selected == _FieldSelected.YEARS
@@ -384,7 +384,7 @@ class TestTTkDateKeyEvents:
 
         for key in (TTkK.Key_Up, TTkK.Key_Down, TTkK.Key_Enter):
             mock_show_form.reset_mock()
-            evt = TTkKeyEvent(TTkK.SpecialKey, key, "", TTkK.NoModifier)
+            evt = TTkKeyEvent_SpecialKey(key, "", TTkK.NoModifier)
             result = self.widget.keyEvent(evt)
             assert result is True
             mock_show_form.assert_called_once()
@@ -394,7 +394,7 @@ class TestTTkDateKeyEvents:
         initial_date = self.widget.date()
         self.widget._state.selected = _FieldSelected.YEARS
 
-        evt = TTkKeyEvent(TTkK.SpecialKey, TTkK.Key_Up, "", TTkK.NoModifier)
+        evt = TTkKeyEvent_SpecialKey(TTkK.Key_Up, "", TTkK.NoModifier)
         result = self.widget.keyEvent(evt)
 
         assert result is True
@@ -409,7 +409,7 @@ class TestTTkDateKeyEvents:
         initial_date = self.widget.date()
         self.widget._state.selected = _FieldSelected.MONTHS
 
-        evt = TTkKeyEvent(TTkK.SpecialKey, TTkK.Key_Up, "", TTkK.NoModifier)
+        evt = TTkKeyEvent_SpecialKey(TTkK.Key_Up, "", TTkK.NoModifier)
         result = self.widget.keyEvent(evt)
 
         assert result is True
@@ -422,7 +422,7 @@ class TestTTkDateKeyEvents:
         initial_date = self.widget.date()
         self.widget._state.selected = _FieldSelected.DAYS
 
-        evt = TTkKeyEvent(TTkK.SpecialKey, TTkK.Key_Up, "", TTkK.NoModifier)
+        evt = TTkKeyEvent_SpecialKey(TTkK.Key_Up, "", TTkK.NoModifier)
         result = self.widget.keyEvent(evt)
 
         assert result is True
@@ -435,7 +435,7 @@ class TestTTkDateKeyEvents:
         initial_date = self.widget.date()
         self.widget._state.selected = _FieldSelected.YEARS
 
-        evt = TTkKeyEvent(TTkK.SpecialKey, TTkK.Key_Down, "", TTkK.NoModifier)
+        evt = TTkKeyEvent_SpecialKey(TTkK.Key_Down, "", TTkK.NoModifier)
         result = self.widget.keyEvent(evt)
 
         assert result is True
@@ -448,7 +448,7 @@ class TestTTkDateKeyEvents:
         """Test Delete key clears years field."""
         self.widget._state.selected = _FieldSelected.YEARS
 
-        evt = TTkKeyEvent(TTkK.SpecialKey, TTkK.Key_Delete, "", TTkK.NoModifier)
+        evt = TTkKeyEvent_SpecialKey(TTkK.Key_Delete, "", TTkK.NoModifier)
         result = self.widget.keyEvent(evt)
 
         assert result is True
@@ -458,7 +458,7 @@ class TestTTkDateKeyEvents:
         """Test Delete key clears months field."""
         self.widget._state.selected = _FieldSelected.MONTHS
 
-        evt = TTkKeyEvent(TTkK.SpecialKey, TTkK.Key_Delete, "", TTkK.NoModifier)
+        evt = TTkKeyEvent_SpecialKey(TTkK.Key_Delete, "", TTkK.NoModifier)
         result = self.widget.keyEvent(evt)
 
         assert result is True
@@ -468,7 +468,7 @@ class TestTTkDateKeyEvents:
         """Test Delete key clears days field."""
         self.widget._state.selected = _FieldSelected.DAYS
 
-        evt = TTkKeyEvent(TTkK.SpecialKey, TTkK.Key_Delete, "", TTkK.NoModifier)
+        evt = TTkKeyEvent_SpecialKey(TTkK.Key_Delete, "", TTkK.NoModifier)
         result = self.widget.keyEvent(evt)
 
         assert result is True
@@ -478,7 +478,7 @@ class TestTTkDateKeyEvents:
         """Test Backspace key clears fields same as Delete."""
         self.widget._state.selected = _FieldSelected.YEARS
 
-        evt = TTkKeyEvent(TTkK.SpecialKey, TTkK.Key_Backspace, "", TTkK.NoModifier)
+        evt = TTkKeyEvent_SpecialKey(TTkK.Key_Backspace, "", TTkK.NoModifier)
         result = self.widget.keyEvent(evt)
 
         assert result is True
@@ -488,7 +488,7 @@ class TestTTkDateKeyEvents:
         """Test Enter key deselects current field."""
         self.widget._state.selected = _FieldSelected.YEARS
 
-        evt = TTkKeyEvent(TTkK.SpecialKey, TTkK.Key_Enter, "", TTkK.NoModifier)
+        evt = TTkKeyEvent_SpecialKey(TTkK.Key_Enter, "", TTkK.NoModifier)
         result = self.widget.keyEvent(evt)
 
         assert result is True
@@ -499,7 +499,7 @@ class TestTTkDateKeyEvents:
         self.widget._state.selected = _FieldSelected.YEARS
         self.widget._state.digit = 0
 
-        evt = TTkKeyEvent(TTkK.Character, "2", "", TTkK.NoModifier)
+        evt = TTkKeyEvent_Character("2", "", TTkK.NoModifier)
         result = self.widget.keyEvent(evt)
 
         assert result is True
@@ -513,7 +513,7 @@ class TestTTkDateKeyEvents:
 
         # Enter 2024
         for i, digit in enumerate("2024"):
-            evt = TTkKeyEvent(TTkK.Character, digit, "", TTkK.NoModifier)
+            evt = TTkKeyEvent_Character(digit, "", TTkK.NoModifier)
             self.widget.keyEvent(evt)
             assert self.widget._state.digit == (i + 1) % 4
 
@@ -526,7 +526,7 @@ class TestTTkDateKeyEvents:
 
         # Try to enter 1899 (below minimum)
         for digit in "1899":
-            evt = TTkKeyEvent(TTkK.Character, digit, "", TTkK.NoModifier)
+            evt = TTkKeyEvent_Character(digit, "", TTkK.NoModifier)
             self.widget.keyEvent(evt)
 
         assert self.widget.date().year == 1999  # Should be clamped to minimum
@@ -534,7 +534,7 @@ class TestTTkDateKeyEvents:
         # Reset and try 2101 (above maximum)
         self.widget._state.digit = 0
         for digit in "2101":
-            evt = TTkKeyEvent(TTkK.Character, digit, "", TTkK.NoModifier)
+            evt = TTkKeyEvent_Character(digit, "", TTkK.NoModifier)
             self.widget.keyEvent(evt)
 
         assert self.widget.date().year == 2100  # Should be clamped to maximum
@@ -544,7 +544,7 @@ class TestTTkDateKeyEvents:
         self.widget._state.selected = _FieldSelected.MONTHS
         self.widget._state.digit = 0
 
-        evt = TTkKeyEvent(TTkK.Character, "1", "", TTkK.NoModifier)
+        evt = TTkKeyEvent_Character("1", "", TTkK.NoModifier)
         result = self.widget.keyEvent(evt)
 
         assert result is True
@@ -557,9 +557,9 @@ class TestTTkDateKeyEvents:
         self.widget._state.digit = 0
 
         # Enter 12
-        evt = TTkKeyEvent(TTkK.Character, "1", "", TTkK.NoModifier)
+        evt = TTkKeyEvent_Character("1", "", TTkK.NoModifier)
         self.widget.keyEvent(evt)
-        evt = TTkKeyEvent(TTkK.Character, "2", "", TTkK.NoModifier)
+        evt = TTkKeyEvent_Character("2", "", TTkK.NoModifier)
         self.widget.keyEvent(evt)
 
         assert self.widget.date().month == 12
@@ -572,7 +572,7 @@ class TestTTkDateKeyEvents:
 
         # Try to enter 13 (month 1 + digit 3 = 13, should clamp to 12)
         self.widget.setDate(datetime.date(2023, 1, 15))  # Set month to 1
-        evt = TTkKeyEvent(TTkK.Character, "3", "", TTkK.NoModifier)
+        evt = TTkKeyEvent_Character("3", "", TTkK.NoModifier)
         self.widget.keyEvent(evt)
 
         assert self.widget.date().month == 12  # Should be clamped
@@ -585,9 +585,9 @@ class TestTTkDateKeyEvents:
         self.widget._state.digit = 0  # Second digit
 
         # Try to enter 29 (day 2 + digit 9 = 29, should clamp to 28)
-        evt = TTkKeyEvent(TTkK.Character, "2", "", TTkK.NoModifier)
+        evt = TTkKeyEvent_Character("2", "", TTkK.NoModifier)
         self.widget.keyEvent(evt)
-        evt = TTkKeyEvent(TTkK.Character, "9", "", TTkK.NoModifier)
+        evt = TTkKeyEvent_Character("9", "", TTkK.NoModifier)
         self.widget.keyEvent(evt)
 
         assert self.widget.date().day == 28  # Should be clamped to February limit
@@ -600,9 +600,9 @@ class TestTTkDateKeyEvents:
         self.widget._state.digit = 0  # Second digit
 
         # Enter 29
-        evt = TTkKeyEvent(TTkK.Character, "2", "", TTkK.NoModifier)
+        evt = TTkKeyEvent_Character("2", "", TTkK.NoModifier)
         self.widget.keyEvent(evt)
-        evt = TTkKeyEvent(TTkK.Character, "9", "", TTkK.NoModifier)
+        evt = TTkKeyEvent_Character("9", "", TTkK.NoModifier)
         self.widget.keyEvent(evt)
 
         assert self.widget.date().day == 29  # Should be allowed in leap year
@@ -612,7 +612,7 @@ class TestTTkDateKeyEvents:
         """Test character input in calendar field shows form."""
         self.widget._state.selected = _FieldSelected.CAL
 
-        evt = TTkKeyEvent(TTkK.Character, "x", "", TTkK.NoModifier)
+        evt = TTkKeyEvent_Character("x", "", TTkK.NoModifier)
         result = self.widget.keyEvent(evt)
 
         assert result is True
@@ -623,7 +623,7 @@ class TestTTkDateKeyEvents:
         self.widget._state.selected = _FieldSelected.YEARS
         self.widget._state.digit = 3
 
-        evt = TTkKeyEvent(TTkK.SpecialKey, TTkK.Key_Up, "", TTkK.NoModifier)
+        evt = TTkKeyEvent_SpecialKey(TTkK.Key_Up, "", TTkK.NoModifier)
         self.widget.keyEvent(evt)
 
         assert self.widget._state.digit == 0
@@ -632,7 +632,7 @@ class TestTTkDateKeyEvents:
         """Test unknown special keys return False."""
         self.widget._state.selected = _FieldSelected.YEARS
 
-        evt = TTkKeyEvent(TTkK.SpecialKey, 9999, "", TTkK.NoModifier)  # Unknown key
+        evt = TTkKeyEvent_SpecialKey(9999, "", TTkK.NoModifier)  # Unknown key
         result = self.widget.keyEvent(evt)
 
         assert result is False
@@ -642,7 +642,7 @@ class TestTTkDateKeyEvents:
         self.widget._state.selected = _FieldSelected.YEARS
         initial_date = self.widget.date()
 
-        evt = TTkKeyEvent(TTkK.Character, "a", "", TTkK.NoModifier)
+        evt = TTkKeyEvent_Character("a", "", TTkK.NoModifier)
         result = self.widget.keyEvent(evt)
 
         assert result is True
@@ -760,25 +760,25 @@ class TestTTkDateIntegration:
 
         # Enter year 2024
         for digit in "2024":
-            evt = TTkKeyEvent(TTkK.Character, digit, "", TTkK.NoModifier)
+            evt = TTkKeyEvent_Character(digit, "", TTkK.NoModifier)
             self.widget.keyEvent(evt)
 
         # Navigate to months
-        evt = TTkKeyEvent(TTkK.SpecialKey, TTkK.Key_Tab, "", TTkK.NoModifier)
+        evt = TTkKeyEvent_SpecialKey(TTkK.Key_Tab, "", TTkK.NoModifier)
         self.widget.keyEvent(evt)
 
         # Enter month 12
         for digit in "12":
-            evt = TTkKeyEvent(TTkK.Character, digit, "", TTkK.NoModifier)
+            evt = TTkKeyEvent_Character(digit, "", TTkK.NoModifier)
             self.widget.keyEvent(evt)
 
         # Navigate to days
-        evt = TTkKeyEvent(TTkK.SpecialKey, TTkK.Key_Tab, "", TTkK.NoModifier)
+        evt = TTkKeyEvent_SpecialKey(TTkK.Key_Tab, "", TTkK.NoModifier)
         self.widget.keyEvent(evt)
 
         # Enter day 25
         for digit in "25":
-            evt = TTkKeyEvent(TTkK.Character, digit, "", TTkK.NoModifier)
+            evt = TTkKeyEvent_Character(digit, "", TTkK.NoModifier)
             self.widget.keyEvent(evt)
 
         # Verify final date
@@ -797,12 +797,12 @@ class TestTTkDateIntegration:
         self.widget._state.selected = _FieldSelected.DAYS
 
         # Decrement day
-        evt = TTkKeyEvent(TTkK.SpecialKey, TTkK.Key_Down, "", TTkK.NoModifier)
+        evt = TTkKeyEvent_SpecialKey(TTkK.Key_Down, "", TTkK.NoModifier)
         self.widget.keyEvent(evt)
         assert self.widget.date() == datetime.date(2024, 2, 28)
 
         # Increment back
-        evt = TTkKeyEvent(TTkK.SpecialKey, TTkK.Key_Up, "", TTkK.NoModifier)
+        evt = TTkKeyEvent_SpecialKey(TTkK.Key_Up, "", TTkK.NoModifier)
         self.widget.keyEvent(evt)
         assert self.widget.date() == datetime.date(2024, 2, 29)
 
@@ -810,14 +810,14 @@ class TestTTkDateIntegration:
     def test_state_changes_trigger_updates(self, mock_update):
         """Test that state changes trigger UI updates."""
         # Navigation should trigger update
-        evt = TTkKeyEvent(TTkK.SpecialKey, TTkK.Key_Tab, "", TTkK.NoModifier)
+        evt = TTkKeyEvent_SpecialKey(TTkK.Key_Tab, "", TTkK.NoModifier)
         self.widget.keyEvent(evt)
         mock_update.assert_called()
 
         mock_update.reset_mock()
 
         # Date changes should trigger update
-        evt = TTkKeyEvent(TTkK.SpecialKey, TTkK.Key_Up, "", TTkK.NoModifier)
+        evt = TTkKeyEvent_SpecialKey(TTkK.Key_Up, "", TTkK.NoModifier)
         self.widget.keyEvent(evt)
         mock_update.assert_called()
 
@@ -838,7 +838,7 @@ class TestTTkDateIntegration:
 
         # Test keyboard-induced date change
         self.widget._state.selected = _FieldSelected.DAYS
-        evt = TTkKeyEvent(TTkK.SpecialKey, TTkK.Key_Up, "", TTkK.NoModifier)
+        evt = TTkKeyEvent_SpecialKey(TTkK.Key_Up, "", TTkK.NoModifier)
         self.widget.keyEvent(evt)
         assert len(signals_received) == 2
         assert signals_received[1] == datetime.date(2025, 1, 2)

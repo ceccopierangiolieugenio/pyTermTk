@@ -36,7 +36,7 @@ from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkCore.canvas import TTkCanvas
 from TermTk.TTkCore.string import TTkString, TTkStringType
 from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
-from TermTk.TTkCore.TTkTerm.inputkey import TTkKeyEvent
+from TermTk.TTkCore.TTkTerm.inputkey import TTkKeyEvent, TTkKeyEvent_Character, TTkKeyEvent_SpecialKey
 from TermTk.TTkCore.TTkTerm.inputmouse import TTkMouseEvent
 
 from TermTk.TTkGui.drag import TTkDrag, TTkDnDEvent
@@ -267,8 +267,8 @@ class _TTkTabColorButton(TTkWidget):
         super().__init__(**kwargs)
 
     def keyEvent(self, evt:TTkKeyEvent) -> bool:
-        if ( evt.type == TTkK.Character and evt.key==" " ) or \
-           ( evt.type == TTkK.SpecialKey and evt.key == TTkK.Key_Enter ):
+        if ( isinstance(evt, TTkKeyEvent_Character) and evt.key==" " ) or \
+           ( isinstance(evt, TTkKeyEvent_SpecialKey) and evt.key == TTkK.Key_Enter ):
             self._keyPressed = True
             self._pressed = True
             self.update()
@@ -891,15 +891,15 @@ class TTkTabBar(TTkContainer):
         return True
 
     def keyEvent(self, evt:TTkKeyEvent) -> bool:
-        if evt.type == TTkK.SpecialKey:
+        if isinstance(evt, TTkKeyEvent_SpecialKey):
             if evt.key == TTkK.Key_Right:
                 self._tabStatus._highlightToTheRight()
                 return True
             elif evt.key == TTkK.Key_Left:
                 self._tabStatus._andHighlightToTheLeft()
                 return True
-        if ( evt.type == TTkK.Character and evt.key==" " ) or \
-           ( evt.type == TTkK.SpecialKey and evt.key == TTkK.Key_Enter ):
+        if ( isinstance(evt, TTkKeyEvent_Character) and evt.key==" " ) or \
+           ( isinstance(evt, TTkKeyEvent_SpecialKey) and evt.key == TTkK.Key_Enter ):
             self._tabStatus._selectHighlighted()
             return True
         return False

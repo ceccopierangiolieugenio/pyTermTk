@@ -28,7 +28,7 @@ from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkCore.canvas import TTkCanvas
 from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
 from TermTk.TTkCore.string import TTkString
-from TermTk.TTkCore.TTkTerm.inputkey import TTkKeyEvent
+from TermTk.TTkCore.TTkTerm.inputkey import TTkKeyEvent, TTkKeyEvent_Character, TTkKeyEvent_SpecialKey
 from TermTk.TTkCore.TTkTerm.inputmouse import TTkMouseEvent
 
 from TermTk.TTkLayouts.gridlayout import TTkGridLayout
@@ -272,7 +272,7 @@ class _TTkMenuAreaWidget(TTkAbstractScrollView):
     def keyEvent(self, evt:TTkKeyEvent) -> bool:
         if not self._submenu: return False
         btns = [b for b in self._submenu if type(b)==TTkMenuButton]
-        if evt.type == TTkK.SpecialKey:
+        if isinstance(evt, TTkKeyEvent_SpecialKey):
             # Retrieve the current highlighted button
             curBtn = _b[0] if (_b := [b for b in btns if b._highlighted]) else None
             if evt.key == TTkK.Key_Up:
@@ -304,7 +304,7 @@ class _TTkMenuAreaWidget(TTkAbstractScrollView):
                 if curBtn:
                     curBtn.shortcutEvent()
                     return True
-        else:
+        elif isinstance(evt, TTkKeyEvent_Character):
             # Handle shortcuts
             if evt.key == " ":
                 curBtn = _b[0] if (_b := [b for b in btns if b._highlighted]) else None

@@ -25,7 +25,7 @@ __all__ = ['TTkKeyPressView']
 from typing import List
 
 from TermTk.TTkCore.TTkTerm.input import TTkInput
-from TermTk.TTkCore.TTkTerm.inputkey import TTkKeyEvent, mod2str, key2str
+from TermTk.TTkCore.TTkTerm.inputkey import TTkKeyEvent, TTkKeyEvent_Character, mod2str, key2str
 from TermTk.TTkCore.TTkTerm.inputmouse import TTkMouseEvent
 from TermTk.TTkCore.helper import TTkHelper
 from TermTk.TTkCore.signal import pyTTkSlot
@@ -53,9 +53,9 @@ class TTkKeyPressView(TTkWidget):
 
     @pyTTkSlot(TTkKeyEvent)
     def _addKey(self, evt):
-        if evt.type == TTkK.Character:
+        if isinstance(evt, TTkKeyEvent_Character):
             text = evt.key
-        else:
+        elif isinstance(evt, TTkKeyEvent_Character):
             text = key2str(evt.key).replace("Key_",'')
             if evt.mod:
                 m = mod2str(evt.mod).replace("Modifier",'')

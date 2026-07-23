@@ -32,7 +32,7 @@ from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.string import TTkString
 from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
-from TermTk.TTkCore.TTkTerm.inputkey import TTkKeyEvent
+from TermTk.TTkCore.TTkTerm.inputkey import TTkKeyEvent, TTkKeyEvent_Character, TTkKeyEvent_SpecialKey
 from TermTk.TTkCore.TTkTerm.inputmouse import TTkMouseEvent
 
 from TermTk.TTkGui.clipboard import TTkClipboard
@@ -1289,7 +1289,7 @@ class TTkTableWidget(TTkAbstractScrollView):
             row,col = self._currentPos
         else:
             row,col = 0,0
-        if evt.type == TTkK.SpecialKey:
+        if isinstance(evt, TTkKeyEvent_SpecialKey):
             if evt.mod==TTkK.ControlModifier:
                 if   evt.key == TTkK.Key_Z:  self.undo()
                 elif evt.key == TTkK.Key_Y:  self.redo()
@@ -1327,7 +1327,7 @@ class TTkTableWidget(TTkAbstractScrollView):
                     self._cleanSelectedContent()
                 self.update()
             return True
-        else:
+        elif isinstance(evt, TTkKeyEvent_Character):
             if (self._tableModel.flags(row=row,col=col) & TTkK.ItemFlag.ItemIsEditable):
                 self._tableModel_setData([(row,col,evt.key)])
                 self._editCell(row,col,richEditSupport=False)

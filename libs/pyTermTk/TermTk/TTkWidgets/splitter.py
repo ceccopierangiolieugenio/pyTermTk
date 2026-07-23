@@ -360,8 +360,8 @@ class TTkSplitter(TTkContainer):
         b = 2 if self._border else 0
         self._processRefSizes(w-b,h-b)
         self._updateGeometries()
-        if self.parentWidget():
-            self.parentWidget().update(repaint=True, updateLayout=True)
+        if _pw:=self.parentWidget():
+            _pw.update(repaint=True, updateLayout=True)
 
     def setSizes(self, sizes:List[Optional[int]]) -> None:
         ''' Set the sizes for all widgets in the splitter
@@ -727,7 +727,6 @@ class TTkSplitter(TTkContainer):
                 canvas.drawBoxTitle(
                                 pos=(0,a),
                                 size=(w,1),
-                                grid=grid,
                                 text=t,
                                 color=borderColor,
                                 colorText=color)

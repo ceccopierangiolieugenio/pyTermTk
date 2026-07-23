@@ -31,7 +31,7 @@ from TermTk.TTkCore.cfg import TTkCfg
 from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkCore.string import TTkString, TTkStringType
 from TermTk.TTkCore.signal import pyTTkSignal
-from TermTk.TTkCore.TTkTerm.inputkey import TTkKeyEvent
+from TermTk.TTkCore.TTkTerm.inputkey import TTkKeyEvent, TTkKeyEvent_Character, TTkKeyEvent_SpecialKey
 from TermTk.TTkCore.TTkTerm.inputmouse import TTkMouseEvent
 
 from TermTk.TTkWidgets.widget import TTkWidget
@@ -215,8 +215,8 @@ class TTkRadioButton(TTkWidget):
         return True
 
     def keyEvent(self, evt:TTkKeyEvent) -> bool:
-        if ( evt.type == TTkK.Character and evt.key==" " ) or \
-           ( evt.type == TTkK.SpecialKey and evt.key == TTkK.Key_Enter ):
+        if ( isinstance(evt, TTkKeyEvent_Character) and evt.key==" " ) or \
+           ( isinstance(evt, TTkKeyEvent_SpecialKey) and evt.key == TTkK.Key_Enter ):
             self._pressEvent()
             return True
         return False

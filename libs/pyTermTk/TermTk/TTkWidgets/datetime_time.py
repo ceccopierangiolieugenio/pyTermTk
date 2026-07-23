@@ -32,7 +32,7 @@ from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkCore.string import TTkString
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
-from TermTk.TTkCore.TTkTerm.inputkey import TTkKeyEvent
+from TermTk.TTkCore.TTkTerm.inputkey import TTkKeyEvent, TTkKeyEvent_Character, TTkKeyEvent_SpecialKey
 from TermTk.TTkCore.TTkTerm.inputmouse import TTkMouseEvent
 from TermTk.TTkWidgets.widget import TTkWidget
 
@@ -202,7 +202,7 @@ class TTkTime(TTkWidget):
 
     def keyEvent(self, evt:TTkKeyEvent) -> bool:
         selected = self._state.selected
-        if evt.type == TTkK.SpecialKey:
+        if isinstance(evt, TTkKeyEvent_SpecialKey):
             self._state.secondDigit = False
             self._state.selected = selected
 
@@ -261,7 +261,7 @@ class TTkTime(TTkWidget):
             if evt.key == TTkK.Key_Enter:
                 self._state.selected = _FieldSelected.NONE
                 return True
-        else:
+        elif isinstance(evt, TTkKeyEvent_Character):
             if isinstance(evt.key,str) and '0' <= evt.key <= '9':
                 value = int(evt.key)
                 secondDigit = self._state.secondDigit

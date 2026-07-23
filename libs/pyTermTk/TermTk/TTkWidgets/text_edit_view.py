@@ -30,7 +30,7 @@ from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkCore.string import TTkString, TTkStringType
 from TermTk.TTkCore.canvas import TTkCanvas
 from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
-from TermTk.TTkCore.TTkTerm.inputkey import TTkKeyEvent
+from TermTk.TTkCore.TTkTerm.inputkey import TTkKeyEvent, TTkKeyEvent_Character, TTkKeyEvent_SpecialKey
 from TermTk.TTkCore.TTkTerm.inputmouse import TTkMouseEvent
 
 from TermTk.TTkGui.clipboard import TTkClipboard
@@ -702,7 +702,7 @@ class TTkTextEditView(TTkAbstractScrollView):
             ox = max(0, fw-dw)
 
         self.viewMoveTo(ox, oy)
-        
+
     def _rewrap(self) -> None:
         self._textWrap.rewrap()
         self.viewChanged.emit()
@@ -875,12 +875,12 @@ class TTkTextEditView(TTkAbstractScrollView):
             return super().keyEvent(evt)
 
         # Keep a snapshot in case of those actions
-        if (( evt.type == TTkK.Character and (
+        if (( isinstance(evt, TTkKeyEvent_Character) and (
               ( evt.key == ' ' ) or
               ( evt.key == '\n') or
               ( evt.key == '\t') or
               ( self._textCursor.hasSelection() ) )  )  or
-            ( evt.type == TTkK.SpecialKey and (
+            ( isinstance(evt, TTkKeyEvent_SpecialKey) and (
               ( evt.key == TTkK.Key_Enter     ) or
               ( evt.key == TTkK.Key_Delete    ) or
               ( evt.key == TTkK.Key_Backspace ) or
@@ -892,10 +892,10 @@ class TTkTextEditView(TTkAbstractScrollView):
               ) ) ) ):
             self._textDocument.saveSnapshot(self._textCursor.copy())
 
-        if evt.key == TTkK.Key_Tab and evt.mod==TTkK.NoModifier:
-            evt = TTkKeyEvent(TTkK.Character, '\t', '\t', TTkK.NoModifier)
+        if evt.key == TTkK.Key_Tab and evt.mod == TTkK.NoModifier:
+            evt = TTkKeyEvent_Character('\t', '\t', TTkK.NoModifier)
 
-        if evt.type == TTkK.SpecialKey:
+        if isinstance(evt, TTkKeyEvent_SpecialKey):
             _,_,w,h = self.geometry()
 
             # TODO: Remove this HACK As soon as possible
@@ -988,11 +988,11 @@ class TTkTextEditView(TTkAbstractScrollView):
             self._pushCursor(evt.key == TTkK.Key_Left)
             self.update()
             return True
-        else: # Input char
+        elif isinstance(evt, TTkKeyEvent_Character): # Input char
             if self._replace:
-                self._textCursor.replaceText(str(evt.key), moveCursor=True)
+                self._textCursor.replaceText(evt.key, moveCursor=True)
             else:
-                self._textCursor.insertText(str(evt.key), moveCursor=True)
+                self._textCursor.insertText(evt.key, moveCursor=True)
             # Scroll to align to the cursor
             p = self._textCursor.position()
             cx, cy = self._textWrap.dataToScreenPosition(p.line, p.pos).to_xy()

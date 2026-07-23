@@ -38,7 +38,7 @@ from typing import Union, Tuple, Type, List, Optional, Any, Callable
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.string import TTkString, TTkStringType
 from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
-from TermTk.TTkCore.TTkTerm.inputkey import TTkKeyEvent
+from TermTk.TTkCore.TTkTerm.inputkey import TTkKeyEvent, TTkKeyEvent_SpecialKey
 
 from TermTk.TTkLayouts.gridlayout import TTkGridLayout
 
@@ -464,7 +464,7 @@ class _TextEditViewProxy(TTkTextEditView, TTkTableProxyEditWidget):
         :return: True if event was handled, False otherwise
         :rtype: bool
         '''
-        if (evt.type == TTkK.SpecialKey):
+        if isinstance(evt, TTkKeyEvent_SpecialKey):
             _cur = self.textCursor()
             _doc = self.document()
             _line = _cur.anchor().line
@@ -490,7 +490,7 @@ class _TextEditViewProxy(TTkTextEditView, TTkTableProxyEditWidget):
                     if _lineCount == 1 and _pos == len(_doc.toPlainText()):
                         self.leavingTriggered.emit(TTkTableEditLeaving.RIGHT)
                         return True
-            elif (evt.type == TTkK.SpecialKey and
+            elif (isinstance(evt, TTkKeyEvent_SpecialKey) and
                   evt.mod == TTkK.ControlModifier | TTkK.AltModifier and
                   evt.key == TTkK.Key_M):
                 evt.mod = TTkK.NoModifier
@@ -633,7 +633,7 @@ class _SpinBoxProxy(TTkSpinBox, TTkTableProxyEditWidget):
         :return: True if event was handled, False otherwise
         :rtype: bool
         '''
-        if (evt.type == TTkK.SpecialKey):
+        if isinstance(evt, TTkKeyEvent_SpecialKey):
             if evt.mod == TTkK.NoModifier:
                 if evt.key == TTkK.Key_Enter:
                     self.leavingTriggered.emit(TTkTableEditLeaving.RIGHT)
@@ -665,14 +665,14 @@ class _DateTime_KeyGeneric():
         :return: True if event was handled, False otherwise
         :rtype: bool
         '''
-        if (evt.type == TTkK.SpecialKey):
+        if isinstance(evt, TTkKeyEvent_SpecialKey):
             if evt.mod == TTkK.NoModifier:
                 if evt.key == TTkK.Key_Enter:
                     self.leavingTriggered.emit(TTkTableEditLeaving.RIGHT)
                     return True
         if cb(evt):
             return True
-        if (evt.type == TTkK.SpecialKey):
+        if isinstance(evt, TTkKeyEvent_SpecialKey):
             if evt.mod == TTkK.NoModifier:
                 if evt.key == TTkK.Key_Up:
                     self.leavingTriggered.emit(TTkTableEditLeaving.TOP)
@@ -957,7 +957,7 @@ class _TextPickerProxy(TTkTextPicker, TTkTableProxyEditWidget):
         :return: True if event was handled, False otherwise
         :rtype: bool
         '''
-        if (evt.type == TTkK.SpecialKey):
+        if isinstance(evt, TTkKeyEvent_SpecialKey):
             if evt.mod == TTkK.NoModifier:
                 if evt.key == TTkK.Key_Enter:
                     self.leavingTriggered.emit(TTkTableEditLeaving.RIGHT)

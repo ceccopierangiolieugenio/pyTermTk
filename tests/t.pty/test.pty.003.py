@@ -92,7 +92,7 @@ class TerminalView(ttk.TTkTextEditView):
         return True
 
     def keyEvent(self, evt):
-        if evt.type == ttk.TTkK.SpecialKey:
+        if isinstance(evt, ttk.TTkKeyEvent_SpecialKey):
             if evt.key == ttk.TTkK.Key_Enter:
                 ttk.TTkLog.debug(f"Key: {evt}")
                 self.termThread.pin.write('\n')

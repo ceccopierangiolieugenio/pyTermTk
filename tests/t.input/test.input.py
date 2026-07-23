@@ -59,7 +59,7 @@ def keyCallback(kevt=None, mevt=None):
     if mevt is not None:
         TTkLog.info(f"Mouse Event: {mevt}")
     if kevt is not None:
-        if kevt.type == TTkK.Character:
+        if kisinstance(evt, TTkKeyEvent_Character):
             TTkLog.info(f"Key Event: char '{kevt.key}' {kevt}")
         else:
             TTkLog.info(f"Key Event: Special '{kevt}'")

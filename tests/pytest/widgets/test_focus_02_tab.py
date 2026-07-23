@@ -48,8 +48,7 @@ def test_focus_01_tab():
     assert True  is widget2.hasFocus()
     assert False is widget3.hasFocus()
 
-    tab_key = ttk.TTkKeyEvent(
-        type=ttk.TTkK.KeyType.SpecialKey,
+    tab_key = ttk.TTkKeyEvent_SpecialKey(
         key=ttk.TTkK.Key_Tab,
         mod=ttk.TTkK.NoModifier,
         code='',)
@@ -89,8 +88,7 @@ def test_focus_01_tab_reverse():
     assert True  is widget2.hasFocus()
     assert False is widget3.hasFocus()
 
-    tab_key = ttk.TTkKeyEvent(
-        type=ttk.TTkK.KeyType.SpecialKey,
+    tab_key = ttk.TTkKeyEvent_SpecialKey(
         key=ttk.TTkK.Key_Tab,
         mod=ttk.TTkK.ShiftModifier,
         code='',)
@@ -132,8 +130,7 @@ def test_focus_04_nested_containers():
     assert True  is widget2.hasFocus()
     assert False is widget3.hasFocus()
 
-    tab_key = ttk.TTkKeyEvent(
-        type=ttk.TTkK.KeyType.SpecialKey,
+    tab_key = ttk.TTkKeyEvent_SpecialKey(
         key=ttk.TTkK.Key_Tab,
         mod=ttk.TTkK.NoModifier,
         code='',)
@@ -186,8 +183,7 @@ def test_focus_04_nested_containers_reversed():
     assert True  is widget3.hasFocus()
     assert False is widget4.hasFocus()
 
-    tab_key = ttk.TTkKeyEvent(
-        type=ttk.TTkK.KeyType.SpecialKey,
+    tab_key = ttk.TTkKeyEvent_SpecialKey(
         key=ttk.TTkK.Key_Tab,
         mod=ttk.TTkK.ShiftModifier,
         code='',)
@@ -247,8 +243,7 @@ def test_focus_container_with_tab_focus():
     assert False is widget2.hasFocus()
     assert False is widget3.hasFocus()
 
-    tab_key = ttk.TTkKeyEvent(
-        type=ttk.TTkK.KeyType.SpecialKey,
+    tab_key = ttk.TTkKeyEvent_SpecialKey(
         key=ttk.TTkK.Key_Tab,
         mod=ttk.TTkK.NoModifier,
         code='',)
@@ -307,8 +302,7 @@ def test_focus_nested_containers_with_tab_focus():
     assert False is widget2.hasFocus()
     assert False is widget3.hasFocus()
 
-    tab_key = ttk.TTkKeyEvent(
-        type=ttk.TTkK.KeyType.SpecialKey,
+    tab_key = ttk.TTkKeyEvent_SpecialKey(
         key=ttk.TTkK.Key_Tab,
         mod=ttk.TTkK.NoModifier,
         code='',)
@@ -379,8 +373,7 @@ def test_focus_nested_containers_with_tab_focus_reversed():
     assert True  is widget2.hasFocus()
     assert False is widget3.hasFocus()
 
-    tab_key = ttk.TTkKeyEvent(
-        type=ttk.TTkK.KeyType.SpecialKey,
+    tab_key = ttk.TTkKeyEvent_SpecialKey(
         key=ttk.TTkK.Key_Tab,
         mod=ttk.TTkK.ShiftModifier,
         code='',)
@@ -453,8 +446,7 @@ def test_focus_mixed_containers_tab_focus():
     assert False is widget3.hasFocus()
     assert False is widget4.hasFocus()
 
-    tab_key = ttk.TTkKeyEvent(
-        type=ttk.TTkK.KeyType.SpecialKey,
+    tab_key = ttk.TTkKeyEvent_SpecialKey(
         key=ttk.TTkK.Key_Tab,
         mod=ttk.TTkK.NoModifier,
         code='',)
@@ -529,8 +521,7 @@ def test_focus_mixed_containers_tab_focus_disabled_2():
     assert False is widget3.hasFocus()
     assert False is widget4.hasFocus()
 
-    tab_key = ttk.TTkKeyEvent(
-        type=ttk.TTkK.KeyType.SpecialKey,
+    tab_key = ttk.TTkKeyEvent_SpecialKey(
         key=ttk.TTkK.Key_Tab,
         mod=ttk.TTkK.NoModifier,
         code='',)
@@ -597,8 +588,7 @@ def test_focus_mixed_containers_tab_focus_disabled_1():
     assert False is widget3.hasFocus()
     assert False is widget4.hasFocus()
 
-    tab_key = ttk.TTkKeyEvent(
-        type=ttk.TTkK.KeyType.SpecialKey,
+    tab_key = ttk.TTkKeyEvent_SpecialKey(
         key=ttk.TTkK.Key_Tab,
         mod=ttk.TTkK.NoModifier,
         code='',)
@@ -649,8 +639,7 @@ def test_focus_mixed_containers_tab_focus_disabled_1_rev():
     assert False is widget3.hasFocus()
     assert False is widget4.hasFocus()
 
-    tab_key = ttk.TTkKeyEvent(
-        type=ttk.TTkK.KeyType.SpecialKey,
+    tab_key = ttk.TTkKeyEvent_SpecialKey(
         key=ttk.TTkK.Key_Tab,
         mod=ttk.TTkK.ShiftModifier,
         code='',)
@@ -694,8 +683,7 @@ def test_focus_container_tab_focus_reversed():
     assert True  is widget2.hasFocus()
     assert False is widget3.hasFocus()
 
-    tab_key = ttk.TTkKeyEvent(
-        type=ttk.TTkK.KeyType.SpecialKey,
+    tab_key = ttk.TTkKeyEvent_SpecialKey(
         key=ttk.TTkK.Key_Tab,
         mod=ttk.TTkK.ShiftModifier,
         code='',)
@@ -764,8 +752,7 @@ def test_focus_mixed_containers_tab_focus_disabled_3():
 
     widget1.setFocus()
 
-    tab_key = ttk.TTkKeyEvent(
-        type=ttk.TTkK.KeyType.SpecialKey,
+    tab_key = ttk.TTkKeyEvent_SpecialKey(
         key=ttk.TTkK.Key_Tab,
         mod=ttk.TTkK.NoModifier,
         code='',)
@@ -820,8 +807,7 @@ def test_focus_mixed_containers_tab_focus_disabled_4():
     container2.setDisabled()
     widget2.setFocus()
 
-    tab_key = ttk.TTkKeyEvent(
-        type=ttk.TTkK.KeyType.SpecialKey,
+    tab_key = ttk.TTkKeyEvent_SpecialKey(
         key=ttk.TTkK.Key_Tab,
         mod=ttk.TTkK.NoModifier,
         code='',)
@@ -838,8 +824,7 @@ def test_focus_mixed_containers_tab_focus_disabled_4():
     container2.setDisabled()
     widget3.setFocus()
 
-    tab_key = ttk.TTkKeyEvent(
-        type=ttk.TTkK.KeyType.SpecialKey,
+    tab_key = ttk.TTkKeyEvent_SpecialKey(
         key=ttk.TTkK.Key_Tab,
         mod=ttk.TTkK.ShiftModifier,
         code='',)

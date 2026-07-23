@@ -224,7 +224,7 @@ class TTkContainer(TTkWidget):
             if _cfw._enabled and _cfw.keyEvent(evt):
                 return True
 
-        if TTkShortcut.processKey(evt, _cfw):
+        if _cfw and TTkShortcut.processKey(evt, _cfw):
             return True
 
         # Handle Next Focus Key Binding

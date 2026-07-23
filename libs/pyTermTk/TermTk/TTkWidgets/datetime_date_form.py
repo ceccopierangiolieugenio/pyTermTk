@@ -34,7 +34,7 @@ from TermTk.TTkCore.string import TTkString
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.helper import TTkHelper
 from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
-from TermTk.TTkCore.TTkTerm.inputkey import TTkKeyEvent
+from TermTk.TTkCore.TTkTerm.inputkey import TTkKeyEvent, TTkKeyEvent_Character, TTkKeyEvent_SpecialKey
 from TermTk.TTkCore.TTkTerm.inputmouse import TTkMouseEvent
 from TermTk.TTkLayouts import TTkGridLayout
 from TermTk.TTkWidgets.widget import TTkWidget
@@ -359,7 +359,7 @@ class _TTkBaseMonthYear(TTkWidget):
         return True
 
     def keyEvent(self, evt:TTkKeyEvent) -> bool:
-        if evt.type == TTkK.SpecialKey:
+        if isinstance(evt, TTkKeyEvent_SpecialKey):
             if evt.key == TTkK.Key_Enter:
                 self._show_chooser()
             elif evt.key == TTkK.Key_Up:
@@ -369,7 +369,7 @@ class _TTkBaseMonthYear(TTkWidget):
             else:
                 return False
             return True
-        elif( evt.type == TTkK.Character and
+        elif( isinstance(evt, TTkKeyEvent_Character) and
               evt.key in (' 1234567890')):
             self._show_chooser()
             return True
@@ -583,7 +583,7 @@ class _TTkDateCal(TTkWidget):
         return super().focusOutEvent()
 
     def keyEvent(self, evt:TTkKeyEvent) -> bool:
-        if ( evt.type == TTkK.SpecialKey and
+        if ( isinstance(evt, TTkKeyEvent_SpecialKey) and
              evt.key in (
                  TTkK.Key_Enter,
                  TTkK.Key_Right, TTkK.Key_Left,

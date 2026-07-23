@@ -34,7 +34,7 @@ from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.string import TTkString
 from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
-from TermTk.TTkCore.TTkTerm.inputkey import TTkKeyEvent
+from TermTk.TTkCore.TTkTerm.inputkey import TTkKeyEvent, TTkKeyEvent_SpecialKey
 from TermTk.TTkCore.TTkTerm.inputmouse import TTkMouseEvent
 
 from TermTk.TTkGui.clipboard import TTkClipboard
@@ -860,7 +860,7 @@ class TTkTerminalView(_TTkTerminal_CSI_DEC):
     def keyEvent(self, evt:TTkKeyEvent) -> bool:
         # _termLog.debug(f"Key: {evt.code=}")
         _termLog.debug(f"Key: {str(evt)=}")
-        if evt.type == TTkK.SpecialKey:
+        if isinstance(evt, TTkKeyEvent_SpecialKey):
             if evt.mod == TTkK.ControlModifier and evt.key == TTkK.Key_V:
                 txt = self._clipboard.text()
                 self.pasteEvent(str(txt))

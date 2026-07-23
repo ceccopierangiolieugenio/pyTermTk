@@ -3,7 +3,7 @@ import datetime
 from unittest.mock import Mock, patch
 
 from TermTk.TTkCore.constant import TTkK
-from TermTk.TTkCore.TTkTerm.inputkey import TTkKeyEvent
+from TermTk.TTkCore.TTkTerm.inputkey import TTkKeyEvent, TTkKeyEvent_Character, TTkKeyEvent_SpecialKey
 from TermTk.TTkWidgets.datetime_time import TTkTime, _FieldSelected
 
 
@@ -17,25 +17,25 @@ class TestTTkTimeKeyEvent:
         """Test forward Tab navigation through fields."""
         # Start with NONE, tab to HOURS
         self.time_widget._state.selected = _FieldSelected.NONE
-        evt = TTkKeyEvent(TTkK.SpecialKey, TTkK.Key_Tab, "", TTkK.NoModifier)
+        evt = TTkKeyEvent_SpecialKey(TTkK.Key_Tab, "", TTkK.NoModifier)
         result = self.time_widget.keyEvent(evt)
         assert result is True
         assert self.time_widget._state.selected == _FieldSelected.HOURS
 
         # From HOURS to MINUTES
-        evt = TTkKeyEvent(TTkK.SpecialKey, TTkK.Key_Tab, "", TTkK.NoModifier)
+        evt = TTkKeyEvent_SpecialKey(TTkK.Key_Tab, "", TTkK.NoModifier)
         result = self.time_widget.keyEvent(evt)
         assert result is True
         assert self.time_widget._state.selected == _FieldSelected.MINUTES
 
         # From MINUTES to SECONDS
-        evt = TTkKeyEvent(TTkK.SpecialKey, TTkK.Key_Tab, "", TTkK.NoModifier)
+        evt = TTkKeyEvent_SpecialKey(TTkK.Key_Tab, "", TTkK.NoModifier)
         result = self.time_widget.keyEvent(evt)
         assert result is True
         assert self.time_widget._state.selected == _FieldSelected.SECONDS
 
         # From SECONDS should return False (end of navigation)
-        evt = TTkKeyEvent(TTkK.SpecialKey, TTkK.Key_Tab, "", TTkK.NoModifier)
+        evt = TTkKeyEvent_SpecialKey(TTkK.Key_Tab, "", TTkK.NoModifier)
         result = self.time_widget.keyEvent(evt)
         assert result is False
 
@@ -43,32 +43,32 @@ class TestTTkTimeKeyEvent:
         """Test backward Tab navigation (Shift+Tab) through fields."""
         # Start with NONE, shift+tab to SECONDS
         self.time_widget._state.selected = _FieldSelected.NONE
-        evt = TTkKeyEvent(TTkK.SpecialKey, TTkK.Key_Tab, "", TTkK.ShiftModifier)
+        evt = TTkKeyEvent_SpecialKey(TTkK.Key_Tab, "", TTkK.ShiftModifier)
         result = self.time_widget.keyEvent(evt)
         assert result is True
         assert self.time_widget._state.selected == _FieldSelected.SECONDS
 
         # From SECONDS to MINUTES
-        evt = TTkKeyEvent(TTkK.SpecialKey, TTkK.Key_Tab, "", TTkK.ShiftModifier)
+        evt = TTkKeyEvent_SpecialKey(TTkK.Key_Tab, "", TTkK.ShiftModifier)
         result = self.time_widget.keyEvent(evt)
         assert result is True
         assert self.time_widget._state.selected == _FieldSelected.MINUTES
 
         # From MINUTES to HOURS
-        evt = TTkKeyEvent(TTkK.SpecialKey, TTkK.Key_Tab, "", TTkK.ShiftModifier)
+        evt = TTkKeyEvent_SpecialKey(TTkK.Key_Tab, "", TTkK.ShiftModifier)
         result = self.time_widget.keyEvent(evt)
         assert result is True
         assert self.time_widget._state.selected == _FieldSelected.HOURS
 
         # From HOURS should return False
-        evt = TTkKeyEvent(TTkK.SpecialKey, TTkK.Key_Tab, "", TTkK.ShiftModifier)
+        evt = TTkKeyEvent_SpecialKey(TTkK.Key_Tab, "", TTkK.ShiftModifier)
         result = self.time_widget.keyEvent(evt)
         assert result is False
 
     def test_arrow_key_navigation_right(self):
         """Test right arrow navigation through fields."""
         self.time_widget._state.selected = _FieldSelected.HOURS
-        evt = TTkKeyEvent(TTkK.SpecialKey, TTkK.Key_Right, "", TTkK.NoModifier)
+        evt = TTkKeyEvent_SpecialKey(TTkK.Key_Right, "", TTkK.NoModifier)
         result = self.time_widget.keyEvent(evt)
         assert result is True
         assert self.time_widget._state.selected == _FieldSelected.MINUTES
@@ -76,7 +76,7 @@ class TestTTkTimeKeyEvent:
     def test_arrow_key_navigation_left(self):
         """Test left arrow navigation through fields."""
         self.time_widget._state.selected = _FieldSelected.MINUTES
-        evt = TTkKeyEvent(TTkK.SpecialKey, TTkK.Key_Left, "", TTkK.NoModifier)
+        evt = TTkKeyEvent_SpecialKey(TTkK.Key_Left, "", TTkK.NoModifier)
         result = self.time_widget.keyEvent(evt)
         assert result is True
         assert self.time_widget._state.selected == _FieldSelected.HOURS
@@ -86,7 +86,7 @@ class TestTTkTimeKeyEvent:
         self.time_widget._state.selected = _FieldSelected.HOURS
         initial_time = self.time_widget.time()
 
-        evt = TTkKeyEvent(TTkK.SpecialKey, TTkK.Key_Up, "", TTkK.NoModifier)
+        evt = TTkKeyEvent_SpecialKey(TTkK.Key_Up, "", TTkK.NoModifier)
         result = self.time_widget.keyEvent(evt)
 
         assert result is True
@@ -99,7 +99,7 @@ class TestTTkTimeKeyEvent:
         self.time_widget._state.selected = _FieldSelected.MINUTES
         initial_time = self.time_widget.time()
 
-        evt = TTkKeyEvent(TTkK.SpecialKey, TTkK.Key_Up, "", TTkK.NoModifier)
+        evt = TTkKeyEvent_SpecialKey(TTkK.Key_Up, "", TTkK.NoModifier)
         result = self.time_widget.keyEvent(evt)
 
         assert result is True
@@ -113,7 +113,7 @@ class TestTTkTimeKeyEvent:
         self.time_widget._state.selected = _FieldSelected.SECONDS
         initial_time = self.time_widget.time()
 
-        evt = TTkKeyEvent(TTkK.SpecialKey, TTkK.Key_Up, "", TTkK.NoModifier)
+        evt = TTkKeyEvent_SpecialKey(TTkK.Key_Up, "", TTkK.NoModifier)
         result = self.time_widget.keyEvent(evt)
 
         assert result is True
@@ -126,7 +126,7 @@ class TestTTkTimeKeyEvent:
         self.time_widget._state.selected = _FieldSelected.HOURS
         initial_time = self.time_widget.time()
 
-        evt = TTkKeyEvent(TTkK.SpecialKey, TTkK.Key_Down, "", TTkK.NoModifier)
+        evt = TTkKeyEvent_SpecialKey(TTkK.Key_Down, "", TTkK.NoModifier)
         result = self.time_widget.keyEvent(evt)
 
         assert result is True
@@ -139,7 +139,7 @@ class TestTTkTimeKeyEvent:
         self.time_widget._state.selected = _FieldSelected.MINUTES
         initial_time = self.time_widget.time()
 
-        evt = TTkKeyEvent(TTkK.SpecialKey, TTkK.Key_Down, "", TTkK.NoModifier)
+        evt = TTkKeyEvent_SpecialKey(TTkK.Key_Down, "", TTkK.NoModifier)
         result = self.time_widget.keyEvent(evt)
 
         assert result is True
@@ -152,7 +152,7 @@ class TestTTkTimeKeyEvent:
         self.time_widget._state.selected = _FieldSelected.SECONDS
         initial_time = self.time_widget.time()
 
-        evt = TTkKeyEvent(TTkK.SpecialKey, TTkK.Key_Down, "", TTkK.NoModifier)
+        evt = TTkKeyEvent_SpecialKey(TTkK.Key_Down, "", TTkK.NoModifier)
         result = self.time_widget.keyEvent(evt)
 
         assert result is True
@@ -165,7 +165,7 @@ class TestTTkTimeKeyEvent:
         self.time_widget._state.selected = _FieldSelected.HOURS
         self.time_widget._state.secondDigit = False
 
-        evt = TTkKeyEvent(TTkK.Character, "2", "", TTkK.NoModifier)
+        evt = TTkKeyEvent_Character("2", "", TTkK.NoModifier)
         result = self.time_widget.keyEvent(evt)
 
         assert result is True
@@ -178,7 +178,7 @@ class TestTTkTimeKeyEvent:
         self.time_widget._state.selected = _FieldSelected.HOURS
         self.time_widget._state.secondDigit = True
 
-        evt = TTkKeyEvent(TTkK.Character, "3", "", TTkK.NoModifier)
+        evt = TTkKeyEvent_Character("3", "", TTkK.NoModifier)
         result = self.time_widget.keyEvent(evt)
 
         assert result is True
@@ -191,7 +191,7 @@ class TestTTkTimeKeyEvent:
         self.time_widget._state.secondDigit = True
         self.time_widget.setTime(datetime.time(2, 30, 45))
 
-        evt = TTkKeyEvent(TTkK.Character, "9", "", TTkK.NoModifier)
+        evt = TTkKeyEvent_Character("9", "", TTkK.NoModifier)
         result = self.time_widget.keyEvent(evt)
 
         assert result is True
@@ -203,7 +203,7 @@ class TestTTkTimeKeyEvent:
         self.time_widget._state.selected = _FieldSelected.MINUTES
         self.time_widget._state.secondDigit = False
 
-        evt = TTkKeyEvent(TTkK.Character, "5", "", TTkK.NoModifier)
+        evt = TTkKeyEvent_Character("5", "", TTkK.NoModifier)
         result = self.time_widget.keyEvent(evt)
 
         assert result is True
@@ -216,7 +216,7 @@ class TestTTkTimeKeyEvent:
         self.time_widget._state.selected = _FieldSelected.MINUTES
         self.time_widget._state.secondDigit = True
 
-        evt = TTkKeyEvent(TTkK.Character, "7", "", TTkK.NoModifier)
+        evt = TTkKeyEvent_Character("7", "", TTkK.NoModifier)
         result = self.time_widget.keyEvent(evt)
 
         assert result is True
@@ -229,7 +229,7 @@ class TestTTkTimeKeyEvent:
         self.time_widget._state.secondDigit = True
         self.time_widget.setTime(datetime.time(12, 6, 45))
 
-        evt = TTkKeyEvent(TTkK.Character, "9", "", TTkK.NoModifier)
+        evt = TTkKeyEvent_Character("9", "", TTkK.NoModifier)
         result = self.time_widget.keyEvent(evt)
 
         assert result is True
@@ -241,7 +241,7 @@ class TestTTkTimeKeyEvent:
         self.time_widget._state.selected = _FieldSelected.SECONDS
         self.time_widget._state.secondDigit = False
 
-        evt = TTkKeyEvent(TTkK.Character, "3", "", TTkK.NoModifier)
+        evt = TTkKeyEvent_Character("3", "", TTkK.NoModifier)
         result = self.time_widget.keyEvent(evt)
 
         assert result is True
@@ -254,7 +254,7 @@ class TestTTkTimeKeyEvent:
         self.time_widget._state.selected = _FieldSelected.SECONDS
         self.time_widget._state.secondDigit = True
 
-        evt = TTkKeyEvent(TTkK.Character, "2", "", TTkK.NoModifier)
+        evt = TTkKeyEvent_Character("2", "", TTkK.NoModifier)
         result = self.time_widget.keyEvent(evt)
 
         assert result is True
@@ -267,7 +267,7 @@ class TestTTkTimeKeyEvent:
         self.time_widget._state.secondDigit = True
         self.time_widget.setTime(datetime.time(12, 30, 6))
 
-        evt = TTkKeyEvent(TTkK.Character, "9", "", TTkK.NoModifier)
+        evt = TTkKeyEvent_Character("9", "", TTkK.NoModifier)
         result = self.time_widget.keyEvent(evt)
 
         assert result is True
@@ -278,7 +278,7 @@ class TestTTkTimeKeyEvent:
         """Test Delete key clears hours field."""
         self.time_widget._state.selected = _FieldSelected.HOURS
 
-        evt = TTkKeyEvent(TTkK.SpecialKey, TTkK.Key_Delete, "", TTkK.NoModifier)
+        evt = TTkKeyEvent_SpecialKey(TTkK.Key_Delete, "", TTkK.NoModifier)
         result = self.time_widget.keyEvent(evt)
 
         assert result is True
@@ -288,7 +288,7 @@ class TestTTkTimeKeyEvent:
         """Test Delete key clears minutes field."""
         self.time_widget._state.selected = _FieldSelected.MINUTES
 
-        evt = TTkKeyEvent(TTkK.SpecialKey, TTkK.Key_Delete, "", TTkK.NoModifier)
+        evt = TTkKeyEvent_SpecialKey(TTkK.Key_Delete, "", TTkK.NoModifier)
         result = self.time_widget.keyEvent(evt)
 
         assert result is True
@@ -298,7 +298,7 @@ class TestTTkTimeKeyEvent:
         """Test Delete key clears seconds field."""
         self.time_widget._state.selected = _FieldSelected.SECONDS
 
-        evt = TTkKeyEvent(TTkK.SpecialKey, TTkK.Key_Delete, "", TTkK.NoModifier)
+        evt = TTkKeyEvent_SpecialKey(TTkK.Key_Delete, "", TTkK.NoModifier)
         result = self.time_widget.keyEvent(evt)
 
         assert result is True
@@ -308,7 +308,7 @@ class TestTTkTimeKeyEvent:
         """Test Backspace key clears hours field."""
         self.time_widget._state.selected = _FieldSelected.HOURS
 
-        evt = TTkKeyEvent(TTkK.SpecialKey, TTkK.Key_Backspace, "", TTkK.NoModifier)
+        evt = TTkKeyEvent_SpecialKey(TTkK.Key_Backspace, "", TTkK.NoModifier)
         result = self.time_widget.keyEvent(evt)
 
         assert result is True
@@ -318,7 +318,7 @@ class TestTTkTimeKeyEvent:
         """Test Backspace key clears minutes field."""
         self.time_widget._state.selected = _FieldSelected.MINUTES
 
-        evt = TTkKeyEvent(TTkK.SpecialKey, TTkK.Key_Backspace, "", TTkK.NoModifier)
+        evt = TTkKeyEvent_SpecialKey(TTkK.Key_Backspace, "", TTkK.NoModifier)
         result = self.time_widget.keyEvent(evt)
 
         assert result is True
@@ -328,7 +328,7 @@ class TestTTkTimeKeyEvent:
         """Test Backspace key clears seconds field."""
         self.time_widget._state.selected = _FieldSelected.SECONDS
 
-        evt = TTkKeyEvent(TTkK.SpecialKey, TTkK.Key_Backspace, "", TTkK.NoModifier)
+        evt = TTkKeyEvent_SpecialKey(TTkK.Key_Backspace, "", TTkK.NoModifier)
         result = self.time_widget.keyEvent(evt)
 
         assert result is True
@@ -338,7 +338,7 @@ class TestTTkTimeKeyEvent:
         """Test Enter key deselects current field."""
         self.time_widget._state.selected = _FieldSelected.HOURS
 
-        evt = TTkKeyEvent(TTkK.SpecialKey, TTkK.Key_Enter, "", TTkK.NoModifier)
+        evt = TTkKeyEvent_SpecialKey(TTkK.Key_Enter, "", TTkK.NoModifier)
         result = self.time_widget.keyEvent(evt)
 
         assert result is True
@@ -349,7 +349,7 @@ class TestTTkTimeKeyEvent:
         self.time_widget.setTime(datetime.time(23, 59, 59))
         self.time_widget._state.selected = _FieldSelected.HOURS
 
-        evt = TTkKeyEvent(TTkK.SpecialKey, TTkK.Key_Up, "", TTkK.NoModifier)
+        evt = TTkKeyEvent_SpecialKey(TTkK.Key_Up, "", TTkK.NoModifier)
         result = self.time_widget.keyEvent(evt)
 
         assert result is True
@@ -363,7 +363,7 @@ class TestTTkTimeKeyEvent:
         self.time_widget.setTime(datetime.time(0, 0, 0))
         self.time_widget._state.selected = _FieldSelected.HOURS
 
-        evt = TTkKeyEvent(TTkK.SpecialKey, TTkK.Key_Down, "", TTkK.NoModifier)
+        evt = TTkKeyEvent_SpecialKey(TTkK.Key_Down, "", TTkK.NoModifier)
         result = self.time_widget.keyEvent(evt)
 
         assert result is True
@@ -377,7 +377,7 @@ class TestTTkTimeKeyEvent:
         self.time_widget.setTime(datetime.time(12, 59, 30))
         self.time_widget._state.selected = _FieldSelected.MINUTES
 
-        evt = TTkKeyEvent(TTkK.SpecialKey, TTkK.Key_Up, "", TTkK.NoModifier)
+        evt = TTkKeyEvent_SpecialKey(TTkK.Key_Up, "", TTkK.NoModifier)
         result = self.time_widget.keyEvent(evt)
 
         assert result is True
@@ -391,7 +391,7 @@ class TestTTkTimeKeyEvent:
         self.time_widget.setTime(datetime.time(12, 30, 59))
         self.time_widget._state.selected = _FieldSelected.SECONDS
 
-        evt = TTkKeyEvent(TTkK.SpecialKey, TTkK.Key_Up, "", TTkK.NoModifier)
+        evt = TTkKeyEvent_SpecialKey(TTkK.Key_Up, "", TTkK.NoModifier)
         result = self.time_widget.keyEvent(evt)
 
         assert result is True
@@ -404,11 +404,11 @@ class TestTTkTimeKeyEvent:
     #     """Test up/down keys return False when no field is selected."""
     #     self.time_widget._state.selected = _FieldSelected.NONE
 
-    #     evt_up = TTkKeyEvent(TTkK.SpecialKey, TTkK.Key_Up, "", TTkK.NoModifier)
+    #     evt_up = TTkKeyEvent_SpecialKey(TTkK.Key_Up, "", TTkK.NoModifier)
     #     result_up = self.time_widget.keyEvent(evt_up)
     #     assert result_up is False
 
-    #     evt_down = TTkKeyEvent(TTkK.SpecialKey, TTkK.Key_Down, "", TTkK.NoModifier)
+    #     evt_down = TTkKeyEvent_SpecialKey(TTkK.Key_Down, "", TTkK.NoModifier)
     #     result_down = self.time_widget.keyEvent(evt_down)
     #     assert result_down is False
 
@@ -417,7 +417,7 @@ class TestTTkTimeKeyEvent:
         self.time_widget._state.selected = _FieldSelected.HOURS
         initial_time = self.time_widget.time()
 
-        evt = TTkKeyEvent(TTkK.Character, "a", "", TTkK.NoModifier)
+        evt = TTkKeyEvent_Character("a", "", TTkK.NoModifier)
         result = self.time_widget.keyEvent(evt)
 
         assert result is True
@@ -428,7 +428,7 @@ class TestTTkTimeKeyEvent:
         self.time_widget._state.selected = _FieldSelected.NONE
         initial_time = self.time_widget.time()
 
-        evt = TTkKeyEvent(TTkK.Character, "5", "", TTkK.NoModifier)
+        evt = TTkKeyEvent_Character("5", "", TTkK.NoModifier)
         result = self.time_widget.keyEvent(evt)
 
         assert result is True
@@ -439,7 +439,7 @@ class TestTTkTimeKeyEvent:
         """Test that update is called during navigation."""
         self.time_widget._state.selected = _FieldSelected.NONE
 
-        evt = TTkKeyEvent(TTkK.SpecialKey, TTkK.Key_Tab, "", TTkK.NoModifier)
+        evt = TTkKeyEvent_SpecialKey(TTkK.Key_Tab, "", TTkK.NoModifier)
         self.time_widget.keyEvent(evt)
 
         mock_update.assert_called()
@@ -449,7 +449,7 @@ class TestTTkTimeKeyEvent:
         """Test that update is called when time changes."""
         self.time_widget._state.selected = _FieldSelected.HOURS
 
-        evt = TTkKeyEvent(TTkK.SpecialKey, TTkK.Key_Up, "", TTkK.NoModifier)
+        evt = TTkKeyEvent_SpecialKey(TTkK.Key_Up, "", TTkK.NoModifier)
         self.time_widget.keyEvent(evt)
 
         mock_update.assert_called()
@@ -459,7 +459,7 @@ class TestTTkTimeKeyEvent:
         self.time_widget._state.secondDigit = True
         self.time_widget._state.selected = _FieldSelected.HOURS
 
-        evt = TTkKeyEvent(TTkK.SpecialKey, TTkK.Key_Up, "", TTkK.NoModifier)
+        evt = TTkKeyEvent_SpecialKey(TTkK.Key_Up, "", TTkK.NoModifier)
         self.time_widget.keyEvent(evt)
 
         assert self.time_widget._state.secondDigit is False
@@ -470,12 +470,12 @@ class TestTTkTimeKeyEvent:
         self.time_widget._state.secondDigit = False
 
         # First digit input
-        evt = TTkKeyEvent(TTkK.Character, "1", "", TTkK.NoModifier)
+        evt = TTkKeyEvent_Character("1", "", TTkK.NoModifier)
         self.time_widget.keyEvent(evt)
         assert self.time_widget._state.secondDigit is True
 
         # Second digit input
-        evt = TTkKeyEvent(TTkK.Character, "5", "", TTkK.NoModifier)
+        evt = TTkKeyEvent_Character("5", "", TTkK.NoModifier)
         self.time_widget.keyEvent(evt)
         assert self.time_widget._state.secondDigit is False
 
@@ -483,7 +483,7 @@ class TestTTkTimeKeyEvent:
         """Test unknown special keys return False."""
         self.time_widget._state.selected = _FieldSelected.HOURS
 
-        evt = TTkKeyEvent(TTkK.SpecialKey, 9999, "", TTkK.NoModifier)  # Unknown key
+        evt = TTkKeyEvent_SpecialKey(9999, "", TTkK.NoModifier)  # Unknown key
         result = self.time_widget.keyEvent(evt)
 
         assert result is False
@@ -498,7 +498,7 @@ class TestTTkTimeKeyEvent:
         self.time_widget.timeChanged.connect(slot)
         self.time_widget._state.selected = _FieldSelected.HOURS
 
-        evt = TTkKeyEvent(TTkK.SpecialKey, TTkK.Key_Up, "", TTkK.NoModifier)
+        evt = TTkKeyEvent_SpecialKey(TTkK.Key_Up, "", TTkK.NoModifier)
         self.time_widget.keyEvent(evt)
 
         assert len(signal_received) == 1
@@ -511,7 +511,7 @@ class TestTTkTimeKeyEvent:
         self.time_widget._state.secondDigit = True
         self.time_widget.setTime(datetime.time(2, 30, 45))
 
-        evt = TTkKeyEvent(TTkK.Character, "4", "", TTkK.NoModifier)
+        evt = TTkKeyEvent_Character("4", "", TTkK.NoModifier)
         result = self.time_widget.keyEvent(evt)
 
         assert result is True
@@ -524,7 +524,7 @@ class TestTTkTimeKeyEvent:
         self.time_widget._state.secondDigit = True
         self.time_widget.setTime(datetime.time(12, 6, 45))
 
-        evt = TTkKeyEvent(TTkK.Character, "0", "", TTkK.NoModifier)
+        evt = TTkKeyEvent_Character("0", "", TTkK.NoModifier)
         result = self.time_widget.keyEvent(evt)
 
         assert result is True
@@ -537,7 +537,7 @@ class TestTTkTimeKeyEvent:
         self.time_widget._state.secondDigit = True
         self.time_widget.setTime(datetime.time(12, 30, 6))
 
-        evt = TTkKeyEvent(TTkK.Character, "0", "", TTkK.NoModifier)
+        evt = TTkKeyEvent_Character("0", "", TTkK.NoModifier)
         result = self.time_widget.keyEvent(evt)
 
         assert result is True

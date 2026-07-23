@@ -207,7 +207,7 @@ class TTKode_CommandPalette(ttk.TTkResizableFrame):
     #     return self._line_edit.setFocus()
 
     def keyEvent(self, evt:ttk.TTkKeyEvent) -> bool:
-        if evt.type == ttk.TTkK.SpecialKey:
+        if isinstance(evt, ttk.TTkKeyEvent_SpecialKey):
             # Don't Handle the special focus switch key
             if evt.key is ttk.TTkK.Key_Up:
                 self._cpl._pushAction(_ListAction.UP)

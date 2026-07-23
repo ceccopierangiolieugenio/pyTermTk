@@ -33,7 +33,7 @@ from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
 from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkCore.canvas import TTkCanvas
 from TermTk.TTkCore.string import TTkString
-from TermTk.TTkCore.TTkTerm.inputkey import TTkKeyEvent
+from TermTk.TTkCore.TTkTerm.inputkey import TTkKeyEvent, TTkKeyEvent_Character, TTkKeyEvent_SpecialKey
 from TermTk.TTkCore.TTkTerm.inputmouse import TTkMouseEvent
 from TermTk.TTkGui.drag import TTkDrag, TTkDnDEvent
 
@@ -647,22 +647,22 @@ class TTkListWidget(TTkAbstractScrollView):
 
     def keyEvent(self, evt:TTkKeyEvent) -> bool:
         # if not self._highlighted: return False
-        if ( not self._searchText and evt.type == TTkK.Character and evt.key==" " ) or \
-           ( evt.type == TTkK.SpecialKey and evt.key == TTkK.Key_Enter ):
+        if ( not self._searchText and isinstance(evt, TTkKeyEvent_Character) and evt.key==" " ) or \
+           ( isinstance(evt, TTkKeyEvent_SpecialKey) and evt.key == TTkK.Key_Enter ):
             if self._highlighted is not None:
                 self._itemTriggered(self._highlighted)
 
-        elif evt.type == TTkK.Character:
+        elif isinstance(evt, TTkKeyEvent_Character):
             # Add this char to the search text
             self._searchText += evt.key
             self.update()
             self.searchModified.emit(self._searchText)
 
-        elif ( evt.type == TTkK.SpecialKey and
+        elif ( isinstance(evt, TTkKeyEvent_SpecialKey) and
                evt.key == TTkK.Key_Tab ):
             return False
 
-        elif ( evt.type == TTkK.SpecialKey and
+        elif ( isinstance(evt, TTkKeyEvent_SpecialKey) and
                evt.key in (TTkK.Key_Delete,TTkK.Key_Backspace) and
                self._searchText ):
             # Handle the backspace to remove the last char from the search text
@@ -670,7 +670,7 @@ class TTkListWidget(TTkAbstractScrollView):
             self.update()
             self.searchModified.emit(self._searchText)
 
-        elif ( evt.type == TTkK.SpecialKey and
+        elif ( isinstance(evt, TTkKeyEvent_SpecialKey) and
                self._filteredItems):
             # Handle the arrow/movement keys
             index = 0

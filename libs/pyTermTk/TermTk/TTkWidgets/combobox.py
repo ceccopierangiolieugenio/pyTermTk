@@ -30,7 +30,7 @@ from TermTk.TTkCore.helper import TTkHelper
 from TermTk.TTkCore.string import TTkString
 from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkCore.canvas import TTkCanvas
-from TermTk.TTkCore.TTkTerm.inputkey import TTkKeyEvent
+from TermTk.TTkCore.TTkTerm.inputkey import TTkKeyEvent, TTkKeyEvent_Character, TTkKeyEvent_SpecialKey
 from TermTk.TTkCore.TTkTerm.inputmouse import TTkMouseEvent
 from TermTk.TTkLayouts.gridlayout import TTkGridLayout
 from TermTk.TTkWidgets.widget import TTkWidget
@@ -518,9 +518,9 @@ class TTkComboBox(TTkContainer):
         return True
 
     def keyEvent(self, evt:TTkKeyEvent) -> bool:
-        if ((evt.type == TTkK.SpecialKey and evt.key==TTkK.Key_Down) or
-                self._lineEdit is None and (evt.type == TTkK.Character and evt.key==" " or
-                                            evt.type == TTkK.SpecialKey and evt.key==TTkK.Key_Enter)):
+        if ((isinstance(evt, TTkKeyEvent_SpecialKey) and evt.key==TTkK.Key_Down) or
+                self._lineEdit is None and (isinstance(evt, TTkKeyEvent_Character) and evt.key==" " or
+                                            isinstance(evt, TTkKeyEvent_SpecialKey) and evt.key==TTkK.Key_Enter)):
             self._pressEvent()
             return True
         return super().keyEvent(evt=evt)
