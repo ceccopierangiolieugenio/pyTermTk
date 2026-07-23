@@ -1175,7 +1175,8 @@ class _TTkTerminalScreen_CSI(_TTkTerminalScreenBase):
 
     # CSI s     Save cursor, available only when DECLRMM is disabled (SCOSC,
     #           also ANSI.SYS).
-    def _CSI_s_SCOSC(self, _:int, __:int) -> None: pass
+    def _CSI_s_SCOSC(self, _:int, __:int) -> None:
+        self.saveCursor()
 
     # CSI Pl ; Pr s
     #           Set left and right margins (DECSLRM), VT420 and up.  This is
@@ -1306,7 +1307,8 @@ class _TTkTerminalScreen_CSI(_TTkTerminalScreenBase):
     #             Pm denotes the attributes to reverse, i.e.,  1, 4, 5, 7.
 
     # CSI u     Restore cursor (SCORC, also ANSI.SYS).
-    def _CSI_u_SCORC(self, _:int, __:int) -> None: pass
+    def _CSI_u_SCORC(self, _:int, __:int) -> None:
+        self.restoreCursor()
 
     # CSI Ps SP u
     #           Set margin-bell volume (DECSMBV), VT520.

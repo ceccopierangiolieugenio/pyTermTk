@@ -179,7 +179,10 @@ class _TTkTerminal_CSI_DEC(_TTkTerminalViewBase):
     #             Ps = 1 0 4 8  ⇒  Restore cursor as in DECRC, xterm.  This
     #           may be disabled by the titeInhibit resource.
     def _CSI_DEC_SR_1048(self, s: bool) -> None:
-            pass
+            if s:
+                self._screen_current.saveCursor()
+            else:
+                self._screen_current.restoreCursor()
 
     # CSI ? Pm h
     #           DEC Private Mode Set (DECSET).
@@ -217,6 +220,7 @@ class _TTkTerminal_CSI_DEC(_TTkTerminalViewBase):
         1006: _CSI_DEC_SR_1006,
         1015: _CSI_DEC_SR_1015,
         1047: _CSI_DEC_SR_1047,
+        1048: _CSI_DEC_SR_1048,
         1049: _CSI_DEC_SR_1049,
         2004: _CSI_DEC_SR_2004
     }

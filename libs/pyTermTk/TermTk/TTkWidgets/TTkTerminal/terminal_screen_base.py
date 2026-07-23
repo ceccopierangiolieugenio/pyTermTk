@@ -32,7 +32,8 @@ if TYPE_CHECKING:
 
 class _TTkTerminalScreenBase():
     __slots__ = (
-        '_lines', '_terminalCursor',
+        '_lines',
+        '_terminalCursor', '_terminalCursor_save',
         '_selectCursor',
         '_scrollingRegion',
         '_bufferSize', '_bufferedLines',
@@ -49,6 +50,7 @@ class _TTkTerminalScreenBase():
     _canvasNewLine: list[bool]
     _canvasLineSize: list[int]
     _terminalCursor: tuple[int, int]
+    _terminalCursor_save: tuple[int, int]
     _scrollingRegion: tuple[int, int]
     _bufferedLines: collections.deque
     _bufferSize: int
@@ -58,6 +60,8 @@ class _TTkTerminalScreenBase():
     bell: pyTTkSignal
     bufferedLinesChanged: pyTTkSignal
 
+    def restoreCursor(self) -> None: ...
+    def saveCursor(self) -> None: ...
     def _pushTxt(self, txt: str, irm: bool = False) -> None: ...
     def _CSI_S_SU(self, ps: int, _: Any = None) -> None: ...
     def _CSI_T_SD(self, ps: int, _: Any = None) -> None: ...

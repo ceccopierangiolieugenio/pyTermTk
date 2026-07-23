@@ -92,6 +92,7 @@ class _TTkTerminalScreen(_TTkTerminalScreen_CSI, _TTkTerminalScreen_C1):
         self._bufferSize = bufferSize
         self._bufferedLines = collections.deque(maxlen=bufferSize)
         self._terminalCursor = (0,0)
+        self._terminalCursor_save = (0,0)
         self._scrollingRegion = (0,h)
         self._selectCursor = _TTkTerminalScreen._SelectCursor()
         self._color = color
@@ -105,6 +106,12 @@ class _TTkTerminalScreen(_TTkTerminalScreen_CSI, _TTkTerminalScreen_C1):
 
     def getCursor(self) -> Tuple[int,int]:
         return self._terminalCursor
+
+    def saveCursor(self) -> None:
+        self._terminalCursor_save = self._terminalCursor
+
+    def restoreCursor(self) -> None:
+        self._terminalCursor = self._terminalCursor_save
 
     def resize(self, w:int, h:int) -> None:
         # I normalize the size to the default terminal
