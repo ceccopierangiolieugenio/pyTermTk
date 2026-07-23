@@ -23,12 +23,11 @@
 __all__:list[str] = []
 
 import collections
-from typing import Any, TYPE_CHECKING
+from typing import Any
 
-if TYPE_CHECKING:
-    from TermTk.TTkCore.canvas import TTkCanvas
-    from TermTk.TTkCore.color import TTkColor
-    from TermTk.TTkCore.signal import pyTTkSignal
+from TermTk.TTkCore.canvas import TTkCanvas
+from TermTk.TTkCore.color import TTkColor
+from TermTk.TTkCore.signal import pyTTkSignal
 
 class _TTkTerminalScreenBase():
     __slots__ = (
