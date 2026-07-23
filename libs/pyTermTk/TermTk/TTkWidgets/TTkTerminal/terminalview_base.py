@@ -22,12 +22,11 @@
 
 __all__:list[str] = []
 
-from typing import Any, TYPE_CHECKING
+from typing import Any
 
 from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollView
 
-if TYPE_CHECKING:
-    from .terminal_screen import _TTkTerminalScreen
+from .terminal_screen import _TTkTerminalScreen
 
 class _TTkTerminalViewBase(TTkAbstractScrollView):
     __slots__ = (
