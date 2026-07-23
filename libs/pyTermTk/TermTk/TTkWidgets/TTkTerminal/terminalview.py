@@ -765,26 +765,26 @@ class TTkTerminalView(_TTkTerminal_CSI_DEC):
                     slice = slice[1:]
                     oscString = ""
 
-                    def __checkOSCBell(__osc:str, __oscString:str) -> tuple[bool, str, str]:
+                    def __checkOSCBell(__osc:str, __oscString_ob:str) -> tuple[bool, str, str]:
                         if '\a' in __osc: # BEL (Ctrl-G) (\a) as terminator
                             belIndex = __osc.index('\a')
-                            __oscString += __osc[:belIndex]
-                            return True, __osc[belIndex+1:], __oscString
-                        __oscString += __osc
-                        return False, "", __oscString
+                            __oscString_ob += __osc[:belIndex]
+                            return True, __osc[belIndex+1:], __oscString_ob
+                        __oscString_ob += __osc
+                        return False, "", __oscString_ob
 
                     # I am using a closure in order to exit the routine at the end
-                    def __processOSCEscapeGenerator(__oscString:str) -> tuple[bool, str, str]:
+                    def __processOSCEscapeGenerator(__oscString_oeg:str) -> tuple[bool, str, str]:
                         _slice = ""
                         for __osc in escapeGenerator:
                             if __osc[0] == '\\': # ST (0x9c) (<ESC> \) as terminator
-                                return True, __osc[1:], __oscString
-                            _ret, _slice, __oscString = __checkOSCBell(__osc, __oscString)
+                                return True, __osc[1:], __oscString_oeg
+                            _ret, _slice, __oscString_oeg = __checkOSCBell(__osc, __oscString_oeg)
                             if _ret:
-                                return _ret, _slice, __oscString
-                        return False, "", __oscString
+                                return _ret, _slice, __oscString_oeg
+                        return False, "", __oscString_oeg
 
-                    ret, slice, oscString = __checkOSCBell(slice,oscString)
+                    ret, slice, oscString = __checkOSCBell(slice, oscString)
 
                     if not ret:
                         ret, slice, oscString = __processOSCEscapeGenerator(oscString)
@@ -801,8 +801,9 @@ class TTkTerminalView(_TTkTerminal_CSI_DEC):
                                 return
 
                             sout = out.split('\033')
-                            oscString += sout[0]
                             escapeGenerator = (i for i in sout[1:])
+                            ret, slice, oscString = __checkOSCBell(sout[0], oscString)
+                            if ret: break
                             ret, slice, oscString =  __processOSCEscapeGenerator(oscString)
                             if ret: break
 

@@ -332,9 +332,13 @@ class TestOSCTitleChange:
         # The second write must provide the BEL terminator
         self.tv.termWrite("\033]0;First")
         assert self.titles == [], "Title should not emit until terminator received"
+        self.tv.termWrite("Second")
+        assert self.titles == [], "Title should not emit until terminator received"
+        self.tv.termWrite("Third")
+        assert self.titles == [], "Title should not emit until terminator received"
         self.tv.termWrite("Part\a")
         # Expected: OSC completes with "FirstPart"
-        assert self.titles == ["FirstPart"]
+        assert self.titles == ["FirstSecondThirdPart"]
 
     def test_osc_followed_by_text(self):
         self.tv.termWrite("\033]0;Title\aHello")
