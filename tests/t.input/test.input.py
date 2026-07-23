@@ -25,6 +25,8 @@
 import sys, os
 import logging
 
+from TermTk.TTkCore.TTkTerm.inputkey import TTkKeyEvent_Character
+
 sys.path.append(os.path.join(sys.path[0],'../../libs/pyTermTk'))
 from TermTk import TTkLog, TTkK, TTkTerm, TTkInput
 
@@ -59,7 +61,7 @@ def keyCallback(kevt=None, mevt=None):
     if mevt is not None:
         TTkLog.info(f"Mouse Event: {mevt}")
     if kevt is not None:
-        if kisinstance(evt, TTkKeyEvent_Character):
+        if isinstance(kevt, TTkKeyEvent_Character):
             TTkLog.info(f"Key Event: char '{kevt.key}' {kevt}")
         else:
             TTkLog.info(f"Key Event: Special '{kevt}'")
