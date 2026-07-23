@@ -157,7 +157,12 @@ class _TTkTerminalScreen(_TTkTerminalScreen_CSI, _TTkTerminalScreen_C1):
             # it in the correct position
             for ch in tout:
                 if ord(ch) < 0x20:
-                    # TTkLog.error(f"Unhandled ASCII: 0x{ord(ch):02x}")
+                    tab_size = 8-(x%8)
+                    tab_slice = slice(x,x+tab_size)
+                    self._canvas._data[y][tab_slice] = [' ']*tab_size
+                    self._canvas._colors[y][tab_slice] = [self._color]*tab_size
+                    x+=tab_size
+                    self._terminalCursor = (x,y)
                     continue
                 l = TTkString._getWidthText(ch)
                 # Scroll up if we are at the right border
