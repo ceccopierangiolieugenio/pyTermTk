@@ -20,7 +20,9 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-__all__ = ['TTkKeyEvent']
+from __future__ import annotations
+
+__all__ = ['TTkKeyEvent', 'TTkKeyEvent_SpecialKey', 'TTkKeyEvent_Character']
 
 from typing import Union
 
@@ -31,24 +33,10 @@ class TTkKeyEvent:
 
     :Demo: `test.input.py <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tests/test.input.py>`_
 
-    :param type: The key input type recorded
-    :type type: :py:class:`TTkConstant.KeyType`
-    :param key: the key
-    :type key: str
     :param code: The terminal code used to represent this input
     :type code: str
     :param mod: The modifier used by the :py:class:`~TermTk.TTkCore.constant.TTkConstant.KeyType.SpecialKey` type
     :type mod: :py:class:`TTkConstant.KeyModifier`
-
-    .. py:attribute:: type
-        :type: KeyType
-
-        The key input :py:class:`TTkConstant.KeyType` recorded
-
-    .. py:attribute:: key
-        :type: str
-
-        the input key
 
     .. py:attribute:: code
         :type: str
@@ -60,11 +48,14 @@ class TTkKeyEvent:
 
         The :py:class:`TTkConstant.KeyModifier` used by the :py:class:`~TermTk.TTkCore.constant.TTkConstant.KeyType.SpecialKey` type
 
+    Parsed events are returned by :py:meth:`TTkKeyEvent.parse` as either a
+    :py:class:`TTkKeyEvent_Character` or a :py:class:`TTkKeyEvent_SpecialKey`.
+
     '''
-    __slots__ = ('type', 'key', 'code', 'mod')
-    def __init__(self, type:int, key: Union[str,int], code: str, mod: int):
-        self.type = type
-        self.key = key
+    __slots__ = ('key', 'code', 'mod')
+    key: int | str | None
+    def __init__(self, code: str, mod: int):
+        self.key = None
         self.mod = mod
         self.code = code
 
@@ -72,25 +63,79 @@ class TTkKeyEvent:
         code = self.code.replace('\033','<ESC>')
         return f"KeyEvent: {self.key} {key2str(self.key)} {mod2str(self.mod)} {code}"
 
+    @staticmethod
+    def parse(input_key):  # from: Space           except "DEL"
+        if len(input_key) == 1 and "\040" <= input_key != "\177":
+            return TTkKeyEvent_Character(input_key, input_key, TTkK.NoModifier)
+        else:
+            key, mod = _translate_key(input_key)
+            if key is not None:
+                return TTkKeyEvent_SpecialKey(key, input_key, mod)
+        return None
+
+
+class TTkKeyEvent_Character(TTkKeyEvent):
+    ''' Keyboard event for a literal character input.
+
+    The :py:attr:`type` is :py:class:`TTkK.Character` and :py:attr:`key`
+    stores the character itself.
+
+    :param key: The character that was typed
+    :type key: str
+    :param code: The terminal code used to represent this input
+    :type code: str
+    :param mod: The modifier state associated with the input
+    :type mod: :py:class:`TTkConstant.KeyModifier`
+
+    '''
+    type=TTkK.Character
+    __slots__ = ('key')
+    key: str
+    def __init__(self, key: str, code: str, mod: int) -> None:
+        super().__init__(code=code, mod=mod)
+        self.key = key
+
     def __eq__(self, other):
         if other is None: return False
         return (
-            self.type == other.type and
+            isinstance(other, TTkKeyEvent_Character) and
+            self.key  == other.key  and
+            self.mod  == other.mod  )
+
+
+
+
+class TTkKeyEvent_SpecialKey(TTkKeyEvent):
+    ''' Keyboard event for a non-character key press.
+
+    The :py:attr:`type` is :py:class:`TTkK.SpecialKey` and :py:attr:`key`
+    stores the resolved key constant.
+
+    :param key: The resolved special-key constant
+    :type key: int
+    :param code: The terminal code used to represent this input
+    :type code: str
+    :param mod: The modifier state associated with the input
+    :type mod: :py:class:`TTkConstant.KeyModifier`
+
+    '''
+    type=TTkK.SpecialKey
+    __slots__ = ('key')
+    key: int
+    def __init__(self, key: int, code: str, mod: int) -> None:
+        super().__init__(code=code, mod=mod)
+        self.key = key
+
+    def __eq__(self, other):
+        if other is None: return False
+        return (
+            isinstance(other, TTkKeyEvent_SpecialKey) and
             self.key  == other.key  and
             self.mod  == other.mod  )
 
     def __hash__(self) -> int:
         return hash((self.type,self.key,self.mod))
 
-    @staticmethod
-    def parse(input_key):  # from: Space           except "DEL"
-        if len(input_key) == 1 and "\040" <= input_key != "\177":
-            return TTkKeyEvent(TTkK.Character, input_key, input_key, TTkK.NoModifier)
-        else:
-            key, mod = _translate_key(input_key)
-            if key is not None:
-                return TTkKeyEvent(TTkK.SpecialKey, key, input_key, mod)
-        return None
 
 _translate_key_list = {
         "\177"      : ( TTkK.Key_Backspace , TTkK.NoModifier ) ,
