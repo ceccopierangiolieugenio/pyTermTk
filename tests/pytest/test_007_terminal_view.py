@@ -24,7 +24,7 @@ import sys, os
 
 sys.path.append(os.path.join(sys.path[0],'../../libs/pyTermTk'))
 
-from TermTk.TTkCore.color import TTkColor, _TTkColor_mod
+from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkWidgets.TTkTerminal.terminal_screen import _TTkTerminalScreen
 from TermTk.TTkWidgets.TTkTerminal.terminalview import TTkTerminalView
 from TermTk.TTkWidgets.TTkTerminal.mode import TTkTerminalModes
