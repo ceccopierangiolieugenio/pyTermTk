@@ -22,6 +22,7 @@
 
 __all__:list[str] = []
 
+from abc import abstractmethod
 import collections
 from typing import Any
 
@@ -59,8 +60,17 @@ class _TTkTerminalScreenBase():
     bell: pyTTkSignal
     bufferedLinesChanged: pyTTkSignal
 
+    @abstractmethod
     def restoreCursor(self) -> None: ...
+
+    @abstractmethod
     def saveCursor(self) -> None: ...
+
+    @abstractmethod
     def _pushTxt(self, txt: str, irm: bool = False) -> None: ...
+
+    @abstractmethod
     def _CSI_S_SU(self, ps: int, _: Any = None) -> None: ...
+
+    @abstractmethod
     def _CSI_T_SD(self, ps: int, _: Any = None) -> None: ...
