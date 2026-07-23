@@ -453,7 +453,7 @@ class TTkTerminalView(_TTkTerminal_CSI_DEC):
                     en = m.end()
                     fn = m.group(5)
                     defval = self._CSI_Default_MAP.get(fn,(1,1))
-                    y = ps = int(y) if (y:=m.group(2)) else defval[0]
+                    y = int(y) if (y:=m.group(2)) else defval[0]
                     sep = m.group(3)
                     x =       int(x) if (x:=m.group(4)) else defval[1]
                     _termLog.debug(f"{mg[0]}{fn} = ps:{y=} {sep=} {x=} {fn=}")
