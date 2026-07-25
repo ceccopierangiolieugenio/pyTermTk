@@ -25,6 +25,7 @@ __all__ = ['TTkPropertyAnimation', 'TTkEasingCurve']
 import time, math
 from inspect import getfullargspec
 from types import LambdaType
+from typing import get_type_hints
 
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
@@ -328,8 +329,15 @@ class TTkPropertyAnimation():
                 _args = _spec.args
             else:
                 _args = _spec.args[1:] if hasattr(self._cb, '__self__') else _spec.args
+            # "from __future__ import annotations" (PEP 563) keeps the annotations
+            # as strings, those must be resolved before being used as a cast.
+            try:
+                _annotations = get_type_hints(self._cb)
+            except Exception:
+                _annotations = _spec.annotations
+            _annotations = {_a:_t for _a,_t in _annotations.items() if callable(_t)}
             _castList = [
-                (lambda x:_spec.annotations[a](x)) if a in _spec.annotations else (lambda x:x) for a in _args]
+                (lambda x,_t=_annotations[a]:_t(x)) if a in _annotations else (lambda x:x) for a in _args]
             def _ret(*args):
                 return [c(x) for (c,x) in zip(_castList, args)]
             return _ret
