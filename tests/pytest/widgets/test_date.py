@@ -4,7 +4,7 @@ import calendar
 from unittest.mock import Mock, patch, MagicMock
 
 from TermTk.TTkCore.constant import TTkK
-from TermTk.TTkCore.TTkTerm.inputkey import TTkKeyEvent, TTkKeyEvent_Character, TTkKeyEvent_SpecialKey
+from TermTk.TTkCore.TTkTerm.inputkey import TTkKeyEvent_Character, TTkKeyEvent_SpecialKey
 from TermTk.TTkCore.TTkTerm.inputmouse import TTkMouseEvent
 from TermTk.TTkWidgets.datetime_date import TTkDate, _FieldSelected, _TTkTimeWidgetState
 
