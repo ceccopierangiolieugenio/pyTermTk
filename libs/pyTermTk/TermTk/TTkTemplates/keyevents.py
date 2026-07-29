@@ -60,10 +60,14 @@ class TKeyEvents():
 
         .. note:: Reimplement this function to handle this event
 
-        :param evt: The keyboard event
+        The received event is a :py:class:`TTkKeyEvent_Character` for literal
+        text input or a :py:class:`TTkKeyEvent_SpecialKey` for translated
+        terminal sequences such as arrows, Enter, or function keys.
+
+        :param evt: The keyboard event.
         :type evt: :py:class:`TTkKeyEvent`
 
-        :return: **True** if the event has been handled
+        :return: **True** if the event has been handled.
         :rtype: bool
         '''
         return False

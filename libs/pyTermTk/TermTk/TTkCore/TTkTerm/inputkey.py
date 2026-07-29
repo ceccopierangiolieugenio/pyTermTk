@@ -29,14 +29,27 @@ from typing import Union
 from TermTk.TTkCore.constant import TTkK
 
 class TTkKeyEvent:
-    ''' Keyboard Events
+    ''' Keyboard event base class.
 
     :Demo: `test.input.py <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tests/test.input.py>`_
+
+    Parsed input is exposed as one of the concrete subclasses:
+    :py:class:`TTkKeyEvent_Character` for literal character input and
+    :py:class:`TTkKeyEvent_SpecialKey` for translated terminal sequences.
+
+    The shared :py:attr:`key` attribute stores the payload for the concrete
+    event type: a ``str`` for :py:class:`TTkKeyEvent_Character` and an ``int``
+    :py:class:`TTkK` constant for :py:class:`TTkKeyEvent_SpecialKey`.
 
     :param code: The terminal code used to represent this input
     :type code: str
     :param mod: The modifier used by the :py:class:`~TermTk.TTkCore.constant.TTkConstant.KeyType.SpecialKey` type
     :type mod: :py:class:`TTkConstant.KeyModifier`
+
+    .. py:attribute:: key
+        :type: str | int
+
+        The parsed key payload for the concrete event instance.
 
     .. py:attribute:: code
         :type: str
@@ -46,10 +59,7 @@ class TTkKeyEvent:
     .. py:attribute:: mod
         :type: KeyModifier
 
-        The :py:class:`TTkConstant.KeyModifier` used by the :py:class:`~TermTk.TTkCore.constant.TTkConstant.KeyType.SpecialKey` type
-
-    Parsed events are returned by :py:meth:`TTkKeyEvent.parse` as either a
-    :py:class:`TTkKeyEvent_Character` or a :py:class:`TTkKeyEvent_SpecialKey`.
+        The :py:class:`TTkConstant.KeyModifier` associated with the input.
 
     '''
     __slots__ = ('key', 'code', 'mod')
@@ -65,6 +75,15 @@ class TTkKeyEvent:
 
     @staticmethod
     def parse(input_key):  # from: Space           except "DEL"
+        '''Parse raw terminal input into a typed key event.
+
+        :param input_key: The raw terminal input sequence.
+        :type input_key: str
+
+        :return: A character event, a special-key event, or ``None`` when the
+                 sequence is not recognized.
+        :rtype: TTkKeyEvent_Character | TTkKeyEvent_SpecialKey | None
+        '''
         if len(input_key) == 1 and "\040" <= input_key != "\177":
             return TTkKeyEvent_Character(input_key, input_key, TTkK.NoModifier)
         else:

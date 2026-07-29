@@ -690,7 +690,8 @@ class TTkConstant:
     class KeyType(int):
         '''Input Key Types
 
-        Key type reported by :py:class:`TTkKeyEvent` -> :py:class:`TTkKeyEvent.key`
+        Key type reported by the concrete :py:class:`TTkKeyEvent` subclass via
+        its :py:attr:`type` attribute.
 
         .. autosummary::
           Character
