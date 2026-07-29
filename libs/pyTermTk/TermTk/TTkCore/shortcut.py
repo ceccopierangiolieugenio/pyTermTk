@@ -85,16 +85,17 @@ class TTkShortcut():
 
     @staticmethod
     def processKey(key:TTkKeyEvent, focusWidget:'TTkWidget') -> bool:
-        for sc in TTkShortcut._shortcuts.get(key,[]):
-            if (   ( sc._shortcutContext == TTkK.WidgetShortcut
-                     and focusWidget == sc._parent )
-                or ( sc._shortcutContext == TTkK.WidgetWithChildrenShortcut
-                     and sc._parent
-                     and ( focusWidget == sc._parent
-                           or TTkHelper.isParent(sc._parent,focusWidget) ) )
-                or ( sc._shortcutContext == TTkK.WindowShortcut )
-                or ( sc._shortcutContext == TTkK.ApplicationShortcut )):
-                if sc.activated._connected_slots:
-                    sc.activated.emit()
-                    return True
+        if isinstance(key, TTkKeyEvent_SpecialKey):
+            for sc in TTkShortcut._shortcuts.get(key,[]):
+                if (   ( sc._shortcutContext == TTkK.WidgetShortcut
+                        and focusWidget == sc._parent )
+                    or ( sc._shortcutContext == TTkK.WidgetWithChildrenShortcut
+                        and sc._parent
+                        and ( focusWidget == sc._parent
+                            or TTkHelper.isParent(sc._parent,focusWidget) ) )
+                    or ( sc._shortcutContext == TTkK.WindowShortcut )
+                    or ( sc._shortcutContext == TTkK.ApplicationShortcut )):
+                    if sc.activated._connected_slots:
+                        sc.activated.emit()
+                        return True
         return False
