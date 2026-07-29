@@ -3,7 +3,7 @@ import datetime
 from unittest.mock import Mock, patch
 
 from TermTk.TTkCore.constant import TTkK
-from TermTk.TTkCore.TTkTerm.inputkey import TTkKeyEvent, TTkKeyEvent_Character, TTkKeyEvent_SpecialKey
+from TermTk.TTkCore.TTkTerm.inputkey import TTkKeyEvent_Character, TTkKeyEvent_SpecialKey
 from TermTk.TTkWidgets.datetime_time import TTkTime, _FieldSelected
 
 
