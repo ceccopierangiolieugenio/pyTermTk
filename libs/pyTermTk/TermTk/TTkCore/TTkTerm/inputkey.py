@@ -53,9 +53,9 @@ class TTkKeyEvent:
 
     '''
     __slots__ = ('key', 'code', 'mod')
-    key: int | str | None
-    def __init__(self, code: str, mod: int):
-        self.key = None
+    key: int | str
+    def __init__(self, key: int | str, code: str, mod: int):
+        self.key = key
         self.mod = mod
         self.code = code
 
@@ -91,9 +91,6 @@ class TTkKeyEvent_Character(TTkKeyEvent):
     type=TTkK.Character
     __slots__ = ('key')
     key: str
-    def __init__(self, key: str, code: str, mod: int) -> None:
-        super().__init__(code=code, mod=mod)
-        self.key = key
 
     def __eq__(self, other):
         if other is None: return False
@@ -122,9 +119,6 @@ class TTkKeyEvent_SpecialKey(TTkKeyEvent):
     type=TTkK.SpecialKey
     __slots__ = ('key')
     key: int
-    def __init__(self, key: int, code: str, mod: int) -> None:
-        super().__init__(code=code, mod=mod)
-        self.key = key
 
     def __eq__(self, other):
         if other is None: return False
