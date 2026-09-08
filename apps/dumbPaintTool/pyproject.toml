@@ -12,7 +12,7 @@ authors = [
 ]
 requires-python = ">=3.10"
 dependencies = [
-    'pyTermTk>=0.50.0-a0',
+    'pyTermTk>=0.51.0-a0',
     'pyperclip',
     'Pillow',
 ]
