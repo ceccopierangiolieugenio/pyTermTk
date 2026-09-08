@@ -1,5 +1,35 @@
 # Changelog
 
+## [0.51.0-a0](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/pyTermTk-v0.50.0-a0...pyTermTk-v0.51.0-a0) (2026-09-08)
+
+
+### ⚠ BREAKING CHANGES
+
+* **keyevent:** TTkKeyEvent construction and matching changed. Code that created events with TTkKeyEvent(type=..., key=..., code=..., mod=...) must now instantiate TTkKeyEvent_Character(key=..., code=..., mod=...) or TTkKeyEvent_SpecialKey(key=..., code=..., mod=...). Event-dispatch code should migrate from evt.type == TTkK.Character or TTkK.SpecialKey to isinstance(evt, TTkKeyEvent_Character) or isinstance(evt, TTkKeyEvent_SpecialKey) for compatibility with the new model.
+* Python 3.9 is no longer supported. The minimum supported Python version is now Python 3.10.
+
+### Fixes
+
+* **propertyanimation:** resolve postponed annotations before casting ([#655](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/655)) ([01a84a9](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/01a84a9791e64f1ab279d747bf7474debacee6de))
+* version update on release pipeline ([#649](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/649)) ([df95a59](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/df95a592ee9223348a4960e53872c2876637e832))
+
+
+### Features
+
+* add mypy configuration for type checking ([#647](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/647)) ([d8a163b](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/d8a163b581340fcbecbe75a9245158ab6f016981))
+
+
+### Chores
+
+* refactor investigate remove layout ([#650](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/650)) ([ccedf06](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/ccedf068a1105f07dde9d0422db83c3badca76b0))
+
+
+### Refactors
+
+* Drop Python 3.9 support and update for Python 3.10 ([#648](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/648)) ([6784c7c](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/6784c7c93ee1781bd94ce7f2a1f11af03ae69358))
+* **keyevent:** split key events into character and special-key classes ([#656](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/656)) ([dd35aea](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/dd35aea7e302c79558a2c460742896c2259d8003))
+* **ttk-terminal:** improve typing and implement cursor api ([#654](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/654)) ([59aff03](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/59aff03d6d2516955ea0e891507e050c71f22a65))
+
 ## [0.50.0-a0](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/pyTermTk-v0.49.0-a0...pyTermTk-v0.50.0-a0) (2026-05-08)
 
 

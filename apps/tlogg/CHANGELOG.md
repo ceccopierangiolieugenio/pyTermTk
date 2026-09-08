@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.49.0-a0](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/tlogg-v0.48.2-a0...tlogg-v0.49.0-a0) (2026-09-08)
+
+
+### ⚠ BREAKING CHANGES
+
+* **keyevent:** TTkKeyEvent construction and matching changed. Code that created events with TTkKeyEvent(type=..., key=..., code=..., mod=...) must now instantiate TTkKeyEvent_Character(key=..., code=..., mod=...) or TTkKeyEvent_SpecialKey(key=..., code=..., mod=...). Event-dispatch code should migrate from evt.type == TTkK.Character or TTkK.SpecialKey to isinstance(evt, TTkKeyEvent_Character) or isinstance(evt, TTkKeyEvent_SpecialKey) for compatibility with the new model.
+* Python 3.9 is no longer supported. The minimum supported Python version is now Python 3.10.
+
+### Refactors
+
+* Drop Python 3.9 support and update for Python 3.10 ([#648](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/648)) ([6784c7c](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/6784c7c93ee1781bd94ce7f2a1f11af03ae69358))
+* **keyevent:** split key events into character and special-key classes ([#656](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/656)) ([dd35aea](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/dd35aea7e302c79558a2c460742896c2259d8003))
+
 ## [0.48.2-a0](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/tlogg-v0.48.1-a0...tlogg-v0.48.2-a0) (2026-05-08)
 
 
