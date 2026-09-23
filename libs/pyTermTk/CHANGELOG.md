@@ -1,5 +1,28 @@
 # Changelog
 
+## [0.51.0-a0](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/pyTermTk-v0.50.0-a0...pyTermTk-v0.51.0-a0) (2026-09-23)
+
+
+### ⚠ BREAKING CHANGES
+
+* **keyevent:** TTkKeyEvent construction and matching changed. Code that created events with TTkKeyEvent(type=..., key=..., code=..., mod=...) must now instantiate TTkKeyEvent_Character(key=..., code=..., mod=...) or TTkKeyEvent_SpecialKey(key=..., code=..., mod=...). Event-dispatch code should migrate from evt.type == TTkK.Character or TTkK.SpecialKey to isinstance(evt, TTkKeyEvent_Character) or isinstance(evt, TTkKeyEvent_SpecialKey) for compatibility with the new model.
+
+### Fixes
+
+* **propertyanimation:** resolve postponed annotations before casting ([#655](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/655)) ([01a84a9](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/01a84a9791e64f1ab279d747bf7474debacee6de))
+* **textedit:** preserve smart bottom following on resize ([#662](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/662)) ([94113a4](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/94113a455b3abad32231a9a2bd2f52198d6cf177))
+
+
+### Chores
+
+* refactor investigate remove layout ([#650](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/650)) ([ccedf06](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/ccedf068a1105f07dde9d0422db83c3badca76b0))
+
+
+### Refactors
+
+* **keyevent:** split key events into character and special-key classes ([#656](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/656)) ([dd35aea](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/dd35aea7e302c79558a2c460742896c2259d8003))
+* **ttk-terminal:** improve typing and implement cursor api ([#654](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/654)) ([59aff03](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/59aff03d6d2516955ea0e891507e050c71f22a65))
+
 ## [0.50.0-a0](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/pyTermTk-v0.49.0-a0...pyTermTk-v0.50.0-a0) (2026-05-08)
 
 
