@@ -1031,3 +1031,24 @@ def test_textedit_view_scroll_right_does_not_affect_vertical_offset():
     tev.scrollTo(ttk.TTkK.TextEditEdge.RIGHT)
     _, oy_after = tev.getViewOffsets()
     assert oy_after == oy_before  # Vertical position unchanged
+
+@pytest.mark.parametrize("size", [(20, 2), (12, 3), (20, 6)])
+@pytest.mark.parametrize("wrap", [ttk.TTkK.NoWrap, ttk.TTkK.WidgetWidth])
+def test_textedit_follow_bottom_on_resize(size, wrap):
+    view = ttk.TTkTextEditView(size=(20, 4))
+    view.setText('\n'.join('long line number %d' % i for i in range(20)))
+    view.setLineWrapMode(wrap)
+    view.scrollTo(ttk.TTkK.TextEditEdge.BOTTOM)
+    view.setFollowMode(ttk.TTkK.TextEditFollow.SMART)
+    view.resize(*size)
+    assert view.getViewOffsets()[1] == max(0, view.viewFullAreaSize()[1] - view.height())
+
+
+@pytest.mark.parametrize("mode", [ttk.TTkK.TextEditFollow.NEVER, ttk.TTkK.TextEditFollow.SMART])
+def test_textedit_resize_does_not_follow_when_reading_history(mode):
+    view = ttk.TTkTextEditView(size=(20, 4))
+    view.setText('\n'.join('line %d' % i for i in range(20)))
+    view.setFollowMode(mode)
+    view.viewMoveTo(0, 2)
+    view.resize(20, 2)
+    assert view.getViewOffsets()[1] == 2

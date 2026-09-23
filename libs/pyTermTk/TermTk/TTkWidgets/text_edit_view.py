@@ -726,13 +726,16 @@ class TTkTextEditView(TTkAbstractScrollView):
             self._pushCursor()
 
     def resizeEvent(self, w:int, h:int) -> None:
+        follow = self._followMode == TTkK.TextEditFollow.SMART and self._smartFollowing
         if ( self.lineWrapMode() == TTkK.WidgetWidth and
              w != self._lastWrapUsed and
              w > self._textWrap._wrapState.tabSpaces ):
             self._textWrap.setWrapWidth(w)
             self._lastWrapUsed = w
             self._rewrap()
-        return super().resizeEvent(w,h)
+        super().resizeEvent(w,h)
+        if follow:
+            self.scrollTo(TTkK.TextEditEdge.BOTTOM)
 
     def _updateSize(self) -> None:
         self._hsize = max( len(l) for l in self._textDocument._dataLines ) + 1
