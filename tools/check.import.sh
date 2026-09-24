@@ -66,9 +66,9 @@ __check(){
             -e "drivers/_unused_.unix_thread.py:import threading" \
             -e "drivers/_unused_.unix_thread.py:import queue" \
             -e "drivers/unix.py:import sys, os, re" \
-            -e "drivers/unix.py:import signal" \
+            -e "drivers/unix.py:import atexit, signal" \
             -e "drivers/unix.py:from select import select" \
-            -e "drivers/windows.py:import signal" \
+            -e "drivers/windows.py:import atexit, signal" \
             -e "drivers/windows.py:from ctypes import Structure, Union, byref, wintypes, windll" \
             -e "drivers/pyodide.py:from pyodide import __version__ as pyodideVersion" \
             -e "drivers/term_windows.py:import sys, os" \
@@ -90,7 +90,7 @@ __check(){
             -e "drivers/unix_gpm.py:import os" \
             -e "drivers/unix_gpm.py:import re" \
             -e "drivers/unix_gpm.py:import ctypes" \
-            -e "drivers/unix_gpm.py:import signal" \
+            -e "drivers/unix_gpm.py:import atexit, signal" \
             -e "drivers/unix_gpm.py:from select import select" \
             -e "drivers/term_pyodide.py:import pyodideProxy" \
             -e "drivers/term_pyodide.py:from ..TTkTerm.term_base import TTkTermBase" \
