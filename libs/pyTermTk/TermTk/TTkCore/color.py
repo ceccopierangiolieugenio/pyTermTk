@@ -534,7 +534,6 @@ class TTkColor:
         return self._buffer
 
     def __eq__(self, other) -> bool:
-        if not  isinstance(other, TTkColor): return False
         return (
             self._fg   == other._fg and
             self._bg   == other._bg )

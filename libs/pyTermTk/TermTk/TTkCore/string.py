@@ -448,7 +448,7 @@ class TTkString():
         out   = ""
         color = None
         for ch, col in zip(self._text, self._colors):
-            if col != color:
+            if color is None or col != color:
                 color = col
                 out += str(TTkColor.RST) + str(color)
             out += ch
