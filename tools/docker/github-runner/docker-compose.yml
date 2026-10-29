@@ -5,4 +5,6 @@ services:
     restart: unless-stopped
     command:
       - "${GITHUB_TOKEN}"
-      - "${HOSTNAME}"
+      - "${RUNNER_NAME}"
+      - "${TAGS}"
+      - "${URL}"

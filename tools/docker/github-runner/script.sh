@@ -1,13 +1,21 @@
 #!/bin/bash
 
-echo "First input: $1"
-echo "Second input: $2"
+token=$1
+name_prefix=$2
+url=$3
+tags=$4
+name="${name_prefix}-$(printf '%05x' $((RANDOM % 0x100000)))"
+
+echo "Token: ${token}"
+echo "Name: ${name}"
+echo "Tags: ${tags}"
+echo "Url: ${url}"
 
 ./config.sh \
-    --url https://github.com/ceccopierangiolieugenio/pyTermTk \
+    --url "${url}" \
     --work _work --replace \
     --runnergroup Default \
-    --labels "self-hosted,Linux,ARM64" \
-    --name $2 --token $1
+    --labels "${tags}" \
+    --name "${name}" --token "${token}"
 
 ./run.sh
