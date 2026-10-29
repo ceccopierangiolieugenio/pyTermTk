@@ -137,14 +137,16 @@ jobs:
         run: |
           notify-bluesky ${{ fromJson(steps.app-params.outputs.params).name }} ${{ fromJson(steps.app-params.outputs.params).version }}
 
-      - name: Notify ${{ fromJson(steps.app-params.outputs.params).name }} on Twitter
-        if: ${{ inputs.notify_twitter }}
-        continue-on-error: true
-        env:
-          X_API_KEY: ${{ secrets.X_API_KEY }}
-          X_API_SECRET: ${{ secrets.X_API_SECRET }}
-          X_ACCESS_TOKEN: ${{ secrets.X_ACCESS_TOKEN }}
-          X_ACCESS_TOKEN_SECRET: ${{ secrets.X_ACCESS_TOKEN_SECRET }}
-        run: |
-          notify-twitter ${{ fromJson(steps.app-params.outputs.params).name }} ${{ fromJson(steps.app-params.outputs.params).version }}
+      # X Api are no more free
+      #
+      # - name: Notify ${{ fromJson(steps.app-params.outputs.params).name }} on Twitter
+      #   if: ${{ inputs.notify_twitter }}
+      #   continue-on-error: true
+      #   env:
+      #     X_API_KEY: ${{ secrets.X_API_KEY }}
+      #     X_API_SECRET: ${{ secrets.X_API_SECRET }}
+      #     X_ACCESS_TOKEN: ${{ secrets.X_ACCESS_TOKEN }}
+      #     X_ACCESS_TOKEN_SECRET: ${{ secrets.X_ACCESS_TOKEN_SECRET }}
+      #   run: |
+      #     notify-twitter ${{ fromJson(steps.app-params.outputs.params).name }} ${{ fromJson(steps.app-params.outputs.params).version }}
 
