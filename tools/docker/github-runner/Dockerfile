@@ -1,5 +1,5 @@
 # Use the latest Ubuntu image as the base
-FROM ubuntu:24.04
+FROM ubuntu:26.04
 # FROM --platform=linux/arm64 ubuntu:latest
 # FROM --platform=linux/amd64 ubuntu:latest
 
@@ -26,8 +26,8 @@ USER ubuntu
 WORKDIR /home/ubuntu
 
 # x86-64
-RUN curl -o actions-runner-linux-x64-2.335.1.tar.gz -L https://github.com/actions/runner/releases/download/v2.335.1/actions-runner-linux-x64-2.335.1.tar.gz
-RUN echo "4ef2f25285f0ae4477f1fe1e346db76d2f3ebf03824e2ddd1973a2819bf6c8cf  actions-runner-linux-x64-2.335.1.tar.gz" | shasum -a 256 -c
+RUN curl -o actions-runner-linux-x64-2.337.0.tar.gz -L https://github.com/actions/runner/releases/download/v2.337.0/actions-runner-linux-x64-2.337.0.tar.gz
+RUN echo "70920811a4f8ad4328818682bca5c6469c1c942fab52448868071d0063816613  actions-runner-linux-x64-2.337.0.tar.gz" | shasum -a 256 -c
 
 # arm-64
 # RUN curl -o actions-runner-linux-arm64-2.323.0.tar.gz -L https://github.com/actions/runner/releases/download/v2.323.0/actions-runner-linux-arm64-2.323.0.tar.gz
