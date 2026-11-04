@@ -153,6 +153,7 @@ class TTkFileTreeWidget(TTkTreeWidget):
         self._filter = '*'
         super().__init__(**kwargs)
         self.setHeaderLabels(["Name", "Size", "Type", "Date Modified"])
+        self.sortItems(0, self._sortOrder)  # Name column sort by default
         self.openPath(self._path)
         self.resizeColumnToContents(0)
         self.resizeColumnToContents(1)
@@ -174,9 +175,26 @@ class TTkFileTreeWidget(TTkTreeWidget):
         self._path = path
 
         self.clear()
-        for i in TTkFileTreeWidget._getFileItems(path):
-            self.addTopLevelItem(i)
+        self.addTopLevelItems(TTkFileTreeWidget._getFileItems(path))
         self.setFilter(self._filter)
+        self.sortItems(self._sortColumn, self._sortOrder)
+
+    def sortKey(self, item):
+        '''
+        Returns a tuple of values which are used as the key by the internal sort
+        function so that directories are always grouped above files regardless
+        of which sort order direction is being used to do the sorting, and use
+        natural ordering of alphanumeric names or raw numbers for size and time.
+
+        :param item: the item being sorted by the sort iterator
+        :type  item: :py:class:`TTkFileTreeWidgetItem`
+        '''
+        def _dirsTop():
+            isDir = item.getType() == TTkFileTreeWidgetItem.DIR
+            return isDir if self._sortOrder == TTkK.DescendingOrder else (not isDir)
+
+        # Sort by _raw data values, and also sub-sort by Name (0) as tie-breaker
+        return (_dirsTop(), item.sortData(self._sortColumn), item.sortData(0))
 
     @staticmethod
     def _getFileItems(path):
@@ -217,7 +235,7 @@ class TTkFileTreeWidget(TTkTreeWidget):
 
                 ret.append(TTkFileTreeWidgetItem(
                                 [ name, "", typef, time],
-                                raw = [ n , -1 , typef , rawTime ],
+                                raw = [ n , -1 , "" , rawTime ],
                                 path=nodePath,
                                 type=TTkFileTreeWidgetItem.DIR,
                                 childIndicatorPolicy=TTkK.ShowIndicator))
@@ -243,10 +261,10 @@ class TTkFileTreeWidget(TTkTreeWidget):
                     name = TTkString()+color+n
 
                 _, ext = os.path.splitext(n)
-                if ext: ext = f"{ext[1:]} "
+                if ext: ext = f"{ext[1:]}"
                 ret.append(TTkFileTreeWidgetItem(
                                 [ name, size, typef, time],
-                                raw = [ n , rawSize , typef , rawTime ],
+                                raw = [ n , rawSize , ext , rawTime ],
                                 path=nodePath,
                                 type=TTkFileTreeWidgetItem.FILE,
                                 childIndicatorPolicy=TTkK.DontShowIndicator))
@@ -259,6 +277,8 @@ class TTkFileTreeWidget(TTkTreeWidget):
         for i in children:
             # TODO: Find a better way than calling an internal function
             i._processFilter(self._filter)
+        if not self._sortingEnabled: return
+        item.sortChildren(self._sortColumn, self._sortOrder, key=self.sortKey)
 
     @pyTTkSlot(TTkFileTreeWidgetItem, int)
     def _activated(self, item, _):
