@@ -303,8 +303,8 @@ class TTkComboBox(TTkContainer):
         :param items:
         :type items: list[str]
         '''
-        for item in items:
-            self.addItem(item)
+        self._list.extend(items)
+        self.update()
 
     pyTTkSlot()
     def clear(self) -> None:
