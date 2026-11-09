@@ -41,7 +41,7 @@ def send_twitter_message(version: str, data:SocialData, text:str):
     twitter = OAuth1Session(api_key, api_secret, access_token, access_token_secret)
 
     payload = {"text": text}
-    response = twitter.post("https://api.twitter.com/2/tweets", json=payload)
+    response = twitter.post("https://api.x.com/2/tweets", json=payload)
 
     print(response.status_code)
     print(response.json())
