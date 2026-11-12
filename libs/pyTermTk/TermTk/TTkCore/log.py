@@ -32,9 +32,9 @@ from typing import Callable
 class _TTkContext:
     __slots__ = ['file', 'line', 'function']
     def __init__(self, cf):
-        self.file = cf[1]
-        self.line = cf[2]
-        self.function = cf[3]
+        self.file = cf.f_code.co_filename
+        self.line = cf.f_lineno
+        self.function = cf.f_code.co_name
     def __str__(self):
         return f"{self.file}:{self.line} [{self.function}]"
 
@@ -73,16 +73,18 @@ class TTkLog:
                     format='%(levelname)s:(%(threadName)-9s) %(message)s',)
         TTkLog.installMessageHandler(TTkLog._logging_message_handler)
 
-
     @staticmethod
     def _process_msg(mode: int, msg: str):
+        if not TTkLog._messageHandler:
+            return
+
+        frame = inspect.currentframe().f_back.f_back
+        ctx = _TTkContext(frame)
+        del frame  # drop frame reference before invoking callbacks
+
         for cb in TTkLog._messageHandler:
-            curframe = inspect.currentframe()
-            calframe = inspect.getouterframes(curframe,1)
-            if len(calframe) > 2:
-                ctx = _TTkContext(calframe[2])
-                for txt in str(msg).split('\n'):
-                    cb(mode, ctx, txt)
+            for txt in msg.split('\n'):
+                cb(mode, ctx, txt)
 
     @staticmethod
     def debug(msg):
