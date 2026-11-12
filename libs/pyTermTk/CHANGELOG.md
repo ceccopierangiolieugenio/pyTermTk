@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.51.1-a0](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/pyTermTk-v0.51.0-a0...pyTermTk-v0.51.1-a0) (2026-11-12)
+
+
+### Fixes
+
+* **log:** drop frame reference before invoking callbacks ([#666](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/666)) ([57bdc0c](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/57bdc0c3105b9e2060a0ac8a659ae2686f5b2e59))
+
 ## [0.51.0-a0](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/pyTermTk-v0.50.0-a0...pyTermTk-v0.51.0-a0) (2026-10-29)
 
 
