@@ -1,5 +1,5 @@
 {
-    "libs/pyTermTk": "0.51.0-a0",
+    "libs/pyTermTk": "0.51.1-a0",
     "apps/ttkode": "0.49.0-a0",
     "apps/tlogg": "0.49.0-a0",
     "apps/ttkDesigner": "0.49.0-a0",
